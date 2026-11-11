@@ -297,7 +297,7 @@ private:
         char e[256] = {};
         fm1hw_error (machine, e, (int) sizeof (e));
         const juce::SpinLock::ScopedLockType sl (errLock);
-        error = juce::String ("the firmware stopped: ") + e;
+        error = juce::String ("the firmware stopped: ") + juce::String (juce::CharPointer_UTF8 (e));
     }
 
     void publishView (std::vector<float>& leds)
@@ -361,6 +361,50 @@ std::unique_ptr<FirmwareHost> FirmwareHost::createHardware (const void* fwsc, si
     auto h = std::make_unique<HwFirmware>();
     if (! h->start (fwsc, size, storage, error)) return nullptr;
     return h;
+}
+
+static juce::Image rgb565ToImage (const uint16_t* fb, bool swapped)
+{
+    juce::Image img (juce::Image::RGB, FirmwareHost::fbW, FirmwareHost::fbH, false);
+    juce::Image::BitmapData bd (img, juce::Image::BitmapData::writeOnly);
+    for (int y = 0; y < FirmwareHost::fbH; ++y)
+        for (int x = 0; x < FirmwareHost::fbW; ++x)
+        {
+            uint16_t p = fb[(size_t) (y * FirmwareHost::fbW + x)];
+            if (swapped) p = (uint16_t) ((p >> 8) | (p << 8));
+            bd.setPixelColour (x, y, juce::Colour ((uint8_t) (((p >> 11) & 31) * 255 / 31), (uint8_t) (((p >> 5) & 63) * 255 / 63), (uint8_t) ((p & 31) * 255 / 31)));
+        }
+    return img;
+}
+
+juce::Image FirmwareHost::renderPreview (const void* data, size_t size, double seconds)
+{
+    if (isHardwarePackage (data, size))
+    {
+        char err[128] = {};
+        auto* m = fm1hw_boot ((const uint8_t*) data, size, 240, err, (int) sizeof (err));
+        if (m == nullptr) return {};
+        fm1hw_master (m, 0);
+        const auto until = (uint64_t) (seconds * 1000.0);
+        const double t0 = juce::Time::getMillisecondCounterHiRes();
+        while (fm1hw_ms (m) < until && juce::Time::getMillisecondCounterHiRes() - t0 < 15000.0)
+            if (fm1hw_run (m, 20000, nullptr, 0) < 0) break;
+        juce::Image img;
+        if (const auto* lcd = fm1hw_lcd (m)) img = rgb565ToImage (lcd, false);
+        fm1hw_free (m);
+        return img;
+    }
+    // version web : quelques secondes de son rendues (et jetees) pour que l'ecran s'installe
+    juce::String err;
+    auto fw = create (data, size, juce::File(), err);
+    if (fw == nullptr) return {};
+    fw->master (0.0f);
+    std::vector<float> l (512), r (512);
+    const int blocks = (int) (seconds * fwRate / 512.0);
+    for (int i = 0; i < blocks; ++i) fw->render (l.data(), r.data(), 512, fwRate);
+    juce::Image img;
+    fw->copyScreen (img);
+    return img;
 }
 
 bool FirmwareHost::isHardwarePackage (const void* data, size_t size)

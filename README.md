@@ -32,12 +32,12 @@ Synthétiseur FM 6 opérateurs au format VST3 (Windows et macOS), d'après le sy
 
 ## Firmwares de la FM-1
 
-FM-9 fait tourner les **firmwares libres de la FM-1** à la place de son propre synthé : leur écran s'affiche dans la vitre, les touches, potards et LED de la façade sont les leurs, et le clavier maître les joue. Ce sont les versions web (émulateurs WebAssembly) que ces projets publient, exécutées par le moteur **wasm3** (MIT, dossier `wasm3/`).
+FM-9 fait tourner les **firmwares de la FM-1** à la place de son propre synthé : leur écran s'affiche dans la vitre, les touches, potards et LED de la façade sont les leurs, et le clavier maître les joue.
 
-- **Hortator** (boîte à rythmes 8 pistes, DEADACTIVE, GPL-3.0, source : https://github.com/DeadActive/hortator) est fourni avec FM-9.
-- **Clic droit > Firmware > Install from GitHub...** : collez l'adresse du dépôt (ou de sa page github.io / de son installeur web), FM-9 trouve l'émulateur publié, le télécharge et le lance. Testé avec Hortator, X0X, TRIBE et GHOULBOX (familles « sim » et « web » de Felucca).
-- **Install from file (.wasm)** pour un fichier déjà téléchargé ; **FM-9 synthesizer** pour revenir au synthé.
-- Les sauvegardes de chaque firmware (patterns, réglages) sont gardées dans `Nine Hands DSP/FM-9/Firmwares` ; le firmware choisi est mémorisé avec le projet.
+- **Paquets matériels (.fwsc)** : le fichier que l'on installe dans une vraie FM-1 tourne dans un **émulateur de la puce de la FM-1** (JieLi AC791N, deux cœurs pi32v2), repris du projet libre [fm1-emu](https://github.com/joakimeriksson/fm1-emu) de Joakim Eriksson (MIT, dossier `third_party/fm1-emu`, pont C dans `fm1hw/`). C'est le firmware de l'appareil, y compris celui d'origine de M-VAVE (non fourni : à télécharger chez M-VAVE).
+- **Versions web (.wasm)** : les émulateurs web publiés par beaucoup de projets, lancés par **wasm3** (MIT, dossier `wasm3/`). **Hortator** (DEADACTIVE, GPL-3.0) est fourni.
+- **Catalogue** (clic droit > Firmware > Catalog) : 300 firmwares recensés (listes [aroum/fm1-custom-fw](https://github.com/aroum/fm1-custom-fw) et fm1-emu), 215 compatibles, chacun marqué compatible ou non, avec son type (HARDWARE, WEB). Installation d'un clic ou de tous d'un coup, aperçu de l'écran au survol du nom. La liste (`catalog/firmwares.json`) est mise à jour sans nouvelle version du plugin (Refresh).
+- **Install from GitHub...** et **Install from file** (.fwsc ou .wasm) ; les sauvegardes de chaque firmware sont gardées dans `Nine Hands DSP/FM-9/Firmwares`.
 
 ## Installation
 
@@ -56,10 +56,11 @@ Anti-gel v2 : rendu logiciel sous Windows, caches reconstruits par le timer, chi
 
 ## Licence
 
-FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir les firmwares libres de la FM-1. Le cœur FM msfa reste sous Apache 2.0 (compatible, voir `msfa/NOTICE.md`) ; wasm3 sous licence MIT (`wasm3/LICENSE`) ; Hortator (fourni) sous GPL-3.0 (`assets/firmware-licenses/`, source : https://github.com/DeadActive/hortator).
+FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir les firmwares libres de la FM-1. Le cœur FM msfa reste sous Apache 2.0 (compatible, voir `msfa/NOTICE.md`) ; wasm3 sous licence MIT (`wasm3/LICENSE`) ; l'émulateur de la puce fm1-emu sous licence MIT (`third_party/fm1-emu/LICENSE`) ; Hortator (fourni) sous GPL-3.0 (`assets/firmware-licenses/`, source : https://github.com/DeadActive/hortator).
 
 ## Historique
 
+- **1.3.0** : firmwares matériels de la FM-1 (.fwsc) dans un émulateur de la puce (fm1-emu), y compris le firmware d'origine ; catalogue de 300 firmwares (215 compatibles) avec aperçu de l'écran.
 - **1.2.0** : skins (6 coloris de la FM-1), couleurs réglables à la volée et skins enregistrables ; profil Arturia KeyStep 37 ; export NKS (Komplete Kontrol / Maschine).
 - **1.1.0** : hôte de firmwares de la FM-1 (WebAssembly) : installation depuis GitHub ou un fichier, Hortator fourni ; façade : touches noires, écran agrandi, touches OCT à la taille de l'original.
 - **1.0.0** : première version.

@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -282,20 +282,31 @@ T = dict(
          "Banque A d'usine :"],
     fac_hdr=["N°", "Nom", "Caractère"],
     fw_t="Firmwares de la FM-1",
-    fw=["FM-9 peut faire tourner les <b>firmwares libres de la FM-1</b> à la place de son synthé : l'écran du firmware s'affiche dans la vitre, "
-        "les touches, potards, touches OCT et LED de la façade sont les siens, et votre clavier maître le joue (notes FA3 à SOL5, ou MIDI complet pour la famille Felucca). "
-        "MASTER règle son volume.",
-        "<b>Hortator</b> (boîte à rythmes 8 pistes de DEADACTIVE) est fourni : clic droit &gt; <b>Firmware</b> &gt; Hortator. "
-        "Pour en ajouter : clic droit &gt; Firmware &gt; <b>Install from GitHub...</b>, collez l'adresse du dépôt, de sa page github.io ou de son installeur web "
-        "(par exemple https://deadactive.github.io/hortator/webapp/installer/) : FM-9 trouve l'émulateur web publié par le projet, le télécharge et le lance. "
-        "<b>Install from file (.wasm)</b> installe un fichier déjà téléchargé. <b>FM-9 synthesizer</b> revient au synthé.",
-        "<b>Quels firmwares ?</b> Ceux dont le projet publie une <b>version web</b> (un émulateur qui tourne dans le navigateur, fichier .wasm, "
-        "souvent sur une page github.io de démo ou d'installation) : Hortator, X0X, TRIBE et GHOULBOX sont testés. Le firmware « matériel » seul "
-        "(fichier .bin flashé dans la FM-1 avec l'outil de mise à jour) ne peut pas tourner dans FM-9 : c'est du code pour la puce de la FM-1. "
-        "FM-9 reconnaît les deux façons de dialoguer avec l'émulateur utilisées par les firmwares de la FM-1 (celle de Hortator et celle de la "
-        "famille Felucca) ; un fichier d'un autre type est refusé avec un message, sans rien modifier.",
-        "Chaque firmware garde ses sauvegardes (patterns, réglages) dans le dossier Nine Hands DSP/FM-9/Firmwares ; le firmware choisi est mémorisé avec le projet Reaper. "
-        "Ces firmwares sont des projets libres (GPL-3.0 pour la famille Felucca) : leurs fonctions sont décrites dans leurs propres manuels."],
+    fw=["FM-9 peut faire tourner les <b>firmwares de la FM-1</b> à la place de son synthé : l'écran du firmware s'affiche dans la vitre, "
+        "les touches, potards, touches OCT et LED de la façade sont les siens, et votre clavier maître le joue. MASTER règle son volume. "
+        "Deux sortes de firmwares sont acceptées :",
+        "<b>Paquets matériels (.fwsc)</b> : le fichier que l'on installe dans une vraie FM-1. FM-9 le fait tourner dans un <b>émulateur de la puce "
+        "de la FM-1</b> (le JieLi AC791N et ses deux cœurs, d'après le projet libre fm1-emu de Joakim Eriksson) : c'est exactement le firmware de "
+        "l'appareil, y compris le firmware d'origine de M-VAVE. Ces firmwares apparaissent avec la mention <b>(hardware)</b>. Ils demandent plus de "
+        "calcul (un quart à la moitié d'un cœur de processeur) et tournent un peu en avance : FM-9 annonce ce décalage à Reaper, qui le compense.",
+        "<b>Versions web (.wasm)</b> : l'émulateur web que beaucoup de projets publient sur leur page github.io. Plus légères, elles sont lancées par "
+        "le moteur wasm3. <b>Hortator</b> (boîte à rythmes 8 pistes de DEADACTIVE) est fourni dans cette version.",
+        "<b>Catalogue</b> : clic droit &gt; Firmware &gt; <b>Catalog</b> liste tous les firmwares de la FM-1 recensés par la communauté "
+        "(listes de github.com/aroum/fm1-custom-fw et de fm1-emu) : chacun est marqué <b>Compatible</b> ou <b>Not compatible</b> (avec la raison), "
+        "et son type : HARDWARE (paquet .fwsc), WEB (.wasm) ou les deux. <b>Install</b> installe le firmware (paquet matériel et version web quand "
+        "les deux existent), <b>Load</b> le lance, <b>Install all compatible</b> installe d'un coup tous les firmwares libres compatibles. "
+        "<b>Refresh</b> télécharge la dernière liste publiée. Un double-clic sur une ligne ouvre la page du projet. "
+        "<b>Aperçu</b> : laissez le curseur sur le nom d'un firmware compatible pendant un peu moins d'une seconde : FM-9 le démarre hors écran "
+        "et montre ce qu'affiche son écran (l'aperçu est gardé pour les fois suivantes).",
+        "<b>Firmware d'origine</b> : il n'est pas libre, FM-9 ne le fournit pas ; l'entrée FM-1 original firmware du catalogue le télécharge "
+        "depuis le serveur de M-VAVE, ou bien installez le FM-1.fwsc téléchargé sur le site de M-VAVE avec Install from file.",
+        "<b>Autres installations</b> : <b>Install from GitHub...</b> (adresse du dépôt, de sa page github.io ou de son installeur web : FM-9 y cherche "
+        "une version web, sinon un paquet .fwsc) et <b>Install from file</b> (.fwsc ou .wasm). <b>FM-9 synthesizer</b> revient au synthé.",
+        "<b>Quels firmwares ne marchent pas ?</b> Ceux qui ne publient ni paquet .fwsc ni version web (seulement un installateur en ligne fermé), "
+        "et les portages pour un autre appareil (SMK-37). Un fichier d'un autre type est refusé avec un message, sans rien modifier.",
+        "Chaque firmware garde ses sauvegardes (patterns, réglages) dans le dossier Nine Hands DSP/FM-9/Firmwares ; le firmware choisi est "
+        "mémorisé avec le projet Reaper. Ces firmwares sont des projets indépendants (la plupart en GPL-3.0) : leurs fonctions sont décrites dans "
+        "leurs propres manuels."],
     skin_t="Skins et couleurs",
     skin=["Clic droit &gt; <b>Skin</b> : les six coloris officiels de la FM-1 (section <b>FM-1 colors</b>) : Black, Purple, Orange, Black-Green, "
           "<b>Cool Gray</b> (coloris par défaut de FM-9) et White-Blue. Ombres, lumière et gravures sont recalculées pour chaque coloris.",
@@ -342,7 +353,7 @@ T = dict(
           ["Séquences", "arpégiateur 7 modes ; séquenceur 16 pas, 16 patterns, chaîne, notes longues, swing, synchro hôte"],
           ["MIDI", "canal réglable, Program Change, pitch bend, molette, aftertouch, sustain, SysEx DX7, MIDI Learn"],
           ["Fenêtre", "60 / 75 / 100 / 125 %, jamais sous 60 % ; anti-gel v2 sous Windows"],
-          ["Firmwares", "firmwares web de la FM-1 (WebAssembly, moteur wasm3), installation depuis GitHub ou un fichier, Hortator fourni"],
+          ["Firmwares", "paquets matériels .fwsc (émulateur de la puce de la FM-1, fm1-emu, MIT) et versions web .wasm (wasm3) ; catalogue de 300 firmwares, installation depuis GitHub ou un fichier, Hortator fourni"],
           ["Skins", "6 coloris de la FM-1, couleurs réglables à la volée (coque, pavés, touches, inscriptions, LED), skins enregistrables (.fm9skin)"],
           ["Contrôleurs", "profil Arturia KeyStep 37 (4 banques de potards), presets NKS pour Komplete Kontrol et Maschine"],
           ["Licence", "GPL-3.0"]],
@@ -385,8 +396,10 @@ def section():
     f.append(P(t["pre_t"], "h1")); f += [P(x) for x in t["pre"]]
     rows = [t["fac_hdr"]] + [[str(i + 1).zfill(3), "<b>" + n + "</b>", d] for i, (n, d) in enumerate(FACTORY)]
     f.append(table(rows, [12 * mm, 30 * mm, W - 42 * mm], small=True))
-    f.append(P(t["fw_t"], "h1")); f += [P(x) for x in t["fw"]]
-    f.append(img(os.path.join(SHOTS, "apercu_hortator.png"), W * 0.72)); f.append(P("Hortator dans FM-9.", "small"))
+    f.append(P(t["fw_t"], "h1")); f += [P(x) for x in t["fw"][:4]]
+    f.append(img(os.path.join(SHOTS, "apercu_catalogue.png"), W * 0.8)); f.append(P("Le catalogue des firmwares : aperçu de l'écran de Felucca au survol de son nom.", "small"))
+    f += [P(x) for x in t["fw"][4:]]
+    f.append(KeepTogether([img(os.path.join(SHOTS, "apercu_materiel.png"), W * 0.72), P("Felucca, firmware matériel (.fwsc), dans l'émulateur de la puce.", "small")]))
     f.append(PageBreak())
     f.append(P(t["skin_t"], "h1")); f += [P(x) for x in t["skin"][:1]]
     f.append(img(os.path.join(SHOTS, "FM-9_Skins.jpg"), W)); f.append(P("Les six coloris de la FM-1 dans FM-9.", "small"))

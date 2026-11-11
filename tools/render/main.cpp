@@ -2,6 +2,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "FirmwareCatalog.h"
 
 struct FakeHead : juce::AudioPlayHead
 {
@@ -291,6 +292,11 @@ int main (int argc, char** argv)
             if (args.contains ("--saveskin")) std::printf ("save %d\n", (int) fe->saveUserSkin (args[args.indexOf ("--saveskin") + 1]));
             if (args.contains ("--loadskin")) std::printf ("load %d\n", (int) fe->loadUserSkin (FM9Editor::skinFolder().getChildFile (args[args.indexOf ("--loadskin") + 1] + ".fm9skin")));
             if (args.contains ("--catalog")) fe->openCatalog();
+            if (args.contains ("--preview") && fe->catalog != nullptr)
+            {
+                auto xy = StringArray::fromTokens (args[args.indexOf ("--preview") + 2], ",", "");
+                fe->catalog->showPreviewNow (args[args.indexOf ("--preview") + 1], { xy[0].getIntValue(), xy[1].getIntValue() });
+            }
             if (args.contains ("--panel"))
             {
                 auto xy = StringArray::fromTokens (args[args.indexOf ("--panel") + 1], ",", "");

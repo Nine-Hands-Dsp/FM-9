@@ -29,6 +29,9 @@ public:
     // paquet materiel (.fwsc), lance dans l'emulateur de la puce ; storage = secteurs de flash sauvegardes
     static std::unique_ptr<FirmwareHost> createHardware (const void* fwsc, size_t size, const juce::File& storage, juce::String& error);
     static bool isHardwarePackage (const void* data, size_t size);
+    // apercu : demarre le firmware hors ecran (sans son, a pleine vitesse) et rend ce que montre son ecran
+    // apres 'seconds' secondes de fonctionnement (thread d'arriere-plan)
+    static juce::Image renderPreview (const void* data, size_t size, double seconds = 3.0);
     virtual ~FirmwareHost() = default;
 
     // ---- thread audio ----

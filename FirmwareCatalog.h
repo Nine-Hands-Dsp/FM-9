@@ -6,6 +6,9 @@
 #include <JuceHeader.h>
 #include "FirmwareHost.h"
 #include "NineHandsMenu.h"
+#include <map>
+#include <set>
+#include <thread>
 
 namespace fm9
 {
@@ -14,11 +17,10 @@ struct CatalogEntry
     juce::String name, author, group, desc, repo, page, reason, url, abi, pkg, license;
     bool compatible = false, vendor = false;
     juce::int64 size = 0;
-    // nom des fichiers installes : le depot, sinon le nom du firmware
+    // nom des fichiers installes : le nom du firmware (les forks partagent souvent le nom du depot)
     juce::String fileName() const
     {
-        const auto base = repo.isNotEmpty() ? repo.fromFirstOccurrenceOf ("/", false, false) : name;
-        return juce::File::createLegalFileName (base.isNotEmpty() ? base : name);
+        return juce::File::createLegalFileName (name.isNotEmpty() ? name : repo.fromFirstOccurrenceOf ("/", false, false)).trim();
     }
     bool hardware() const { return pkg.isNotEmpty(); }
     bool web() const { return url.isNotEmpty(); }
@@ -137,9 +139,15 @@ public:
         viewport.setScrollBarThickness (8);
         viewport.getVerticalScrollBar().setColour (juce::ScrollBar::thumbColourId, NineHandsMenu::kFaint);
         list.owner = this;
-        startTimerHz (10);
+        list.setMouseCursor (juce::MouseCursor::NormalCursor);
+        startTimerHz (20);
     }
-    ~FirmwareCatalogView() override { stop = true; if (worker.joinable()) worker.join(); }
+    ~FirmwareCatalogView() override
+    {
+        stop = true;
+        if (worker.joinable()) worker.join();
+        if (previewThread.joinable()) previewThread.join();
+    }
 
     void resized() override
     {
@@ -255,19 +263,16 @@ private:
                 if (r.entry == o.hover) { g.setColour (kHover); g.fillRoundedRectangle (row.toFloat(), 7.0f); }
                 auto inner = row.reduced (8, 6);
                 auto btn = o.installRect (row);
-                // badge
-                auto badge = inner.removeFromRight (240).removeFromLeft (128).withSizeKeepingCentre (122, 20).toFloat();
-                if (e.compatible) badge = badge.translated (0.0f, -7.0f);
-                const auto col = e.compatible ? juce::Colour (0xff5be08a) : juce::Colour (0xff8d96a4);
-                g.setColour (col.withAlpha (0.16f)); g.fillRoundedRectangle (badge, 10.0f);
-                g.setColour (col); g.setFont (font (o.fMed, 12.0f));
-                g.drawText (e.compatible ? "Compatible" : "Not compatible", badge.toNearestInt(), juce::Justification::centred);
+                // statut : texte seul, vert compatible / rouge non compatible, et le type dessous
+                auto badge = inner.removeFromRight (240).removeFromLeft (128).toFloat();
+                g.setFont (font (o.fMed, 13.5f));
+                g.setColour (e.compatible ? juce::Colour (0xff5be08a) : juce::Colour (0xffff5a52));
+                g.drawText (e.compatible ? "Compatible" : "Not compatible", badge.withHeight (20.0f).withY (badge.getCentreY() - (e.compatible ? 15.0f : 10.0f)).toNearestInt(), juce::Justification::centred);
                 if (e.compatible)
                 {
-                    // type : paquet materiel (le vrai firmware, emule) et / ou version web
                     const auto kind = e.hardware() && e.web() ? juce::String ("HW + WEB") : e.hardware() ? juce::String ("HARDWARE") : juce::String ("WEB");
                     g.setColour (kDim); g.setFont (font (o.fBold, 10.0f).withExtraKerningFactor (0.1f));
-                    g.drawText (kind, badge.translated (0.0f, 17.0f).toNearestInt(), juce::Justification::centred);
+                    g.drawText (kind, badge.withHeight (14.0f).withY (badge.getCentreY() + 4.0f).toNearestInt(), juce::Justification::centred);
                 }
                 // nom, auteur, description ou raison
                 g.setColour (e.compatible ? kText : kText.withAlpha (0.6f)); g.setFont (font (o.fMed, 15.0f));
@@ -300,8 +305,23 @@ private:
             }
             return -1;
         }
-        void mouseMove (const juce::MouseEvent& e) override { const int i = entryAt (e.getPosition()); if (i != owner->hover) { owner->hover = i; repaint(); } }
-        void mouseExit (const juce::MouseEvent&) override { owner->hover = -1; repaint(); }
+        void mouseMove (const juce::MouseEvent& e) override
+        {
+            juce::Rectangle<int> row;
+            const int i = entryAt (e.getPosition(), &row);
+            if (i != owner->hover) { owner->hover = i; repaint(); }
+            // apercu de l'ecran : uniquement sur le nom du firmware
+            int name = -1;
+            if (i >= 0)
+            {
+                const auto& en = owner->entries[(size_t) i];
+                const auto nameArea = row.reduced (8, 6).removeFromTop (20)
+                                         .withWidth (juce::roundToInt (juce::GlyphArrangement::getStringWidth (font (owner->fMed, 15.0f), en.name)) + 6);
+                if (nameArea.contains (e.getPosition()) && en.compatible) name = i;
+            }
+            owner->hoverName (name, owner->getLocalPoint (this, e.getPosition()));
+        }
+        void mouseExit (const juce::MouseEvent&) override { owner->hover = -1; owner->hoverName (-1, {}); repaint(); }
         void mouseDown (const juce::MouseEvent& ev) override
         {
             juce::Rectangle<int> row;
@@ -366,6 +386,7 @@ private:
 
     void timerCallback() override
     {
+        tickPreview();
         if (! busy) return;
         {
             const juce::ScopedLock sl (lock);
@@ -378,7 +399,11 @@ private:
             installed = FirmwareInstaller::installed();
             if (refreshed.load() != 0)
             {
-                if (refreshed.load() > 0) { entries = FirmwareCatalog::load (date); layoutList(); status = "Catalog updated."; }
+                if (refreshed.load() > 0)
+                {
+                    entries = FirmwareCatalog::load (date); layoutList(); status = "Catalog updated.";
+                    const juce::ScopedLock sl (previewLock); previews.clear(); previewFailed.clear(); shown = nameHover = -1;
+                }
                 else status = "!Could not download the catalog (offline?)";
                 refreshed = 0;
             }
@@ -387,6 +412,124 @@ private:
         }
         repaint(); list.repaint();
     }
+
+    // ---------------------------------------------------------------- apercu de l'ecran au survol (800 ms)
+public:
+    void hoverName (int entry, juce::Point<int> at)
+    {
+        if (entry != nameHover) { nameHover = entry; nameSince = juce::Time::getMillisecondCounterHiRes(); shown = -1; repaint(); }
+        if (entry >= 0) previewAt = at;
+    }
+    void paintOverChildren (juce::Graphics& g) override
+    {
+        using namespace NineHandsMenu;
+        if (shown < 0) return;
+        // vignette : l'ecran de la FM-1 (240 x 240) dans un cadre sombre, pres du curseur, toujours dans la fenetre
+        const int sz = 196, pad = 10;
+        juce::Rectangle<int> box (previewAt.x + 18, previewAt.y - sz / 2 - pad, sz + 2 * pad, sz + 2 * pad + 22);
+        box = box.constrainedWithin (getLocalBounds().reduced (12));
+        g.setColour (juce::Colours::black.withAlpha (0.35f)); g.fillRoundedRectangle (box.toFloat().translated (3, 4), 12.0f);
+        g.setColour (kBg); g.fillRoundedRectangle (box.toFloat(), 12.0f);
+        g.setColour (kBorder); g.drawRoundedRectangle (box.toFloat().reduced (0.5f), 12.0f, 1.0f);
+        auto scr = juce::Rectangle<int> (box.getX() + pad, box.getY() + pad, sz, sz);
+        g.setColour (juce::Colour (0xff06080b)); g.fillRoundedRectangle (scr.toFloat(), 6.0f);
+        juce::Image img;
+        {
+            const juce::ScopedLock sl (previewLock);
+            auto it = previews.find (shown);
+            if (it != previews.end()) img = it->second;
+        }
+        g.setFont (font (fReg, 12.0f));
+        if (img.isValid())
+        {
+            g.setImageResamplingQuality (juce::Graphics::highResamplingQuality);
+            g.drawImage (img, scr.toFloat());
+        }
+        else
+        {
+            g.setColour (kDim);
+            g.drawText (previewFailed.count (shown) ? "No preview" : "Starting the firmware...", scr, juce::Justification::centred);
+        }
+        g.setColour (kDim);
+        g.drawText (entries[(size_t) shown].name, juce::Rectangle<int> (box.getX() + pad, scr.getBottom() + 4, sz, 16), juce::Justification::centredLeft);
+    }
+
+    // capture de la notice : apercu d'un firmware calcule tout de suite, affiche au point donne
+    void showPreviewNow (const juce::String& name, juce::Point<int> at)
+    {
+        for (size_t i = 0; i < entries.size(); ++i)
+            if (entries[i].name == name)
+            {
+                auto img = makePreview (entries[i]);
+                const juce::ScopedLock sl (previewLock);
+                if (img.isValid()) previews[(int) i] = img; else previewFailed.insert ((int) i);
+                nameHover = shown = (int) i; previewAt = at; hover = (int) i;
+                list.repaint(); repaint();
+                return;
+            }
+    }
+
+    static juce::File previewFile (const CatalogEntry& e) { return FirmwareInstaller::folder().getChildFile ("Previews").getChildFile (e.fileName() + ".png"); }
+
+    // l'apercu d'un firmware : fichier en cache, sinon le firmware (installe ou telecharge) demarre hors ecran
+    static juce::Image makePreview (const CatalogEntry& e)
+    {
+        const auto cache = previewFile (e);
+        if (cache.existsAsFile()) if (auto img = juce::ImageFileFormat::loadFrom (cache); img.isValid()) return img;
+        juce::MemoryBlock data; juce::String err;
+        const auto folder = FirmwareInstaller::folder();
+        if (folder.getChildFile (e.fileName() + ".fwsc").loadFileAsData (data) || folder.getChildFile (e.fileName() + ".wasm").loadFileAsData (data)) {}
+        else if (e.web()) FirmwareCatalog::download (e.url, data, err);          // la version web est plus legere a telecharger
+        else if (e.hardware()) FirmwareCatalog::download (e.pkg, data, err);
+        if (data.getSize() == 0) return {};
+        auto img = FirmwareHost::renderPreview (data.getData(), data.getSize(), 3.0);
+        if (img.isValid())
+        {
+            cache.getParentDirectory().createDirectory();
+            juce::FileOutputStream os (cache);
+            if (os.openedOk()) { os.setPosition (0); os.truncate(); juce::PNGImageFormat().writeImageToStream (img, os); }
+        }
+        return img;
+    }
+
+private:
+    void tickPreview()
+    {
+        if (nameHover < 0) { if (shown >= 0) { shown = -1; repaint(); } return; }
+        if (shown == nameHover || juce::Time::getMillisecondCounterHiRes() - nameSince < 800.0) return;
+        shown = nameHover;
+        repaint();
+        {
+            const juce::ScopedLock sl (previewLock);
+            if (previews.count (shown) || previewFailed.count (shown) || pending.count (shown)) return;
+            pending.insert (shown);
+        }
+        // un seul firmware demarre a la fois, hors du thread de l'interface
+        const int idx = shown;
+        const auto e = entries[(size_t) idx];
+        if (previewThread.joinable()) { if (previewBusy.load()) { const juce::ScopedLock sl (previewLock); pending.erase (idx); shown = -1; nameSince = juce::Time::getMillisecondCounterHiRes(); return; } previewThread.join(); }
+        previewBusy.store (true);
+        previewThread = std::thread ([this, idx, e]
+        {
+            auto img = makePreview (e);
+            {
+                const juce::ScopedLock sl (previewLock);
+                pending.erase (idx);
+                if (img.isValid()) previews[idx] = img; else previewFailed.insert (idx);
+            }
+            previewBusy.store (false);
+            juce::MessageManager::callAsync ([safe = juce::Component::SafePointer<FirmwareCatalogView> (this)] { if (safe != nullptr) safe->repaint(); });
+        });
+    }
+
+    int nameHover = -1, shown = -1;
+    double nameSince = 0;
+    juce::Point<int> previewAt;
+    juce::CriticalSection previewLock;
+    std::map<int, juce::Image> previews;
+    std::set<int> previewFailed, pending;
+    std::thread previewThread;
+    std::atomic<bool> previewBusy { false };
 
     juce::Typeface::Ptr fReg, fMed, fBold;
     std::vector<CatalogEntry> entries;

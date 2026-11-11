@@ -139,6 +139,9 @@ class FirmwareCatalogView : public juce::Component, private juce::Timer
 {
 public:
     std::function<void (const juce::String&)> onActivate;     // nom du firmware installe a lancer
+    // chargement avec progression (bouton Load) : prepare le firmware hors du thread de l'interface, puis l'editeur l'active
+    std::function<std::unique_ptr<FirmwareHost> (const juce::String&, juce::String&, std::function<void (float)>)> loader;
+    std::function<void (const juce::String&, std::shared_ptr<std::unique_ptr<FirmwareHost>>, const juce::String&)> onLoaded;
     std::function<void()> onClose;
 
     FirmwareCatalogView (juce::Typeface::Ptr reg, juce::Typeface::Ptr med, juce::Typeface::Ptr bold) : fReg (reg), fMed (med), fBold (bold)
@@ -159,6 +162,7 @@ public:
         stop = true;
         if (worker.joinable()) worker.join();
         if (previewThread.joinable()) previewThread.join();
+        if (loadThread.joinable()) loadThread.join();
     }
 
     void resized() override
@@ -298,12 +302,13 @@ private:
                 {
                     const bool inst = e.isInstalled (o.installed);
                     const bool doing = o.current == r.entry;
+                    const bool loading = o.loadingIdx == r.entry;
                     g.setColour (inst ? kHover : kAccent.withAlpha (o.busy ? 0.3f : 0.9f)); g.fillRoundedRectangle (btn.toFloat(), 7.0f);
                     if (inst) { g.setColour (kBorder); g.drawRoundedRectangle (btn.toFloat().reduced (0.5f), 7.0f, 1.0f); }
-                    if (doing)
+                    if (doing || loading)
                     {
-                        // telechargement en cours : le bouton se remplit
-                        const float f = o.installProg.load();
+                        // telechargement (Install) ou demarrage du firmware (Load) en cours : le bouton se remplit
+                        const float f = loading ? o.loadProg.load() : o.installProg.load();
                         g.setColour (kHover); g.fillRoundedRectangle (btn.toFloat(), 7.0f);
                         g.setColour (kAccent); g.fillRoundedRectangle (btn.toFloat().withWidth (juce::jmax (14.0f, btn.getWidth() * f)), 7.0f);
                         g.setColour (kText); g.setFont (font (o.fMed, 13.0f));
@@ -360,10 +365,33 @@ private:
                 return;
             }
             if (! e.compatible || owner->busy) return;
-            if (e.isInstalled (owner->installed)) { if (owner->onActivate) owner->onActivate (e.loadName (owner->installed)); return; }
+            if (e.isInstalled (owner->installed)) { owner->startLoad (i, e.loadName (owner->installed)); return; }
             owner->runInstall ({ e });
         }
     } list;
+
+    void startLoad (int idx, const juce::String& name)
+    {
+        if (loader == nullptr) { if (onActivate) onActivate (name); return; }
+        if (loadingIdx >= 0) return;
+        if (loadThread.joinable()) loadThread.join();
+        loadingIdx = idx; loadProg.store (0.0f); busy = true;
+        status = "Starting " + entries[(size_t) idx].name + "...";
+        const juce::Component::SafePointer<FirmwareCatalogView> self (this);
+        auto load = loader; auto done = onLoaded;
+        loadThread = std::thread ([this, self, name, load, done]
+        {
+            juce::String err;
+            auto fw = load (name, err, [this] (float f) { loadProg.store (f); });
+            auto holder = std::make_shared<std::unique_ptr<FirmwareHost>> (std::move (fw));
+            juce::MessageManager::callAsync ([self, name, holder, err, done]
+            {
+                if (self != nullptr) { self->loadingIdx = -1; self->busy = false; self->status.clear(); }
+                if (done) done (name, holder, err);
+            });
+        });
+        repaint();
+    }
 
     void runInstall (std::vector<CatalogEntry> todo)
     {
@@ -413,6 +441,7 @@ private:
     {
         tickPreview();
         if (previewBusy.load() && shown >= 0) repaint();
+        if (loadingIdx >= 0) { list.repaint(); return; }
         if (! busy) return;
         {
             const juce::ScopedLock sl (lock);
@@ -515,6 +544,7 @@ public:
         {
             if (entries[i].name == previewName) { nameHover = shown = (int) i; previewAt = at; previewBusy.store (true); previewStage.store (stage); previewProg.store (f); }
             if (entries[i].name == installName) { current = (int) i; busy = true; installProg.store (inst); status = "Installing " + installName + " (1/1)..."; }
+            if ("!" + entries[i].name == installName) { loadingIdx = (int) i; busy = true; loadProg.store (inst); status = "Starting " + entries[i].name + "..."; }
         }
         list.repaint(); repaint();
     }
@@ -596,7 +626,9 @@ private:
     std::atomic<bool> stop { false }, finished { false };
     int hover = -1, current = -1, total = 0;
     std::atomic<int> done { 0 }, refreshed { 0 };
-    std::atomic<float> installProg { 0.0f };
+    std::atomic<float> installProg { 0.0f }, loadProg { 0.0f };
+    int loadingIdx = -1;
+    std::thread loadThread;
     bool busy = false;
 };
 } // namespace fm9

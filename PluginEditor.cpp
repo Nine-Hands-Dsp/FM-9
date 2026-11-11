@@ -1960,6 +1960,11 @@ void FM9Editor::activateFirmware (const String& name)
         AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Could not start " + name + " :\n" + err, "OK", this);
         return;
     }
+    firmwareActivated (name);
+}
+
+void FM9Editor::firmwareActivated (const String& name)
+{
     heldFn = heldOct = fwHeldKey = -1; fwDrawnSerial = 0; fwImage = {};
     drawnPanelSig.clear(); drawnScreenSig.clear();
     if (name.isEmpty()) popup ("FM-9", "Synthesizer");
@@ -1974,6 +1979,21 @@ void FM9Editor::openCatalog()
     catalog->onActivate = [self] (const String& name)
     {
         MessageManager::callAsync ([self, name] { if (self != nullptr) { self->catalog.reset(); self->activateFirmware (name); } });
+    };
+    // Load : le firmware est prepare en arriere-plan (progression dans le bouton), puis active ici
+    FM9Processor* pr = &proc;
+    catalog->loader = [pr] (const String& name, String& err, std::function<void (float)> progress) { return pr->loadFirmware (name, err, progress); };
+    catalog->onLoaded = [self] (const String& name, std::shared_ptr<std::unique_ptr<fm9::FirmwareHost>> fw, const String& err)
+    {
+        if (self == nullptr) return;
+        if (*fw == nullptr)
+        {
+            AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Could not start " + name + " :\n" + err, "OK", self.getComponent());
+            return;
+        }
+        self->proc.activatePrepared (name, std::move (*fw));
+        self->firmwareActivated (name);
+        MessageManager::callAsync ([self] { if (self != nullptr) self->catalog.reset(); });
     };
     addAndMakeVisible (*catalog);
     catalog->setBounds (getLocalBounds());

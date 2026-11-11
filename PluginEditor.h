@@ -113,6 +113,7 @@ public:
     bool loadUserSkin (const juce::File& f);
     void askSaveSkin();
     void openCatalog();
+    void firmwareActivated (const juce::String& name);
     std::unique_ptr<fm9::FirmwareCatalogView> catalog;
     juce::PopupMenu buildSkinMenu();
     juce::Image renderMenuPreview (const juce::PopupMenu& m, const juce::String& highlight, float scale, int* highlightY = nullptr);

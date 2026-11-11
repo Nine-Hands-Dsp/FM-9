@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.0"
+VERSION = "1.3.1"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -31,11 +31,11 @@ k = src.height / 900.0
 
 # ---------- capture annotee ----------
 K = LAY["knobs"]; S = LAY["screen"]; KEYS = LAY["keys"]
-marks = [(1, K["master"][0] - 52, K["master"][1] - 48), (2, K["select"][0] + 52, K["select"][1] - 48),
-         (3, K["presets"][0] - 52, K["presets"][1] - 46), (4, K["algorithm"][0] + 52, K["algorithm"][1] - 46),
+marks = [(1, K["master"][0] - 56, K["master"][1]), (2, K["select"][0] + 56, K["select"][1]),
+         (3, K["presets"][0] - 56, K["presets"][1]), (4, K["algorithm"][0] + 56, K["algorithm"][1]),
          (5, KEYS["oct1"][2] + 20, KEYS["oct1"][1] - 4), (6, S[2] + 22, S[1] - 6),
          (7, K["knob1"][0] - 58, K["knob1"][1] + 40), (8, KEYS["f0"][0] - 22, KEYS["f0"][1] - 18),
-         (9, KEYS["b0"][0] - 22, KEYS["b0"][1] + 6), (10, KEYS["w0"][0] - 4, KEYS["w0"][3] + 20), (11, LAY["logo"][0] + 104, LAY["logo"][1])]
+         (9, KEYS["b0"][0] - 22, KEYS["b0"][1] + 6), (10, KEYS["w0"][0] + 10, 868), (11, LAY["logoNH"][2] + 34, (LAY["logoNH"][1] + LAY["logoNH"][3]) / 2)]
 ann = src.copy(); dr = ImageDraw.Draw(ann)
 fnt = ImageFont.truetype(os.path.join(FONTS, "Poppins-Bold.ttf"), 26)
 for n, x, y in marks:

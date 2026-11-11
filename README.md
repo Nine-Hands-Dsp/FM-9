@@ -60,6 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
+- **1.3.1** : nouveau design de la façade d'après le mockup FM-9 (biseaux plats, ombres portées et occlusion, lumière à 45° en haut à gauche), nouveaux potards (centre fixe, couronne crantée qui tourne, point indicateur), logos FM-9 et NINE HANDS | DSP repositionnés.
 - **1.3.0** : firmwares matériels de la FM-1 (.fwsc) dans un émulateur de la puce (fm1-emu), y compris le firmware d'origine ; catalogue de 300 firmwares (215 compatibles) avec aperçu de l'écran.
 - **1.2.0** : skins (6 coloris de la FM-1), couleurs réglables à la volée et skins enregistrables ; profil Arturia KeyStep 37 ; export NKS (Komplete Kontrol / Maschine).
 - **1.1.0** : hôte de firmwares de la FM-1 (WebAssembly) : installation depuis GitHub ou un fichier, Hortator fourni ; façade : touches noires, écran agrandi, touches OCT à la taille de l'original.

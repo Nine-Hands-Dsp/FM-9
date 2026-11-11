@@ -53,11 +53,10 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     auto img = [] (const char* d, int s) { return ImageCache::getFromMemory (d, s); };
     knobLayers.shadow    = img (BinaryData::knob_shadow_png, BinaryData::knob_shadow_pngSize);
     knobLayers.crown     = img (BinaryData::knob_crown_png, BinaryData::knob_crown_pngSize);
-    knobLayers.cap       = img (BinaryData::knob_cap_png, BinaryData::knob_cap_pngSize);
-    knobLayers.marker    = img (BinaryData::knob_marker_png, BinaryData::knob_marker_pngSize);
-    knobLayers.highlight = img (BinaryData::knob_highlight_png, BinaryData::knob_highlight_pngSize);
+    knobLayers.base      = img (BinaryData::knob_base_png, BinaryData::knob_base_pngSize);           // centre gris, fixe
+    knobLayers.highlight = img (BinaryData::knob_highlight_png, BinaryData::knob_highlight_pngSize);     // diffuse de la couronne, fixe
+    knobLayers.indicator = img (BinaryData::knob_indicator_png, BinaryData::knob_indicator_pngSize);     // point blanc chaud, tourne
     encLayers = knobLayers;
-    encLayers.marker = {};                         // encodeurs sans index, comme sur la FM-1
 
     nh::RotaryLayers::Style ms;                    // MASTER : potentiometre 300 deg
     ms.startAngle = degreesToRadians (-150.0f); ms.endAngle = degreesToRadians (150.0f);
@@ -1055,35 +1054,27 @@ void FM9Editor::drawPrint (Graphics& g)
     // inscriptions sur la coque (Poppins, vectoriel)
     g.setColour (inkCol);
     g.setFont (fontOf (med, 22.0f).withExtraKerningFactor (0.08f));
-    auto label = [&g] (const String& t, Point<float> knob, float)
+    // texte centre au-dessus de chaque potard, meme distance pour tous (bas du texte a labelGap de la couronne)
+    constexpr float labelGap = 9.0f, labelH = 22.0f;
+    auto label = [&g] (const String& t, Point<float> knob)
     {
-        // inscription rapprochee du potard (demande de l'utilisateur) : juste au-dessus de sa couronne
-        const float y = knob.y - L::knobD * 0.46f - 17.0f;
-        g.drawText (t, Rectangle<float> (knob.x - 100, y - 14, 200, 28), Justification::centred, false);
+        const float bottom = knob.y - L::knobR - labelGap;
+        g.drawText (t, Rectangle<float> (knob.x - 100, bottom - labelH, 200, labelH), Justification::centredBottom, false);
     };
-    label ("MASTER", L::knob_master, L::labelsTopY);
-    label ("SELECT", L::knob_select, L::labelsTopY);
-    label ("PRESETS", L::knob_presets, L::labelsMidY);
-    label ("ALGORITHM", L::knob_algorithm, L::labelsMidY);
-    label ("KNOB1", L::knob_knob1, L::labelsTopY);
-    label ("KNOB2", L::knob_knob2, L::labelsTopY);
-    label ("KNOB3", L::knob_knob3, L::labelsTopY);
-    label ("KNOB4", L::knob_knob4, L::labelsTopY);
+    label ("MASTER", L::knob_master);
+    label ("SELECT", L::knob_select);
+    label ("PRESETS", L::knob_presets);
+    label ("ALGORITHM", L::knob_algorithm);
+    label ("KNOB1", L::knob_knob1);
+    label ("KNOB2", L::knob_knob2);
+    label ("KNOB3", L::knob_knob3);
+    label ("KNOB4", L::knob_knob4);
 
-    // logo NINE HANDS | DSP (noir sur la coque creme) a la place de la marque d'origine
+    // logos aux emplacements du mockup : NINE HANDS | DSP en bas au centre, FM-9 en haut a droite
     if (logo != nullptr)
-    {
-        const auto vb = logo->getDrawableBounds();
-        const float w = L::logoW, h = w * vb.getHeight() / jmax (1.0f, vb.getWidth());
-        logo->drawWithin (g, { L::logoCentre.x - w * 0.5f, L::logoCentre.y - h * 0.5f, w, h }, RectanglePlacement::centred, 0.9f);
-    }
-    // logo FM-9 (fichier fourni par l'utilisateur) au-dessus de l'ecran, cale sur son bord gauche
+        logo->drawWithin (g, L::logoNH, RectanglePlacement::centred, 0.9f);
     if (fm9Logo != nullptr)
-    {
-        const auto vb = fm9Logo->getDrawableBounds();
-        const float h = 21.0f, w = h * vb.getWidth() / jmax (1.0f, vb.getHeight());
-        fm9Logo->drawWithin (g, { L::bezel.getX() + 1.0f, L::bezel.getY() - 13.0f - h, w, h }, RectanglePlacement::xLeft | RectanglePlacement::yMid, 0.88f);
-    }
+        fm9Logo->drawWithin (g, L::logoFM9, RectanglePlacement::centred, 0.88f);
 
     // gravures non allumees des touches
     for (int i = 0; i < 12; ++i)

@@ -11,7 +11,8 @@ namespace nh
 class RotaryLayers : public juce::Component, protected juce::Timer
 {
 public:
-    struct Layers { juce::Image shadow, crown, cap, wear, marker, highlight; };
+    // base : centre fixe sous les calques qui tournent ; indicator : repere qui tourne, pose apres le reflet fixe
+    struct Layers { juce::Image shadow, base, crown, cap, wear, marker, highlight, indicator; };
     struct Style
     {
         float startAngle = juce::degreesToRadians (-135.0f);
@@ -89,8 +90,10 @@ private:
         const auto d = juce::jmin (b.getWidth(), b.getHeight());
         const auto c = b.getCentre();
         if (shadowCache.isValid()) drawBlurred (g, shadowCache, c + style.shadowOffset * d, a);
+        if (baseCache.isValid()) g.drawImage (baseCache, b.withSizeKeepingCentre (d, d));
         drawBlurred (g, stack, c, a);
         if (highlightCache.isValid()) g.drawImage (highlightCache, b.withSizeKeepingCentre (d, d));
+        if (indicatorCache.isValid()) drawBlurred (g, indicatorCache, c, a);
     }
 
     void drawBlurred (juce::Graphics& g, const juce::Image& img, juce::Point<float> c, float a)
@@ -129,6 +132,8 @@ private:
         };
         shadowCache = fit (layers.shadow);
         highlightCache = fit (layers.highlight);
+        baseCache = fit (layers.base);
+        indicatorCache = fit (layers.indicator);
         stack = juce::Image (juce::Image::ARGB, px, px, true);
         juce::Graphics g (stack);
         for (auto* l : { &layers.crown, &layers.cap, &layers.wear, &layers.marker })
@@ -141,7 +146,7 @@ public:
 
 private:
     Layers layers;
-    juce::Image stack, shadowCache, highlightCache, frame, scratch;
+    juce::Image stack, shadowCache, highlightCache, baseCache, indicatorCache, frame, scratch;
     float scale = 1.0f, forcedScale = 0.0f, lastAngle = 0.0f;
     float blurSpan = 0.0f, blurDir = 1.0f;
     float drawnAngle = 1.0e9f, drawnSpan = -1.0f;

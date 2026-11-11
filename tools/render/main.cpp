@@ -282,6 +282,7 @@ int main (int argc, char** argv)
             }
         }
         if (args.contains ("--nks")) { std::printf ("nks %d\n", p.exportNksLibrary (juce::File (args[args.indexOf ("--nks") + 1]))); }
+        if (args.contains ("--glow")) p.uiState.setProperty ("glow", args[args.indexOf ("--glow") + 1].getIntValue(), nullptr);
         if (args.contains ("--skin")) p.uiState.setProperty ("skin", args[args.indexOf ("--skin") + 1], nullptr);
         std::unique_ptr<juce::AudioProcessorEditor> ed (p.createEditor());
         const float scale = arg ("--scale", 1.0f);

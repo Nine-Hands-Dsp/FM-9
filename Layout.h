@@ -64,5 +64,5 @@ inline const juce::Rectangle<float> octKeys[2] = {
     juce::Rectangle<float> { 121.88f, 403.50f, 70.00f, 35.00f },
     juce::Rectangle<float> { 216.12f, 403.50f, 70.00f, 35.00f } };
 inline const juce::Rectangle<float> logoNH = juce::Rectangle<float> { 667.50f, 854.50f, 165.00f, 15.00f };
-inline const juce::Rectangle<float> logoFM9 = juce::Rectangle<float> { 1180.00f, 37.50f, 209.00f, 22.00f };
+inline const juce::Rectangle<float> logoFM9 = juce::Rectangle<float> { 1187.50f, 37.50f, 209.00f, 22.00f };
 }

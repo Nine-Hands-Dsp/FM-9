@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.1"
+VERSION = "1.3.2"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -312,9 +312,11 @@ T = dict(
     skin=["Clic droit &gt; <b>Skin</b> : les six coloris officiels de la FM-1 (section <b>FM-1 colors</b>) : Black, Purple, Orange, Black-Green, "
           "<b>Cool Gray</b> (coloris par défaut de FM-9) et White-Blue. Ombres, lumière et gravures sont recalculées pour chaque coloris.",
           "<b>Edit colours...</b> ouvre le panneau de couleurs là où vous avez cliqué : choisissez l'élément à gauche (<b>Shell</b> : coque, "
-          "<b>Pads</b> : cuvettes en silicone, <b>Keys</b> : touches, <b>Labels</b> : inscriptions, <b>LEDs</b> : lumière des touches), puis la couleur "
+          "<b>Pads</b> : plaques en silicone, <b>Keys</b> : touches et boutons, <b>Labels</b> : inscriptions, <b>Lights</b> : lumière des touches et des boutons), puis la couleur "
           "à droite (nuancier, curseurs ou code hexadécimal). La façade change pendant que vous réglez. Tant que vous ne réglez pas Labels, "
-          "les inscriptions et les logos passent seuls en blanc sur une coque sombre et en noir sur une coque claire.",
+          "les inscriptions et les logos passent seuls en blanc sur une coque sombre et en noir sur une coque claire. "
+          "Sous la liste, le curseur <b>Glow</b> (0 à 100 %) règle le halo des lumières : il suit la forme de la LED de chaque touche et des "
+          "lettres allumées des boutons ; à 0 %, la LED reste allumée sans halo. Le Glow est enregistré avec vos skins.",
           "<b>Save skin...</b> (dans le panneau) ou <b>Save skin as preset...</b> enregistre vos couleurs sous un nom : elles apparaissent ensuite "
           "dans la section <b>My skins</b> du menu. Chaque skin est un petit fichier .fm9skin (dossier Nine Hands DSP/FM-9/Skins) que l'on peut "
           "échanger : <b>Import</b>, <b>Export</b>, <b>Delete skin preset</b>, <b>Open skins folder</b>. Le skin choisi est mémorisé avec le projet."],
@@ -338,7 +340,7 @@ T = dict(
          "pas dans le navigateur des produits."],
     win_t="Fenêtre et réglages",
     win=["La fenêtre s'ouvre à la taille « 60 % » et ne descend jamais en dessous. Clic droit &gt; <b>Plugin size</b> : 60 %, 75 %, 100 % ou 125 %, "
-         "et taille par défaut des nouvelles fenêtres. Clic droit &gt; <b>Glow</b> : intensité des LED des touches (25, 50, 75 ou 100 %). "
+         "et taille par défaut des nouvelles fenêtres. Clic droit &gt; <b>Glow</b> : halo des lumières des touches et des boutons (25, 50, 75 ou 100 % ; réglage fin au curseur Glow du panneau de couleurs). "
          "Les menus s'ouvrent toujours là où vous cliquez."],
     tips_t="Conseils",
     tips=["Créez une piste par son et armez-la avec votre clavier maître en entrée MIDI ; FM-9 se joue comme n'importe quel instrument de Reaper.",
@@ -405,7 +407,7 @@ def section():
     f.append(P(t["skin_t"], "h1")); f += [P(x) for x in t["skin"][:1]]
     f.append(img(os.path.join(SHOTS, "FM-9_Skins.jpg"), W)); f.append(P("Les six coloris de la FM-1 dans FM-9.", "small"))
     f += [P(x) for x in t["skin"][1:]]
-    f.append(img(os.path.join(SHOTS, "apercu_couleurs.png"), W * 0.72)); f.append(P("Panneau de couleurs : touches passées en rouge.", "small"))
+    f.append(img(os.path.join(SHOTS, "apercu_couleurs.png"), W * 0.72)); f.append(P("Panneau de couleurs : lumières en rouge, Glow à 100 %.", "small"))
     f.append(KeepTogether([img(os.path.join(SHOTS, "apercu_menu_skin.png"), W * 0.55), P("Menu Skin : coloris de la FM-1, puis vos skins.", "small")]))
     ck = (W - 20 * mm) / 4
     f.append(KeepTogether([P(t["ks_t"], "h1")] + [P(x) for x in t["ks"]] + [table(t["ks_rows"], [20 * mm, ck, ck, ck, ck], small=True)]))

@@ -38,7 +38,7 @@ KNOBS = {"master": (256, 290), "select": (566, 290), "presets": (256, 555.42), "
          "knob1": (1813, 290), "knob2": (2123, 290), "knob3": (2433, 290), "knob4": (2743, 290)}
 KNOB_D = 135.0                # diametre de la couronne
 LOGO_NH = (1335, 1709, 1665, 1739)      # NINE HANDS | DSP (bas, centre)
-LOGO_FM9 = (2360, 75, 2778, 119)        # FM-9 (haut droite)
+LOGO_FM9 = (2375, 75, 2793, 119)     # centre entre KNOB3 et KNOB4, puis 2 px (repere 1500) a gauche        # FM-9 (haut droite)
 
 # ------------------------------------------------------------------ outils
 yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
@@ -56,7 +56,7 @@ def cov(sd):                  # couverture anti-crenelee
     return np.clip(0.5 - sd, 0, 1)
 
 def blur(a, s):
-    k = int(s * 3) | 1
+    k = int(s * 6) | 1                 # noyau a +/- 3 sigma : aucune coupure visible des ombres douces
     return cv2.GaussianBlur(a, (k, k), s)
 
 def shade_from_height(h, strength=1.0):
@@ -96,6 +96,9 @@ def shifted(a, s):
     o[s:, s:] = a[:-s, :-s]
     return o
 
+# ombre portee commune a tous les elements (plaques, touches, boutons, ecran, potards) : lumiere a 45 deg en haut a gauche
+SH_OFF, SH_SIG, SH_K = 14, 15.6, 0.45
+
 def render_background(SKIN_ID, SK):
     global img, key_rects, alpha
     flat = float(np.clip(np.array([0, 0, 1.0]) @ L, 0, 1))
@@ -117,7 +120,7 @@ def render_background(SKIN_ID, SK):
 
     # ------------------------------------------------------------------ paves en silicone (biseau plat, poses sur la coque)
     rubber = np.array(SK["pad"], np.float32)
-    def plate(r, rad, col, bw=16.0, slope=0.55, off=9, sig=11, k=0.34, aoSig=4.0, aoK=0.22):
+    def plate(r, rad, col, bw=16.0, slope=0.0, off=SH_OFF, sig=SH_SIG, k=SH_K, aoSig=4.0, aoK=0.22):
         global img
         sd = sdf_rrect(r, rad); m = cov(sd)
         drop(m, off, sig, k, aoSig, aoK)
@@ -131,9 +134,15 @@ def render_background(SKIN_ID, SK):
 
     # ------------------------------------------------------------------ touches (biseau plat, rainure de la LED)
     keyH = np.zeros((H, W), np.float32); keyM = np.zeros((H, W), np.float32)
+    wellH = np.zeros((H, W), np.float32); wellM = np.zeros((H, W), np.float32); floorM = np.zeros((H, W), np.float32)
     key_rects = {}
+    WELL_GAP, WELL_WALL = 9.0, 4.0                    # logement creuse autour de chaque touche (plaques grises)
     def key(name, r, rad, bw, slot=None):
         sd = sdf_rrect(r, rad)
+        sdw = sd - WELL_GAP
+        np.minimum(wellH, -np.clip(-sdw / WELL_WALL, 0, 1) * WELL_WALL * 0.9, out=wellH)
+        np.maximum(wellM, cov(sdw), out=wellM)
+        np.maximum(floorM, cov(sdw + WELL_WALL), out=floorM)
         h = chamfer(sd, bw, 0.6) + 2.0
         if slot is not None:
             sds = sdf_rrect(slot, (slot[2] - slot[0]) / 2)
@@ -152,21 +161,30 @@ def render_background(SKIN_ID, SK):
             key("f%d" % (j * 6 + i), RR(x, y, FN_S, FN_S), FN_R, 12.0)
     for i, r in enumerate(OCT_KEYS):
         key("oct%d" % i, r, OCT_R, 10.0)
-    drop(keyM, 12, 12, 0.50, 4.0, 0.30)
+    # logements : paroi haut gauche dans l'ombre, paroi bas droite eclairee, fond assombri
+    ws, _ = shade(wellH)
+    img *= (1 - wellM * (1 - ws * 0.62))[..., None]
+    # fond du logement noir jusqu'a la touche
+    img = img * (1 - floorM[..., None]) + np.array([9, 9, 10], np.float32) * floorM[..., None]
+    drop(keyM, SH_OFF, SH_SIG, SH_K, 3.0, 0.30)
     s, sp = shade(keyH)
     k = np.array(SK["keys"], np.float32) * s[..., None] + (sp ** 30 * 22)[..., None]
     k += (grain(0.7, 1.6, 3))[..., None]
     img = img * (1 - keyM[..., None]) + k * keyM[..., None]
 
-    # ------------------------------------------------------------------ occlusion de contact sous les potards (l'ombre portee est un calque du potard)
+    # ------------------------------------------------------------------ potards : ombre portee commune (ronde, donc fixe) + occlusion de contact
+    knobM = np.zeros((H, W), np.float32)
     for (x, y) in KNOBS.values():
-        d = np.hypot(xx - x, yy - y)
-        mk = np.clip(KNOB_D / 2 - d + 0.5, 0, 1)
-        img *= (1 - 0.40 * np.clip(blur(mk, 5.0) - mk, 0, 1) * 1.6)[..., None]
+        np.maximum(knobM, np.clip(KNOB_D / 2 - np.hypot(xx - x, yy - y) + 0.5, 0, 1), out=knobM)
+    drop(knobM, SH_OFF, SH_SIG, SH_K, 5.0, 0.0)
+    img *= (1 - 0.40 * np.clip(blur(knobM, 5.0) - knobM, 0, 1) * 1.6)[..., None]
 
     # ------------------------------------------------------------------ ecran (cadre noir a biseau plat, vitre)
     sdb = sdf_rrect(SCREEN_BEZEL, BEZEL_R); mb = cov(sdb)
-    drop(mb, 14, 16, 0.45, 5.0, 0.28)
+    drop(mb, SH_OFF, SH_SIG, SH_K, 5.0, 0.28)
+    # occlusion douce tout autour de l'ecran
+    aoS = blur(mb, 16.0)
+    img *= (1 - 0.30 * np.clip(aoS - mb, 0, 1) * 2.0)[..., None]
     s, sp = shade(chamfer(sdb, 12.0, 0.6))
     bcol = np.array([20, 21, 24], np.float32) * s[..., None] + (sp ** 40 * 40)[..., None]
     img = img * (1 - mb[..., None]) + bcol * mb[..., None]
@@ -227,12 +245,8 @@ pad1024("knob_02_soft_touch_grey_center_fixed.png").save(os.path.join(OUT, "knob
 crown = pad1024("knob_03_silver_coarse_grip_crown_rotating.png"); crown.save(os.path.join(OUT, "knob_crown.png"), optimize=True)
 pad1024("knob_03_silver_coarse_grip_reflect_static.png").save(os.path.join(OUT, "knob_highlight.png"), optimize=True)
 pad1024("indicator_04_dot_warm_white.png").save(os.path.join(OUT, "knob_indicator.png"), optimize=True)
-# ombre portee centree (le decalage a 45 deg vers le bas a droite est ajoute par le code)
-ca = np.asarray(crown, np.float32)[..., 3] / 255.0
-yk, xk = np.mgrid[0:S, 0:S]; disk = (np.hypot(xk - (S - 1) / 2, yk - (S - 1) / 2) < 400).astype(np.float32)
-sh0 = np.maximum(ca, disk)
-sh = cv2.GaussianBlur(sh0, (0, 0), 22) * 0.55 + cv2.GaussianBlur(sh0, (0, 0), 6) * 0.35
-Image.fromarray(np.dstack([np.zeros((S, S, 3), np.uint8), (np.clip(sh, 0, 0.85) * 255).astype(np.uint8)]), "RGBA").save(os.path.join(OUT, "knob_shadow.png"), optimize=True)
+# l'ombre portee des potards est dans le fond (meme ombre que tous les autres elements)
+if os.path.exists(os.path.join(OUT, "knob_shadow.png")): os.remove(os.path.join(OUT, "knob_shadow.png"))
 print("potards ok")
 
 # ------------------------------------------------------------------ repere du plugin (image / 2 = 1500 x 900 unites)

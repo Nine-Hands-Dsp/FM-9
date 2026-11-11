@@ -51,7 +51,7 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     loadColours();
 
     auto img = [] (const char* d, int s) { return ImageCache::getFromMemory (d, s); };
-    knobLayers.shadow    = img (BinaryData::knob_shadow_png, BinaryData::knob_shadow_pngSize);
+    // pas de calque d'ombre : l'ombre portee des potards est dans le fond, identique aux autres elements
     knobLayers.crown     = img (BinaryData::knob_crown_png, BinaryData::knob_crown_pngSize);
     knobLayers.base      = img (BinaryData::knob_base_png, BinaryData::knob_base_pngSize);           // centre gris, fixe
     knobLayers.highlight = img (BinaryData::knob_highlight_png, BinaryData::knob_highlight_pngSize);     // diffuse de la couronne, fixe
@@ -193,7 +193,7 @@ void FM9Editor::askRepaint (Rectangle<int> r)
 
 // --------------------------------------------------------------------------------------------- couleurs de la facade
 const char* FM9Editor::elementKey (int e) { static const char* k[numElements] = { "c_shell", "c_pad", "c_keys", "c_ink", "c_led" }; return k[e]; }
-const char* FM9Editor::elementName (int e) { static const char* n[numElements] = { "Shell", "Pads", "Keys", "Labels", "LEDs" }; return n[e]; }
+const char* FM9Editor::elementName (int e) { static const char* n[numElements] = { "Shell", "Pads", "Keys", "Labels", "Lights" }; return n[e]; }
 
 int FM9Editor::skinIndex() const
 {
@@ -268,8 +268,12 @@ String FM9Editor::currentSkinJson (const String& name) const
         if (e == 3 && skinIndex() < 0 && proc.uiState.getProperty (elementKey (3)).toString().isEmpty()) continue;
         o->setProperty (keys[e], "#" + elementColour (e).toDisplayString (false));
     }
+    o->setProperty ("glow", glowPercent());
     return JSON::toString (var (o));
 }
+
+int FM9Editor::glowPercent() const { return jlimit (0, 100, (int) proc.uiState.getProperty ("glow", 75)); }
+void FM9Editor::setGlowPercent (int g) { proc.uiState.setProperty ("glow", jlimit (0, 100, g), nullptr); repaint(); }
 
 bool FM9Editor::saveUserSkin (const String& rawName)
 {
@@ -301,6 +305,7 @@ bool FM9Editor::loadUserSkin (const File& f)
     }
     if (proc.uiState.getProperty (elementKey (4)).toString().isEmpty()) proc.uiState.setProperty (elementKey (4), Colour (defaultLed).toString(), nullptr);
     if (found == 0) { applySkin (skins[defaultSkin].id, true); return false; }
+    if (v.hasProperty ("glow")) setGlowPercent ((int) v.getProperty ("glow", 75));
     proc.uiState.setProperty ("skinName", v.getProperty ("name", f.getFileNameWithoutExtension()).toString(), nullptr);
     loadColours();
     recomposeFace();
@@ -1022,11 +1027,14 @@ void FM9Editor::drawEmbossed (Graphics& g, const String& t, Rectangle<float> r, 
         return;
     }
     // gravure retroeclairee par la LED de la touche
-    const float glow = jlimit (0.25f, 1.0f, (float) (int) proc.uiState.getProperty ("glow", 75) / 100.0f);
-    for (int i = 3; i >= 1; --i)
+    const float glow = jlimit (0.0f, 1.0f, (float) (int) proc.uiState.getProperty ("glow", 75) / 100.0f);
+    // halo qui epouse les lettres : copies decalees tout autour, de plus en plus faibles en s'eloignant
+    for (int i = 5; i >= 1; --i)
     {
-        g.setColour (litCol.withAlpha (0.10f * glow));
-        for (auto d : { Point<float> (-0.6f * (float) i, 0), Point<float> (0.6f * (float) i, 0), Point<float> (0, -0.6f * (float) i), Point<float> (0, 0.6f * (float) i) })
+        g.setColour (litCol.withAlpha (0.13f * glow * (1.0f - (float) (i - 1) / 5.0f)));
+        const float o = 0.65f * (float) i, q = o * 0.7071f;
+        for (auto d : { Point<float> (-o, 0), Point<float> (o, 0), Point<float> (0, -o), Point<float> (0, o),
+                        Point<float> (-q, -q), Point<float> (q, q), Point<float> (-q, q), Point<float> (q, -q) })
             g.drawText (t, r.translated (d.x, d.y), Justification::centred, false);
     }
     g.setColour (litCol.interpolatedWith (Colours::white, 0.55f));
@@ -1037,15 +1045,26 @@ void FM9Editor::drawKeyLed (Graphics& g, Rectangle<float> r, float level, Colour
 {
     // la LED eclaire la rainure de la touche et diffuse dans le silicone
     if (level <= 0.0f) return;
-    const float glow = jlimit (0.25f, 1.0f, (float) (int) proc.uiState.getProperty ("glow", 75) / 100.0f) * level;
+    const float glow = jlimit (0.0f, 1.0f, (float) (int) proc.uiState.getProperty ("glow", 75) / 100.0f) * level;
     const auto ctr = r.getCentre();
     const bool tall = r.getHeight() > r.getWidth() * 1.3f;
     const auto slot = tall ? Rectangle<float> (3.6f, r.getHeight() * 0.40f).withCentre ({ ctr.x, r.getY() + r.getHeight() * (r.getY() < L::whiteKeys[0].getY() ? 0.35f : 0.5f) })
                            : Rectangle<float> (r.getWidth() * 0.5f, 3.0f).withCentre (ctr);
-    ColourGradient grad (c.withAlpha (0.30f * glow), slot.getCentreX(), slot.getCentreY(), c.withAlpha (0.0f), slot.getCentreX() + r.getWidth() * 0.62f, slot.getCentreY(), true);
-    g.setGradientFill (grad);
-    g.fillRoundedRectangle (r.reduced (2.0f), jmin (r.getWidth(), r.getHeight()) * 0.45f);
-    g.setColour (c.withAlpha (0.85f * glow));
+    // halo qui epouse la forme de la rainure (etroit et allonge), limite a la touche
+    {
+        Graphics::ScopedSaveState ss (g);
+        Path keyShape; keyShape.addRoundedRectangle (r.reduced (1.0f), jmin (r.getWidth(), r.getHeight()) * 0.45f);
+        g.reduceClipRegion (keyShape);
+        const int n = 14;
+        for (int i = n; i >= 1; --i)
+        {
+            const float e = (float) i * 1.4f, t = 1.0f - (float) i / (float) (n + 1);
+            g.setColour (c.withAlpha (jmin (1.0f, 0.16f * glow * t * t)));
+            const auto h = slot.expanded (e);
+            g.fillRoundedRectangle (h, jmin (h.getWidth(), h.getHeight()) * 0.5f);
+        }
+    }
+    g.setColour (c.withAlpha (0.90f * level));      // la rainure reste allumee, le Glow regle le halo
     g.fillRoundedRectangle (slot, 1.8f);
 }
 
@@ -1121,15 +1140,15 @@ void FM9Editor::drawDynamic (Graphics& g)
             if (! ((lb >> i) & 1u)) continue;
             if (i == 10)
             {
-                drawEmbossed (g, "PLAY", r.withHeight (r.getHeight() * 0.5f).translated (0, r.getHeight() * 0.10f), 15.0f, true, Colour (0xffdfe6ea));
-                drawEmbossed (g, "STOP", r.withTrimmedTop (r.getHeight() * 0.5f).translated (0, -r.getHeight() * 0.06f), 15.0f, true, Colour (0xffdfe6ea));
+                drawEmbossed (g, "PLAY", r.withHeight (r.getHeight() * 0.5f).translated (0, r.getHeight() * 0.10f), 15.0f, true, ledCol);
+                drawEmbossed (g, "STOP", r.withTrimmedTop (r.getHeight() * 0.5f).translated (0, -r.getHeight() * 0.06f), 15.0f, true, ledCol);
             }
-            else drawEmbossed (g, fnNames[i], r, 17.0f, true, Colour (0xffdfe6ea));
+            else drawEmbossed (g, fnNames[i], r, 17.0f, true, ledCol);
         }
         for (int i = 0; i < 2; ++i)
         {
             if (heldOct == i) { g.setColour (Colours::black.withAlpha (0.18f)); g.fillRoundedRectangle (L::octKeys[i].reduced (2), 8); }
-            if ((lb >> (12 + i)) & 1u) drawEmbossed (g, i == 0 ? "OCT-" : "OCT+", L::octKeys[i], 17.0f, true, Colour (0xffdfe6ea));
+            if ((lb >> (12 + i)) & 1u) drawEmbossed (g, i == 0 ? "OCT-" : "OCT+", L::octKeys[i], 17.0f, true, ledCol);
         }
         return;
     }
@@ -1164,7 +1183,7 @@ void FM9Editor::drawDynamic (Graphics& g)
             const bool muted = i < 6 && getParam ("op" + String (i + 1) + "_on") < 0.5f;
             const float lv = sel ? 1.0f : (blinkOn (900) ? 0.55f : 0.0f);
             drawKeyLed (g, r, muted ? (blinkOn (300) ? 0.6f : 0.0f) : lv, muted ? cRed : ledCol);
-            drawEmbossed (g, blackNames[i], Rectangle<float> (r.getX() - 10, r.getY() + r.getHeight() * 0.62f, r.getWidth() + 20, 22), 15.0f, lv > 0.3f, muted ? cRed : Colour (0xffdfe6ea));
+            drawEmbossed (g, blackNames[i], Rectangle<float> (r.getX() - 10, r.getY() + r.getHeight() * 0.62f, r.getWidth() + 20, 22), 15.0f, lv > 0.3f, muted ? cRed : ledCol);
             if (heldBlack == i) { g.setColour (Colours::black.withAlpha (0.14f)); g.fillRoundedRectangle (r.reduced (2), 30); }
             continue;
         }
@@ -1179,7 +1198,7 @@ void FM9Editor::drawDynamic (Graphics& g)
         const auto r = L::fnKeys[i];
         if (heldFn == i) { g.setColour (Colours::black.withAlpha (0.18f)); g.fillRoundedRectangle (r.reduced (3), 14); }
         bool lit = fnMode[i] == mode && i != 6;
-        Colour col = Colour (0xffdfe6ea);
+        Colour col = ledCol;
         if (i == 1) lit = fxGrab;
         if (i == 2) lit = getParam ("adsrOn") > 0.5f;
         if (i == 4) lit = editMode;
@@ -1204,7 +1223,7 @@ void FM9Editor::drawDynamic (Graphics& g)
         const int a = std::abs (octave);
         const bool side = (i == 0 && octave < 0) || (i == 1 && octave > 0);
         const bool on = side && (a >= 3 || (a == 2 && blinkOn (300)) || (a == 1 && blinkOn (900)));
-        if (on) drawEmbossed (g, i == 0 ? "OCT-" : "OCT+", L::octKeys[i], 17.0f, true, Colour (0xffdfe6ea));
+        if (on) drawEmbossed (g, i == 0 ? "OCT-" : "OCT+", L::octKeys[i], 17.0f, true, ledCol);
     }
 }
 
@@ -1557,7 +1576,19 @@ public:
         save.setColour (TextButton::buttonColourId, Colour (0xff2a3036));
         save.setColour (TextButton::textColourOffId, Colour (0xffdfe6ea));
         addAndMakeVisible (save);
-        setSize (390, 236);
+        glowSlider.setSliderStyle (Slider::LinearHorizontal);
+        glowSlider.setTextBoxStyle (Slider::TextBoxRight, false, 44, 20);
+        glowSlider.setRange (0.0, 100.0, 1.0);
+        glowSlider.setTextValueSuffix (" %");
+        glowSlider.setColour (Slider::trackColourId, Colour (0xff4fc3f7));
+        glowSlider.setColour (Slider::thumbColourId, Colours::white);
+        glowSlider.setColour (Slider::backgroundColourId, Colour (0xff2a3036));
+        glowSlider.setColour (Slider::textBoxTextColourId, Colour (0xffdfe6ea));
+        glowSlider.setColour (Slider::textBoxOutlineColourId, Colours::transparentBlack);
+        glowSlider.setValue ((int) ed.glowPercent(), dontSendNotification);
+        glowSlider.onValueChange = [this] { ed.setGlowPercent ((int) glowSlider.getValue()); };
+        addAndMakeVisible (glowSlider);
+        setSize (390, 268);
         select (sel);
     }
     std::function<Colour (int)> current;
@@ -1569,8 +1600,9 @@ public:
     }
     void resized() override
     {
-        picker.setBounds (getLocalBounds().withTrimmedLeft (124).reduced (4));
+        picker.setBounds (128, 4, getWidth() - 132, 178);
         save.setBounds (10, getHeight() - 40, 106, 28);
+        glowSlider.setBounds (64, 192, getWidth() - 74, 24);
     }
     void paint (Graphics& g) override
     {
@@ -1586,13 +1618,15 @@ public:
             g.setColour (i == sel ? Colours::white : Colour (0xffb9c0c8));
             g.drawText (FM9Editor::elementName (i), r.withTrimmedLeft (32), Justification::centredLeft, false);
         }
+        g.setColour (Colour (0xffb9c0c8));
+        g.drawText ("Glow", Rectangle<int> (16, 192, 46, 24), Justification::centredLeft, false);
     }
     void mouseDown (const MouseEvent& e) override
     {
         for (int i = 0; i < FM9Editor::numElements; ++i) if (row (i).contains (e.getPosition())) select (i);
     }
 private:
-    Rectangle<int> row (int i) const { return { 6, 10 + i * 34, 114, 30 }; }
+    Rectangle<int> row (int i) const { return { 6, 10 + i * 34, 114, 30 }; }   // Glow en dessous (y 186)
     void changeListenerCallback (ChangeBroadcaster*) override
     {
         if (ignore) return;
@@ -1612,6 +1646,7 @@ private:
         Font getTextButtonFont (TextButton&, int) override { return Font (FontOptions (med).withHeight (13.5f)); }
     } btnLnf;
     TextButton save { "Save skin..." };
+    Slider glowSlider;
     ColourSelector picker { ColourSelector::showColourAtTop | ColourSelector::showSliders | ColourSelector::showColourspace | ColourSelector::editableColour };
 };
 

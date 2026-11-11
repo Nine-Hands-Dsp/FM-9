@@ -92,6 +92,8 @@ public:
     static const char* elementKey (int e);
     static const char* elementName (int e);
     juce::Colour elementColour (int e) const;
+    int glowPercent() const;                          // halo des lumieres des touches et boutons (0 a 100 %)
+    void setGlowPercent (int g);
 private:
     juce::Colour shellCol, padCol, keyCol { 0xff1e1f22 }, inkCol, ledCol;
     juce::Image faceBase, faceMaps, baseScaled, mapsScaled;

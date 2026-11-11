@@ -1055,7 +1055,7 @@ void FM9Editor::drawPrint (Graphics& g)
     g.setColour (inkCol);
     g.setFont (fontOf (med, 22.0f).withExtraKerningFactor (0.08f));
     // texte centre au-dessus de chaque potard, meme distance pour tous (bas du texte a labelGap de la couronne)
-    constexpr float labelGap = 9.0f, labelH = 22.0f;
+    static constexpr float labelGap = 9.0f, labelH = 22.0f;
     auto label = [&g] (const String& t, Point<float> knob)
     {
         const float bottom = knob.y - L::knobR - labelGap;

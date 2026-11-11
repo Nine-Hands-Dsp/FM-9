@@ -5,8 +5,8 @@
 namespace fm9::layout
 {
 constexpr float unitsW = 1500.0f, unitsH = 900.0f;
-inline const juce::Rectangle<float> screen = juce::Rectangle<float> { 435.00f, 115.00f, 261.67f, 261.67f };
-inline const juce::Rectangle<float> bezel = juce::Rectangle<float> { 388.33f, 69.17f, 353.34f, 355.00f };
+inline const juce::Rectangle<float> screen = juce::Rectangle<float> { 371.67f, 80.00f, 394.16f, 394.17f };
+inline const juce::Rectangle<float> bezel = juce::Rectangle<float> { 362.50f, 70.83f, 412.50f, 412.50f };
 constexpr float knobD = 74.28f;
 constexpr juce::Point<float> knob_master { 126.67f, 140.83f };
 constexpr juce::Point<float> knob_select { 283.33f, 140.83f };
@@ -59,9 +59,9 @@ inline const juce::Rectangle<float> fnKeys[12] = {
     juce::Rectangle<float> { 1203.33f, 365.83f, 75.00f, 75.00f },
     juce::Rectangle<float> { 1297.50f, 365.83f, 75.00f, 75.00f } };
 inline const juce::Rectangle<float> octKeys[2] = {
-    juce::Rectangle<float> { 99.17f, 393.33f, 110.00f, 58.34f },
-    juce::Rectangle<float> { 218.33f, 393.33f, 93.34f, 58.34f } };
-constexpr juce::Point<float> logoCentre { 568.33f, 465.00f };
+    juce::Rectangle<float> { 102.50f, 396.67f, 83.33f, 55.00f },
+    juce::Rectangle<float> { 220.83f, 396.67f, 85.00f, 55.00f } };
+constexpr juce::Point<float> logoCentre { 750.00f, 870.00f };
 constexpr float logoW = 166.67f;
 constexpr float labelsTopY = 72.50f, labelsMidY = 229.17f;
 }

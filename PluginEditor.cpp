@@ -757,11 +757,11 @@ void FM9Editor::drawEmbossed (Graphics& g, const String& t, Rectangle<float> r, 
     if (! lit)
     {
         // gravure en relief dans le silicone : arete claire en haut a gauche, ombre en bas a droite
-        g.setColour (Colour (0xff2c2f33).withAlpha (0.75f));
+        g.setColour (Colours::black.withAlpha (0.85f));
         g.drawText (t, r.translated (0.7f, 0.7f), Justification::centred, false);
-        g.setColour (Colour (0xff8a8f95).withAlpha (0.45f));
+        g.setColour (Colour (0xff6c7177).withAlpha (0.40f));
         g.drawText (t, r.translated (-0.5f, -0.5f), Justification::centred, false);
-        g.setColour (Colour (0xff53585d));
+        g.setColour (Colour (0xff36393d));
         g.drawText (t, r, Justification::centred, false);
         return;
     }
@@ -821,7 +821,7 @@ void FM9Editor::drawPrint (Graphics& g)
     // nom de l'instrument
     g.setColour (cInk);
     g.setFont (fontOf (bold, 30.0f).withExtraKerningFactor (0.06f));
-    g.drawText ("FM-9", Rectangle<float> (L::octKeys[0].getX() - 6.0f, L::octKeys[0].getBottom() + 14.0f, 140.0f, 34.0f), Justification::centredLeft, false);
+    g.drawText ("FM-9", Rectangle<float> (L::bezel.getX() + 1.0f, L::bezel.getY() - 40.0f, 140.0f, 34.0f), Justification::centredLeft, false);
 
     // gravures non allumees des touches
     for (int i = 0; i < 12; ++i)
@@ -831,7 +831,7 @@ void FM9Editor::drawPrint (Graphics& g)
         {
             drawEmbossed (g, "PLAY", r.withHeight (r.getHeight() * 0.5f).translated (0, r.getHeight() * 0.10f), 15.0f, false, {});
             drawEmbossed (g, "STOP", r.withTrimmedTop (r.getHeight() * 0.5f).translated (0, -r.getHeight() * 0.06f), 15.0f, false, {});
-            g.setColour (Colour (0xff53585d)); g.fillRect (r.getCentreX() - 16.0f, r.getCentreY() + 1.0f, 32.0f, 1.2f);
+            g.setColour (Colour (0xff36393d)); g.fillRect (r.getCentreX() - 16.0f, r.getCentreY() + 1.0f, 32.0f, 1.2f);
         }
         else drawEmbossed (g, fnNames[i], r, 17.0f, false, {});
     }
@@ -1022,7 +1022,7 @@ void FM9Editor::drawScreen (Graphics& g)
     const auto sr = L::screen;
     const double now = Time::getMillisecondCounterHiRes();
     g.saveState();
-    g.reduceClipRegion (sr.toNearestInt());
+    { Path clip; clip.addRoundedRectangle (sr, 7.5f); g.reduceClipRegion (clip); }    // vitre aux coins arrondis
     g.setColour (cScreen);
     g.fillRect (sr);
     const float u = sr.getWidth() / 100.0f;
@@ -1185,7 +1185,7 @@ void FM9Editor::drawScreen (Graphics& g)
     // vitre : leger reflet fixe en haut a gauche par dessus l'affichage
     ColourGradient refl (Colours::white.withAlpha (0.055f), sr.getX(), sr.getY(), Colours::white.withAlpha (0.0f), sr.getX() + sr.getWidth() * 0.55f, sr.getY() + sr.getHeight() * 0.55f, false);
     g.setGradientFill (refl);
-    g.fillRect (sr);
+    g.fillRoundedRectangle (sr, 7.5f);
 }
 
 void FM9Editor::drawDrum (Graphics& g)

@@ -31,10 +31,11 @@ def R(x0, y0, x1, y1):
 
 # ------------------------------------------------------------------ geometrie (photo)
 SHELL = R(100, 460, 1900, 1540); SHELL_R = 88 * F
-SCREEN_BEZEL = R(566, 543, 990, 969); BEZEL_R = 36 * F
-SCREEN_GLASS = R(622, 598, 936, 912); GLASS_R = 6 * F
+# ecran agrandi (demande de l'utilisateur) : contour reduit au minimum, comme les bords gauche et droit d'Octopus
+SCREEN_BEZEL = R(535, 545, 1030, 1040); BEZEL_R = 22 * F
+SCREEN_GLASS = R(546, 556, 1019, 1029); GLASS_R = 9 * F
 OCT_PAD = R(207, 923, 484, 1011); OCT_PAD_R = 12 * F
-OCT_KEYS = [R(219, 932, 351, 1002), R(362, 932, 474, 1002)]
+OCT_KEYS = [R(223, 936, 323, 1002), R(365, 936, 467, 1002)]      # mesurees sur la photo de la FM-1
 FN_PAD = R(1060, 762, 1775, 1012); FN_PAD_R = 22 * F
 FN_COLS = [1140, 1251, 1364, 1476, 1589, 1702]
 FN_ROWS = [830, 944]
@@ -47,7 +48,7 @@ DOTS = [(597, 1272), (899, 1272), (1301, 1272), (1603, 1272), (1418, 887)]
 KNOBS = {"master": (252, 629), "select": (440, 629), "presets": (252, 818), "algorithm": (440, 818),
          "knob1": (1114, 627), "knob2": (1316, 627), "knob3": (1518, 627), "knob4": (1722, 627)}
 KNOB_D = 82                   # diametre exterieur de la couronne (photo)
-LOGO_C = (782, 1018); LOGO_W = 200
+LOGO_C = (1000, 1504); LOGO_W = 200           # centre sous le clavier, a egale distance du clavier et du bord
 
 # ------------------------------------------------------------------ outils
 yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
@@ -150,7 +151,7 @@ for j, y in enumerate(FN_ROWS):
     for i, x in enumerate(FN_COLS):
         key("f%d" % (j * 6 + i), R(x - FN_KEY / 2, y - FN_KEY / 2, x + FN_KEY / 2, y + FN_KEY / 2), 20 * F)
 for i, r in enumerate(OCT_KEYS):
-    key("oct%d" % i, r, 10 * F, bevel=12.0)
+    key("oct%d" % i, r, 9 * F, bevel=12.0)
 
 # ombre portee des touches sur le pave (45 deg vers le bas a droite)
 shadow = blur(keyM, 13.0)
@@ -163,9 +164,9 @@ ao = blur(keyM, 24.0)
 img *= (1 - 0.18 * np.clip(ao - keyM, 0, 1))[..., None]
 
 lam, spec, _ = shade_from_height(keyH, 1.0)
-keycol = np.array([72, 76, 80], np.float32)
-shade = 0.62 + 0.45 * lam / flat
-k = keycol * shade[..., None] + (spec ** 28 * 26)[..., None]
+keycol = np.array([30, 31, 34], np.float32)    # touches noires (silicone)
+shade = 0.55 + 0.60 * lam / flat
+k = keycol * shade[..., None] + (spec ** 24 * 34)[..., None]
 k += (grain(0.7, 1.6, 3))[..., None]
 mix(img, k * 1.0, keyM) if False else None
 img = img * (1 - keyM[..., None]) + k * keyM[..., None]

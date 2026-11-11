@@ -757,8 +757,17 @@ void FM9Editor::drawEmbossed (Graphics& g, const String& t, Rectangle<float> r, 
     if (! lit)
     {
         // gravure en relief dans le silicone : arete claire en haut a gauche, ombre en bas a droite
-        g.setColour (Colours::black.withAlpha (0.85f));
-        g.drawText (t, r.translated (0.7f, 0.7f), Justification::centred, false);
+        // occlusion douce tout autour des lettres
+        g.setColour (Colours::black.withAlpha (0.10f));
+        for (auto d : { Point<float> (-0.7f, 0), Point<float> (0.7f, 0), Point<float> (0, -0.7f), Point<float> (0, 0.7f),
+                        Point<float> (-0.5f, -0.5f), Point<float> (0.5f, 0.5f), Point<float> (-0.5f, 0.5f), Point<float> (0.5f, -0.5f) })
+            g.drawText (t, r.translated (d.x, d.y), Justification::centred, false);
+        // ombre portee a 45 deg vers le bas a droite (lumiere en haut a gauche), qui s'adoucit en s'eloignant
+        for (int i = 3; i >= 1; --i)
+        {
+            g.setColour (Colours::black.withAlpha (0.30f / (float) i));
+            g.drawText (t, r.translated (0.55f * (float) i, 0.55f * (float) i), Justification::centred, false);
+        }
         g.setColour (Colour (0xff80868c).withAlpha (0.45f));
         g.drawText (t, r.translated (-0.5f, -0.5f), Justification::centred, false);
         g.setColour (Colour (0xff4a4e53));

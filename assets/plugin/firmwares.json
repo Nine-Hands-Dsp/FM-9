@@ -3,18 +3,39 @@
  "generated": "2026-11-11",
  "firmwares": [
   {
+   "name": "FM-1 original firmware",
+   "author": "M-VAVE",
+   "group": "M-VAVE (original firmware)",
+   "section": "Sound & groovebox",
+   "desc": "The firmware the FM-1 ships with: a DX7-style FM synth, both cores running",
+   "repo": "",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://yms-file-store.oss-cn-hongkong.aliyuncs.com/software/firmware/FM-1.fwsc",
+   "pkgVersion": "",
+   "license": "M-VAVE's own",
+   "vendor": true
+  },
+  {
    "name": "Felucca",
    "author": "hugelton",
    "group": "Felucca Ecosystem",
    "section": "Sound & groovebox",
-   "desc": "Up to 14 voices total — 8 dynamically shared synth voices across tracks 1–3 (NVOICE 8 pool) plus 6 dedicated percussion voices on track 4 (NDRUM 6)",
+   "desc": "The original open firmware: a four-operator FM synth with sequencer, arpeggiator and effects",
    "repo": "hugelton/Felucca",
    "page": "https://hugelton.github.io/Felucca/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/felucca-1.8.2-beta.fwsc",
+   "pkgVersion": "1.8.2-beta",
+   "license": "GPL-3.0"
   },
   {
    "name": "Felucca [Salt]",
@@ -24,25 +45,31 @@
    "desc": "Multi-engine synthesizer firmware with hardware-inspired browser Studio, hardware TRS MIDI expansion, rich display palettes, and standalone in-browse…",
    "repo": "ChanceTheMaker/Felucca",
    "page": "https://chancethemaker.github.io/Felucca/webapp/installer/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/salt-0.9-salt14.fwsc",
+   "pkgVersion": "0.9-salt14",
+   "license": "GPL-3.0"
   },
   {
    "name": "Melodee",
    "author": "keremimo",
    "group": "Felucca Ecosystem",
    "section": "Sound & groovebox",
-   "desc": "Per-engine voice limits: 16 voices for Casio CZ-1, 8 voices for Prophet-5, 8 voices for DX-7 / FM-6, and faithful hardware-accurate voice count for S…",
+   "desc": "Total playing pleasure, far beyond Felucca: recording without quantize, microtonal scales, a Casio CZ-1, a bit-by-bit Dexed, scale modes made for an MPC Sample ",
    "repo": "keremimo/melodee",
    "page": "https://keremimo.github.io/melodee/",
    "compatible": true,
    "reason": "",
    "url": "https://raw.githubusercontent.com/keremimo/melodee/gh-pages/emu/melodee.wasm",
    "abi": "web",
-   "size": 1032217
+   "size": 1032217,
+   "pkg": "https://thefirmwarehub.com/fw/melodee-1.6.1.fwsc",
+   "pkgVersion": "1.6.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "ChoralRoot FM-1",
@@ -57,7 +84,10 @@
    "url": "https://quixotic7.github.io/ChoralRootFM1/emu/choralroot.wasm",
    "abi": "web",
    "size": 1091631,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/choralroot-0.29.2.fwsc",
+   "pkgVersion": "0.29.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "X0X",
@@ -71,7 +101,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-x0x/gh-pages/emu/x0x.wasm",
    "abi": "web",
-   "size": 545853
+   "size": 545853,
+   "pkg": "https://thefirmwarehub.com/fw/x0x-1.2.0.fwsc",
+   "pkgVersion": "1.2.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "GHOULBOX 2.0",
@@ -85,7 +118,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/jasonpersinger/ghoulbox-fm1-dungeon-synth/gh-pages/webapp/emu/felucca.wasm",
    "abi": "web",
-   "size": 826692
+   "size": 826692,
+   "pkg": "https://thefirmwarehub.com/fw/ghoulbox-2.4.fwsc",
+   "pkgVersion": "2.4",
+   "license": "GPL-3.0"
   },
   {
    "name": "Jangada",
@@ -95,11 +131,14 @@
    "desc": "Dark, industrial, Brazilian-accented groovebox firmware",
    "repo": "zednaked/jangada",
    "page": "https://zednaked.github.io/jangada/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/jangada-1.0.1.fwsc",
+   "pkgVersion": "1.0.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "REDACTED",
@@ -120,14 +159,17 @@
    "author": "DEADACTIVE",
    "group": "Felucca Ecosystem",
    "section": "Sound & groovebox",
-   "desc": "8-track drum machine and boom-bap sample chopping firmware",
+   "desc": "A drum-focused firmware based on Felucca",
    "repo": "DeadActive/hortator",
    "page": "https://deadactive.github.io/hortator/",
    "compatible": true,
    "reason": "",
    "url": "https://raw.githubusercontent.com/DeadActive/hortator/gh-pages/fm1sim.wasm",
    "abi": "sim",
-   "size": 655879
+   "size": 655879,
+   "pkg": "https://thefirmwarehub.com/fw/hortator-bt-1.0.1.fwsc",
+   "pkgVersion": "1.0.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "April OS",
@@ -138,7 +180,7 @@
    "repo": "beashoko/april-os",
    "page": "https://beashoko.github.io/april-os/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -155,7 +197,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/ELI7VH/Felucca/gh-pages/webapp/try/felucca.wasm",
    "abi": "web",
-   "size": 590623
+   "size": 590623,
+   "pkg": "https://thefirmwarehub.com/fw/waveloop-1.0.5.2-midi23.fwsc",
+   "pkgVersion": "1.0.5.2-midi23",
+   "license": "GPL-3.0"
   },
   {
    "name": "Rainbow mode",
@@ -165,11 +210,14 @@
    "desc": "Children's musical exploration instrument with rainbow color-coded keys, 40 animal sound effects and rhythms, safe volume limiter, and access to the …",
    "repo": "joshbartlettband-web/felucca-rainbow",
    "page": "https://joshbartlettband-web.github.io/felucca-rainbow/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/rainbow-1.1.5-rb+68325a60.fwsc",
+   "pkgVersion": "1.1.5-rb",
+   "license": "GPL-3.0"
   },
   {
    "name": "fm1-chord",
@@ -179,11 +227,14 @@
    "desc": "Chord composition tool, chord sequencer, rhythm accompanist, and ear-training aid",
    "repo": "math0ne/fm1-chord",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/chord-0.3.fwsc",
+   "pkgVersion": "0.3",
+   "license": "GPL-3.0"
   },
   {
    "name": "DUELL",
@@ -198,7 +249,10 @@
    "url": "https://oscillr.github.io/DUELL/emu/duell.wasm",
    "abi": "web",
    "size": 942328,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/duell-1.1.fwsc",
+   "pkgVersion": "1.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "MAKU (幕間機)",
@@ -213,7 +267,10 @@
    "url": "https://okumurari2.github.io/maku/felucca.wasm",
    "abi": "web",
    "size": 1058390,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/maku-1.0.fwsc",
+   "pkgVersion": "1.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "Polly",
@@ -227,7 +284,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-polly/gh-pages/emu/app.wasm",
    "abi": "web",
-   "size": 772247
+   "size": 772247,
+   "pkg": "https://thefirmwarehub.com/fw/polly-0.6.fwsc",
+   "pkgVersion": "0.6",
+   "license": "GPL-3.0"
   },
   {
    "name": "TRIBE (fm1-tribe)",
@@ -241,7 +301,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/apiel/fm1-tribe/gh-pages/emu/tribe.wasm",
    "abi": "web",
-   "size": 475260
+   "size": 475260,
+   "pkg": "https://thefirmwarehub.com/fw/tribe-0.3-beta.fwsc",
+   "pkgVersion": "0.3-beta",
+   "license": "GPL-3.0"
   },
   {
    "name": "Golana",
@@ -251,11 +314,14 @@
    "desc": "Korg microKORG-inspired analog-modeling synthesizer firmware for the FM-1 featuring the classic MATRIX editing workflow",
    "repo": "Gadlele/Golana",
    "page": "https://gadlele.github.io/Golana/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/golana-1.3.fwsc",
+   "pkgVersion": "1.3",
+   "license": "GPL-3.0"
   },
   {
    "name": "FANTASMA / Pelucco",
@@ -269,21 +335,25 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/Gadlele/Pelucco/gh-pages/try/felucca.wasm",
    "abi": "web",
-   "size": 860377
+   "size": 860377,
+   "pkg": "https://raw.githubusercontent.com/Gadlele/Pelucco/main/firmware/Fantasma-1.0.fwsc"
   },
   {
    "name": "Skiff",
    "author": "illuminus5",
    "group": "Felucca Ecosystem",
    "section": "Sound & groovebox",
-   "desc": "6-track groovebox firmware for the FM-1 with 14 synthesis engines and deep parameter-locking sequencer",
+   "desc": "A six-track groovebox built on Felucca 1.1.5: fourteen synth and drum engines, a 64-step sequencer with chords, ratchets and locks, songs and a performance laye",
    "repo": "illuminus5/skiff",
    "page": "https://illuminus5.github.io/skiff/webapp/installer/",
    "compatible": true,
    "reason": "",
    "url": "https://raw.githubusercontent.com/illuminus5/skiff/gh-pages/try/felucca.wasm",
    "abi": "web",
-   "size": 1083178
+   "size": 1083178,
+   "pkg": "https://thefirmwarehub.com/fw/skiff-2.2.fwsc",
+   "pkgVersion": "2.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "Felucca 8 Patterns",
@@ -293,11 +363,14 @@
    "desc": "Pattern-chaining and arrangement expansion fork of Felucca",
    "repo": "echoe/Felucca_8_patterns",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/felucca8-1.6.1_and_sequences_2.fwsc",
+   "pkgVersion": "1.6.1_and_sequences_2",
+   "license": "GPL-3.0"
   },
   {
    "name": "LCD-4",
@@ -322,11 +395,14 @@
    "desc": "Multi-engine synthesizer and groovebox featuring custom CrispyZebra waveforms, drum voices, expanded sample pack, and companion web studio",
    "repo": "bonszaimusic/caravel",
    "page": "https://bonszaimusic.github.io/caravel/webapp/installer/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/caravel-0.11.0.fwsc",
+   "pkgVersion": "0.11.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "PIGEON",
@@ -341,7 +417,10 @@
    "url": "https://theshrimpblimp.github.io/pigeon-website/webapp/emu/felucca.wasm",
    "abi": "web",
    "size": 557127,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/pigeon-0.5.0-beta.1.fwsc",
+   "pkgVersion": "0.5.0-beta.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "NOIZ DEMONS",
@@ -351,11 +430,14 @@
    "desc": "Ritualistic noise and sound generator firmware where parameter randomization is framed as occult summoning",
    "repo": "SPIKE-the-Percussionist/noiz_demons",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/noizdemons-666.fwsc",
+   "pkgVersion": "666",
+   "license": "GPL-3.0"
   },
   {
    "name": "Tuna",
@@ -365,11 +447,14 @@
    "desc": "Generative music synthesizer and composition engine",
    "repo": "delirioux/tuna",
    "page": "https://delirioux.github.io/tuna/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/tuna-1.2-3f1567b.fwsc",
+   "pkgVersion": "1.2-3f1567b",
+   "license": "GPL-3.0"
   },
   {
    "name": "X0X-RMX",
@@ -383,7 +468,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/Mr-Roboto/fm1-x0x-rmx/gh-pages/emu/x0x.wasm",
    "abi": "web",
-   "size": 566762
+   "size": 566762,
+   "pkg": "https://thefirmwarehub.com/fw/x0xrmx-1.1.0.fwsc",
+   "pkgVersion": "1.1.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "DUB-1",
@@ -397,7 +485,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/sbegueria/fm1-dub/gh-pages/emu/amb.wasm",
    "abi": "web",
-   "size": 420285
+   "size": 420285,
+   "pkg": "https://thefirmwarehub.com/fw/dub-1.4.3.fwsc",
+   "pkgVersion": "1.4.3",
+   "license": "GPL-3.0"
   },
   {
    "name": "Unholy Union",
@@ -407,11 +498,14 @@
    "desc": "Generative ambient and drone firmware featuring church-themed visuals and atmospheric harmonics",
    "repo": "actuallysparky/FM-1-Unholy-Union-generative-drone-firmware",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/unholy-0.2.3.fwsc",
+   "pkgVersion": "0.2.3",
+   "license": "GPL-3.0"
   },
   {
    "name": "Tessera",
@@ -425,7 +519,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/Rastapopolix/tessera/main/docs/classic/webapp/sim/melodee.wasm",
    "abi": "web",
-   "size": 1050713
+   "size": 1050713,
+   "pkg": "https://thefirmwarehub.com/fw/tessera-3.2.2.fwsc",
+   "pkgVersion": "3.2.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "REGGAE-OS",
@@ -439,7 +536,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/KemstheSage/reggae-os/gh-pages/felucca.wasm",
    "abi": "web",
-   "size": 813127
+   "size": 813127,
+   "pkg": "https://raw.githubusercontent.com/KemstheSage/reggae-os/main/update-0.8.1/firmware/felucca-riddim-os-0.8.1.fwsc"
   },
   {
    "name": "Glitchbox",
@@ -464,7 +562,7 @@
    "repo": "tensor-programming/fm1-t1",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -478,7 +576,7 @@
    "repo": "gaumondp/patricktronics",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -495,7 +593,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/ruppert/fmini-1/main/docs/emu/felucca.wasm",
    "abi": "web",
-   "size": 805287
+   "size": 805287,
+   "pkg": "https://thefirmwarehub.com/fw/fmini-2.2.0.fwsc",
+   "pkgVersion": "2.2.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "Clipper",
@@ -505,11 +606,14 @@
    "desc": "Deep polyphonic synthesizer firmware turning the FM-1 into an expansive multi-engine sound design powerhouse",
    "repo": "",
    "page": "https://isod89.github.io/clipper-fm1/webapp/installer/",
-   "compatible": false,
-   "reason": "no public GitHub repository",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/clipper-1.3.1.fwsc",
+   "pkgVersion": "1.3.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "Felucca Wavetable Odeath Mod",
@@ -519,11 +623,12 @@
    "desc": "Community wavetable expansion modification for Felucca integrating custom wavetable banks and wave interpolation",
    "repo": "gybe808-dotcom/FeluccaWavetableOdeathMod",
    "page": "https://gybe808-dotcom.github.io/FeluccaWavetableOdeathMod/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/gybe808-dotcom/FeluccaWavetableOdeathMod/main/firmware/felucca.fwsc"
   },
   {
    "name": "AmbWave",
@@ -537,7 +642,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/mentalcells/ambwave/gh-pages/try/felucca.wasm",
    "abi": "web",
-   "size": 629461
+   "size": 629461,
+   "pkg": "https://raw.githubusercontent.com/mentalcells/ambwave/ambient-prototype/downloads/ambwave-0.1.0.fwsc"
   },
   {
    "name": "fm1-studio-tess",
@@ -547,11 +653,12 @@
    "desc": "Studio performance firmware utilizing dual JieLi pi32v2 cores for polyphonic rendering alongside algorithmic generative polyrhythmic step sequencing",
    "repo": "jamesusmusic/fm1-studio-tess",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/jamesusmusic/fm1-studio-tess/main/performance6/rollback/studio-melodee-tess-1.4.1-dual-audio5.fwsc"
   },
   {
    "name": "Gnomad Synth V1",
@@ -562,7 +669,7 @@
    "repo": "kpalaniuk/gnomad-firmware",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -576,7 +683,7 @@
    "repo": "Wulgaren/Araminta",
    "page": "https://wulgaren.github.io/Araminta/webapp/installer/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -589,25 +696,31 @@
    "desc": "Medieval acoustic groovebox featuring authentic period instruments, modal tunings, and historical sonorities",
    "repo": "ocean/estampie",
    "page": "https://fm-1.drewr.dev/estampie/webapp/installer/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/estampie-0.3.7.fwsc",
+   "pkgVersion": "0.3.7",
+   "license": "GPL-3.0"
   },
   {
    "name": "Mini-Tone",
    "author": "eldontyrellcorp",
    "group": "Felucca Ecosystem",
    "section": "Sound & groovebox",
-   "desc": "6-track groovebox with Elektron-inspired sound engines and sequencing",
+   "desc": "Felucca with six tracks and new engines: SID, Braids' 48 models, a TB-303 and engines after Elektron's Analog Four, SY Chip and Digitone 2, a ping-pong delay an",
    "repo": "eldontyrellcorp/Mini-Tone",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/minitone-1.0.5.fwsc",
+   "pkgVersion": "1.0.5",
+   "license": "GPL-3.0"
   },
   {
    "name": "Felucca MPE",
@@ -617,11 +730,12 @@
    "desc": "MPE (MIDI Polyphonic Expression) performance expansion fork for Felucca",
    "repo": "stanleygurvich/FeluccaMPE",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/stanleygurvich/FeluccaMPE/main/prebuilt/felucca-mpe-1.6.1.fwsc"
   },
   {
    "name": "TamaMPE",
@@ -632,7 +746,7 @@
    "repo": "tamabotmusic/TamaMPE",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -646,7 +760,7 @@
    "repo": "TristanoSuriani/fel-tracker",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -678,7 +792,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/jrdntnnr/sardab/gh-pages/webapp/emulator/felucca.wasm",
    "abi": "web",
-   "size": 889473
+   "size": 889473,
+   "pkg": "https://raw.githubusercontent.com/jrdntnnr/sardab/main/firmware/felucca-sardab-2.3-persian-splash-preview.fwsc"
   },
   {
    "name": "Simorgh",
@@ -692,7 +807,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/runestone74/Simorgh/gh-pages/webapp/try/felucca.wasm",
    "abi": "web",
-   "size": 766668
+   "size": 766668,
+   "pkg": "https://raw.githubusercontent.com/runestone74/Simorgh/main/firmware/felucca-1.6.1.fwsc"
   },
   {
    "name": "Oktowave",
@@ -720,7 +836,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/izumoe/yanfei/gh-pages/webapp/try/felucca.wasm",
    "abi": "web",
-   "size": 727811
+   "size": 727811,
+   "pkg": "https://raw.githubusercontent.com/izumoe/yanfei/main/firmware/yanfei-v1.6.1-y13.fwsc"
   },
   {
    "name": "Felucca-opx",
@@ -749,7 +866,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/keyboy250/fm1-x0x-acultur8/gh-pages/emu/x0x.wasm",
    "abi": "web",
-   "size": 655058
+   "size": 655058,
+   "pkg": "https://raw.githubusercontent.com/keyboy250/fm1-x0x-acultur8/acultur8/main/firmware/x0x-1.0.6.fwsc"
   },
   {
    "name": "Cesari",
@@ -760,7 +878,7 @@
    "repo": "briwil/Felucca",
    "page": "https://briwil.github.io/Felucca/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -774,7 +892,7 @@
    "repo": "EremanSim/ChoralRootj-6",
    "page": "https://eremansim.github.io/ChoralRootj-6/webapp/installer/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -787,11 +905,12 @@
    "desc": "Deep ChoralRoot remix and chord performance firmware",
    "repo": "rosen-wav/more-chords-M-VAVE-FM-1-Custom-Firmware",
    "page": "https://rosen-wav.github.io/more-chords-M-VAVE-FM-1-Custom-Firmware/site/",
-   "compatible": false,
-   "reason": "web build found but does not start (timeout)",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/rosen-wav/more-chords-M-VAVE-FM-1-Custom-Firmware/main/site/firmware/more-chords-v61-e17e00294181.fwsc"
   },
   {
    "name": "fm1-amy / X0X AMY",
@@ -802,7 +921,7 @@
    "repo": "dpwe/fm1-amy",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -830,7 +949,7 @@
    "repo": "davidpryan/haunted-fm1",
    "page": "https://davidpryan.github.io/haunted-fm1/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -844,7 +963,7 @@
    "repo": "Narti-Live/fm1-fm-plaits",
    "page": "https://narti-live.github.io/fm1-fm-plaits/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -861,7 +980,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/Rastapopolix/melodee-tess/main/docs/classic/webapp/sim/melodee.wasm",
    "abi": "web",
-   "size": 1050713
+   "size": 1050713,
+   "pkg": "https://raw.githubusercontent.com/Rastapopolix/melodee-tess/main/releases/melodee-tess.fwsc"
   },
   {
    "name": "1971",
@@ -872,7 +992,7 @@
    "repo": "synthi/fm1-1971",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -899,11 +1019,12 @@
    "desc": "Film score synthesizer running the Modular Town plugin's soft FM synthesis engine, 3 synth tracks, cinematic effects, and an onboard MIDI player",
    "repo": "bunglesociety/modular-one",
    "page": "https://bunglesociety.github.io/modular-one/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/bunglesociety/modular-one/main/docs/firmware/modular-one-0.3.fwsc"
   },
   {
    "name": "MEOW-1",
@@ -914,7 +1035,7 @@
    "repo": "JB-Interactive/Felucca-Meow",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -931,7 +1052,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/fenderberg/fm1-nc-companion/gh-pages/webapp/try/felucca.wasm",
    "abi": "web",
-   "size": 656789
+   "size": 656789,
+   "pkg": "https://raw.githubusercontent.com/fenderberg/fm1-nc-companion/main/firmware/ncc-0.5.fwsc"
   },
   {
    "name": "Golana DZ Edition",
@@ -941,11 +1063,14 @@
    "desc": "Enhanced Golana synthesizer with a 64-step sequencer, 32 program banks, song mode, and polyphonic USB-MIDI output",
    "repo": "dzwerg/Golana-DZ",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/golanadz-0.1.0-beta.fwsc",
+   "pkgVersion": "0.1.0-beta",
+   "license": "GPL-3.0"
   },
   {
    "name": "Elixir",
@@ -959,7 +1084,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/dmajka/elixir/gh-pages/try/elixir.wasm",
    "abi": "web",
-   "size": 999572
+   "size": 999572,
+   "pkg": "https://raw.githubusercontent.com/dmajka/elixir/main/firmware/elixir-v1.3.fwsc"
   },
   {
    "name": "PALEOTONE",
@@ -973,7 +1099,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/fantasmoslam/Paleotone/gh-pages/preview/claude-project-thread-mqbr6v/webapp/emu/paleotone.wasm",
    "abi": "web",
-   "size": 1026324
+   "size": 1026324,
+   "pkg": "https://raw.githubusercontent.com/fantasmoslam/Paleotone/main/webapp/screen-unified/paleotone-unified.fwsc"
   },
   {
    "name": "Big Beat Studio BB1",
@@ -983,11 +1110,14 @@
    "desc": "A two-beat rhythm machine: stack two drum machines from different eras and let the bass ride on top",
    "repo": "TexasRADIO/bb1-firmware",
    "page": "https://thebigbeat.app/fm1/install/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/bb1-2.1.1.fwsc",
+   "pkgVersion": "2.1.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "RIFT",
@@ -998,7 +1128,7 @@
    "repo": "mykeln/fm1-rift",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -1011,11 +1141,14 @@
    "desc": "Iterative sound-design and resampling groovebox firmware (create, modify, resample, repeat)",
    "repo": "galfaroth/veffbox",
    "page": "https://galfaroth.github.io/veffbox/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/veffbox-0.3.2.fwsc",
+   "pkgVersion": "0.3.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "SPAMPY",
@@ -1025,11 +1158,14 @@
    "desc": "Synthwave-inspired performance firmware based on Felucca/Sloop featuring sound tools, scenes, drum processing, performance effects, and built-in retr…",
    "repo": "Spampy-Droid/SPAMPY-0.0-r949",
    "page": "",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/spampy-1.0.fwsc",
+   "pkgVersion": "1.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "Big Beat Studio BB-BOB",
@@ -1068,7 +1204,7 @@
    "repo": "TexasRADIO/compas-firmware",
    "page": "https://thebigbeat.app/compas/install/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -1081,11 +1217,14 @@
    "desc": "Live performance groovebox firmware designed for any music style without mandatory presets or fixed patterns",
    "repo": "isod89/sloop-fm1",
    "page": "https://isod89.github.io/sloop-fm1/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/sloop-2.8.5.fwsc",
+   "pkgVersion": "2.8.5",
+   "license": "GPL-3.0"
   },
   {
    "name": "sloopDX",
@@ -1095,11 +1234,14 @@
    "desc": "SLOOP's live groovebox workflow merged with an authentic Yamaha DX7 engine and a fully programmable FM drum machine",
    "repo": "zvenson/dxsloop",
    "page": "https://dx7.designburgapps.com/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/sloopdx-4.0.1.fwsc",
+   "pkgVersion": "4.0.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "FM1 Move",
@@ -1109,11 +1251,12 @@
    "desc": "Eight-track groovebox firmware for the FM-1 inspired by the Ableton Move workflow, featuring a custom 240 × 240 UI designed for live performance",
    "repo": "Nicodesy06/FM1-MOVE",
    "page": "https://nicodesy06.github.io/FM1-MOVE/sim/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Nicodesy06/FM1-MOVE/fm1-move/dev/docs/firmware/sloop-2.6.fwsc"
   },
   {
    "name": "FM1 Quest",
@@ -1123,11 +1266,14 @@
    "desc": "Fantasy RPG sidescroller interface for the groovebox: tracks are represented as party heroes, sequence steps are attacks, BPM drives party walk speed…",
    "repo": "hericdk/fm1-quest",
    "page": "https://hericdk.github.io/fm1-quest/webapp/installer/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/fm1quest-42.fwsc",
+   "pkgVersion": "42",
+   "license": "GPL-3.0"
   },
   {
    "name": "JIANT FM",
@@ -1137,11 +1283,14 @@
    "desc": "Bio-synthetic groovebox & performance synthesizer OS for the FM-1 with a high-contrast \"thermal camera\" UI theme (ironbow gradient palette and Chakra…",
    "repo": "juanjiant-bit/JIANT",
    "page": "https://juanjiant-bit.github.io/JIANT/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/jiant-V10.6c.fwsc",
+   "pkgVersion": "V10.6c",
+   "license": "GPL-3.0"
   },
   {
    "name": "ORBIT",
@@ -1151,11 +1300,14 @@
    "desc": "Groovebox with visual aesthetic and screen interfaces inspired by the Teenage Engineering OP-1",
    "repo": "dspaudio/orbit",
    "page": "https://dspaudio.github.io/orbit/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/orbit-1.0.1B.fwsc",
+   "pkgVersion": "1.0.1B",
+   "license": "GPL-3.0"
   },
   {
    "name": "NoteSorcery",
@@ -1165,11 +1317,12 @@
    "desc": "OP-1-style 8-track groovebox firmware",
    "repo": "catacombius/NoteSorcery",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/catacombius/NoteSorcery/main/docs/firmware/sloop-2.5.fwsc"
   },
   {
    "name": "SLOOP ALG",
@@ -1179,11 +1332,14 @@
    "desc": "Experimental synthesis expansion fork adding Karplus-Strong string synthesis, plucked physical models, additive synthesis, DX7, and VA engines",
    "repo": "shaw-core/Sloop_ALG02",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://shaw-core.github.io/Sloop_ALG02/firmware/sloop-ALG05-TEST.fwsc",
+   "pkgVersion": "ALG05-TEST",
+   "license": "none stated (a SLOOP fork)"
   },
   {
    "name": "FM80S",
@@ -1193,11 +1349,12 @@
    "desc": "Synthwave-oriented synth-looper firmware for live loop stacking, step sequencing, and song assembly with planned 8-track expansion",
    "repo": "y6zkcqnf5r-hue/fm1-fm80s",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/y6zkcqnf5r-hue/fm1-fm80s/main/docs/firmware/sloop-2.5.fwsc"
   },
   {
    "name": "SLOOP DX7 Banks",
@@ -1207,11 +1364,14 @@
    "desc": "SLOOP expansion fork supporting up to 12 DX7 voice banks grouped by sound category",
    "repo": "majnikool/sloop-fm1",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/sloopbanks-2.5-b28-test.fwsc",
+   "pkgVersion": "2.5-b28-test",
+   "license": "GPL-3.0"
   },
   {
    "name": "SLOOP Floyd FM",
@@ -1221,11 +1381,14 @@
    "desc": "SLOOP fork integrating Floyd Steinberg's 4-operator FM synthesis algorithms and real-time visual envelope feedback",
    "repo": "renebohne/sloop-fm1",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/floyd-2.4.fwsc",
+   "pkgVersion": "2.4",
+   "license": "GPL-3.0"
   },
   {
    "name": "SLICE64-FM",
@@ -1249,11 +1412,14 @@
    "desc": "Winamp 2.x-inspired performance synthesizer & groovebox firmware turning the FM-1 interface into classic Winamp windows (main player, equalizer slide…",
    "repo": "hericdk/winampFM",
    "page": "",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/winampfm-0.12.fwsc",
+   "pkgVersion": "0.12",
+   "license": "GPL-3.0"
   },
   {
    "name": "No Man Sky FM",
@@ -1263,11 +1429,14 @@
    "desc": "Space exploration RPG adventure and live performance groovebox firmware for the FM-1: fly between procedurally generated planetary systems using the …",
    "repo": "hericdk/nomanskyFM",
    "page": "https://hericdk.github.io/nomanskyFM/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/nmsfm-0.9.fwsc",
+   "pkgVersion": "0.9",
+   "license": "GPL-3.0"
   },
   {
    "name": "MYCELIUM",
@@ -1277,11 +1446,14 @@
    "desc": "Psychedelic dance music groovebox firmware dedicated to Forest, Psytrance, Goa, and Hitech production on the FM-1",
    "repo": "megagott/mycelium-fm1",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/mycelium-1.0-test.fwsc",
+   "pkgVersion": "1.0-test",
+   "license": "GPL-3.0"
   },
   {
    "name": "GR!MM",
@@ -1291,11 +1463,14 @@
    "desc": "Dark ambient, dungeon synth, and deathdream groovebox firmware transforming the FM-1 into an atmospheric sound generator",
    "repo": "GRiMMBIENT/grimm",
    "page": "https://grimmbient.github.io/grimm/editor.html",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/grimm-2.0.2.fwsc",
+   "pkgVersion": "2.0.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "TheReFmB1rth",
@@ -1306,7 +1481,7 @@
    "repo": "AlexanderSeel/TheReFmB1rth",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -1319,11 +1494,12 @@
    "desc": "6-track pocket tracker and groovebox firmware with trilingual UI support (English, French, Spanish)",
    "repo": "Guizmoh/Kawa-Tracker-Fm1",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Guizmoh/Kawa-Tracker-Fm1/main/kawa-0.10.fwsc"
   },
   {
    "name": "BREAK//174 (Fm1dnbchatgpt)",
@@ -1333,11 +1509,12 @@
    "desc": "Jungle and Drum & Bass performance machine running at ~166–174 BPM",
    "repo": "EremanSim/Fm1dnbchatgpt",
    "page": "",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/EremanSim/Fm1dnbchatgpt/main/releases/break174-0.2.0-alpha.fwsc"
   },
   {
    "name": "Loom FM-1",
@@ -1351,7 +1528,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/Co-oscillator/Loom-FM-1/gh-pages/felucca.wasm",
    "abi": "web",
-   "size": 899026
+   "size": 899026,
+   "pkg": "https://thefirmwarehub.com/fw/loomfm1-0.1.0.fwsc",
+   "pkgVersion": "0.1.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "Ravel FM-1",
@@ -1361,11 +1541,14 @@
    "desc": "Eight-track sound-design groovebox and modular synthesizer environment (v1.10)",
    "repo": "De-Pattern/Ravel_FM1",
    "page": "https://de-pattern.github.io/Ravel_FM1/install/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/ravel-1.17.1.fwsc",
+   "pkgVersion": "1.17.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "Bunker Evolved",
@@ -1375,11 +1558,14 @@
    "desc": "Generative ambient soundscape explorer featuring 4 evolving layers, 64 presets, 24 ambient acoustic worlds, and GROW generative scaling",
    "repo": "kidbee85-beep/bunker-evolved",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/bunker-1.0.0.fwsc",
+   "pkgVersion": "1.0.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "MASIF",
@@ -1389,11 +1575,12 @@
    "desc": "4-track sample tracker and rack sampler firmware turning the FM-1 into a portable tracker and hardware sampling workstation",
    "repo": "thecemeterygates/masif-fm1",
    "page": "https://thecemeterygates.github.io/masif-fm1/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/thecemeterygates/masif-fm1/main/web/masif/firmware/masif-0.1.fwsc"
   },
   {
    "name": "Cut-A-Dor",
@@ -1403,11 +1590,14 @@
    "desc": "Dirty little beat dojo and gritty 8-track performance beat machine / sampler for the FM-1 (named as a tribute to the Matador of the crossfader)",
    "repo": "kidbee85-beep/cut-a-dor-release",
    "page": "",
-   "compatible": false,
-   "reason": "web build found but does not start (fwcheck fail: web_out)",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/cutador-1.2.1.fwsc",
+   "pkgVersion": "1.2.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "fm-dub",
@@ -1417,11 +1607,12 @@
    "desc": "Dub sound-system preamp and performance dub station for the M-VAVE FM-1",
    "repo": "imijes/fm-dub",
    "page": "https://imijes.github.io/fm-dub/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/imijes/fm-dub/main/docs/firmware/sloop-2.5.fwsc"
   },
   {
    "name": "Synthesthetic",
@@ -1436,7 +1627,8 @@
    "url": "https://michaeljsmalley.github.io/synthesthetic/play/synthesthetic.wasm",
    "abi": "web",
    "size": 573277,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://raw.githubusercontent.com/michaeljsmalley/synthesthetic/main/docs/firmware/synthesthetic-0.3.fwsc"
   },
   {
    "name": "SPIRALFM1",
@@ -1447,7 +1639,7 @@
    "repo": "Spiralfractalplugins/spiralfm1",
    "page": "https://spiralfractalplugins.github.io/spiralfm1/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -1460,11 +1652,12 @@
    "desc": "Advanced live performance and composition sequencing firmware on the SLOOP architecture",
    "repo": "schwartzworld/shifl",
    "page": "https://shifl.netlify.app/webapp/installer/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/schwartzworld/shifl/main/docs/firmware/shifl-dev.fwsc"
   },
   {
    "name": "MerthSloop",
@@ -1474,11 +1667,12 @@
    "desc": "Enhanced SLOOP firmware featuring per-track wah and panning, note ties, custom chord progressions, refined typography, and an accompanying Android co…",
    "repo": "merthsoft/sloop-fm1",
    "page": "https://merthsoft.github.io/sloop-fm1/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/merthsoft/sloop-fm1/merthsloop/docs/firmware/merthsloop-2.8.4.119.fwsc"
   },
   {
    "name": "Videodrome",
@@ -1488,11 +1682,12 @@
    "desc": "Vintage synthesizer tribute groovebox featuring 6 component-level models of classic synths: Minimoog Model D, Sequential Prophet-5, Roland Jupiter-8,…",
    "repo": "Leeman1982/sloop-fm1",
    "page": "",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Leeman1982/sloop-fm1/main/docs/firmware/sloop-2.8.fwsc"
   },
   {
    "name": "LAUNCHPARTY",
@@ -1503,7 +1698,7 @@
    "repo": "megagott/launchparty-fm1",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -1520,7 +1715,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/eatyourgreensstudio-dotcom/karma-fm1/main/docs/emu/sloop.wasm",
    "abi": "web",
-   "size": 777307
+   "size": 777307,
+   "pkg": "https://thefirmwarehub.com/fw/karma-3.0.3.fwsc",
+   "pkgVersion": "3.0.3",
+   "license": "GPL-3.0"
   },
   {
    "name": "Garden FM",
@@ -1548,7 +1746,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-fomni/gh-pages/emu/omni.wasm",
    "abi": "web",
-   "size": 132572
+   "size": 132572,
+   "pkg": "https://thefirmwarehub.com/fw/fomni-0.4.fwsc",
+   "pkgVersion": "0.4",
+   "license": "GPL-3.0"
   },
   {
    "name": "FuMi-1",
@@ -1562,7 +1763,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/cartesive/fumi-1/gh-pages/emu/fumi.wasm",
    "abi": "web",
-   "size": 151637
+   "size": 151637,
+   "pkg": "https://thefirmwarehub.com/fw/fumi-1.1.0.fwsc",
+   "pkgVersion": "1.1.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "CoralFlower",
@@ -1572,11 +1776,14 @@
    "desc": "Expressive chord machine inspired by the Torso Electronics T-1 / Orchid chord concepts, tailored specifically to the ergonomics of the FM-1",
    "repo": "FicusFicusov/CoralFlower",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/coralflower-0.6.1.fwsc",
+   "pkgVersion": "0.6.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "FM-1 Pocket Guitar",
@@ -1587,7 +1794,7 @@
    "repo": "xMagElonx/fm1-guitar",
    "page": "https://fm1-tone-engine.app.workbuddy.host/guitar-fw/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -1604,7 +1811,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/RayDNoper/fm1-fomnium/gh-pages/emu/omni.wasm",
    "abi": "web",
-   "size": 178369
+   "size": 178369,
+   "pkg": "https://raw.githubusercontent.com/RayDNoper/fm1-fomnium/main/firmware/omni-0.8.1.fwsc"
   },
   {
    "name": "baud girl Custom Firmware Mod",
@@ -1639,14 +1847,17 @@
    "author": "Erbubar23",
    "group": "Independent & Original Engine Firmwares",
    "section": "Sound & groovebox",
-   "desc": "6-track live performance groovebox firmware for the FM-1 with four gestures per button, dedicated HOME layer, and zero third-party audio dependencies…",
+   "desc": "A six-track groovebox written from scratch: TR drums from Plaits' 808 and 909 models, a sampler with a 16-slice slicer, a bass and three free tracks (analog, 6-",
    "repo": "Erbubar23/bubba-machine",
    "page": "https://erbubar23.github.io/bubba-machine/emulador.html",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/bubba-0.10.0-beta.fwsc",
+   "pkgVersion": "0.10.0-beta",
+   "license": "GPL-3.0"
   },
   {
    "name": "zp12",
@@ -1656,11 +1867,14 @@
    "desc": "Authentic 1980s-style 12-bit sampling drum machine firmware for the FM-1",
    "repo": "zvenson/zp12",
    "page": "https://zp12.designburgapps.com/",
-   "compatible": false,
-   "reason": "web build found but does not start (fwcheck fail: sim_init)",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/zp12-2.5.fwsc",
+   "pkgVersion": "2.5",
+   "license": "GPL-3.0"
   },
   {
    "name": "FiMba-1",
@@ -1670,11 +1884,14 @@
    "desc": "Thumb piano / kalimba / mbira physical modeling synthesizer firmware for the FM-1",
    "repo": "jadamsowers/fm1-fimba",
    "page": "https://jadamsowers.github.io/fm1-fimba/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/fimba-0.6.1.fwsc",
+   "pkgVersion": "0.6.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "Lunar Modulator",
@@ -1685,7 +1902,7 @@
    "repo": "ip2k/lunar-modulator",
    "page": "",
    "compatible": false,
-   "reason": "web build with an unknown interface",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -1702,7 +1919,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-amb/gh-pages/emu/app.wasm",
    "abi": "web",
-   "size": 118552
+   "size": 118552,
+   "pkg": "https://thefirmwarehub.com/fw/amb-1.3.fwsc",
+   "pkgVersion": "1.3",
+   "license": "MPL-2.0"
   },
   {
    "name": "CTL-1",
@@ -1716,7 +1936,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-ctl/gh-pages/emu/app.wasm",
    "abi": "web",
-   "size": 377876
+   "size": 377876,
+   "pkg": "https://thefirmwarehub.com/fw/ctl-1.0.fwsc",
+   "pkgVersion": "1.0",
+   "license": "MPL-2.0"
   },
   {
    "name": "PurpleMonkey FM-1",
@@ -1731,7 +1954,10 @@
    "url": "https://quixotic7.github.io/PurpleMonkeyFM1/emu/purplemonkey.wasm",
    "abi": "web",
    "size": 363979,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/purplemonkey-0.11.fwsc",
+   "pkgVersion": "0.11",
+   "license": "GPL-3.0"
   },
   {
    "name": "FM-1 B-Boy Edition",
@@ -1756,7 +1982,7 @@
    "repo": "NOVALENTI/fm1-polyseq",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -1773,7 +1999,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/patttf/fm-106/main/emu/fm106.wasm",
    "abi": "web",
-   "size": 203719
+   "size": 203719,
+   "pkg": "https://thefirmwarehub.com/fw/fm106-beta7+52ddf015.fwsc",
+   "pkgVersion": "beta7",
+   "license": "GPL-3.0"
   },
   {
    "name": "ETCH",
@@ -1783,11 +2012,14 @@
    "desc": "\"Draw",
    "repo": "SikkenWorks/ETCH",
    "page": "https://etch.sikkenworks.com/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/etch-1.88.fwsc",
+   "pkgVersion": "1.88",
+   "license": "GPL-3.0"
   },
   {
    "name": "AMBII",
@@ -1808,28 +2040,34 @@
    "author": "dspaudio",
    "group": "Independent & Original Engine Firmwares",
    "section": "Sound & groovebox",
-   "desc": "4-track groovebox firmware inspired by Roland Linear Arithmetic (LA) synthesis (D-50) and MC-series grooveboxes (MC-101 / MC-303)",
+   "desc": "An original four-part groovebox with a 1990s workflow: three melodic parts and a 16-lane drum part, 128 melodic presets, eight drum kits, song arrangement, an a",
    "repo": "dspaudio/mc-1",
    "page": "https://dspaudio.github.io/mc-1-web/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/mc1-1.2.0.fwsc",
+   "pkgVersion": "1.2.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "OberVave",
    "author": "Sven Trogus (zvenson)",
    "group": "Independent & Original Engine Firmwares",
    "section": "Sound & groovebox",
-   "desc": "8-voice American analog polysynth emulation (Oberheim OB-Xa / OB-8 style, 1979–1984) for the M-VAVE FM-1",
+   "desc": "An 8-voice analog-style poly in the spirit of the classic American polys of 1979-84: two oscillators a voice, sync, cross-mod, a 12 / 24 dB filter with a SEM-st",
    "repo": "zvenson/obervave",
    "page": "https://fm1.designburgapps.com/",
-   "compatible": false,
-   "reason": "web build found but does not start (fwcheck fail: sim_init)",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/obervave-3.3.2.fwsc",
+   "pkgVersion": "3.3.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "MONK-1",
@@ -1843,7 +2081,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-monk/gh-pages/emu/monk.wasm",
    "abi": "web",
-   "size": 260682
+   "size": 260682,
+   "pkg": "https://thefirmwarehub.com/fw/monk-0.9.1.fwsc",
+   "pkgVersion": "0.9.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "M-VAVE FM1 Open Firmware (m-vave/fm1open)",
@@ -1854,7 +2095,7 @@
    "repo": "m-vave/fm1_open",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -1867,11 +2108,14 @@
    "desc": "Sega Mega Drive / Genesis sound chip recreation for the M-VAVE FM-1, accurately emulating both the Yamaha YM2612 6-channel FM synthesizer and the Tex…",
    "repo": "putchdev/opn-1",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/opn1-2.0.0.fwsc",
+   "pkgVersion": "2.0.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "CS-1",
@@ -1881,11 +2125,14 @@
    "desc": "Yamaha CS-80 analog synthesizer emulation in spirit for the FM-1",
    "repo": "twochannels/CS-1",
    "page": "https://twochannels.github.io/CS-1/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/cs1-2026.10.22.fwsc",
+   "pkgVersion": "2026.10.22",
+   "license": "GPL-3.0"
   },
   {
    "name": "Frodhes",
@@ -1895,11 +2142,14 @@
    "desc": "Fender Rhodes electric piano physical modeling synthesizer without sample dependencies",
    "repo": "leonardoMirabal/frodhes",
    "page": "https://leonardomirabal.github.io/frodhes/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/frodhes-0.9.8.fwsc",
+   "pkgVersion": "0.9.8",
+   "license": "GPL-3.0"
   },
   {
    "name": "Vector37",
@@ -1914,7 +2164,10 @@
    "url": "https://genkigenki.github.io/smk37/vector37-sim/sim.wasm",
    "abi": "sim",
    "size": 439444,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/vector37-0.3.2.fwsc",
+   "pkgVersion": "0.3.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "HYP-1",
@@ -1928,21 +2181,27 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/RustyPawz/fm1-HYP1/gh-pages/emu/amb.wasm",
    "abi": "web",
-   "size": 88402
+   "size": 88402,
+   "pkg": "https://thefirmwarehub.com/fw/hyp1-1.5.54.fwsc",
+   "pkgVersion": "1.5.54",
+   "license": "GPL-3.0"
   },
   {
    "name": "Tonitor",
    "author": "Nuno Zimas",
    "group": "Independent & Original Engine Firmwares",
    "section": "Sound & groovebox",
-   "desc": "6-track experimental ambient and live looping performance synthesizer",
+   "desc": "Six tracks for live ambient and experimental music: three synth engines, patches generated by algorithm, free-length loops with up to ten overdubs each, a granu",
    "repo": "nzimas/tonitor",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/tonitor-2026.11.03+5de7538d.fwsc",
+   "pkgVersion": "2026.11.03",
+   "license": "GPL-3.0"
   },
   {
    "name": "BEETLE",
@@ -1952,11 +2211,14 @@
    "desc": "Classic vertical tracker firmware for the FM-1",
    "repo": "SikkenWorks/BEETLE",
    "page": "https://sikkenworks.github.io/BEETLE/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/beetle-1.8.2.fwsc",
+   "pkgVersion": "1.8.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "FOMAJAM",
@@ -1971,7 +2233,10 @@
    "url": "https://konsumer.js.org/fomajam/firmware.wasm",
    "abi": "web",
    "size": 631166,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/fomajam-0.1.9.fwsc",
+   "pkgVersion": "0.1.9",
+   "license": "GPL-3.0"
   },
   {
    "name": "MIN-1",
@@ -1985,7 +2250,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/Reytian/fm1-min1/gh-pages/emu/min.wasm",
    "abi": "web",
-   "size": 126644
+   "size": 126644,
+   "pkg": "https://thefirmwarehub.com/fw/min1-0.2.1.fwsc",
+   "pkgVersion": "0.2.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "Pocket GammaWave",
@@ -2000,7 +2268,10 @@
    "url": "https://fvalente.github.io/GammaWave-FM1/felucca.wasm",
    "abi": "web",
    "size": 980768,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/gammawave-1.2.1-GW.fwsc",
+   "pkgVersion": "1.2.1-GW",
+   "license": "GPL-3.0"
   },
   {
    "name": "TERKINSTEIN",
@@ -2011,7 +2282,7 @@
    "repo": "TerkWerX/FM1-TERKINSTEIN-Firmware",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2028,7 +2299,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/evanyerburgh/niagara-drift/gh-pages/omni.wasm",
    "abi": "web",
-   "size": 182649
+   "size": 182649,
+   "pkg": "https://thefirmwarehub.com/fw/niagara-0.2.1.fwsc",
+   "pkgVersion": "0.2.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "MNM-1",
@@ -2038,11 +2312,14 @@
    "desc": "Six-track monophonic groovebox inspired by the workflow of the legendary Elektron Monomachine",
    "repo": "sirpearson/fm-1-monomachine",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/mnm1-1.0.1.fwsc",
+   "pkgVersion": "1.0.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "SIDOU",
@@ -2052,11 +2329,14 @@
    "desc": "A C64 SID music machine: two emulated SID chips (6581 and 8580) with a GoatTracker 2 compatible tracker",
    "repo": "dsablic/sidou",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/sidou-1.7.0.fwsc",
+   "pkgVersion": "1.7.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "TripDeck",
@@ -2067,7 +2347,7 @@
    "repo": "anonymousacademe/FM-1-TripDeck",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2080,11 +2360,14 @@
    "desc": "Roleplaying-themed firmware transforming the FM-1 into an elven bard's enchanted music box for tabletop and LARP gaming sessions",
    "repo": "MikeTsak/Evanders-Music-Box--FM-1-LARP-firmware",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/emb-1.5.2.fwsc",
+   "pkgVersion": "1.5.2",
+   "license": "see the repository"
   },
   {
    "name": "LOF-1",
@@ -2098,7 +2381,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/RustyPawz/fm1-HYP1/gh-pages/emu/amb.wasm",
    "abi": "web",
-   "size": 88402
+   "size": 88402,
+   "pkg": "https://raw.githubusercontent.com/RustyPawz/fm1-HYP1/main/firmware/amb-1.1.fwsc"
   },
   {
    "name": "ECO-1",
@@ -2112,7 +2396,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/RustyPawz/fm1-HYP1/gh-pages/emu/amb.wasm",
    "abi": "web",
-   "size": 88402
+   "size": 88402,
+   "pkg": "https://raw.githubusercontent.com/RustyPawz/fm1-HYP1/main/firmware/amb-1.1.fwsc"
   },
   {
    "name": "P6",
@@ -2138,7 +2423,7 @@
    "repo": "genkigenki/Speak37",
    "page": "https://genkigenki.github.io/smk37/#fw-speak37",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2156,7 +2441,10 @@
    "url": "https://antonioaltea.github.io/fmel-1/mel.wasm",
    "abi": "web",
    "size": 973192,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/fmel-1.0.fwsc",
+   "pkgVersion": "1.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "GRAV-1",
@@ -2170,7 +2458,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/RustyPawz/fm1-HYP1/gh-pages/emu/amb.wasm",
    "abi": "web",
-   "size": 88402
+   "size": 88402,
+   "pkg": "https://raw.githubusercontent.com/RustyPawz/fm1-HYP1/main/firmware/amb-1.1.fwsc"
   },
   {
    "name": "MD-One",
@@ -2181,7 +2470,7 @@
    "repo": "d0pe1/md-one",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2195,7 +2484,7 @@
    "repo": "genkigenki/erik37",
    "page": "https://genkigenki.github.io/smk37/#fw-erik37",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2212,7 +2501,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-loom/gh-pages/emu/app.wasm",
    "abi": "web",
-   "size": 1116987
+   "size": 1116987,
+   "pkg": "https://thefirmwarehub.com/fw/loom-0.12.1.fwsc",
+   "pkgVersion": "0.12.1",
+   "license": "MPL-2.0"
   },
   {
    "name": "Hersen MPC (庄赫森)",
@@ -2250,25 +2542,31 @@
    "desc": "Dual Commodore 64 SID chip (MOS 6581 / 8580) synthesizer firmware for the FM-1",
    "repo": "putchdev/sid-1",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/sid1-1.0.0.fwsc",
+   "pkgVersion": "1.0.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "Shine On",
    "author": "Sven Trogus (zvenson)",
    "group": "Independent & Original Engine Firmwares",
    "section": "Sound & groovebox",
-   "desc": "1970s analog string ensemble synthesizer (Solina / Eminent style) with top-octave divider voicing",
+   "desc": "A string ensemble in the spirit of the late-70s machines, grown out of OberVave: divide-down keyers with 16', 8' and 4' footages, register filters, a three-tap ",
    "repo": "zvenson/shineon",
    "page": "",
-   "compatible": false,
-   "reason": "web build found but does not start (fwcheck fail: sim_init)",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/shineon-3.0.1.fwsc",
+   "pkgVersion": "3.0.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "B1 Drawbar Organ",
@@ -2278,11 +2576,14 @@
    "desc": "Authentic tonewheel drawbar organ firmware for the FM-1",
    "repo": "SikkenWorks/B1-Drawbar-Organ",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/b1-5.6.fwsc",
+   "pkgVersion": "5.6",
+   "license": "GPL-3.0"
   },
   {
    "name": "fm1-gator",
@@ -2292,11 +2593,14 @@
    "desc": "Monophonic macro-oscillator synth engine based on the open-source DSP of Mutable Instruments Plaits",
    "repo": "npi3pak/fm1-gator",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/gator-0.6.fwsc",
+   "pkgVersion": "0.6",
+   "license": "GPL-3.0"
   },
   {
    "name": "Mutable Dreams",
@@ -2306,11 +2610,14 @@
    "desc": "Six freely assignable tracks for generative ambient, rhythms and basslines, combining selected Mutable Instruments algorithms with custom engines",
    "repo": "kidbee85-beep/mutable-dreams",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/mutable-1.4.fwsc",
+   "pkgVersion": "1.4",
+   "license": "GPL-3.0"
   },
   {
    "name": "Prysm",
@@ -2320,11 +2627,12 @@
    "desc": "Four-voice wavetable FM synthesizer firmware for the M-VAVE FM-1",
    "repo": "NicholasPratt/Prysm",
    "page": "",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/NicholasPratt/Prysm/main/site/firmware/prysm-1.6.fwsc"
   },
   {
    "name": "fmlab",
@@ -2335,7 +2643,7 @@
    "repo": "jsmith13/fm_lab",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2348,11 +2656,14 @@
    "desc": "Bytebeat algorithmic synthesizer firmware running music generated entirely from one-line mathematical equations",
    "repo": "llozd/bytemania",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/bytemania-1.2.0.fwsc",
+   "pkgVersion": "1.2.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "Selva1",
@@ -2362,11 +2673,12 @@
    "desc": "Minimalist portable C synthesis engine inspired by São Paulo's urban soundscapes",
    "repo": "deabrewcontato-code/Selva1",
    "page": "",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/deabrewcontato-code/Selva1/main/firmware/docs/firmware/sloop-2.7.1.fwsc"
   },
   {
    "name": "ZEN-1",
@@ -2380,7 +2692,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/aceyprime/zen-1/gh-pages/emu/zen1.wasm",
    "abi": "web",
-   "size": 650863
+   "size": 650863,
+   "pkg": "https://thefirmwarehub.com/fw/zen-1.2.fwsc",
+   "pkgVersion": "1.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "AMB-1 Evolved",
@@ -2390,11 +2705,12 @@
    "desc": "Ambient generative synthesizer expanding the AMB-1 platform",
    "repo": "kidbee85-beep/AMB-1-Evolved",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/kidbee85-beep/AMB-1-Evolved/main/amb1-evolved-e1.fwsc"
   },
   {
    "name": "386 DX v2",
@@ -2408,21 +2724,27 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/seajaysec/386-DX-FM1-KaraokeBot/gh-pages/emu/app.wasm",
    "abi": "web",
-   "size": 710612
+   "size": 710612,
+   "pkg": "https://thefirmwarehub.com/fw/386dx-2.0.fwsc",
+   "pkgVersion": "2.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "fm1-gm",
    "author": "jartificer",
    "group": "Independent & Original Engine Firmwares",
    "section": "Sound & groovebox",
-   "desc": "16-channel General MIDI (GM1) sound module and playback firmware",
+   "desc": "A General MIDI sequencer with 16 tracks, 128 General MIDI instruments to choose from and a drum kit (on track 10)",
    "repo": "jartificer/fm1-gm",
    "page": "https://jartificer.github.io/fm1-gm/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/fm1gm-1.1.1.fwsc",
+   "pkgVersion": "1.1.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "BOP-1",
@@ -2448,7 +2770,7 @@
    "repo": "WillCMcC/kidboy-firmware",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2465,7 +2787,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/OwenKirby/carnac-os/gh-pages/play/carnac.wasm",
    "abi": "web",
-   "size": 738164
+   "size": 738164,
+   "pkg": "https://thefirmwarehub.com/fw/carnac-0.9.6.fwsc",
+   "pkgVersion": "0.9.6",
+   "license": "GPL-3.0"
   },
   {
    "name": "DIRGE",
@@ -2490,11 +2815,14 @@
    "desc": "Uncompromising high-fidelity analogue-modeled monophonic synthesizer firmware for the FM-1",
    "repo": "markterm/monohull",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/monohull-0.2.0.fwsc",
+   "pkgVersion": "0.2.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "MONO2K",
@@ -2504,11 +2832,14 @@
    "desc": "Elektron Monomachine-inspired synthesizer and groovebox firmware for the M-VAVE FM-1",
    "repo": "InigoHernandez/mono2k",
    "page": "",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/mono2k-1.7.fwsc",
+   "pkgVersion": "1.7",
+   "license": "GPL-3.0"
   },
   {
    "name": "Bigorna",
@@ -2518,11 +2849,14 @@
    "desc": "Industrial, power noise, and IDM rhythmic groovebox firmware inspired by the Elektron Digitone II",
    "repo": "nzimas/bigorna",
    "page": "",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/bigorna-2026.11.03+87baea1d.fwsc",
+   "pkgVersion": "2026.11.03",
+   "license": "GPL-3.0"
   },
   {
    "name": "FMER",
@@ -2533,7 +2867,7 @@
    "repo": "Nacsez/FMER",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2546,11 +2880,14 @@
    "desc": "LSDJ-style 4-channel chiptune music tracker for the FM-1 with authentic Game Boy tracking workflows",
    "repo": "risseraka/fm1-tracker-ketch",
    "page": "https://risseraka.github.io/fm1-tracker-ketch/install/",
-   "compatible": false,
-   "reason": "repository not reachable",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/ketch-0.1-beta.fwsc",
+   "pkgVersion": "0.1-beta",
+   "license": "GPL-3.0"
   },
   {
    "name": "Trawler",
@@ -2561,7 +2898,7 @@
    "repo": "y6zkcqnf5r-hue/fm1-trawler",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2575,7 +2912,7 @@
    "repo": "jukejutsu/FM2000",
    "page": "",
    "compatible": false,
-   "reason": "web build found but does not start (fwcheck fail: web_boot)",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2588,11 +2925,14 @@
    "desc": "Hardware MIDI monitor, diagnostic tool, and through-router for the FM-1",
    "repo": "ignis32/midimonitor_fm1",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/midimon-0.4.fwsc",
+   "pkgVersion": "0.4",
+   "license": "MPL-2.0"
   },
   {
    "name": "SEQ-4",
@@ -2603,7 +2943,7 @@
    "repo": "devrvega/SEQ-4",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2617,7 +2957,7 @@
    "repo": "davidpryan/witchbox",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2630,11 +2970,14 @@
    "desc": "Multi-layered drone, soundscape, and textural ambient performance synthesizer",
    "repo": "styvesgoupil/frasil",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/frasil-3.0.fwsc",
+   "pkgVersion": "3.0",
+   "license": "MPL-2.0"
   },
   {
    "name": "Finton",
@@ -2644,11 +2987,12 @@
    "desc": "6-track progressive house and trance machine for the M-VAVE FM-1",
    "repo": "justynroberts/fm1-finton",
    "page": "https://justynroberts.github.io/fm1-finton/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/justynroberts/fm1-finton/main/web/firmware/finton.fwsc"
   },
   {
    "name": "FN ACID",
@@ -2658,11 +3002,12 @@
    "desc": "Mathematical acid groovebox where each sound track is defined by parametric functions y(s, phi) drawn on the LCD and evaluated in real time",
    "repo": "Electro-Dig/function-acid-fw",
    "page": "https://fn-acid.netlify.app/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Electro-Dig/function-acid-fw/main/web/installer/function-acid.fwsc"
   },
   {
    "name": "NIGHTFALL",
@@ -2672,11 +3017,12 @@
    "desc": "Cyberpunk performance synthesizer featuring 4 tracks, 64-step patterns, a 6-stage master FX chain, and dedicated browser studio",
    "repo": "SylarPu-X/nightfall-fm1",
    "page": "https://sylarpu-x.github.io/nightfall-fm1/update.html",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/SylarPu-X/nightfall-fm1/main/web/firmware/NIGHTFALL-FM1-999-GREEN2.fwsc"
   },
   {
    "name": "DriftSeq",
@@ -2687,7 +3033,7 @@
    "repo": "johnskiller/driftseq",
    "page": "https://johnskiller.github.io/driftseq/",
    "compatible": false,
-   "reason": "web build with an unknown interface",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2701,7 +3047,7 @@
    "repo": "johnskiller/fm1-ctrl",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2714,11 +3060,12 @@
    "desc": "Real Betis football club-themed firmware: stadium crowd rhythms, club dashboard visuals, and a Phrygian-dominant Spanish scale generator",
    "repo": "cotrino/fm1-betis-mode",
    "page": "https://cotrino.github.io/fm1-betis-mode/",
-   "compatible": false,
-   "reason": "web build found but does not start (fwcheck fail: sim_init)",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/cotrino/fm1-betis-mode/main/docs/FM1_BETIS_MODE.fwsc"
   },
   {
    "name": "COSMOS",
@@ -2732,7 +3079,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/Gadlele/COSMOS/gh-pages/try/app.wasm",
    "abi": "web",
-   "size": 341694
+   "size": 341694,
+   "pkg": "https://raw.githubusercontent.com/Gadlele/COSMOS/main/tilt/firmware/tilt-0.1.fwsc"
   },
   {
    "name": "MOPE-1",
@@ -2742,11 +3090,14 @@
    "desc": "A melancholic wavetable synthesizer and toy-keyboard groovebox featuring an animated expressive pixel \"blob\" character in a rainy room, backing auto-…",
    "repo": "slothpallas/mope-1",
    "page": "https://slothpallas.github.io/mope-1/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/mope1-0.4.0.fwsc",
+   "pkgVersion": "0.4.0",
+   "license": "GPL-3.0-only"
   },
   {
    "name": "FIZZ",
@@ -2756,25 +3107,31 @@
    "desc": "Advanced FM-Tone groovebox and step sequencer inspired by the Elektron Digitone and OMX-27 Form sequencer, featuring deep parameter locks, generative…",
    "repo": "Quixotic7/FIZZ",
    "page": "https://quixotic7.github.io/FIZZ/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/fizz-0.12.0-beta.13.fwsc",
+   "pkgVersion": "0.12.0-beta.13",
+   "license": "MPL-2.0"
   },
   {
    "name": "S1Vave",
    "author": "Andrew GG (AndrewGG88)",
    "group": "Independent & Original Engine Firmwares",
    "section": "Sound & groovebox",
-   "desc": "8-voice virtual analog tweak synthesizer modeled after the classic Roland SH-101 and AIRA Compact S-1 architecture, featuring complete sound engine p…",
+   "desc": "An 8-voice virtual analog tweak synth: authentic 4-pole resonant filter, dual sub-oscillator, ADSR envelopes, 64-step sequencer, and hands-on live performance c",
    "repo": "AndrewGG88/S1Vave",
    "page": "",
-   "compatible": false,
-   "reason": "web build found but does not start (fwcheck fail: sim_init)",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/s1vave-1.12.1.fwsc",
+   "pkgVersion": "1.12.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "GLIDER",
@@ -2785,7 +3142,7 @@
    "repo": "ttreu/fm1-glider",
    "page": "https://subcity.at/flash/fm1-glider/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2799,7 +3156,7 @@
    "repo": "ttreu/fm1-glitch",
    "page": "https://subcity.at/flash/fm1-glitch-drums/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2813,7 +3170,7 @@
    "repo": "ttreu/fm1-arphony",
    "page": "https://subcity.at/flash/fm1-arphony/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2841,7 +3198,7 @@
    "repo": "jaeggerr/moondaw-fm1",
    "page": "https://moondaw.com/install/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2859,7 +3216,10 @@
    "url": "https://jartificer.github.io/fm1-trax/fm1trax.wasm",
    "abi": "web",
    "size": 547029,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/fm1trax-0.9.3.fwsc",
+   "pkgVersion": "0.9.3",
+   "license": "GPL-3.0"
   },
   {
    "name": "ECHOFIELD",
@@ -2873,7 +3233,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/Philip-Bos/echofield-fm1/main/companion/emulator/app.wasm",
    "abi": "web",
-   "size": 428145
+   "size": 428145,
+   "pkg": "https://raw.githubusercontent.com/Philip-Bos/echofield-fm1/main/companion/firmware/echofield-0.2.10.fwsc"
   },
   {
    "name": "CHOPPAH",
@@ -2888,7 +3249,10 @@
    "url": "https://profikid.github.io/fm1-break-choppah/emu/app.wasm",
    "abi": "web",
    "size": 645939,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://thefirmwarehub.com/fw/choppah-0.96.fwsc",
+   "pkgVersion": "0.96",
+   "license": "MPL-2.0"
   },
   {
    "name": "Amenity",
@@ -2898,11 +3262,14 @@
    "desc": "Live jungle and drum & bass breakbeat performance firmware",
    "repo": "ejtb76/amenity",
    "page": "https://ejtb76.github.io/amenity/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/amenity-1.0.0.fwsc",
+   "pkgVersion": "1.0.0",
+   "license": "GPL-3.0 + SDK exception"
   },
   {
    "name": "Miku-FM",
@@ -2913,7 +3280,7 @@
    "repo": "MichaelAPerry/MIKU-FM1",
    "page": "https://michaelaperry.github.io/MIKU-FM1/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2927,7 +3294,7 @@
    "repo": "CallieSchmallie/Beetroot-tempura",
    "page": "https://callieschmallie.github.io/Beetroot-tempura/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2941,7 +3308,7 @@
    "repo": "28spawn/m-vave-pocket-amp-onyx",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2970,7 +3337,7 @@
    "repo": "matttallison/quadro-fm1",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -2983,11 +3350,14 @@
    "desc": "Web Installer",
    "repo": "Guizmoh/K-WASUB_Firmware_for_FM1",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/kwasub-1.0.52.fwsc",
+   "pkgVersion": "1.0.52",
+   "license": "GPL-3.0"
   },
   {
    "name": "DX747",
@@ -2998,7 +3368,7 @@
    "repo": "esbenvb/fm1-dx747",
    "page": "https://esbenvb.github.io/fm1-dx747/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3026,7 +3396,7 @@
    "repo": "keremimo/saadet",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3044,7 +3414,8 @@
    "url": "https://arrastao.github.io/baile-fm1/baile.wasm",
    "abi": "sim",
    "size": 357855,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://raw.githubusercontent.com/arrastao/baile-fm1/main/firmware/BAILE-0.7-FM1.fwsc"
   },
   {
    "name": "BOTANICA",
@@ -3054,11 +3425,12 @@
    "desc": "Garden-themed ambient edition of NoteSorcery with felt piano, plucked droplets, foley and performance macros",
    "repo": "catacombius/NoteSorcery",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/catacombius/NoteSorcery/main/docs/firmware/sloop-2.5.fwsc"
   },
   {
    "name": "LILA",
@@ -3068,11 +3440,12 @@
    "desc": "A child-friendly toy synthesizer with animated scenes and sounds, built on fm1-tribe",
    "repo": "apiel/fm1-lila",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/apiel/fm1-lila/main/dist/lila-1.3-beta.fwsc"
   },
   {
    "name": "ReVo",
@@ -3082,11 +3455,12 @@
    "desc": "Generative soundscape instrument combining Bioma's synthesized ecosystem with Atolls sample loops and a browser sample editor",
    "repo": "gggguto/ReVo",
    "page": "https://gggguto.github.io/ReVo/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/gggguto/ReVo/main/site/install/ReVo-development.fwsc"
   },
   {
    "name": "AISLING",
@@ -3100,7 +3474,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/stephencummins/fm1-aisling/gh-pages/emu/amb.wasm",
    "abi": "web",
-   "size": 350593
+   "size": 350593,
+   "pkg": "https://thefirmwarehub.com/fw/aisling-0.5.1.fwsc",
+   "pkgVersion": "0.5.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "ira",
@@ -3170,7 +3547,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/deamonSLINKY/PERF-1/gh-pages/emu/amb.wasm",
    "abi": "web",
-   "size": 706402
+   "size": 706402,
+   "pkg": "https://thefirmwarehub.com/fw/perf1-0.16.2.fwsc",
+   "pkgVersion": "0.16.2",
+   "license": "GPL-3.0"
   },
   {
    "name": "ARCADE RAT",
@@ -3181,7 +3561,7 @@
    "repo": "jonludwig1234/stack-trace-arcade-rat-fm1",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3195,7 +3575,7 @@
    "repo": "cmlarsen/fm1-rocket-os",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3209,7 +3589,7 @@
    "repo": "w0ts/optimist",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3222,11 +3602,14 @@
    "desc": "Minimal, clean firmware skeleton for custom developers: 4-voice sine wave synthesizer on top of working display, audio DMA, and button input drivers",
    "repo": "zvenson/dinghy",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/dinghy-0.4.fwsc",
+   "pkgVersion": "0.4",
+   "license": "GPL-3.0"
   },
   {
    "name": "Modular-1",
@@ -3269,7 +3652,8 @@
    "url": "https://rcell233.github.io/OpenIFW-fm1/openifw.wasm",
    "abi": "web",
    "size": 562413,
-   "verified": "exports (site), start-up checked by FM-9 at install"
+   "verified": "exports (site), start-up checked by FM-9 at install",
+   "pkg": "https://raw.githubusercontent.com/rcell233/OpenIFW-fm1/main/firmware-bin/OpenIFW-FM1-0.4.7-rc9.fwsc"
   },
   {
    "name": "Matryoshka",
@@ -3279,11 +3663,14 @@
    "desc": "Recursively modular synth framework and visual web patch environment for the FM-1",
    "repo": "glvno/matryoshka",
    "page": "https://matry0shka.pages.dev/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/matryoshka-1.9.1.fwsc",
+   "pkgVersion": "1.9.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "FORGE ONE & Forge Phoenix",
@@ -3307,11 +3694,14 @@
    "desc": "Multi-synth docking container and dynamic module manager for the FM-1: install once, hold HOME for 1.5 seconds to open the picker, and switch between…",
    "repo": "joakimeriksson/fm1-dock",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/fm1dock-0.7.1.fwsc",
+   "pkgVersion": "0.7.1",
+   "license": "GPL-3.0"
   },
   {
    "name": "FMLarynx",
@@ -3322,7 +3712,7 @@
    "repo": "ejtb76/FMLarynx",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3336,7 +3726,7 @@
    "repo": "fabiomassimopasquazzi/dinghy",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3349,11 +3739,14 @@
    "desc": "Port of classic Doom (running a FreeDM arena map) on the M-VAVE FM-1 synthesizer hardware",
    "repo": "zvenson/fm1doom",
    "page": "https://doom.deadlockinteractive.com/",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/zvenson/dxsloop/main/docs/doom/firmware/fm1doom-0.5.fwsc",
+   "pkgVersion": "0.5",
+   "license": "GPL-3.0"
   },
   {
    "name": "FM-1 NES",
@@ -3364,7 +3757,7 @@
    "repo": "Keitark/fm1-nes",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3378,7 +3771,7 @@
    "repo": "charlesvestal/fm1-mocky",
    "page": "https://charlesvestal.github.io/fm1-mocky/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3392,7 +3785,7 @@
    "repo": "Keitark/fm1-mdx",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3405,11 +3798,12 @@
    "desc": "Nintendo Game Boy emulator, browser-based ROM-to-firmware compiler, and interactive web simulator for the M-VAVE FM-1 and SMK-37 controller hardware",
    "repo": "ChanceTheMaker/gamedude-fm1-smk",
    "page": "https://chancethemaker.github.io/gamedude-fm1-smk/",
-   "compatible": false,
-   "reason": "web build with an unknown interface",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/ChanceTheMaker/gamedude-fm1-smk/main/web/firmware/fm1-template.fwsc"
   },
   {
    "name": "Fart Machine One",
@@ -3419,11 +3813,14 @@
    "desc": "Novelty joke sample-synthesizer and sequencer firmware for the FM-1",
    "repo": "adamcharleswilsonmusic-code/Fart-Machine-One",
    "page": "",
-   "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/fart-1.1.0.fwsc",
+   "pkgVersion": "1.1.0",
+   "license": "GPL-3.0"
   },
   {
    "name": "Trumpagotchi",
@@ -3434,7 +3831,7 @@
    "repo": "adamcharleswilsonmusic-code/Trumpagotchi",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3448,7 +3845,7 @@
    "repo": "ignis32/trireme_fm1",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3479,7 +3876,10 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/DeadActive/FMDj/gh-pages/webapp/lsdj-sim/lsdjsim.wasm",
    "abi": "sim",
-   "size": 136058
+   "size": 136058,
+   "pkg": "https://thefirmwarehub.com/fw/fmdj-2026.10.22.fwsc",
+   "pkgVersion": "2026.10.22",
+   "license": "GPL-3.0"
   },
   {
    "name": "Neverhood for FM-1",
@@ -3490,7 +3890,7 @@
    "repo": "snpwball/fm1-neverhood",
    "page": "https://snpwball.github.io/fm1/neverhood/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3507,7 +3907,8 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-radio/gh-pages/emu/app.wasm",
    "abi": "web",
-   "size": 254090
+   "size": 254090,
+   "pkg": "https://raw.githubusercontent.com/charlesvestal/fm1-radio/main/firmware/radio-1.3.1.fwsc"
   },
   {
    "name": "picovave",
@@ -3518,7 +3919,7 @@
    "repo": "acidsound/picovave",
    "page": "",
    "compatible": false,
-   "reason": "web build found but does not start (fwcheck fail: sim_init)",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3532,7 +3933,7 @@
    "repo": "thefriendlyhedgehog/FM-Cat1",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3546,7 +3947,7 @@
    "repo": "Kiwi3p/fm1-deal-or-no-deal",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3560,7 +3961,7 @@
    "repo": "seanohollaren/fm1-doom",
    "page": "https://doom.deadlockinteractive.com/",
    "compatible": false,
-   "reason": "web build with an unknown interface",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3574,7 +3975,7 @@
    "repo": "ChanceTheMaker/doom-fm1-smk",
    "page": "https://chancethemaker.github.io/doom-fm1-smk/",
    "compatible": false,
-   "reason": "web build with an unknown interface",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3587,11 +3988,14 @@
    "desc": "First-person retro grid-based dungeon crawler game (Eye of the Beholder style) running natively on the FM-1 hardware with integrated audio tracking",
    "repo": "",
    "page": "",
-   "compatible": false,
-   "reason": "no public GitHub repository",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/dungeontracker-1.5.fwsc",
+   "pkgVersion": "1.5",
+   "license": "GPL-3.0"
   },
   {
    "name": "RetroDash",
@@ -3602,7 +4006,7 @@
    "repo": "nasonliu/retrodash",
    "page": "",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
@@ -3616,10 +4020,767 @@
    "repo": "shan-sherif/fm-1-midi-mania",
    "page": "https://shan-sherif.github.io/fm-1-midi-mania/webapp/installer/",
    "compatible": false,
-   "reason": "no web build (.wasm): hardware firmware only",
+   "reason": "no update package (.fwsc) or web build published",
    "url": "",
    "abi": "",
    "size": 0
+  },
+  {
+   "name": "Arctic Scream",
+   "author": "p0larpatch",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Dark ambient drones and feedback screams from the frozen tundra",
+   "repo": "polarpatch/arctic-scream-fm-1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/arctic-1.3.1.fwsc",
+   "pkgVersion": "1.3.1",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Arcturus S6",
+   "author": "Zeptosecond DSP",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "An experimental, self-playing wavetable instrument for generative, evolving soundscapes",
+   "repo": "zeptosecond-dsp/arcturus-s6",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/arcturus-1.7.fwsc",
+   "pkgVersion": "1.7",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "B3 ORGAN",
+   "author": "R-Jeb",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A B3 tonewheel organ: 91 wheels, nine drawbars, key click, vibrato and chorus, percussion, overdrive, reverb and a Leslie, computed from setBfree's ow",
+   "repo": "r-jeb/setbfree-fm1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/b3organ-0.2.fwsc",
+   "pkgVersion": "0.2",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "BEETLE BLUE",
+   "author": "Joppe Sikken (SikkenWorks)",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "BEETLE BLUE turns your M-VAVE FM1 into a six-lane drum tracker",
+   "repo": "sikkenworks/beetle-blue",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/beetleblue-1.3.fwsc",
+   "pkgVersion": "1.3",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Berlinan",
+   "author": "Jiří Píša",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A generative Berlin School MIDI sequencer: a small ensemble of voices that repeat, phase against each other on loops of unequal length and earn their ",
+   "repo": "jiripisa/fm1-berlinan",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/berlinan-0.5.1.fwsc",
+   "pkgVersion": "0.5.1",
+   "license": "GPL-2.0-or-later",
+   "vendor": false
+  },
+  {
+   "name": "Blop",
+   "author": "Obsimo",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Explore sound with your Blop: one-finger chords from 38 grids, chord rhythms, a bass with its own riffs and a few discreet drums with sidechain, while",
+   "repo": "osr-experiment/osr-1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/blop-1.1.0.fwsc",
+   "pkgVersion": "1.1.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "bocjuhn",
+   "author": "ryuji kanagawa",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "An experimental instrument with six tracks and eight sound engines",
+   "repo": "ianp06/bocjuhn",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/bocjuhn-1.0.0-rc7.fwsc",
+   "pkgVersion": "1.0.0-rc7",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Chipbox",
+   "author": "Pasquale Barilla",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A chiptune groovebox with replicas of the NES, Game Boy and Sega Master System sound chips, in three views: RACK for the 16 steps of a page, CHIP to s",
+   "repo": "pbarilla/chipbox",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/chipbox-1.4.0-helpfulharold.fwsc",
+   "pkgVersion": "1.4.0-helpfulharold",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "CLATTER Pocket",
+   "author": "allmyfriendsaresynths",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A generative drum machine on the LXR sound engine",
+   "repo": "clickysteve/clatter-pocket",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/clatter-1.0.0.fwsc",
+   "pkgVersion": "1.0.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "DARK-1",
+   "author": "Polystellarflow",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Dark-music firmware for the FM-1: 21 genres, 210 pieces, from dark techno and cinema to dark ambient, witch house and dungeon synth",
+   "repo": "sparky480v/dark-1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/dark1-1.0.4.fwsc",
+   "pkgVersion": "1.0.4",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Daurade",
+   "author": "delirioux",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Generative French house after a certain robotic duo: a filtered loop opening over sixteen bars, a mix that pumps on every kick and a robot voice singi",
+   "repo": "delirioux/daurade",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/daurade-1.0-1862f39.fwsc",
+   "pkgVersion": "1.0-1862f39",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Del Rio",
+   "author": "Jess Del Rio",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A rhythm box of ceremony percussion: djembe, cajon, udu, clapsticks, maracas and triangle, their real strokes on the black keys, a step sequencer on t",
+   "repo": "jsopdebeeck/fm1-delrio",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/delrio-1.0.fwsc",
+   "pkgVersion": "1.0",
+   "license": "MPL-2.0",
+   "vendor": false
+  },
+  {
+   "name": "Demake",
+   "author": "Sequencist",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "An ambient lofi machine on 64 of its author's own pedal recordings: three synths, each with a piano roll, eight patterns, its own reverb, delay or tap",
+   "repo": "inigohernandez/demake-synth",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/demake-0.4.24.fwsc",
+   "pkgVersion": "0.4.24",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "DRIFT",
+   "author": "FBNFRTG",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "An ambient instrument for live sessions: warm synths, spacious pads and delicate plucks over a generative Euclidean sequencer on one track, with delay",
+   "repo": "fbnfrtg/drift-fm1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/drift-0.9.6.fwsc",
+   "pkgVersion": "0.9.6",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Flyfish",
+   "author": "delirioux",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "One piece on the FM-1: Chopin's Étude Op",
+   "repo": "delirioux/flyfish",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/flyfish-1.1-c15e548.fwsc",
+   "pkgVersion": "1.1-c15e548",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "GuitChordi",
+   "author": "Stoogs",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A chord and string instrument: 16 synthesized sounds, 50 chord styles, editable voicings, guitar tunings, and Freeplay, Strum and Arp modes with parti",
+   "repo": "stoogs/guitchordi",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/guitchordi-0.1.0-beta.1.fwsc",
+   "pkgVersion": "0.1.0-beta.1",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "hawk-chua",
+   "author": "plieuwski",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Noise and modeling synth with GM-style presets (4 banks, 512) and a 4-track tape recorder: each voice a live Chua circuit or noise program, through va",
+   "repo": "plieuw/hawk-chua",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/hawkchua-1.7.fwsc",
+   "pkgVersion": "1.7",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "HERA",
+   "author": "Ben Badio",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A chord groovebox after the Roland J-6: 100 chord sets, 9 phrase styles with 12 variations each and a 64-pattern step sequencer, on a four-voice Juno-",
+   "repo": "benbadio/hera-fm1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/hera-1.1.fwsc",
+   "pkgVersion": "1.1",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "J6",
+   "author": "JackieAlacrity2373",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A six-voice JUNO-60 style polysynth with chorus, arpeggiator and a 16-step recorder",
+   "repo": "jackiealacrity2373/fm1-j6",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/j6-1.4.0.fwsc",
+   "pkgVersion": "1.4.0",
+   "license": "MPL-2.0",
+   "vendor": false
+  },
+  {
+   "name": "Jam Playground",
+   "author": "Bob Perry",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Jam Playground plays a new song the moment you turn the FM-1 on",
+   "repo": "bunnyorchard/jam-playground",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/jam-1.2.0.fwsc",
+   "pkgVersion": "1.2.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Kitten Synths",
+   "author": "Black Kitten Devices",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "NEW: two drum tracks",
+   "repo": "blackkittendevices/kitten-synths",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/kitten-2.8-kitten.8.fwsc",
+   "pkgVersion": "2.8-kitten.8",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Kitten Rack",
+   "author": "Black Kitten Devices",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A Eurorack-style modular synth: over 50 modules (VCOs, a Moog-style ladder, a low pass gate, Turing, Marbles, chaos, effects) patched with cables on t",
+   "repo": "blackkittendevices/kitten-rack",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/kittenrack-1.3.0.fwsc",
+   "pkgVersion": "1.3.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "LUXR",
+   "author": "HOLODECK AUDIOTOOLS",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "An LXR-style drum machine: eight sounds, each a synth and a sample layer, with drive, delay, reverb, filter, compressor and limiter",
+   "repo": "orbitator/luxr",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/luxr-2026.10.25.fwsc",
+   "pkgVersion": "2026.10.25",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Makohai",
+   "author": "delirioux",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A generative groovebox in the style of early-90s PC tracker music: six lanes (lead, arp, pad, bass, drums, sfx) composed live in ten S3M-scene styles",
+   "repo": "delirioux/makohai",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/makohai-1.4.fwsc",
+   "pkgVersion": "1.4",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "MODELAR",
+   "author": "Hirakos",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A semi-modular drone synth played like a Kaoss Pad: four oscillators modulating each other through eight routings, and keys that move a cursor on an X",
+   "repo": "hirakos999/modelar",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/modelar-0.3.fwsc",
+   "pkgVersion": "0.3",
+   "license": "MPL-2.0",
+   "vendor": false
+  },
+  {
+   "name": "MORPHEUS",
+   "author": "Ben Badio",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A pattern sequencer after Reason's Matrix: up to four channels of MIDI sequence data out, and a few voices built in to build the patterns with",
+   "repo": "benbadio/morpheus-fm1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/morpheus-1.0.0.fwsc",
+   "pkgVersion": "1.0.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "NACHTFAHRT",
+   "author": "Cranky Man",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Generative 1970s Berlin School: two sequencers drift against each other over a drone, in eight endless pieces",
+   "repo": "fartypants/fm1-nachtfahrt",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/nachtfahrt-1.0.0.fwsc",
+   "pkgVersion": "1.0.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Nauclerus",
+   "author": "Mr. Roboto",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Hortator's eight-track groovebox taken further: ORB Remix with 256 pattern mappings, the TB-3PO acid melody generator with 22 scales, more acid wavesh",
+   "repo": "mr-roboto/nauclerus",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/nauclerus-0.25.0.fwsc",
+   "pkgVersion": "0.25.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Penumbra",
+   "author": "Lunar Eclipse Forge",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A cinematic space drone you travel through, not one that plays itself",
+   "repo": "madmooneyham/penumbra",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/penumbra-1.2.fwsc",
+   "pkgVersion": "1.2",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "PT/FM",
+   "author": "hitosu",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A ProTracker-style pocket studio: DX7 FM, JUNO-106, TB-303, chip, sampler and FUSION instruments side by side, 16 voices on both cores, a loop station",
+   "repo": "hitosu/ptfm",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/ptfm-0.26+91deae9e.fwsc",
+   "pkgVersion": "0.26",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "PULHRA",
+   "author": "646timur-cell",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A minimal Elektron-style groovebox: four tracks, patterns in banks A to E, parameter locks, trig conditions, chains, an arpeggiator per track and per-",
+   "repo": "646timur-cell/pulhra_main",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/pulhra-1.5.1.fwsc",
+   "pkgVersion": "1.5.1",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "RUPTURE",
+   "author": "Joppe Sikken (SikkenWorks)",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A monophonic bass synth on Cycle Exchange Synthesis: two sub-oscillators, a ladder filter, Channel EQ, eight effects from MOSFET drive to octave fuzz,",
+   "repo": "sikkenworks/rupture",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/rupture-1.84.2.fwsc",
+   "pkgVersion": "1.84.2",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Scintilla",
+   "author": "Joakim Eriksson",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "The 1981 Elka Synthex on the FM-1: all 80 factory sounds, Paul Wiffen's laser harp among them, checked sample by sample against the original",
+   "repo": "joakimeriksson/scintilla-fm1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/scintilla-0.2.0.fwsc",
+   "pkgVersion": "0.2.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "FM-1 SID",
+   "author": "joakimeriksson",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A SID chip on the FM-1, its own firmware on fm1-dock (fm1-dock's USB, installer and rescue; the sine as the fallback): a C64 tune player (reSID 0.16 a",
+   "repo": "joakimeriksson/fm1-sid",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/fm1sid-0.3.fwsc",
+   "pkgVersion": "0.3",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "SiDJ",
+   "author": "thomasj (tubesockor)",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Plays C64 SID music from HVSC on an emulated 6581 or 8580 and lets you remix every voice live: transpose, mute, solo, swap waveforms, bend envelopes a",
+   "repo": "thomasj/fm1-sidj",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/sidj-1.3.0.fwsc",
+   "pkgVersion": "1.3.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Sill",
+   "author": "delirioux",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Generative 90s eurodance, pickled in 1995: a song in intro, verse, pre-chorus, chorus and break, with lift, pump, vox and energy on the knobs, the hoo",
+   "repo": "delirioux/sill",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/sill-1.0.2-ea87155.fwsc",
+   "pkgVersion": "1.0.2-ea87155",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "Smileyface",
+   "author": "pbarilla",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "You're making acid, baby! Smash that LFO button until you hear something you like, and then twist those knobs! Now with 100% more FX! A truly trippy e",
+   "repo": "pbarilla/smileyface",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/smileyface-1.0.6.fwsc",
+   "pkgVersion": "1.0.6",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "SPELLBOX",
+   "author": "Philippe Jaccoud",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "SPELLBOX turns the FM-1 into a talking spelling toy after the 1978 Speak & Spell: an 8-character fluorescent display, a 10-pole LPC voice at 8 kHz thr",
+   "repo": "pjac1810/spellbox",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/spellbox-0.3.fwsc",
+   "pkgVersion": "0.3",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "TastyWaves",
+   "author": "marksweiss",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A 12-voice wavetable synth: two oscillators a voice, a resonant filter, two envelopes, an LFO, four effects, an arpeggiator and two step sequencers fo",
+   "repo": "marksweiss/tastywaves",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/tastywaves-1.0.1.fwsc",
+   "pkgVersion": "1.0.1",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "VESPER",
+   "author": "Fat Cat Studios",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "An ambient worship synth",
+   "repo": "fatcatstudios-hub/vesper-fm1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/vesper-2.0.1.fwsc",
+   "pkgVersion": "2.0.1",
+   "license": "see the repository",
+   "vendor": false
+  },
+  {
+   "name": "Wanderer",
+   "author": "Nicholas James / Low Vision Music",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "Wanderer 1.4: author-tested synth for low-vision musicians",
+   "repo": "spinnicholas/lvm-wanderer-fm1",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/wanderer-1.4.0.fwsc",
+   "pkgVersion": "1.4.0",
+   "license": "GPL-3.0",
+   "vendor": false
+  },
+  {
+   "name": "XMOD",
+   "author": "Kot Morderca",
+   "group": "Also in the FM-1 emulator list",
+   "section": "Sound & groovebox",
+   "desc": "A MOD / XM tracker, sampler and groovebox: play, write and save FastTracker 2 and ProTracker songs on the FM-1, up to 32 channels, with a ProTracker m",
+   "repo": "kotmorderca/xmod",
+   "page": "",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 0,
+   "pkg": "https://thefirmwarehub.com/fw/xmod-1.2.0.fwsc",
+   "pkgVersion": "1.2.0",
+   "license": "GPL-3.0",
+   "vendor": false
   }
- ]
+ ],
+ "hwSource": "https://github.com/joakimeriksson/fm1-emu (web/firmwares.json)"
 }

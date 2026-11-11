@@ -530,9 +530,12 @@ juce::File FirmwareInstaller::install (const juce::String& owner, const juce::St
         }
         else { error = "repository not found: " + owner + "/" + repo + " (" + e + ")"; return {}; }
     }
+    juce::StringArray packages;     // .fwsc trouves (branche + chemin), essayes si aucune version web ne convient
+    juce::StringArray packageBranches;
     for (auto& br : branches)
     {
         say ("Looking for the firmware in " + br + "...");
+        const int before = packages.size();
         juce::MemoryBlock tree; juce::String e;
         if (! fetch ("https://api.github.com/repos/" + owner + "/" + repo + "/git/trees/" + br + "?recursive=1", tree, e)) continue;
         auto v = juce::JSON::parse (tree.toString());
@@ -542,10 +545,20 @@ juce::File FirmwareInstaller::install (const juce::String& owner, const juce::St
             {
                 const auto path = item.getProperty ("path", {}).toString();
                 const auto low = path.toLowerCase();
+                if (low.endsWith (".fwsc"))
+                {
+                    // paquet materiel (le firmware que l'on flashe dans la FM-1) : pas ceux d'origine de M-VAVE embarques pour la restauration
+                    const auto fileLow = low.fromLastOccurrenceOf ("/", false, false);
+                    if (! (fileLow.startsWith ("fm-1") || fileLow.contains ("original") || fileLow.contains ("stock") || low.contains ("restore")))
+                        packages.add (path);
+                    continue;
+                }
                 if (! low.endsWith (".wasm")) continue;
                 if (low.contains ("espeak") || low.contains ("flac") || low.contains ("vendor") || low.contains ("reader") || low.contains ("node_modules")) continue;
                 candidates.add (path);
             }
+        while (packageBranches.size() < packages.size()) packageBranches.add (br);
+        juce::ignoreUnused (before);
         // les emulateurs d'abord
         std::stable_sort (candidates.begin(), candidates.end(), [] (const juce::String& a, const juce::String& b)
         {
@@ -571,7 +584,23 @@ juce::File FirmwareInstaller::install (const juce::String& owner, const juce::St
             return f;
         }
     }
-    error = "no FM-1 firmware (.wasm web build) found in " + owner + "/" + repo;
+    // pas de version web : le paquet materiel le plus recent (nom le plus grand), lance dans l'emulateur de la puce
+    for (int i = packages.size(); --i >= 0;)
+    {
+        juce::String e;
+        say ("Downloading " + packages[i] + "...");
+        juce::MemoryBlock pkg;
+        if (! fetch ("https://raw.githubusercontent.com/" + owner + "/" + repo + "/" + packageBranches[i] + "/" + packages[i], pkg, e)) continue;
+        if (! FirmwareHost::isHardwarePackage (pkg.getData(), pkg.getSize())) continue;
+        folder().createDirectory();
+        auto f = folder().getChildFile (juce::File::createLegalFileName (repo) + ".fwsc");
+        f.replaceWithData (pkg.getData(), pkg.getSize());
+        f.withFileExtension ("txt").replaceWithText ("source: https://github.com/" + owner + "/" + repo + "\npackage: " + packageBranches[i] + "/" + packages[i]
+                                                     + "\nlicense: see the repository\n");
+        say ("Installed");
+        return f;
+    }
+    error = "no FM-1 firmware (update package .fwsc or web build .wasm) found in " + owner + "/" + repo;
     return {};
 }
 } // namespace fm9

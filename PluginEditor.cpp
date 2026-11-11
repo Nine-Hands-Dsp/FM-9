@@ -1969,10 +1969,11 @@ void FM9Editor::activateFirmware (const String& name)
 void FM9Editor::openCatalog()
 {
     catalog = std::make_unique<fm9::FirmwareCatalogView> (light, med, bold);
-    catalog->onClose = [this] { MessageManager::callAsync ([safe = Component::SafePointer<FM9Editor> (this)] { if (safe != nullptr) safe->catalog.reset(); }); };
-    catalog->onActivate = [this] (const String& name)
+    const Component::SafePointer<FM9Editor> self (this);
+    catalog->onClose = [self] { MessageManager::callAsync ([self] { if (self != nullptr) self->catalog.reset(); }); };
+    catalog->onActivate = [self] (const String& name)
     {
-        MessageManager::callAsync ([safe = Component::SafePointer<FM9Editor> (this), name] { if (safe != nullptr) { safe->catalog.reset(); safe->activateFirmware (name); } });
+        MessageManager::callAsync ([self, name] { if (self != nullptr) { self->catalog.reset(); self->activateFirmware (name); } });
     };
     addAndMakeVisible (*catalog);
     catalog->setBounds (getLocalBounds());
@@ -1981,7 +1982,7 @@ void FM9Editor::openCatalog()
 void FM9Editor::installFromGitHub()
 {
     auto* w = new AlertWindow ("Install a firmware from GitHub",
-                               "GitHub repository of an FM-1 firmware with a web emulator\n(owner/repo, github.com link or github.io page)", MessageBoxIconType::NoIcon, this);
+                               "GitHub repository of an FM-1 firmware: update package (.fwsc) or web build\n(owner/repo, github.com link or github.io page)", MessageBoxIconType::NoIcon, this);
     w->addTextEditor ("repo", "https://deadactive.github.io/hortator/webapp/installer/");
     w->addButton ("Install", 1, KeyPress (KeyPress::returnKey));
     w->addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
@@ -2003,7 +2004,7 @@ void FM9Editor::installFromGitHub()
             {
                 if (safe == nullptr) return;
                 if (file == File()) AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Installation failed:\n" + err, "OK", safe.getComponent());
-                else safe->activateFirmware (file.getFileNameWithoutExtension());
+                else safe->activateFirmware (file.getFileNameWithoutExtension() + (file.hasFileExtension ("fwsc") ? fm9::FirmwareInstaller::hardwareSuffix : String()));
             });
         });
     }), true);

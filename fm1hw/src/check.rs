@@ -11,6 +11,7 @@ fn main() {
     let mut buf = vec![0i16; 65536];
     let (t0, mut frames, mut peak, mut step) = (Instant::now(), 0u64, 0i32, 0);
     while (frames as f64) < secs * 44100.0 {
+        if t0.elapsed().as_secs_f64() > 20.0 { println!("ARRET: pas de son apres 20 s (firmware bloque ou trop lent)"); std::process::exit(2); }
         let n = fm1hw::fm1hw_run(m, 20000, buf.as_mut_ptr(), buf.len() / 2);
         if n < 0 { let mut e = [0i8; 256]; fm1hw::fm1hw_error(m, e.as_mut_ptr(), 256); println!("ARRET: {}", unsafe { std::ffi::CStr::from_ptr(e.as_ptr()) }.to_string_lossy()); break; }
         if frames > 44100 { for s in &buf[..n as usize * 2] { peak = peak.max((*s as i32).abs()); } }

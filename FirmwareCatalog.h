@@ -11,10 +11,26 @@ namespace fm9
 {
 struct CatalogEntry
 {
-    juce::String name, author, group, desc, repo, page, reason, url, abi;
-    bool compatible = false;
+    juce::String name, author, group, desc, repo, page, reason, url, abi, pkg, license;
+    bool compatible = false, vendor = false;
     juce::int64 size = 0;
-    juce::String fileName() const { return juce::File::createLegalFileName (repo.fromFirstOccurrenceOf ("/", false, false)); }
+    // nom des fichiers installes : le depot, sinon le nom du firmware
+    juce::String fileName() const
+    {
+        const auto base = repo.isNotEmpty() ? repo.fromFirstOccurrenceOf ("/", false, false) : name;
+        return juce::File::createLegalFileName (base.isNotEmpty() ? base : name);
+    }
+    bool hardware() const { return pkg.isNotEmpty(); }
+    bool web() const { return url.isNotEmpty(); }
+    bool isInstalled (const juce::StringArray& inst) const
+    {
+        return inst.contains (fileName()) || inst.contains (fileName() + FirmwareInstaller::hardwareSuffix);
+    }
+    // ce que Load lance : le paquet materiel (le vrai firmware) s'il est installe, sinon la version web
+    juce::String loadName (const juce::StringArray& inst) const
+    {
+        return inst.contains (fileName() + FirmwareInstaller::hardwareSuffix) ? fileName() + FirmwareInstaller::hardwareSuffix : fileName();
+    }
 };
 
 struct FirmwareCatalog
@@ -37,6 +53,8 @@ struct FirmwareCatalog
                 e.reason = f.getProperty ("reason", {}).toString(); e.url = f.getProperty ("url", {}).toString();
                 e.abi = f.getProperty ("abi", {}).toString();       e.compatible = (bool) f.getProperty ("compatible", false);
                 e.size = (juce::int64) f.getProperty ("size", 0);
+                e.pkg = f.getProperty ("pkg", {}).toString();       e.license = f.getProperty ("license", {}).toString();
+                e.vendor = (bool) f.getProperty ("vendor", false);
                 if (e.name.isNotEmpty()) out.push_back (e);
             }
         return out;
@@ -56,27 +74,49 @@ struct FirmwareCatalog
         return builtin;
     }
 
-    // telechargement direct (fichier verifie lors de la creation du catalogue, reverifie ici) ; thread d'arriere-plan
-    static bool install (const CatalogEntry& e, juce::String& error)
+    static bool download (const juce::String& url, juce::MemoryBlock& out, juce::String& error)
     {
-        if (! e.compatible || e.url.isEmpty()) { error = e.reason; return false; }
-        juce::URL u (e.url);
+        juce::URL u (url);
         int status = 0;
         auto in = u.createInputStream (juce::URL::InputStreamOptions (juce::URL::ParameterHandling::inAddress)
                                            .withExtraHeaders ("User-Agent: FM-9 (NINE HANDS | DSP)").withConnectionTimeoutMs (20000)
                                            .withStatusCode (&status).withNumRedirectsToFollow (5));
         if (in == nullptr || status >= 400) { error = "download failed (HTTP " + juce::String (status) + ")"; return false; }
-        juce::MemoryBlock wasm;
-        in->readIntoMemoryBlock (wasm);
-        if (FirmwareInstaller::abiOf (wasm.getData(), wasm.getSize()) == 0) { error = "the downloaded file is not an FM-1 web build"; return false; }
-        juce::String err;
-        if (FirmwareHost::create (wasm.getData(), wasm.getSize(), juce::File(), err) == nullptr) { error = err; return false; }
+        out.reset();
+        in->readIntoMemoryBlock (out);
+        return out.getSize() > 0;
+    }
+
+    // installe le paquet materiel (.fwsc) et la version web (.wasm) quand ils existent ; thread d'arriere-plan
+    static bool install (const CatalogEntry& e, juce::String& error)
+    {
+        if (! e.compatible) { error = e.reason; return false; }
         FirmwareInstaller::folder().createDirectory();
-        const auto f = FirmwareInstaller::folder().getChildFile (e.fileName() + ".wasm");
-        if (! f.replaceWithData (wasm.getData(), wasm.getSize())) { error = "cannot write " + f.getFullPathName(); return false; }
-        f.withFileExtension ("txt").replaceWithText ("name: " + e.name + "\nauthor: " + e.author + "\nsource: https://github.com/" + e.repo
-                                                     + "\nfile: " + e.url + "\nlicense: see the repository (GPL-3.0 for the Felucca family)\n");
-        return true;
+        int done = 0;
+        juce::String errs;
+        auto note = [&] (const juce::String& what, const juce::String& src)
+        {
+            FirmwareInstaller::folder().getChildFile (e.fileName() + ".txt").replaceWithText (
+                "name: " + e.name + "\nauthor: " + e.author + (e.repo.isNotEmpty() ? "\nsource: https://github.com/" + e.repo : juce::String())
+                + "\n" + what + ": " + src + "\nlicense: " + (e.license.isNotEmpty() ? e.license : juce::String ("see the project")) + "\n");
+        };
+        if (e.hardware())
+        {
+            juce::MemoryBlock fw; juce::String err;
+            if (! download (e.pkg, fw, err)) errs << "package: " << err << "  ";
+            else if (! FirmwareHost::isHardwarePackage (fw.getData(), fw.getSize())) errs << "package: not an FM-1 update package  ";
+            else if (FirmwareInstaller::folder().getChildFile (e.fileName() + ".fwsc").replaceWithData (fw.getData(), fw.getSize())) { ++done; note ("package", e.pkg); }
+        }
+        if (e.web())
+        {
+            juce::MemoryBlock wasm; juce::String err;
+            if (! download (e.url, wasm, err)) errs << "web build: " << err;
+            else if (FirmwareInstaller::abiOf (wasm.getData(), wasm.getSize()) == 0) errs << "web build: not an FM-1 web build";
+            else if (FirmwareHost::create (wasm.getData(), wasm.getSize(), juce::File(), err) == nullptr) errs << "web build: " << err;
+            else if (FirmwareInstaller::folder().getChildFile (e.fileName() + ".wasm").replaceWithData (wasm.getData(), wasm.getSize())) { ++done; if (! e.hardware()) note ("file", e.url); }
+        }
+        if (done == 0) error = errs.trim();
+        return done > 0;
     }
 };
 
@@ -123,7 +163,7 @@ public:
         g.drawText ("FM-1 firmware catalog", head.removeFromTop (28), juce::Justification::centredLeft);
         int ok = 0; for (auto& e : entries) ok += e.compatible ? 1 : 0;
         g.setColour (kDim); g.setFont (font (fReg, 13.0f));
-        g.drawText (juce::String (ok) + " compatible / " + juce::String ((int) entries.size()) + " firmwares  -  list from github.com/aroum/fm1-custom-fw"
+        g.drawText (juce::String (ok) + " compatible / " + juce::String ((int) entries.size()) + " firmwares  -  lists: aroum/fm1-custom-fw, fm1-emu"
                     + (date.isNotEmpty() ? "  -  " + date : juce::String()), head.removeFromTop (20), juce::Justification::centredLeft);
         // pied : etat + boutons
         auto foot = getLocalBounds().reduced (18).removeFromBottom (footerH).toFloat();
@@ -143,7 +183,8 @@ public:
         else if (btnAll().contains (p))
         {
             std::vector<CatalogEntry> todo;
-            for (auto& x : entries) if (x.compatible && ! installed.contains (x.fileName())) todo.push_back (x);
+            // tous les firmwares libres compatibles (celui de M-VAVE s'installe a part, d'un clic)
+            for (auto& x : entries) if (x.compatible && ! x.vendor && ! x.isInstalled (installed)) todo.push_back (x);
             if (todo.empty()) { status = "All compatible firmwares are already installed."; repaint(); return; }
             runInstall (todo);
         }
@@ -216,20 +257,29 @@ private:
                 auto btn = o.installRect (row);
                 // badge
                 auto badge = inner.removeFromRight (240).removeFromLeft (128).withSizeKeepingCentre (122, 20).toFloat();
+                if (e.compatible) badge = badge.translated (0.0f, -7.0f);
                 const auto col = e.compatible ? juce::Colour (0xff5be08a) : juce::Colour (0xff8d96a4);
                 g.setColour (col.withAlpha (0.16f)); g.fillRoundedRectangle (badge, 10.0f);
                 g.setColour (col); g.setFont (font (o.fMed, 12.0f));
                 g.drawText (e.compatible ? "Compatible" : "Not compatible", badge.toNearestInt(), juce::Justification::centred);
+                if (e.compatible)
+                {
+                    // type : paquet materiel (le vrai firmware, emule) et / ou version web
+                    const auto kind = e.hardware() && e.web() ? juce::String ("HW + WEB") : e.hardware() ? juce::String ("HARDWARE") : juce::String ("WEB");
+                    g.setColour (kDim); g.setFont (font (o.fBold, 10.0f).withExtraKerningFactor (0.1f));
+                    g.drawText (kind, badge.translated (0.0f, 17.0f).toNearestInt(), juce::Justification::centred);
+                }
                 // nom, auteur, description ou raison
                 g.setColour (e.compatible ? kText : kText.withAlpha (0.6f)); g.setFont (font (o.fMed, 15.0f));
                 g.drawText (e.name + (e.author.isNotEmpty() ? "" : ""), inner.removeFromTop (20), juce::Justification::centredLeft);
                 g.setColour (kDim); g.setFont (font (o.fReg, 12.5f));
-                juce::String sub = (e.author.isNotEmpty() ? "by " + e.author + "  -  " : juce::String()) + (e.compatible ? e.desc : e.reason);
+                juce::String sub = (e.author.isNotEmpty() ? "by " + e.author + "  -  " : juce::String())
+                                   + (e.vendor ? juce::String ("M-VAVE's own firmware, downloaded from M-VAVE  -  ") : juce::String()) + (e.compatible ? e.desc : e.reason);
                 g.drawFittedText (sub, inner, juce::Justification::topLeft, 1, 0.9f);
                 // bouton
                 if (e.compatible)
                 {
-                    const bool inst = o.installed.contains (e.fileName());
+                    const bool inst = e.isInstalled (o.installed);
                     const bool doing = o.current == r.entry;
                     g.setColour (inst ? kHover : kAccent.withAlpha (o.busy ? 0.3f : 0.9f)); g.fillRoundedRectangle (btn.toFloat(), 7.0f);
                     if (inst) { g.setColour (kBorder); g.drawRoundedRectangle (btn.toFloat().reduced (0.5f), 7.0f, 1.0f); }
@@ -266,7 +316,7 @@ private:
                 return;
             }
             if (! e.compatible || owner->busy) return;
-            if (owner->installed.contains (e.fileName())) { if (owner->onActivate) owner->onActivate (e.fileName()); return; }
+            if (e.isInstalled (owner->installed)) { if (owner->onActivate) owner->onActivate (e.loadName (owner->installed)); return; }
             owner->runInstall ({ e });
         }
     } list;

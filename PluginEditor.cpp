@@ -759,9 +759,9 @@ void FM9Editor::drawEmbossed (Graphics& g, const String& t, Rectangle<float> r, 
         // gravure en relief dans le silicone : arete claire en haut a gauche, ombre en bas a droite
         g.setColour (Colours::black.withAlpha (0.85f));
         g.drawText (t, r.translated (0.7f, 0.7f), Justification::centred, false);
-        g.setColour (Colour (0xff6c7177).withAlpha (0.40f));
+        g.setColour (Colour (0xff80868c).withAlpha (0.45f));
         g.drawText (t, r.translated (-0.5f, -0.5f), Justification::centred, false);
-        g.setColour (Colour (0xff36393d));
+        g.setColour (Colour (0xff4a4e53));
         g.drawText (t, r, Justification::centred, false);
         return;
     }
@@ -797,10 +797,12 @@ void FM9Editor::drawPrint (Graphics& g)
 {
     // inscriptions sur la coque (Poppins, vectoriel)
     g.setColour (cInk);
-    g.setFont (fontOf (med, 17.0f).withExtraKerningFactor (0.10f));
-    auto label = [&g] (const String& t, Point<float> knob, float y)
+    g.setFont (fontOf (med, 22.0f).withExtraKerningFactor (0.08f));
+    auto label = [&g] (const String& t, Point<float> knob, float)
     {
-        g.drawText (t, Rectangle<float> (knob.x - 90, y - 12, 180, 24), Justification::centred, false);
+        // inscription rapprochee du potard (demande de l'utilisateur) : juste au-dessus de sa couronne
+        const float y = knob.y - L::knobD * 0.46f - 17.0f;
+        g.drawText (t, Rectangle<float> (knob.x - 100, y - 14, 200, 28), Justification::centred, false);
     };
     label ("MASTER", L::knob_master, L::labelsTopY);
     label ("SELECT", L::knob_select, L::labelsTopY);
@@ -831,7 +833,7 @@ void FM9Editor::drawPrint (Graphics& g)
         {
             drawEmbossed (g, "PLAY", r.withHeight (r.getHeight() * 0.5f).translated (0, r.getHeight() * 0.10f), 15.0f, false, {});
             drawEmbossed (g, "STOP", r.withTrimmedTop (r.getHeight() * 0.5f).translated (0, -r.getHeight() * 0.06f), 15.0f, false, {});
-            g.setColour (Colour (0xff36393d)); g.fillRect (r.getCentreX() - 16.0f, r.getCentreY() + 1.0f, 32.0f, 1.2f);
+            g.setColour (Colour (0xff4a4e53)); g.fillRect (r.getCentreX() - 16.0f, r.getCentreY() + 1.0f, 32.0f, 1.2f);
         }
         else drawEmbossed (g, fnNames[i], r, 17.0f, false, {});
     }

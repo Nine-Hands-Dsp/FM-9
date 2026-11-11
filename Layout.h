@@ -59,8 +59,8 @@ inline const juce::Rectangle<float> fnKeys[12] = {
     juce::Rectangle<float> { 1203.33f, 365.83f, 75.00f, 75.00f },
     juce::Rectangle<float> { 1297.50f, 365.83f, 75.00f, 75.00f } };
 inline const juce::Rectangle<float> octKeys[2] = {
-    juce::Rectangle<float> { 102.50f, 396.67f, 83.33f, 55.00f },
-    juce::Rectangle<float> { 220.83f, 396.67f, 85.00f, 55.00f } };
+    juce::Rectangle<float> { 112.08f, 396.67f, 83.34f, 55.00f },
+    juce::Rectangle<float> { 213.75f, 396.67f, 83.33f, 55.00f } };
 constexpr juce::Point<float> logoCentre { 750.00f, 870.00f };
 constexpr float logoW = 166.67f;
 constexpr float labelsTopY = 72.50f, labelsMidY = 229.17f;

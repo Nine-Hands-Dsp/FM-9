@@ -34,8 +34,8 @@ SHELL = R(100, 460, 1900, 1540); SHELL_R = 88 * F
 # ecran agrandi (demande de l'utilisateur) : contour reduit au minimum, comme les bords gauche et droit d'Octopus
 SCREEN_BEZEL = R(535, 545, 1030, 1040); BEZEL_R = 22 * F
 SCREEN_GLASS = R(546, 556, 1019, 1029); GLASS_R = 9 * F
-OCT_PAD = R(207, 923, 484, 1011); OCT_PAD_R = 12 * F
-OCT_KEYS = [R(223, 936, 323, 1002), R(365, 936, 467, 1002)]      # mesurees sur la photo de la FM-1
+OCT_PAD = R(221.5, 923, 469.5, 1015); OCT_PAD_R = 12 * F     # contour resserre autour des deux touches
+OCT_KEYS = [R(234.5, 936, 334.5, 1002), R(356.5, 936, 456.5, 1002)]   # touches de la FM-1, ecart comme les touches de fonction
 FN_PAD = R(1060, 762, 1775, 1012); FN_PAD_R = 22 * F
 FN_COLS = [1140, 1251, 1364, 1476, 1589, 1702]
 FN_ROWS = [830, 944]

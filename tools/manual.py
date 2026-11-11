@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -56,8 +56,8 @@ def strip(parts, path, gap=16):
 screens = strip([screen_crop(n) for n in ("apercu_home.png", "apercu_algo.png", "apercu_fx.png")], os.path.join(TMP, "fm9_screens1.png"))
 screens2 = strip([screen_crop(n) for n in ("apercu_edit.png", "apercu_seq.png")], os.path.join(TMP, "fm9_screens2.png"))
 
-# ---------- couverture : FM-9 detouree (coins arrondis = alpha du fond), reflet au sol, halo bleu tres doux ----------
-msk = np.asarray(Image.open(os.path.join(ROOT, "assets", "plugin", "background.png")).getchannel("A").resize(src.size, Image.LANCZOS))
+# ---------- couverture : FM-9 detouree (coins arrondis = alpha du boitier), reflet au sol, halo bleu tres doux ----------
+msk = np.asarray(Image.open(os.path.join(ROOT, "tools", "shell_alpha.png")).convert("L").resize(src.size, Image.LANCZOS))
 cut = Image.new("RGBA", src.size, (0, 0, 0, 0)); cut.paste(src, (0, 0), Image.fromarray(msk))
 cut = cut.crop(cut.getbbox())
 cw, ch = cut.size
@@ -291,6 +291,34 @@ T = dict(
         "<b>Install from file (.wasm)</b> installe un fichier déjà téléchargé. <b>FM-9 synthesizer</b> revient au synthé.",
         "Chaque firmware garde ses sauvegardes (patterns, réglages) dans le dossier Nine Hands DSP/FM-9/Firmwares ; le firmware choisi est mémorisé avec le projet Reaper. "
         "Ces firmwares sont des projets libres (GPL-3.0 pour la famille Felucca) : leurs fonctions sont décrites dans leurs propres manuels."],
+    skin_t="Skins et couleurs",
+    skin=["Clic droit &gt; <b>Skin</b> : les six coloris officiels de la FM-1 (section <b>FM-1 colors</b>) : Black, Purple, Orange, Black-Green, "
+          "<b>Cool Gray</b> (coloris par défaut de FM-9) et White-Blue. Ombres, lumière et gravures sont recalculées pour chaque coloris.",
+          "<b>Edit colours...</b> ouvre le panneau de couleurs là où vous avez cliqué : choisissez l'élément à gauche (<b>Shell</b> : coque, "
+          "<b>Pads</b> : cuvettes en silicone, <b>Keys</b> : touches, <b>Labels</b> : inscriptions, <b>LEDs</b> : lumière des touches), puis la couleur "
+          "à droite (nuancier, curseurs ou code hexadécimal). La façade change pendant que vous réglez. Tant que vous ne réglez pas Labels, "
+          "les inscriptions et les logos passent seuls en blanc sur une coque sombre et en noir sur une coque claire.",
+          "<b>Save skin...</b> (dans le panneau) ou <b>Save skin as preset...</b> enregistre vos couleurs sous un nom : elles apparaissent ensuite "
+          "dans la section <b>My skins</b> du menu. Chaque skin est un petit fichier .fm9skin (dossier Nine Hands DSP/FM-9/Skins) que l'on peut "
+          "échanger : <b>Import</b>, <b>Export</b>, <b>Delete skin preset</b>, <b>Open skins folder</b>. Le skin choisi est mémorisé avec le projet."],
+    ks_t="Arturia KeyStep 37",
+    ks=["Clic droit &gt; MIDI &gt; Controller &gt; <b>Arturia KeyStep 37</b> active le profil de la KeyStep 37 (désactivé par défaut : sans lui, "
+        "seul le MIDI Learn assigne des CC). Mettez la KeyStep en mode Control (Shift + Chord) : chaque banque de potards, avec ses CC d'usine, "
+        "règle quatre paramètres de FM-9. Tourner un réglage d'effet, le cutoff ou l'enveloppe met en marche l'effet, le filtre ou l'ADSR. "
+        "Les bandes pitch et modulation, l'aftertouch et la sustain fonctionnent comme sur tout clavier maître. Un MIDI Learn reste prioritaire sur le profil."],
+    ks_rows=[["Banque", "Potard 1", "Potard 2", "Potard 3", "Potard 4"],
+             ["Blanche", "Cutoff (CC74)", "Résonance (CC71)", "Feedback (CC76)", "Glide (CC77)"],
+             ["Bleue", "Attack (CC73)", "Decay (CC75)", "Sustain (CC79)", "Release (CC72)"],
+             ["Violette", "Reverb (CC18)", "Delay (CC19)", "Chorus (CC16)", "Distorsion (CC17)"],
+             ["Verte", "LFO Speed (CC80)", "LFO Pitch (CC81)", "LFO Amp (CC82)", "Phaser (CC83)"]],
+    nks_t="NKS (Komplete Kontrol et Maschine)",
+    nks=["Clic droit &gt; <b>NKS</b> &gt; <b>Export NKS library</b> écrit les presets de FM-9 au format NKS (.nksf) dans "
+         "Documents/Native Instruments/User Content/FM-9. Ils apparaissent dans la bibliothèque utilisateur de Komplete Kontrol et de Maschine, "
+         "classés par type (piano, basse, nappe...). Sur un clavier Native Instruments, les potards suivent six pages nommées : "
+         "<b>Main</b>, <b>Operators</b>, <b>Envelope</b>, <b>LFO</b>, <b>Effects</b> et <b>Arp / Seq</b>.",
+         "<b>Save current preset as NKS</b> enregistre le son en cours (retouches comprises). Relancez l'export après avoir chargé de nouvelles "
+         "banques SysEx. FM-9 n'est pas un produit du programme partenaire Native Instruments : il apparaît dans la bibliothèque utilisateur, "
+         "pas dans le navigateur des produits."],
     win_t="Fenêtre et réglages",
     win=["La fenêtre s'ouvre à la taille « 60 % » et ne descend jamais en dessous. Clic droit &gt; <b>Plugin size</b> : 60 %, 75 %, 100 % ou 125 %, "
          "et taille par défaut des nouvelles fenêtres. Clic droit &gt; <b>Glow</b> : intensité des LED des touches (25, 50, 75 ou 100 %). "
@@ -310,6 +338,8 @@ T = dict(
           ["MIDI", "canal réglable, Program Change, pitch bend, molette, aftertouch, sustain, SysEx DX7, MIDI Learn"],
           ["Fenêtre", "60 / 75 / 100 / 125 %, jamais sous 60 % ; anti-gel v2 sous Windows"],
           ["Firmwares", "firmwares web de la FM-1 (WebAssembly, moteur wasm3), installation depuis GitHub ou un fichier, Hortator fourni"],
+          ["Skins", "6 coloris de la FM-1, couleurs réglables à la volée (coque, pavés, touches, inscriptions, LED), skins enregistrables (.fm9skin)"],
+          ["Contrôleurs", "profil Arturia KeyStep 37 (4 banques de potards), presets NKS pour Komplete Kontrol et Maschine"],
           ["Licence", "GPL-3.0"]],
 )
 
@@ -352,6 +382,15 @@ def section():
     f.append(table(rows, [12 * mm, 30 * mm, W - 42 * mm], small=True))
     f.append(P(t["fw_t"], "h1")); f += [P(x) for x in t["fw"]]
     f.append(img(os.path.join(SHOTS, "apercu_hortator.png"), W * 0.72)); f.append(P("Hortator dans FM-9.", "small"))
+    f.append(PageBreak())
+    f.append(P(t["skin_t"], "h1")); f += [P(x) for x in t["skin"][:1]]
+    f.append(img(os.path.join(SHOTS, "FM-9_Skins.jpg"), W)); f.append(P("Les six coloris de la FM-1 dans FM-9.", "small"))
+    f += [P(x) for x in t["skin"][1:]]
+    f.append(img(os.path.join(SHOTS, "apercu_couleurs.png"), W * 0.72)); f.append(P("Panneau de couleurs : touches passées en rouge.", "small"))
+    f.append(KeepTogether([img(os.path.join(SHOTS, "apercu_menu_skin.png"), W * 0.55), P("Menu Skin : coloris de la FM-1, puis vos skins.", "small")]))
+    ck = (W - 20 * mm) / 4
+    f.append(KeepTogether([P(t["ks_t"], "h1")] + [P(x) for x in t["ks"]] + [table(t["ks_rows"], [20 * mm, ck, ck, ck, ck], small=True)]))
+    f.append(P(t["nks_t"], "h1")); f += [P(x) for x in t["nks"]]
     f.append(P(t["win_t"], "h1")); f += [P(x) for x in t["win"]]
     f.append(KeepTogether([P(t["tips_t"], "h1")] + bullets(t["tips"], "tip") +
                           [P(t["tech_t"], "h1"), table(t["tech"], [28 * mm, W - 28 * mm], header=False, small=True)]))

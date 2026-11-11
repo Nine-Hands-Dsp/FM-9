@@ -85,6 +85,36 @@ private:
 
     FM9Processor& proc;
     juce::Image background, bgScaled;
+public:
+    // couleurs de la facade, modifiables a la volee (skins + panneau de couleurs)
+    static constexpr int numElements = 5;            // coque, paves, touches, serigraphie, LED
+    static const char* elementKey (int e);
+    static const char* elementName (int e);
+    juce::Colour elementColour (int e) const;
+private:
+    juce::Colour shellCol, padCol, keyCol { 0xff1e1f22 }, inkCol, ledCol;
+    juce::Image faceBase, faceMaps, baseScaled, mapsScaled;
+    bool faceDirty = true, logoWhite = false;
+    juce::Point<int> lastMenuPos;
+    int skinIndex() const;
+    void loadColours();
+    void updateLogos();
+    void recomposeFace();
+    void applySkin (const juce::String& id, bool rebuild);
+public:
+    void setElementColour (int e, juce::Colour c);
+    void openColourPanel (juce::Point<int> at, int element = 0);
+    void setSnapshotColours (const juce::String& spec);
+    static juce::File skinFolder();
+    static juce::Array<juce::File> userSkins();
+    juce::String currentSkinJson (const juce::String& name) const;
+    bool saveUserSkin (const juce::String& name);
+    bool loadUserSkin (const juce::File& f);
+    void askSaveSkin();
+    juce::PopupMenu buildSkinMenu();
+    juce::Image renderMenuPreview (const juce::PopupMenu& m, const juce::String& highlight, float scale, int* highlightY = nullptr);
+    juce::PopupMenu buildMainMenuForPreview();
+private:
     int cacheW = 0, cacheH = 0;
     float cacheScale = 0.0f, forcedScale = 0.0f;
     int resizeSettle = 0;

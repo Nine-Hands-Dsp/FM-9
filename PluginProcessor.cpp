@@ -1,5 +1,6 @@
 // FM-9 (NINE HANDS | DSP) - synthe FM 6 operateurs d'apres la M-VAVE FM-1
 #include "PluginProcessor.h"
+#include "NksExport.h"
 #include "PluginEditor.h"
 #include "FactoryBank.h"
 
@@ -33,7 +34,10 @@ FM9Processor::FM9Processor()
     for (auto* prm : getParameters())
         if (auto* r = dynamic_cast<juce::RangedAudioParameter*> (prm)) allParams.add (r);
     for (auto& v : patternVoice) v.store (-1);
-    for (int i = 0; i < 128; ++i) { ccTarget[(size_t) i].store (-1); ccValue[(size_t) i].store (0); ccPending[(size_t) i].store (false); }
+    for (int i = 0; i < 128; ++i) { ccTarget[(size_t) i].store (-1); ccValue[(size_t) i].store (0); ccPending[(size_t) i].store (false); keyStepTarget[(size_t) i] = -1; }
+    for (auto& k : keyStepMap)
+        for (int i = 0; i < allParams.size(); ++i)
+            if (allParams[i]->getParameterID() == k.paramId) keyStepTarget[(size_t) k.cc] = i;
 
     for (int b = 0; b < numBanks; ++b)
         for (int i = 0; i < bankSize; ++i)
@@ -287,9 +291,20 @@ void FM9Processor::timerCallback()
     for (int c = 0; c < 128; ++c)
     {
         auto& r = ramps[(size_t) c];
-        const int t = ccTarget[(size_t) c].load();
+        int t = ccTarget[(size_t) c].load();                    // le MIDI Learn est prioritaire
+        const bool fromKeyStep = t < 0 && ctlProfile.load() == 1 && keyStepTarget[(size_t) c] >= 0;
+        if (fromKeyStep) t = keyStepTarget[(size_t) c];
         if (t < 0) { r.active = false; continue; }
         auto* prm = allParams[t];
+        if (fromKeyStep && ccPending[(size_t) c].load())
+        {
+            // la KeyStep met en marche ce qu'elle regle : effet (mix / cutoff) ou ADSR
+            const auto id = prm->getParameterID();
+            juce::String sw;
+            if (id.endsWith ("_mix") || id.startsWith ("filter_")) sw = id.upToFirstOccurrenceOf ("_", false, false) + "_on";
+            else if (id == "attack" || id == "decay" || id == "sustain" || id == "release") sw = "adsrOn";
+            if (sw.isNotEmpty()) if (auto* q = apvts.getParameter (sw)) if (q->getValue() < 0.5f) q->setValueNotifyingHost (1.0f);
+        }
         if (ccPending[(size_t) c].exchange (false))
         {
             const int raw = juce::roundToInt (ccValue[(size_t) c].load());
@@ -386,7 +401,7 @@ void FM9Processor::handleMidi (const juce::MidiMessage& m, int pos, juce::MidiBu
         const int cc = m.getControllerNumber();
         lastCc.store (cc);
         if (learning.load()) { learnCc.store (cc); return; }
-        if (ccTarget[(size_t) cc].load() >= 0)
+        if (ccTarget[(size_t) cc].load() >= 0 || (ctlProfile.load() == 1 && keyStepTarget[(size_t) cc] >= 0))
         {
             ccValue[(size_t) cc].store ((float) m.getControllerValue());
             ccPending[(size_t) cc].store (true);
@@ -661,6 +676,7 @@ void FM9Processor::getStateInformation (juce::MemoryBlock& destData)
     for (int c = 0; c < 128; ++c)
         if (const int t = ccTarget[(size_t) c].load(); t >= 0) map.add (juce::String (c) + "=" + allParams[t]->getParameterID());
     state.setProperty ("midiMap", map.joinIntoString (";"), nullptr);
+    state.setProperty ("ctlProfile", ctlProfile.load(), nullptr);
     state.removeChild (state.getChildWithName ("UI"), nullptr);
     state.appendChild (uiState.createCopy(), nullptr);
     if (auto xml = state.createXml()) copyXmlToBinary (*xml, destData);
@@ -693,6 +709,7 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
         ok = seen == (1 << fxCount) - 1;
         if (ok) setFxOrder (o);
     }
+    if (state.hasProperty ("ctlProfile")) ctlProfile.store ((int) state.getProperty ("ctlProfile"));
     for (int c = 0; c < 128; ++c) ccTarget[(size_t) c].store (-1);
     for (auto& e : juce::StringArray::fromTokens (state.getProperty ("midiMap").toString(), ";", ""))
     {
@@ -708,3 +725,107 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
 juce::AudioProcessorEditor* FM9Processor::createEditor() { return new FM9Editor (*this); }
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() { return new FM9Processor(); }
+
+// ------------------------------------------------------------------------------------------------ Arturia KeyStep 37
+// CC d'usine des 4 banques de potards de la KeyStep 37 (manuel Arturia, section 8.2), mode Control (Shift + Chord).
+// Profil optionnel, choisi dans le menu MIDI : aucun CC n'est assigne tant qu'il n'est pas active.
+const FM9Processor::KeyStepMap FM9Processor::keyStepMap[16] = {
+    { 74, "filter_a",   "Cutoff" },     { 71, "filter_b",   "Resonance" },   { 76, "fb",        "Feedback" },     { 77, "glide",     "Glide" },        // banque blanche
+    { 73, "attack",     "Attack" },     { 75, "decay",      "Decay" },       { 79, "sustain",   "Sustain" },      { 72, "release",   "Release" },      // banque bleue
+    { 18, "reverb_mix", "Reverb" },     { 19, "delay_mix",  "Delay" },       { 16, "chorus_mix", "Chorus" },      { 17, "drive_mix", "Distortion" },   // banque violette
+    { 80, "lfs",        "LFO Speed" },  { 81, "lpmd",       "LFO Pitch" },   { 82, "lamd",      "LFO Amp" },      { 83, "phaser_mix", "Phaser" } };   // banque verte
+
+juce::StringArray FM9Processor::keyStepBankNames()
+{
+    juce::StringArray out;
+    const char* banks[4] = { "White", "Blue", "Purple", "Green" };
+    for (int b = 0; b < 4; ++b)
+    {
+        juce::StringArray k;
+        for (int i = 0; i < 4; ++i) k.add (juce::String (keyStepMap[b * 4 + i].label) + " (CC" + juce::String (keyStepMap[b * 4 + i].cc) + ")");
+        out.add (juce::String (banks[b]) + ": " + k.joinIntoString (", "));
+    }
+    return out;
+}
+
+// ------------------------------------------------------------------------------------------------ NKS
+juce::File FM9Processor::nksUserFolder()
+{
+    // bibliotheque utilisateur de Komplete Kontrol / Maschine
+    return juce::File::getSpecialLocation (juce::File::userDocumentsDirectory).getChildFile ("Native Instruments").getChildFile ("User Content").getChildFile ("FM-9");
+}
+
+static void nksType (const juce::String& name, juce::String& type, juce::String& sub)
+{
+    const auto n = name.toUpperCase();
+    auto has = [&n] (std::initializer_list<const char*> w) { for (auto* x : w) if (n.contains (x)) return true; return false; };
+    if (has ({ "PIANO", "EP", "RHODES", "WURLI", "KEYS", "CLAV", "HARPSI" })) { type = "Piano / Keys"; sub = has ({ "EP", "RHODES", "WURLI" }) ? "Electric Piano" : "Piano"; }
+    else if (has ({ "ORGAN" }))                                           { type = "Organ"; sub = "Electric Organ"; }
+    else if (has ({ "BASS" }))                                            { type = "Bass"; sub = "Synth Bass"; }
+    else if (has ({ "BRASS", "HORN", "TRUMP" }))                          { type = "Brass"; sub = ""; }
+    else if (has ({ "STRING", "VIOLIN", "CELLO" }))                       { type = "Bowed Strings"; sub = "Ensemble"; }
+    else if (has ({ "BELL", "MARIMBA", "VIBE", "GLOCK", "TUBULAR", "CHIME" })) { type = "Mallet Instruments"; sub = has ({ "BELL", "CHIME" }) ? "Bell" : ""; }
+    else if (has ({ "PAD", "SPACE", "WIND", "ATMOS", "CHOIR", "SWEEP" })) { type = "Synth Pad"; sub = ""; }
+    else if (has ({ "LEAD", "SYNC", "SQUARE", "SAW" }))                   { type = "Synth Lead"; sub = ""; }
+    else if (has ({ "GUITAR", "HARP", "KOTO", "PLUCK" }))                 { type = "Plucked Strings"; sub = ""; }
+    else if (has ({ "FLUTE", "SAX", "OBOE", "CLARINET" }))                { type = "Reed Instruments"; sub = ""; }
+    else if (has ({ "DRUM", "PERC", "KICK", "SNARE", "TOM" }))            { type = "Drums"; sub = ""; }
+    else if (has ({ "FX", "NOISE", "ZAP" }))                              { type = "Sound Effects"; sub = ""; }
+    else                                                                  { type = "Synth Misc"; sub = ""; }
+}
+
+static std::vector<nks::Page> nksPages()
+{
+    using P = nks::Param;
+    std::vector<nks::Page> pages;
+    pages.push_back ({ "Main",      { P { "volume", "Volume" }, P { "alg", "Algorithm" }, P { "fb", "Feedback" }, P { "trnsp", "Transpose" },
+                                      P { "filter_a", "Cutoff" }, P { "filter_b", "Resonance" }, P { "reverb_mix", "Reverb" }, P { "delay_mix", "Delay" } } });
+    pages.push_back ({ "Operators", { P { fm9::opParamId (1, 16), "OP1 Level" }, P { fm9::opParamId (2, 16), "OP2 Level" }, P { fm9::opParamId (3, 16), "OP3 Level" },
+                                      P { fm9::opParamId (4, 16), "OP4 Level" }, P { fm9::opParamId (5, 16), "OP5 Level" }, P { fm9::opParamId (6, 16), "OP6 Level" },
+                                      P { "glide", "Glide" }, P { "mono", "Mono" } } });
+    pages.push_back ({ "Envelope",  { P { "adsrOn", "ADSR" }, P { "attack", "Attack" }, P { "decay", "Decay" }, P { "sustain", "Sustain" }, P { "release", "Release" },
+                                      P { "wheel", "Mod Wheel" }, P { "atRange", "Aftertouch" }, P { "bendUp", "Bend Up" } } });
+    pages.push_back ({ "LFO",       { P { "lfs", "Speed" }, P { "lfd", "Delay" }, P { "lpmd", "Pitch Depth" }, P { "lamd", "Amp Depth" }, P { "lfw", "Wave" },
+                                      P { "lfks", "Key Sync" }, P { "lpms", "Pitch Sens" }, P { "oks", "Osc Sync" } } });
+    pages.push_back ({ "Effects",   { P { "filter_on", "Filter" }, P { "chorus_mix", "Chorus" }, P { "phaser_mix", "Phaser" }, P { "drive_mix", "Distortion" },
+                                      P { "drive_a", "Dist Gain" }, P { "delay_a", "Delay Rate" }, P { "delay_b", "Delay Decay" }, P { "reverb_a", "Rev Decay" } } });
+    pages.push_back ({ "Arp / Seq", { P { "arpOn", "Arp" }, P { "arpMode", "Arp Mode" }, P { "arpOct", "Arp Oct" }, P { "arpRate", "Arp Rate" }, P { "arpGate", "Arp Gate" },
+                                      P { "seqOn", "Seq Play" }, P { "seqPattern", "Pattern" }, P { "tempo", "Tempo" } } });
+    return pages;
+}
+
+bool FM9Processor::exportNksPreset (int program, const juce::File& file)
+{
+    // program < 0 : le son en cours, tel qu'il est (retouches comprises), sans toucher aux banques
+    nks::Preset pr;
+    pr.name = program < 0 ? voiceName.trim() : juce::String (fm9::voiceName (bankVoice (program))).trim();
+    pr.bank = program < 0 ? juce::String ("User") : "Bank " + juce::String::charToString ((juce::juce_wchar) ('A' + program / bankSize));
+    nksType (pr.name, pr.type, pr.subType);
+    if (program >= 0) setCurrentProgram (program);
+    // etat du preset : le son seulement (pas de MIDI Learn, de skin ni de firmware)
+    auto state = apvts.copyState();
+    state.setProperty ("program", program < 0 ? currentProgram : program, nullptr);
+    state.setProperty ("voiceName", pr.name, nullptr);
+    state.removeChild (state.getChildWithName ("UI"), nullptr);
+    if (auto xml = state.createXml()) copyXmlToBinary (*xml, pr.state);
+    const auto data = nks::build (pr, nksPages(), "NINE HANDS | DSP", "FM-9", "Wiga", "WgF9");
+    file.getParentDirectory().createDirectory();
+    return file.replaceWithData (data.getData(), data.getSize());
+}
+
+int FM9Processor::exportNksLibrary (const juce::File& root)
+{
+    juce::MemoryBlock keep;
+    getStateInformation (keep);                                  // on remet le son en cours apres l'export
+    int n = 0;
+    for (int i = 0; i < getNumPrograms(); ++i)
+    {
+        const auto name = juce::String (fm9::voiceName (bankVoice (i))).trim();
+        if (i >= bankSize && name == "INIT VOICE") continue;    // emplacements vides des banques B-D
+        const auto bank = "Bank " + juce::String::charToString ((juce::juce_wchar) ('A' + i / bankSize));
+        const auto f = root.getChildFile (bank).getChildFile (juce::File::createLegalFileName (programLabel (i) + " " + name) + ".nksf");
+        if (exportNksPreset (i, f)) ++n;
+    }
+    setStateInformation (keep.getData(), (int) keep.getSize());
+    return n;
+}

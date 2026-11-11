@@ -6,7 +6,7 @@ coque creme mate, pave de touches en silicone, touches, ecran (vitre vide),
 eclairage a 45 deg venant du haut a gauche. Les potards, textes et logos ne sont
 pas dans le fond : ce sont des calques animes / du vectoriel dessines par le plugin.
 
-Sorties : assets/plugin/background.png, assets/plugin/knob_*.png, Layout.h, tools/layout.json
+Sorties : assets/plugin/skin_<coloris>.jpg, assets/plugin/knob_*.png, Layout.h, tools/layout.json
 """
 import json, os
 import numpy as np
@@ -86,127 +86,165 @@ def grain(sigma, amp, seed):
     g = np.random.default_rng(seed).normal(0, 1, (H, W)).astype(np.float32)
     return blur(g, sigma) * amp / max(1e-6, blur(g, sigma).std())
 
-# ------------------------------------------------------------------ coque
-img = np.zeros((H, W, 3), np.float32)
-sd_shell = sdf_rrect(SHELL, SHELL_R)
-alpha = cov(sd_shell)
-cream = np.array([226, 218, 209], np.float32)
-img[:] = cream
-# grain de plastique mat (fin) + tres legere marbrure
-img += (grain(0.8, 1.8, 1) + grain(10, 0.5, 2))[..., None]
-# arete arrondie du boitier : bande de 26 px eclairee / ombree selon la lumiere
-edge = np.clip(-sd_shell / 46.0, 0, 1)
-hshell = np.sin(edge * np.pi / 2)                  # arrondi doux du boitier
-lam, spec, _ = shade_from_height(blur(hshell * 30.0, 2.0), 1.0)
-flat = float(np.clip(np.array([0, 0, 1.0]) @ L, 0, 1))
-img *= np.clip(0.86 + 0.14 * lam / flat, 0.7, 1.08)[..., None]
+# ------------------------------------------------------------------ skins : coloris officiels de la FM-1 (m-vave.com)
+# shell = coque, pad = cuvettes en silicone, keys = touches en silicone (memes valeurs dans PluginEditor.cpp)
+SKINS = {
+    "black":      dict(shell=[61, 61, 60],    pad=[48, 48, 50],    keys=[30, 31, 34]),
+    "purple":     dict(shell=[180, 140, 198], pad=[104, 94, 158],  keys=[122, 111, 178]),
+    "orange":     dict(shell=[190, 107, 74],  pad=[124, 74, 63],   keys=[145, 87, 74]),
+    "blackgreen": dict(shell=[70, 69, 72],    pad=[98, 178, 166],  keys=[121, 209, 196]),
+    "coolgray":   dict(shell=[226, 218, 209], pad=[60, 64, 68],    keys=[30, 31, 34]),
+    "whiteblue":  dict(shell=[238, 235, 229], pad=[72, 99, 124],   keys=[86, 117, 146]),
+}
 
-# ------------------------------------------------------------------ cuvettes et paves de silicone
-rubber = np.array([60, 64, 68], np.float32)
-def pad(r, rad, lip=7.0):
-    sd = sdf_rrect(r, rad)
-    # ombre interne de la cuvette (cote haut gauche) puis le silicone
-    m = cov(sd)
-    mix(img, rubber, m)
-    inner = np.clip(1 - (-sd) / (lip * 2.2), 0, 1) * m
-    sh = blur((sd > -lip * 1.5).astype(np.float32) * m, lip)
-    off = np.zeros_like(sh); s = int(lip * 1.2)
-    off[s:, s:] = sh[:-s, :-s]
-    img[:] *= (1 - 0.50 * np.clip(off * m, 0, 1))[..., None]
-    # occlusion de contact sur la coque tout autour de la cuvette
-    aoc = blur((sd < 0).astype(np.float32), 6.0)
-    img[:] *= (1 - 0.16 * np.clip(aoc - m, 0, 1))[..., None]
-    # liseré de la coque autour : arete claire en bas a droite (lumiere sur la levre), sombre en haut a gauche
-    ring = np.clip(1 - np.abs(sd - 2.0) / 3.0, 0, 1)
-    nx = np.gradient(sd, axis=1); ny = np.gradient(sd, axis=0)
-    facing = -(nx * -1 + ny * -1) / np.sqrt(2)
-    img[:] += (ring * facing * 18)[..., None]
-    return sd
+def render_background(SKIN_ID, SK):
+    global img, key_rects, alpha
+    # ------------------------------------------------------------------ coque
+    img = np.zeros((H, W, 3), np.float32)
+    sd_shell = sdf_rrect(SHELL, SHELL_R)
+    alpha = cov(sd_shell)
+    img[:] = np.array(SK["shell"], np.float32)
+    # grain de plastique mat (fin) + tres legere marbrure
+    img += (grain(0.8, 1.8, 1) + grain(10, 0.5, 2))[..., None]
+    # arete arrondie du boitier : bande de 26 px eclairee / ombree selon la lumiere
+    edge = np.clip(-sd_shell / 46.0, 0, 1)
+    hshell = np.sin(edge * np.pi / 2)                  # arrondi doux du boitier
+    lam, spec, _ = shade_from_height(blur(hshell * 30.0, 2.0), 1.0)
+    flat = float(np.clip(np.array([0, 0, 1.0]) @ L, 0, 1))
+    img *= np.clip(0.86 + 0.14 * lam / flat, 0.7, 1.08)[..., None]
 
-pad(KB_PAD, KB_PAD_R, 10); pad(FN_PAD, FN_PAD_R, 10); pad(OCT_PAD, OCT_PAD_R, 7)
+    # ------------------------------------------------------------------ cuvettes et paves de silicone
+    rubber = np.array(SK["pad"], np.float32)
+    def pad(r, rad, lip=7.0):
+        sd = sdf_rrect(r, rad)
+        # ombre interne de la cuvette (cote haut gauche) puis le silicone
+        m = cov(sd)
+        mix(img, rubber, m)
+        inner = np.clip(1 - (-sd) / (lip * 2.2), 0, 1) * m
+        sh = blur((sd > -lip * 1.5).astype(np.float32) * m, lip)
+        off = np.zeros_like(sh); s = int(lip * 1.2)
+        off[s:, s:] = sh[:-s, :-s]
+        img[:] *= (1 - 0.50 * np.clip(off * m, 0, 1))[..., None]
+        # occlusion de contact sur la coque tout autour de la cuvette
+        aoc = blur((sd < 0).astype(np.float32), 6.0)
+        img[:] *= (1 - 0.16 * np.clip(aoc - m, 0, 1))[..., None]
+        # liseré de la coque autour : arete claire en bas a droite (lumiere sur la levre), sombre en haut a gauche
+        ring = np.clip(1 - np.abs(sd - 2.0) / 3.0, 0, 1)
+        nx = np.gradient(sd, axis=1); ny = np.gradient(sd, axis=0)
+        facing = -(nx * -1 + ny * -1) / np.sqrt(2)
+        img[:] += (ring * facing * 18)[..., None]
+        return sd
 
-# ------------------------------------------------------------------ touches en silicone (champ de hauteur)
-keyH = np.zeros((H, W), np.float32); keyM = np.zeros((H, W), np.float32)
-key_rects = {}
-def key(name, r, rad, slot=None, bevel=16.0):
-    sd = sdf_rrect(r, rad)
-    t = np.clip(-sd / bevel, 0, 1)
-    h = np.sqrt(1 - (1 - t) ** 2) * 18.0          # bord arrondi, dessus plat
-    if slot is not None:                           # rainure au centre
-        sds = sdf_rrect(slot, (slot[2] - slot[0]) / 2)
-        h -= np.clip(1 - (sds + 3) / 5.0, 0, 1) * 3.0 * (sd < 0)
-    np.maximum(keyH, h, out=keyH)
-    np.maximum(keyM, cov(sd), out=keyM)
-    key_rects[name] = r
+    pad(KB_PAD, KB_PAD_R, 10); pad(FN_PAD, FN_PAD_R, 10); pad(OCT_PAD, OCT_PAD_R, 7)
 
-for i, x in enumerate(WHITE_X):
-    r = R(x - KEY_W / 2, WHITE_Y[0] + 4, x + KEY_W / 2, WHITE_Y[1])
-    cx = (r[0] + r[2]) / 2; cy = (r[1] + r[3]) / 2
-    key("w%d" % i, r, KEY_W / 2 * F, [cx - 6, cy - 55, cx + 6, cy + 55])
-for i, x in enumerate(BLACK_X):
-    r = R(x - KEY_W / 2, BLACK_Y[0], x + KEY_W / 2, BLACK_Y[1] - 6)
-    cx = (r[0] + r[2]) / 2; cy0 = r[1] + 0.22 * (r[3] - r[1])
-    key("b%d" % i, r, KEY_W / 2 * F, [cx - 6, cy0, cx + 6, cy0 + 70])
-for j, y in enumerate(FN_ROWS):
-    for i, x in enumerate(FN_COLS):
-        key("f%d" % (j * 6 + i), R(x - FN_KEY / 2, y - FN_KEY / 2, x + FN_KEY / 2, y + FN_KEY / 2), 20 * F)
-for i, r in enumerate(OCT_KEYS):
-    key("oct%d" % i, r, 9 * F, bevel=12.0)
+    # ------------------------------------------------------------------ touches en silicone (champ de hauteur)
+    keyH = np.zeros((H, W), np.float32); keyM = np.zeros((H, W), np.float32)
+    key_rects = {}
+    def key(name, r, rad, slot=None, bevel=16.0):
+        sd = sdf_rrect(r, rad)
+        t = np.clip(-sd / bevel, 0, 1)
+        h = np.sqrt(1 - (1 - t) ** 2) * 18.0          # bord arrondi, dessus plat
+        if slot is not None:                           # rainure au centre
+            sds = sdf_rrect(slot, (slot[2] - slot[0]) / 2)
+            h -= np.clip(1 - (sds + 3) / 5.0, 0, 1) * 3.0 * (sd < 0)
+        np.maximum(keyH, h, out=keyH)
+        np.maximum(keyM, cov(sd), out=keyM)
+        key_rects[name] = r
 
-# ombre portee des touches sur le pave (45 deg vers le bas a droite)
-shadow = blur(keyM, 13.0)
-off = np.zeros_like(shadow); s = 15
-off[s:, s:] = shadow[:-s, :-s]
-img *= (1 - 0.58 * np.clip(off - keyM, 0, 1))[..., None]
-contact = blur(keyM, 4.0)
-img *= (1 - 0.30 * np.clip(contact - keyM, 0, 1))[..., None]
-ao = blur(keyM, 24.0)
-img *= (1 - 0.18 * np.clip(ao - keyM, 0, 1))[..., None]
+    for i, x in enumerate(WHITE_X):
+        r = R(x - KEY_W / 2, WHITE_Y[0] + 4, x + KEY_W / 2, WHITE_Y[1])
+        cx = (r[0] + r[2]) / 2; cy = (r[1] + r[3]) / 2
+        key("w%d" % i, r, KEY_W / 2 * F, [cx - 6, cy - 55, cx + 6, cy + 55])
+    for i, x in enumerate(BLACK_X):
+        r = R(x - KEY_W / 2, BLACK_Y[0], x + KEY_W / 2, BLACK_Y[1] - 6)
+        cx = (r[0] + r[2]) / 2; cy0 = r[1] + 0.22 * (r[3] - r[1])
+        key("b%d" % i, r, KEY_W / 2 * F, [cx - 6, cy0, cx + 6, cy0 + 70])
+    for j, y in enumerate(FN_ROWS):
+        for i, x in enumerate(FN_COLS):
+            key("f%d" % (j * 6 + i), R(x - FN_KEY / 2, y - FN_KEY / 2, x + FN_KEY / 2, y + FN_KEY / 2), 20 * F)
+    for i, r in enumerate(OCT_KEYS):
+        key("oct%d" % i, r, 9 * F, bevel=12.0)
 
-lam, spec, _ = shade_from_height(keyH, 1.0)
-keycol = np.array([30, 31, 34], np.float32)    # touches noires (silicone)
-shade = 0.55 + 0.60 * lam / flat
-k = keycol * shade[..., None] + (spec ** 24 * 34)[..., None]
-k += (grain(0.7, 1.6, 3))[..., None]
-mix(img, k * 1.0, keyM) if False else None
-img = img * (1 - keyM[..., None]) + k * keyM[..., None]
+    # ombre portee des touches sur le pave (45 deg vers le bas a droite)
+    shadow = blur(keyM, 13.0)
+    off = np.zeros_like(shadow); s = 15
+    off[s:, s:] = shadow[:-s, :-s]
+    img *= (1 - 0.58 * np.clip(off - keyM, 0, 1))[..., None]
+    contact = blur(keyM, 4.0)
+    img *= (1 - 0.30 * np.clip(contact - keyM, 0, 1))[..., None]
+    ao = blur(keyM, 24.0)
+    img *= (1 - 0.18 * np.clip(ao - keyM, 0, 1))[..., None]
 
-# points de repere moules
-for (x, y) in DOTS:
-    cx, cy = P(x, y)
-    d = np.hypot(xx - cx, yy - cy)
-    m = np.clip(7.5 - d, 0, 1)
-    img = img * (1 - m[..., None]) + np.array([16, 17, 19], np.float32) * m[..., None]
+    lam, spec, _ = shade_from_height(keyH, 1.0)
+    keycol = np.array(SK["keys"], np.float32)    # touches en silicone (couleur du skin)
+    shade = 0.55 + 0.60 * lam / flat
+    k = keycol * shade[..., None] + (spec ** 24 * 34)[..., None]
+    k += (grain(0.7, 1.6, 3))[..., None]
+    mix(img, k * 1.0, keyM) if False else None
+    img = img * (1 - keyM[..., None]) + k * keyM[..., None]
 
-# ------------------------------------------------------------------ ecran
-sdb = sdf_rrect(SCREEN_BEZEL, BEZEL_R)
-mb = cov(sdb)
-sh = blur(mb, 18.0); off = np.zeros_like(sh); off[18:, 18:] = sh[:-18, :-18]
-img *= (1 - 0.42 * np.clip(off - mb, 0, 1))[..., None]
-con = blur(mb, 5.0)
-img *= (1 - 0.28 * np.clip(con - mb, 0, 1))[..., None]
-bez = np.clip(-sdb / 14.0, 0, 1)
-lamb, specb, _ = shade_from_height((1 - (1 - bez) ** 2) * 14.0, 1.0)
-bcol = np.array([20, 21, 24], np.float32) * (0.75 + 0.45 * lamb / flat)[..., None] + (specb ** 40 * 60)[..., None]
-img = img * (1 - mb[..., None]) + bcol * mb[..., None]
-sdg = sdf_rrect(SCREEN_GLASS, GLASS_R)
-mg = cov(sdg)
-g = np.array([7, 8, 10], np.float32) + np.zeros((H, W, 3), np.float32)
-# reflet tres doux de la vitre en haut a gauche
-gx0, gy0 = SCREEN_GLASS[0], SCREEN_GLASS[1]
-diag = ((xx - gx0) + (yy - gy0)) / (SCREEN_GLASS[2] - gx0 + SCREEN_GLASS[3] - gy0)
-g += (np.clip(1 - diag * 1.6, 0, 1) ** 2 * 10)[..., None]
-img = img * (1 - mg[..., None]) + g * mg[..., None]
+    # points de repere moules
+    for (x, y) in DOTS:
+        cx, cy = P(x, y)
+        d = np.hypot(xx - cx, yy - cy)
+        m = np.clip(7.5 - d, 0, 1)
+        img = img * (1 - m[..., None]) + np.array(SK["dots"], np.float32) * m[..., None]
 
-# ------------------------------------------------------------------ eclairage d'ambiance a 45 deg (fond seulement)
-dn = (xx + yy) / (W + H)
-gain = 1.12 - 0.28 * dn
-band = np.exp(-((dn - 0.30) / 0.10) ** 2) * 12.0
-img = img * gain[..., None] + band[..., None]
+    # ------------------------------------------------------------------ ecran
+    sdb = sdf_rrect(SCREEN_BEZEL, BEZEL_R)
+    mb = cov(sdb)
+    sh = blur(mb, 18.0); off = np.zeros_like(sh); off[18:, 18:] = sh[:-18, :-18]
+    img *= (1 - 0.42 * np.clip(off - mb, 0, 1))[..., None]
+    con = blur(mb, 5.0)
+    img *= (1 - 0.28 * np.clip(con - mb, 0, 1))[..., None]
+    bez = np.clip(-sdb / 14.0, 0, 1)
+    lamb, specb, _ = shade_from_height((1 - (1 - bez) ** 2) * 14.0, 1.0)
+    bcol = np.array([20, 21, 24], np.float32) * (0.75 + 0.45 * lamb / flat)[..., None] + (specb ** 40 * 60)[..., None]
+    img = img * (1 - mb[..., None]) + bcol * mb[..., None]
+    sdg = sdf_rrect(SCREEN_GLASS, GLASS_R)
+    mg = cov(sdg)
+    g = np.array([7, 8, 10], np.float32) + np.zeros((H, W, 3), np.float32)
+    # reflet tres doux de la vitre en haut a gauche
+    gx0, gy0 = SCREEN_GLASS[0], SCREEN_GLASS[1]
+    diag = ((xx - gx0) + (yy - gy0)) / (SCREEN_GLASS[2] - gx0 + SCREEN_GLASS[3] - gy0)
+    g += (np.clip(1 - diag * 1.6, 0, 1) ** 2 * 10)[..., None]
+    img = img * (1 - mg[..., None]) + g * mg[..., None]
 
-out = np.dstack([np.clip(img, 0, 255), alpha * 255]).astype(np.uint8)
-Image.fromarray(out, "RGBA").save(os.path.join(OUT, "background.png"), optimize=True)
-print("background.png", out.shape)
+    # ------------------------------------------------------------------ eclairage d'ambiance a 45 deg (fond seulement)
+    dn = (xx + yy) / (W + H)
+    gain = 1.12 - 0.28 * dn
+    band = np.exp(-((dn - 0.30) / 0.10) ** 2) * 12.0
+    img = img * gain[..., None] + band[..., None]
+
+    return img
+
+
+# ------------------------------------------------------------------ decomposition pour les couleurs a la volee
+# Le rendu est affine en chaque couleur : img = A + Ms * coque + Mp * paves + Mk * touches
+# (les reperes moules prennent la couleur de la coque assombrie). Le plugin recompose le fond
+# avec n'importe quelle couleur a partir de ces cartes, sans aucune image figee par coloris.
+Z = [0, 0, 0]
+def run(shell=Z, pad=Z, keys=Z):
+    return render_background(None, dict(shell=shell, pad=pad, keys=keys, dots=[v * 0.30 for v in shell]))
+T = 100.0
+A  = run()
+Ms = (run(shell=[T] * 3) - A)[..., 0] / T
+Mp = (run(pad=[T] * 3) - A)[..., 0] / T
+Mk = (run(keys=[T] * 3) - A)[..., 0] / T
+print("A", A.min(), A.max(), "Ms", Ms.min(), Ms.max(), "Mp", Mp.min(), Mp.max(), "Mk", Mk.min(), Mk.max())
+A_OFF, M_SC = 64.0, 160.0           # A + 64 en 8 bits ; cartes x 160 (jusqu'a 1,59)
+Image.fromarray(np.clip(np.rint(A + A_OFF), 0, 255).astype(np.uint8), "RGB").save(os.path.join(OUT, "face_base.png"), optimize=True)
+Image.fromarray(np.clip(np.rint(np.dstack([Ms, Mp, Mk]) * M_SC), 0, 255).astype(np.uint8), "RGB").save(os.path.join(OUT, "face_maps.png"), optimize=True)
+Image.fromarray((alpha * 255).astype(np.uint8), "L").save(os.path.join(ROOT, "tools", "shell_alpha.png"), optimize=True)
+# controle : recomposition d'un coloris contre le rendu direct
+for sid in ("coolgray", "purple"):
+    sk = SKINS[sid]
+    ref = run(sk["shell"], sk["pad"], sk["keys"])
+    Aq = np.rint(A + A_OFF) - A_OFF; M = np.rint(np.dstack([Ms, Mp, Mk]) * M_SC) / M_SC
+    rec = Aq + M[..., 0:1] * np.array(sk["shell"]) + M[..., 1:2] * np.array(sk["pad"]) + M[..., 2:3] * np.array(sk["keys"])
+    err = np.abs(np.clip(rec, 0, 255) - np.clip(ref, 0, 255))
+    print(sid, "erreur moyenne %.2f max %.1f" % (err.mean(), err.max()))
+    Image.fromarray(np.clip(rec, 0, 255).astype(np.uint8)).save("/tmp/sk/rec_%s.png" % sid)
 
 # ------------------------------------------------------------------ potard noir moletee (calques 1024 px)
 S = 1024
@@ -282,6 +320,7 @@ def U4(r):
     return [round(v * U, 2) for v in r]
 lay = {
     "image": [W, H], "units": [W * U, H * U],
+    "shell": U4(SHELL), "shellR": round(SHELL_R * U, 2),
     "screen": U4(SCREEN_GLASS), "bezel": U4(SCREEN_BEZEL),
     "knobs": {k: [round(P(*v)[0] * U, 2), round(P(*v)[1] * U, 2)] for k, v in KNOBS.items()},
     "knobD": round(KNOB_D * F * U / 0.92, 2),           # calque 1024 : couronne a 92 % du cadre
@@ -297,6 +336,7 @@ def rect(v):
 with open(os.path.join(ROOT, "Layout.h"), "w") as f:
     f.write("// FM-9 - reperes de la facade (genere par tools/make_art.py), repere 1500 x 900 unites\n#pragma once\n#include <JuceHeader.h>\n\nnamespace fm9::layout\n{\n")
     f.write("constexpr float unitsW = %.1ff, unitsH = %.1ff;\n" % (W * U, H * U))
+    f.write("inline const juce::Rectangle<float> shell = %s;\nconstexpr float shellR = %.2ff;\n" % (rect(lay["shell"]), lay["shellR"]))
     f.write("inline const juce::Rectangle<float> screen = %s;\n" % rect(lay["screen"]))
     f.write("inline const juce::Rectangle<float> bezel = %s;\n" % rect(lay["bezel"]))
     f.write("constexpr float knobD = %.2ff;\n" % lay["knobD"])

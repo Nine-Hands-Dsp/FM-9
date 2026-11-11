@@ -6,10 +6,22 @@ using namespace juce;
 namespace L = fm9::layout;
 
 // --------------------------------------------------------------------------------------------- couleurs
-static const Colour cInk (0xff2b2b2d);            // serigraphie sur la coque creme
+// --------------------------------------------------------------------------------------------- skins
+// coloris officiels de la M-VAVE FM-1 (m-vave.com) : coque, silicone, serigraphie
+struct FM9Skin { const char* id; const char* name; uint32 shell, pad, keys, ink; };
+static const FM9Skin skins[] = {             // memes valeurs que tools/make_art.py (SKINS)
+    { "black",      "Black",       0xff3d3d3c, 0xff303032, 0xff1e1f22, 0xffe9e7e3 },
+    { "purple",     "Purple",      0xffb48cc6, 0xff685e9e, 0xff7a6fb2, 0xfff7f3f9 },
+    { "orange",     "Orange",      0xffbe6b4a, 0xff7c4a3f, 0xff91574a, 0xfff8f1ec },
+    { "blackgreen", "Black-Green", 0xff464548, 0xff62b2a6, 0xff79d1c4, 0xffe9e7e3 },
+    { "coolgray",   "Cool Gray",   0xffe2dad1, 0xff3c4044, 0xff1e1f22, 0xff2b2b2d },
+    { "whiteblue",  "White-Blue",  0xffeeebe5, 0xff48637c, 0xff567592, 0xff2b2d33 },
+};
+static constexpr int numSkins = (int) (sizeof (skins) / sizeof (skins[0]));
+static constexpr int defaultSkin = 4;              // Cool Gray : la FM-9 d'origine
+static const uint32 defaultLed = 0xfff6f8fb;
 static const Colour cScreen (0xff06080b), cText (0xffe9eef2), cDim (0xff7f8a96), cFaint (0xff262d36);
 static const Colour cAccent (0xff4fc3f7), cGreen (0xff5be08a), cRed (0xffff5a52), cOrange (0xffffa23a), cYellow (0xfff2d64b);
-static const Colour cLed (0xfff6f8fb);            // LED blanche sous les touches
 
 static const char* fnNames[12] = { "FX", "SEL", "ENV", "LFO", "EDIT", "GLO", "HOME", "SAVE", "ARP", "SEQ", "PLAY", "REC" };
 static const char* blackNames[11] = { "OP1", "OP2", "OP3", "OP4", "OP5", "OP6", "PIT", "GLO", "MONO", "POLY", "" };
@@ -29,15 +41,13 @@ static String noteName (int midi)
 FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
 {
     setOpaque (true);
-    background = ImageCache::getFromMemory (BinaryData::background_png, BinaryData::background_pngSize);
     med   = Typeface::createSystemTypefaceFor (BinaryData::PoppinsMedium_ttf, BinaryData::PoppinsMedium_ttfSize);
     bold  = Typeface::createSystemTypefaceFor (BinaryData::PoppinsBold_ttf, BinaryData::PoppinsBold_ttfSize);
     light = Typeface::createSystemTypefaceFor (BinaryData::PoppinsLight_ttf, BinaryData::PoppinsLight_ttfSize);
     menuLnf.reg = light; menuLnf.med = med; menuLnf.bold = bold;
-    if (auto xml = XmlDocument::parse (String::fromUTF8 (BinaryData::NineHandsLogoBlack_svg, BinaryData::NineHandsLogoBlack_svgSize)))
-        logo = Drawable::createFromSVG (*xml);
-    if (auto xml = XmlDocument::parse (String::fromUTF8 (BinaryData::FM9Logo_svg, BinaryData::FM9Logo_svgSize)))
-        fm9Logo = Drawable::createFromSVG (*xml);
+    faceBase = ImageCache::getFromMemory (BinaryData::face_base_png, BinaryData::face_base_pngSize);
+    faceMaps = ImageCache::getFromMemory (BinaryData::face_maps_png, BinaryData::face_maps_pngSize);
+    loadColours();
 
     auto img = [] (const char* d, int s) { return ImageCache::getFromMemory (d, s); };
     knobLayers.shadow    = img (BinaryData::knob_shadow_png, BinaryData::knob_shadow_pngSize);
@@ -180,6 +190,192 @@ void FM9Editor::askRepaint (Rectangle<int> r)
     repaint (r);
 }
 
+// --------------------------------------------------------------------------------------------- couleurs de la facade
+const char* FM9Editor::elementKey (int e) { static const char* k[numElements] = { "c_shell", "c_pad", "c_keys", "c_ink", "c_led" }; return k[e]; }
+const char* FM9Editor::elementName (int e) { static const char* n[numElements] = { "Shell", "Pads", "Keys", "Labels", "LEDs" }; return n[e]; }
+
+int FM9Editor::skinIndex() const
+{
+    const auto id = proc.uiState.getProperty ("skin", skins[defaultSkin].id).toString();
+    for (int i = 0; i < numSkins; ++i) if (id == skins[i].id) return i;
+    return id == "custom" ? -1 : defaultSkin;
+}
+
+Colour FM9Editor::elementColour (int e) const
+{
+    switch (e) { case 0: return shellCol; case 1: return padCol; case 2: return keyCol; case 3: return inkCol; default: return ledCol; }
+}
+
+void FM9Editor::loadColours()
+{
+    const int k = jmax (0, skinIndex());
+    const auto& sk = skins[skinIndex() < 0 ? defaultSkin : k];
+    const uint32 def[numElements] = { sk.shell, sk.pad, sk.keys, sk.ink, defaultLed };
+    for (int e = 0; e < numElements; ++e)
+    {
+        const auto v = proc.uiState.getProperty (elementKey (e)).toString();
+        auto c = (skinIndex() < 0 && v.isNotEmpty()) ? Colour::fromString (v) : Colour (def[e]);
+        // serigraphie automatique (blanche sur coque sombre ou coloree, noire sur coque claire) tant qu'elle n'est pas reglee a la main
+        if (e == 3 && skinIndex() < 0 && v.isEmpty())
+            c = shellCol.getPerceivedBrightness() > 0.72f ? Colour (0xff2b2b2d) : Colour (0xffeceae6);
+        switch (e) { case 0: shellCol = c; break; case 1: padCol = c; break; case 2: keyCol = c; break; case 3: inkCol = c; break; default: ledCol = c; }
+    }
+    updateLogos();
+    faceDirty = true;
+}
+
+void FM9Editor::applySkin (const String& id, bool rebuild)
+{
+    proc.uiState.setProperty ("skin", id, nullptr);
+    proc.uiState.removeProperty ("skinName", nullptr);
+    for (int e = 0; e < numElements; ++e) proc.uiState.removeProperty (elementKey (e), nullptr);
+    loadColours();
+    if (rebuild) { recomposeFace(); repaint(); }
+}
+
+void FM9Editor::setElementColour (int e, Colour c)
+{
+    // premier reglage : on part du coloris en cours, puis on passe en skin "Custom"
+    if (skinIndex() >= 0)
+        for (int i = 0; i < numElements; ++i) if (i != 3) proc.uiState.setProperty (elementKey (i), elementColour (i).toString(), nullptr);
+    proc.uiState.setProperty ("skin", "custom", nullptr);
+    proc.uiState.removeProperty ("skinName", nullptr);          // modifie : ce n'est plus le preset enregistre
+    proc.uiState.setProperty (elementKey (e), c.withAlpha (1.0f).toString(), nullptr);
+    loadColours();                                  // recomposition faite par le timer (anti-gel)
+}
+
+// --------------------------------------------------------------------------------------------- skins utilisateur (presets de couleurs)
+// un fichier .fm9skin (JSON) par skin dans <reglages>/Nine Hands DSP/FM-9/Skins : facile a partager
+File FM9Editor::skinFolder() { return FM9Processor::userFolder().getChildFile ("Skins"); }
+
+Array<File> FM9Editor::userSkins()
+{
+    auto list = skinFolder().findChildFiles (File::findFiles, false, "*.fm9skin");
+    list.sort();
+    return list;
+}
+
+String FM9Editor::currentSkinJson (const String& name) const
+{
+    auto* o = new DynamicObject();
+    o->setProperty ("name", name);
+    o->setProperty ("plugin", "FM-9");
+    const char* keys[numElements] = { "shell", "pads", "keys", "labels", "leds" };
+    for (int e = 0; e < numElements; ++e)
+    {
+        // "labels" absent = serigraphie automatique (suit la coque)
+        if (e == 3 && skinIndex() < 0 && proc.uiState.getProperty (elementKey (3)).toString().isEmpty()) continue;
+        o->setProperty (keys[e], "#" + elementColour (e).toDisplayString (false));
+    }
+    return JSON::toString (var (o));
+}
+
+bool FM9Editor::saveUserSkin (const String& rawName)
+{
+    const auto name = File::createLegalFileName (rawName.trim()).substring (0, 40);
+    if (name.isEmpty()) return false;
+    skinFolder().createDirectory();
+    if (! skinFolder().getChildFile (name + ".fm9skin").replaceWithText (currentSkinJson (name))) return false;
+    // le skin en cours devient ce preset (coche dans le menu)
+    for (int e = 0; e < numElements; ++e)
+        if (! (e == 3 && skinIndex() < 0 && proc.uiState.getProperty (elementKey (3)).toString().isEmpty()))
+            proc.uiState.setProperty (elementKey (e), elementColour (e).toString(), nullptr);
+    proc.uiState.setProperty ("skin", "custom", nullptr);
+    proc.uiState.setProperty ("skinName", name, nullptr);
+    return true;
+}
+
+bool FM9Editor::loadUserSkin (const File& f)
+{
+    const auto v = JSON::parse (f.loadFileAsString());
+    if (! v.isObject()) return false;
+    const char* keys[numElements] = { "shell", "pads", "keys", "labels", "leds" };
+    proc.uiState.setProperty ("skin", "custom", nullptr);
+    int found = 0;
+    for (int e = 0; e < numElements; ++e)
+    {
+        const auto t = v.getProperty (keys[e], {}).toString().trim().removeCharacters ("#");
+        if (t.length() == 6) { proc.uiState.setProperty (elementKey (e), "ff" + t, nullptr); ++found; }
+        else proc.uiState.removeProperty (elementKey (e), nullptr);
+    }
+    if (proc.uiState.getProperty (elementKey (4)).toString().isEmpty()) proc.uiState.setProperty (elementKey (4), Colour (defaultLed).toString(), nullptr);
+    if (found == 0) { applySkin (skins[defaultSkin].id, true); return false; }
+    proc.uiState.setProperty ("skinName", v.getProperty ("name", f.getFileNameWithoutExtension()).toString(), nullptr);
+    loadColours();
+    recomposeFace();
+    return true;
+}
+
+void FM9Editor::askSaveSkin()
+{
+    const auto cur = proc.uiState.getProperty ("skinName").toString();
+    auto* w = new AlertWindow ("Save skin", "Skin preset name", MessageBoxIconType::NoIcon, this);
+    w->addTextEditor ("name", cur.isNotEmpty() ? cur : String ("My skin"));
+    w->addButton ("Save", 1, KeyPress (KeyPress::returnKey));
+    w->addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
+    w->enterModalState (true, ModalCallbackFunction::create ([safe = Component::SafePointer<FM9Editor> (this), w] (int r)
+    {
+        if (safe == nullptr || r != 1) return;
+        const auto name = w->getTextEditorContents ("name");
+        safe->popup ("Skin", safe->saveUserSkin (name) ? "Saved" : "Not saved");
+    }), true);
+}
+
+void FM9Editor::updateLogos()
+{
+    // logos officiels : NINE HANDS | DSP blanc ou noir selon la serigraphie (jamais recolore autrement)
+    const bool white = inkCol.getPerceivedBrightness() > 0.5f;
+    if (white == logoWhite && logo != nullptr) return;
+    logoWhite = white;
+    if (auto xml = XmlDocument::parse (white ? String::fromUTF8 (BinaryData::NineHandsLogoWhite_svg, BinaryData::NineHandsLogoWhite_svgSize)
+                                             : String::fromUTF8 (BinaryData::NineHandsLogoBlack_svg, BinaryData::NineHandsLogoBlack_svgSize)))
+        logo = Drawable::createFromSVG (*xml);
+    auto fm9 = String::fromUTF8 (BinaryData::FM9Logo_svg, BinaryData::FM9Logo_svgSize);
+    if (white) fm9 = fm9.replace ("#000000", "#FFFFFF");
+    if (auto xml = XmlDocument::parse (fm9))
+        fm9Logo = Drawable::createFromSVG (*xml);
+}
+
+// fond = base + coque x carte coque + paves x carte paves + touches x carte touches (cartes de tools/make_art.py)
+void FM9Editor::recomposeFace()
+{
+    faceDirty = false;
+    if (! baseScaled.isValid() || ! mapsScaled.isValid()) return;
+    const int pw = baseScaled.getWidth(), ph = baseScaled.getHeight();
+    Image face (Image::RGB, pw, ph, false);
+    {
+        Image::BitmapData bb (baseScaled, Image::BitmapData::readOnly), bm (mapsScaled, Image::BitmapData::readOnly), bo (face, Image::BitmapData::writeOnly);
+        // ~1,5 million de pixels en entier : quelques ms, fait par le timer seulement
+        auto q = [] (uint8 c) { return (int) roundToInt ((float) c * 256.0f / 160.0f); };     // poids en 1/256
+        const int s0 = q (shellCol.getRed()), s1 = q (shellCol.getGreen()), s2 = q (shellCol.getBlue());
+        const int p0 = q (padCol.getRed()),   p1 = q (padCol.getGreen()),   p2 = q (padCol.getBlue());
+        const int k0 = q (keyCol.getRed()),   k1 = q (keyCol.getGreen()),   k2 = q (keyCol.getBlue());
+        for (int y = 0; y < ph; ++y)
+        {
+            auto* b = reinterpret_cast<const PixelARGB*> (bb.getLinePointer (y));
+            auto* m = reinterpret_cast<const PixelARGB*> (bm.getLinePointer (y));
+            auto* o = reinterpret_cast<PixelRGB*> (bo.getLinePointer (y));
+            for (int x = 0; x < pw; ++x)
+            {
+                const int ms = m[x].getRed(), mp = m[x].getGreen(), mk = m[x].getBlue();
+                auto ch = [&] (int base, int a, int bq, int c) { return (uint8) jlimit (0, 255, base - 64 + ((ms * a + mp * bq + mk * c + 128) >> 8)); };
+                o[x].setARGB (255, ch (b[x].getRed(), s0, p0, k0), ch (b[x].getGreen(), s1, p1, k1), ch (b[x].getBlue(), s2, p2, k2));
+            }
+        }
+    }
+    bgScaled = Image (Image::ARGB, pw, ph, true);
+    {
+        Graphics g (bgScaled);
+        const float k = (float) ph / baseH;              // coins arrondis du boitier
+        Path shell; shell.addRoundedRectangle (L::shell.getX() * k, L::shell.getY() * k, L::shell.getWidth() * k, L::shell.getHeight() * k, L::shellR * k);
+        g.reduceClipRegion (shell);
+        g.drawImageAt (face, 0, 0);
+        g.addTransform (AffineTransform::scale (k));
+        drawPrint (g);
+    }
+    repaint();
+}
+
 void FM9Editor::rebuildCaches (float sc)
 {
     if (sc <= 0.0f) sc = physicalScale();
@@ -188,16 +384,18 @@ void FM9Editor::rebuildCaches (float sc)
     if (w == cacheW && h == cacheH && std::abs (sc - cacheScale) < 0.01f && bgScaled.isValid()) return;
     cacheW = w; cacheH = h; cacheScale = sc;
     const int pw = roundToInt ((float) w * sc), ph = roundToInt ((float) h * sc);
-    // fond + serigraphie vectorielle, a la resolution physique de l'ecran
-    bgScaled = Image (Image::ARGB, pw, ph, true);
+    // cartes de la facade a la resolution physique de l'ecran (reduction seulement), puis recomposition
+    auto fit = [pw, ph] (const Image& src)
     {
-        Graphics g (bgScaled);
+        Image out (Image::ARGB, pw, ph, false);
+        Graphics g (out);
         g.setImageResamplingQuality (Graphics::highResamplingQuality);
-        g.drawImage (background, Rectangle<float> (0, 0, (float) pw, (float) ph));
-        g.addTransform (AffineTransform::scale ((float) ph / baseH));
-        drawPrint (g);
-    }
-    repaint();
+        g.drawImage (src, Rectangle<float> (0, 0, (float) pw, (float) ph));
+        return out;
+    };
+    baseScaled = fit (faceBase);
+    mapsScaled = fit (faceMaps);
+    recomposeFace();
 }
 
 bool FM9Editor::blinkOn (double periodMs) const
@@ -734,6 +932,7 @@ void FM9Editor::timerCallback()
     const double now = Time::getMillisecondCounterHiRes();
     if (getPeer() != lastPeer || now - lastRendererCheckMs > 1000.0) { lastRendererCheckMs = now; useSoftwareRenderer(); }
     if (resizeSettle > 0 && --resizeSettle == 0) rebuildCaches();
+    else if (faceDirty && resizeSettle == 0) recomposeFace();      // couleur changee a la volee
     else if (resizeSettle == 0 && now - lastScaleCheckMs > 250.0)
     {
         lastScaleCheckMs = now;
@@ -811,9 +1010,13 @@ void FM9Editor::drawEmbossed (Graphics& g, const String& t, Rectangle<float> r, 
             g.setColour (Colours::black.withAlpha (0.30f / (float) i));
             g.drawText (t, r.translated (0.55f * (float) i, 0.55f * (float) i), Justification::centred, false);
         }
-        g.setColour (Colour (0xff80868c).withAlpha (0.45f));
+        // couleurs tirees du silicone du skin : plus claires sur un silicone sombre, plus sombres sur un silicone clair
+        const bool lightKeys = keyCol.getPerceivedBrightness() > 0.5f;
+        g.setColour ((lightKeys ? Colours::white : keyCol.interpolatedWith (Colours::white, 0.40f)).withAlpha (0.45f));
         g.drawText (t, r.translated (-0.5f, -0.5f), Justification::centred, false);
-        g.setColour (Colour (0xff4a4e53));
+        // silicone colore (violet, brique, bleu) : gravure claire bien lisible comme sur la FM-1 ; silicone noir : gris discret
+        const bool coloured = keyCol.getSaturation() > 0.2f;
+        g.setColour (lightKeys ? keyCol.interpolatedWith (Colours::black, 0.38f) : keyCol.interpolatedWith (Colours::white, coloured ? 0.74f : 0.17f));
         g.drawText (t, r, Justification::centred, false);
         return;
     }
@@ -848,7 +1051,7 @@ void FM9Editor::drawKeyLed (Graphics& g, Rectangle<float> r, float level, Colour
 void FM9Editor::drawPrint (Graphics& g)
 {
     // inscriptions sur la coque (Poppins, vectoriel)
-    g.setColour (cInk);
+    g.setColour (inkCol);
     g.setFont (fontOf (med, 22.0f).withExtraKerningFactor (0.08f));
     auto label = [&g] (const String& t, Point<float> knob, float)
     {
@@ -888,7 +1091,7 @@ void FM9Editor::drawPrint (Graphics& g)
         {
             drawEmbossed (g, "PLAY", r.withHeight (r.getHeight() * 0.5f).translated (0, r.getHeight() * 0.10f), 15.0f, false, {});
             drawEmbossed (g, "STOP", r.withTrimmedTop (r.getHeight() * 0.5f).translated (0, -r.getHeight() * 0.06f), 15.0f, false, {});
-            g.setColour (Colour (0xff4a4e53)); g.fillRect (r.getCentreX() - 16.0f, r.getCentreY() + 1.0f, 32.0f, 1.2f);
+            g.setColour ((keyCol.getPerceivedBrightness() > 0.5f ? keyCol.interpolatedWith (Colours::black, 0.38f) : keyCol.interpolatedWith (Colours::white, keyCol.getSaturation() > 0.2f ? 0.74f : 0.17f))); g.fillRect (r.getCentreX() - 16.0f, r.getCentreY() + 1.0f, 32.0f, 1.2f);
         }
         else drawEmbossed (g, fnNames[i], r, 17.0f, false, {});
     }
@@ -909,13 +1112,13 @@ void FM9Editor::drawDynamic (Graphics& g)
         for (int i = 0; i < 16; ++i)
         {
             const int n = whiteOffs[i];
-            drawKeyLed (g, L::whiteKeys[i], (lk >> n) & 1u ? 1.0f : ((dk >> n) & 1u ? 0.35f : 0.0f), cLed);
+            drawKeyLed (g, L::whiteKeys[i], (lk >> n) & 1u ? 1.0f : ((dk >> n) & 1u ? 0.35f : 0.0f), ledCol);
             if (fwHeldKey == n) { g.setColour (Colours::black.withAlpha (0.12f)); g.fillRoundedRectangle (L::whiteKeys[i].reduced (2), 30); }
         }
         for (int i = 0; i < 11; ++i)
         {
             const int n = blackOffs[i];
-            drawKeyLed (g, L::blackKeys[i], (lk >> n) & 1u ? 1.0f : ((dk >> n) & 1u ? 0.35f : 0.0f), cLed);
+            drawKeyLed (g, L::blackKeys[i], (lk >> n) & 1u ? 1.0f : ((dk >> n) & 1u ? 0.35f : 0.0f), ledCol);
             if (fwHeldKey == n) { g.setColour (Colours::black.withAlpha (0.12f)); g.fillRoundedRectangle (L::blackKeys[i].reduced (2), 30); }
         }
         for (int i = 0; i < 12; ++i)
@@ -946,7 +1149,7 @@ void FM9Editor::drawDynamic (Graphics& g)
     for (int i = 0; i < 16; ++i)
     {
         float lv = noteOn (noteForKey (false, i)) ? 1.0f : 0.0f;
-        Colour c = cLed;
+        Colour c = ledCol;
         if (seqActive && i < len)
         {
             const bool filled = proc.seqData.get (pat, i).count > 0 || proc.seqData.get (pat, i).tie;
@@ -967,12 +1170,12 @@ void FM9Editor::drawDynamic (Graphics& g)
                     || (i == 8 && getParam ("mono") > 0.5f) || (i == 9 && getParam ("mono") < 0.5f);
             const bool muted = i < 6 && getParam ("op" + String (i + 1) + "_on") < 0.5f;
             const float lv = sel ? 1.0f : (blinkOn (900) ? 0.55f : 0.0f);
-            drawKeyLed (g, r, muted ? (blinkOn (300) ? 0.6f : 0.0f) : lv, muted ? cRed : cLed);
+            drawKeyLed (g, r, muted ? (blinkOn (300) ? 0.6f : 0.0f) : lv, muted ? cRed : ledCol);
             drawEmbossed (g, blackNames[i], Rectangle<float> (r.getX() - 10, r.getY() + r.getHeight() * 0.62f, r.getWidth() + 20, 22), 15.0f, lv > 0.3f, muted ? cRed : Colour (0xffdfe6ea));
             if (heldBlack == i) { g.setColour (Colours::black.withAlpha (0.14f)); g.fillRoundedRectangle (r.reduced (2), 30); }
             continue;
         }
-        drawKeyLed (g, r, noteOn (noteForKey (true, i)) ? 1.0f : 0.0f, cLed);
+        drawKeyLed (g, r, noteOn (noteForKey (true, i)) ? 1.0f : 0.0f, ledCol);
         if (mouseNote >= 0 && noteForKey (true, i) == mouseNote) { g.setColour (Colours::black.withAlpha (0.12f)); g.fillRoundedRectangle (r.reduced (2), 30); }
     }
 
@@ -1331,12 +1534,189 @@ void FM9Editor::paint (Graphics& g)
     g.fillAll (Colour (0xff141416));
     // anti-gel : aucun rescale ici, on dessine le cache existant (ou l'original en attendant le timer)
     if (bgScaled.isValid()) { g.setImageResamplingQuality (Graphics::lowResamplingQuality); g.drawImage (bgScaled, getLocalBounds().toFloat()); }
-    else { g.setImageResamplingQuality (Graphics::highResamplingQuality); g.drawImage (background, getLocalBounds().toFloat()); }
+    else
+    {
+        const float k = (float) getHeight() / baseH;
+        g.setColour (shellCol);
+        g.fillRoundedRectangle (L::shell.getX() * k, L::shell.getY() * k, L::shell.getWidth() * k, L::shell.getHeight() * k, L::shellR * k);
+    }
     g.addTransform (AffineTransform::scale ((float) getHeight() / baseH));
     if (! bgScaled.isValid()) drawPrint (g);
     drawDynamic (g);
     drawScreen (g);
     drawDrum (g);
+}
+
+
+// --------------------------------------------------------------------------------------------- panneau de couleurs (a la volee)
+class FM9ColourPanel : public Component, private ChangeListener
+{
+public:
+    FM9ColourPanel (FM9Editor& e, Typeface::Ptr medium, int startElement) : ed (e), med (medium), sel (startElement)
+    {
+        picker.setColour (ColourSelector::backgroundColourId, Colours::transparentBlack);
+        picker.setColour (ColourSelector::labelTextColourId, Colour (0xffc9cfd6));
+        picker.addChangeListener (this);
+        addAndMakeVisible (picker);
+        btnLnf.med = med;
+        save.setLookAndFeel (&btnLnf);
+        save.onClick = [this] { ed.askSaveSkin(); };
+        save.setColour (TextButton::buttonColourId, Colour (0xff2a3036));
+        save.setColour (TextButton::textColourOffId, Colour (0xffdfe6ea));
+        addAndMakeVisible (save);
+        setSize (390, 236);
+        select (sel);
+    }
+    std::function<Colour (int)> current;
+    void select (int e)
+    {
+        sel = e;
+        if (current) { ignore = true; picker.setCurrentColour (current (e), dontSendNotification); ignore = false; }
+        repaint();
+    }
+    void resized() override
+    {
+        picker.setBounds (getLocalBounds().withTrimmedLeft (124).reduced (4));
+        save.setBounds (10, getHeight() - 40, 106, 28);
+    }
+    void paint (Graphics& g) override
+    {
+        g.fillAll (Colour (0xff1b1d21));
+        g.setFont (Font (FontOptions (med).withHeight (13.5f)));
+        for (int i = 0; i < FM9Editor::numElements; ++i)
+        {
+            const auto r = row (i);
+            if (i == sel) { g.setColour (Colour (0xff4fc3f7).withAlpha (0.22f)); g.fillRoundedRectangle (r.toFloat(), 6.0f); }
+            const auto sw = Rectangle<float> (16, 16).withCentre ({ (float) r.getX() + 16.0f, (float) r.getCentreY() });
+            g.setColour (current ? current (i) : Colours::grey); g.fillRoundedRectangle (sw, 4.0f);
+            g.setColour (Colours::white.withAlpha (0.35f)); g.drawRoundedRectangle (sw, 4.0f, 1.0f);
+            g.setColour (i == sel ? Colours::white : Colour (0xffb9c0c8));
+            g.drawText (FM9Editor::elementName (i), r.withTrimmedLeft (32), Justification::centredLeft, false);
+        }
+    }
+    void mouseDown (const MouseEvent& e) override
+    {
+        for (int i = 0; i < FM9Editor::numElements; ++i) if (row (i).contains (e.getPosition())) select (i);
+    }
+private:
+    Rectangle<int> row (int i) const { return { 6, 10 + i * 34, 114, 30 }; }
+    void changeListenerCallback (ChangeBroadcaster*) override
+    {
+        if (ignore) return;
+        ed.setElementColour (sel, picker.getCurrentColour());
+        repaint();
+    }
+    FM9Editor& ed;
+    Typeface::Ptr med;
+    int sel = 0;
+public:
+    ~FM9ColourPanel() override { save.setLookAndFeel (nullptr); }
+private:
+    bool ignore = false;
+    struct BtnLnf : LookAndFeel_V4
+    {
+        Typeface::Ptr med;
+        Font getTextButtonFont (TextButton&, int) override { return Font (FontOptions (med).withHeight (13.5f)); }
+    } btnLnf;
+    TextButton save { "Save skin..." };
+    ColourSelector picker { ColourSelector::showColourAtTop | ColourSelector::showSliders | ColourSelector::showColourspace | ColourSelector::editableColour };
+};
+
+void FM9Editor::openColourPanel (Point<int> at, int element)
+{
+    auto panel = std::make_unique<FM9ColourPanel> (*this, med, element);
+    panel->current = [safe = Component::SafePointer<FM9Editor> (this)] (int e) { return safe != nullptr ? safe->elementColour (e) : Colours::grey; };
+    panel->select (element);
+    // ouvert la ou l'on a clique (bulle pointee sur le clic), a l'interieur de la fenetre du plugin
+    CallOutBox::launchAsynchronously (std::move (panel), Rectangle<int> (at.x, at.y, 1, 1), this);
+}
+
+// rendu de demonstration : "shell=#rrggbb,pad=...,keys=...,ink=...,led=..."
+void FM9Editor::setSnapshotColours (const String& spec)
+{
+    const char* names[numElements] = { "shell", "pad", "keys", "ink", "led" };
+    for (auto& kv : StringArray::fromTokens (spec, ",", ""))
+        for (int e = 0; e < numElements; ++e)
+            if (kv.upToFirstOccurrenceOf ("=", false, false) == names[e])
+                setElementColour (e, Colour::fromString ("ff" + kv.fromFirstOccurrenceOf ("#", false, false)));
+    recomposeFace();
+}
+
+PopupMenu FM9Editor::buildSkinMenu()
+{
+    PopupMenu skinMenu;
+    skinMenu.addSectionHeader ("FM-1 colors");
+    for (int i = 0; i < numSkins; ++i) skinMenu.addItem (900 + i, skins[i].name, true, skinIndex() == i);
+    const auto userList = userSkins();
+    const auto curName = proc.uiState.getProperty ("skinName").toString();
+    if (! userList.isEmpty())
+    {
+        skinMenu.addSeparator();
+        skinMenu.addSectionHeader ("My skins");
+        for (int i = 0; i < userList.size() && i < 90; ++i)
+            skinMenu.addItem (1900 + i, userList[i].getFileNameWithoutExtension(), true, skinIndex() < 0 && curName == userList[i].getFileNameWithoutExtension());
+    }
+    if (skinIndex() < 0 && curName.isEmpty()) skinMenu.addItem (920, "Custom (not saved)", false, true);
+    skinMenu.addSeparator();
+    skinMenu.addItem (950, "Edit colours...");
+    skinMenu.addItem (951, "Save skin as preset...");
+    if (! userList.isEmpty())
+    {
+        PopupMenu del;
+        for (int i = 0; i < userList.size() && i < 90; ++i) del.addItem (2000 + i, userList[i].getFileNameWithoutExtension());
+        skinMenu.addSubMenu ("Delete skin preset", del);
+    }
+    skinMenu.addItem (952, "Import skin (.fm9skin)...");
+    skinMenu.addItem (953, "Export skin (.fm9skin)...");
+    skinMenu.addItem (954, "Open skins folder");
+    return skinMenu;
+}
+
+// apercu : un menu dessine avec le LookAndFeel des menus du plugin (meme rendu que le vrai menu)
+Image FM9Editor::renderMenuPreview (const PopupMenu& m, const String& highlight, float scale, int* highlightY)
+{
+    struct Row { const PopupMenu::Item* it; int h; };
+    std::vector<Row> rows;
+    int w = 120, h = 0;
+    const int border = menuLnf.getPopupMenuBorderSize();
+    for (PopupMenu::MenuItemIterator i (m); i.next();)
+    {
+        auto& it = i.getItem();
+        int iw = 0, ih = 0;
+        if (it.isSectionHeader) { iw = 160; ih = 30; }
+        else menuLnf.getIdealPopupMenuItemSize (it.text, it.isSeparator, 32, iw, ih);
+        if (it.subMenu != nullptr) iw += 20;
+        w = jmax (w, iw); rows.push_back ({ &it, ih }); h += ih;
+    }
+    Image img (Image::ARGB, roundToInt ((float) (w + 2 * border) * scale), roundToInt ((float) (h + 2 * border) * scale), true);
+    Graphics g (img);
+    g.addTransform (AffineTransform::scale (scale));
+    menuLnf.drawPopupMenuBackground (g, w + 2 * border, h + 2 * border);
+    int y = border;
+    for (auto& r : rows)
+    {
+        const Rectangle<int> a (border, y, w, r.h);
+        if (r.it->isSectionHeader) menuLnf.drawPopupMenuSectionHeader (g, a, r.it->text);
+        else
+        {
+            const bool hi = r.it->text == highlight;
+            if (hi && highlightY != nullptr) *highlightY = y;
+            menuLnf.drawPopupMenuItem (g, a, r.it->isSeparator, r.it->isEnabled, hi, r.it->isTicked, r.it->subMenu != nullptr, r.it->text, {}, nullptr, nullptr);
+        }
+        y += r.h;
+    }
+    return img;
+}
+
+PopupMenu FM9Editor::buildMainMenuForPreview()
+{
+    PopupMenu m;
+    m.addItem (1, "Load preset"); m.addItem (2, "Save preset to...");
+    m.addSeparator();
+    m.addItem (3, "Firmware"); m.addItem (4, "Plugin size"); m.addItem (5, "Glow");
+    PopupMenu sk = buildSkinMenu(); m.addSubMenu ("Skin", sk);
+    m.addItem (6, "Effects"); m.addItem (7, "MIDI"); m.addItem (8, "NKS");
+    return m;
 }
 
 // --------------------------------------------------------------------------------------------- menu clic droit
@@ -1410,6 +1790,8 @@ void FM9Editor::showContextMenu (const String& learnId)
     const int gl = (int) proc.uiState.getProperty ("glow", 75);
     for (int v : { 25, 50, 75, 100 }) glow.addItem (500 + v, String (v) + " %", true, gl == v);
     menu.addSubMenu ("Glow", glow);
+    PopupMenu skinMenu = buildSkinMenu();
+    menu.addSubMenu ("Skin", skinMenu);
     PopupMenu fx;
     fx.addItem (470, "Reset effects order (FX + SEL to move)");
     fx.addItem (471, "Delay synced to tempo", true, getParam ("delaySync") > 0.5f);
@@ -1421,14 +1803,32 @@ void FM9Editor::showContextMenu (const String& learnId)
     PopupMenu midi;
     midi.addItem (600, "Clear all MIDI assignments");
     midi.addSeparator();
+    {
+        PopupMenu ctl;
+        ctl.addItem (610, "None (MIDI Learn only)", true, proc.ctlProfile.load() == 0);
+        ctl.addItem (611, "Arturia KeyStep 37", true, proc.ctlProfile.load() == 1);
+        ctl.addSeparator();
+        ctl.addSectionHeader ("KeyStep 37 knobs (Shift + Chord = CC banks)");
+        for (auto& b : FM9Processor::keyStepBankNames()) ctl.addItem (612, b, false);
+        ctl.addItem (612, "Mod strip = mod wheel, pitch strip = bend, aftertouch, sustain", false);
+        ctl.addItem (612, "MIDI Learn always has priority", false);
+        midi.addSubMenu ("Controller", ctl);
+    }
+    midi.addSeparator();
     midi.addItem (601, "Right-click a knob to learn its parameter", false);
     midi.addItem (602, "Program Change 0-127 = presets 001-128", false);
     midi.addItem (603, "DX7 SysEx voice / bank dumps are accepted", false);
     menu.addSubMenu ("MIDI", midi);
+    PopupMenu nksMenu;
+    nksMenu.addItem (620, "Export NKS library (Komplete Kontrol / Maschine)");
+    nksMenu.addItem (621, "Save current preset as NKS (.nksf)...");
+    nksMenu.addItem (622, "Open NKS user folder");
+    menu.addSubMenu ("NKS", nksMenu);
     menu.addSeparator();
     menu.addItem (999, "FM-9 v" + String (JucePlugin_VersionString) + " - NINE HANDS | DSP", false);
 
     menu.setLookAndFeel (&menuLnf);
+    lastMenuPos = getMouseXYRelative();
     menu.showMenuAsync (PopupMenu::Options().withMousePosition(),       // toujours la ou l'on clique
         [safe = Component::SafePointer<FM9Editor> (this), learnId] (int r)
         {
@@ -1473,7 +1873,69 @@ void FM9Editor::showContextMenu (const String& learnId)
             else if (r == 470) pr.setFxOrder ({ fm9::fxFilter, fm9::fxReverb, fm9::fxDelay, fm9::fxDrive, fm9::fxChorus, fm9::fxPhaser });
             else if (r == 471) ed.setParam ("delaySync", ed.getParam ("delaySync") > 0.5f ? 0.0f : 1.0f);
             else if (r >= 480 && r < 492) ed.setParam ("delayDiv", (float) (r - 480));
+            else if (r >= 900 && r < 900 + numSkins) ed.applySkin (skins[r - 900].id, true);
+            else if (r == 950) ed.openColourPanel (ed.lastMenuPos);
+            else if (r == 951) ed.askSaveSkin();
+            else if (r >= 1900 && r < 1990) { const auto l = userSkins(); if (r - 1900 < l.size() && ! ed.loadUserSkin (l[r - 1900])) ed.popup ("Skin", "Unreadable file"); }
+            else if (r >= 2000 && r < 2090)
+            {
+                const auto l = userSkins();
+                if (r - 2000 < l.size())
+                {
+                    const auto f = l[r - 2000];
+                    AlertWindow::showOkCancelBox (MessageBoxIconType::QuestionIcon, "Delete skin preset", "Delete \"" + f.getFileNameWithoutExtension() + "\" ?", "Delete", "Cancel", &ed,
+                        ModalCallbackFunction::create ([safe, f] (int ok)
+                        {
+                            if (! ok || safe == nullptr) return;
+                            f.moveToTrash();
+                            if (safe->proc.uiState.getProperty ("skinName").toString() == f.getFileNameWithoutExtension()) safe->proc.uiState.removeProperty ("skinName", nullptr);
+                            safe->popup ("Skin", "Deleted");
+                        }));
+                }
+            }
+            else if (r == 952)
+            {
+                ed.chooser = std::make_unique<FileChooser> ("Import a skin", File::getSpecialLocation (File::userDocumentsDirectory), "*.fm9skin");
+                ed.chooser->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [safe] (const FileChooser& fc)
+                {
+                    const auto f = fc.getResult();
+                    if (safe == nullptr || f == File()) return;
+                    skinFolder().createDirectory();
+                    const auto dst = skinFolder().getChildFile (f.getFileName());
+                    if (dst != f) f.copyFileTo (dst);
+                    safe->popup ("Skin", safe->loadUserSkin (dst) ? "Imported" : "Unreadable file");
+                });
+            }
+            else if (r == 953)
+            {
+                const auto nm = pr.uiState.getProperty ("skinName").toString();
+                ed.chooser = std::make_unique<FileChooser> ("Export the skin", File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ((nm.isNotEmpty() ? nm : String ("FM-9 skin")) + ".fm9skin"), "*.fm9skin");
+                ed.chooser->launchAsync (FileBrowserComponent::saveMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::warnAboutOverwriting, [safe, nm] (const FileChooser& fc)
+                {
+                    const auto f = fc.getResult();
+                    if (safe == nullptr || f == File()) return;
+                    const auto out = f.withFileExtension ("fm9skin");
+                    safe->popup ("Skin", out.replaceWithText (safe->currentSkinJson (nm.isNotEmpty() ? nm : out.getFileNameWithoutExtension())) ? "Exported" : "Not saved");
+                });
+            }
+            else if (r == 954) { skinFolder().createDirectory(); skinFolder().startAsProcess(); }
             else if (r > 500 && r < 600) { pr.uiState.setProperty ("glow", r - 500, nullptr); ed.repaint(); }
+            else if (r == 610 || r == 611) { pr.ctlProfile.store (r - 610); ed.popup ("Controller", r == 611 ? "KeyStep 37" : "MIDI Learn"); }
+            else if (r == 620)
+            {
+                const int n = pr.exportNksLibrary (FM9Processor::nksUserFolder());
+                ed.popup ("NKS", String (n) + " presets");
+            }
+            else if (r == 621)
+            {
+                ed.chooser = std::make_unique<FileChooser> ("Save as NKS preset", FM9Processor::nksUserFolder().getChildFile (File::createLegalFileName (pr.getVoiceName().trim()) + ".nksf"), "*.nksf");
+                ed.chooser->launchAsync (FileBrowserComponent::saveMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::warnAboutOverwriting, [safe] (const FileChooser& fc)
+                {
+                    if (safe == nullptr || fc.getResult() == File()) return;
+                    safe->popup ("NKS", safe->proc.exportNksPreset (-1, fc.getResult().withFileExtension ("nksf")) ? "Saved" : "Not saved");
+                });
+            }
+            else if (r == 622) { FM9Processor::nksUserFolder().createDirectory(); FM9Processor::nksUserFolder().startAsProcess(); }
             else if (r == 600) for (auto* p : pr.getParameters()) if (auto* rp = dynamic_cast<RangedAudioParameter*> (p)) pr.clearMidiLearn (rp->getParameterID());
             else if (r >= 1000 && r < 1000 + pr.getNumPrograms()) pr.setCurrentProgram (r - 1000);
             else if (r == 700) ed.activateFirmware ({});

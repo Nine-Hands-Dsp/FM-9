@@ -103,12 +103,23 @@ public:
     juce::ValueTree uiState { "UI" };         // taille, glow... (thread de messages)
 
     void sendChangeMessageToUi() { uiEvent.fetch_add (1); }
+    static juce::File userFolder();           // reglages : banques .syx, skins .fm9skin
+
+    // profil de controleur (optionnel, jamais par defaut) : 0 = MIDI Learn seulement, 1 = Arturia KeyStep 37
+    std::atomic<int> ctlProfile { 0 };
+    struct KeyStepMap { int cc; const char* paramId; const char* label; };
+    static const KeyStepMap keyStepMap[16];
+    static juce::StringArray keyStepBankNames();
+
+    // NKS (Komplete Kontrol / Maschine)
+    static juce::File nksUserFolder();
+    int exportNksLibrary (const juce::File& root);           // banques A-D (voix non vides)
+    bool exportNksPreset (int program, const juce::File& file);
 
 private:
     void timerCallback() override;
     void loadBanksFromDisk();
     void saveBankToDisk (int bank) const;
-    static juce::File userFolder();
     void handleMidi (const juce::MidiMessage& m, int pos, juce::MidiBuffer& toEngine);
     void setKey (int note, bool on);
     float pv (const char* id) const;
@@ -148,6 +159,7 @@ private:
     // MIDI learn : CC -> parametre, files sans verrou vers le thread de messages
     std::atomic<bool> learning { false };
     juce::String learnTarget;
+    std::array<int, 128> keyStepTarget;                    // CC de la KeyStep 37 -> index dans allParams
     std::array<std::atomic<int>, 128> ccTarget;          // index dans allParams, -1 = rien
     std::array<std::atomic<float>, 128> ccValue;
     std::array<std::atomic<bool>, 128> ccPending;

@@ -5,6 +5,8 @@
 namespace fm9::layout
 {
 constexpr float unitsW = 1500.0f, unitsH = 900.0f;
+inline const juce::Rectangle<float> shell = juce::Rectangle<float> { 0.00f, 0.00f, 1500.00f, 900.00f };
+constexpr float shellR = 73.33f;
 inline const juce::Rectangle<float> screen = juce::Rectangle<float> { 371.67f, 80.00f, 394.16f, 394.17f };
 inline const juce::Rectangle<float> bezel = juce::Rectangle<float> { 362.50f, 70.83f, 412.50f, 412.50f };
 constexpr float knobD = 74.28f;

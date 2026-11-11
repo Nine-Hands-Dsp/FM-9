@@ -24,6 +24,11 @@ Synthétiseur FM 6 opérateurs au format VST3 (Windows et macOS), d'après le sy
 - **Séquenceur 16 pas** : 16 patterns, chaîne de patterns, preset associé à chaque pattern, enregistrement pas à pas (notes longues, silences), swing, gate, transposition, synchro au transport de Reaper.
 - **Façade de la FM-1** : 8 potards animés (MASTER + 7 encodeurs sans fin), écran couleur (oscilloscope, schéma de l'algorithme, grille des effets, pas du séquenceur), 12 touches de fonction, clavier 27 touches jouable à la souris avec ses LED.
 - **MIDI** : clavier maître sur tous les canaux ou un seul, Program Change 0-127, réception de SysEx DX7, **MIDI Learn** par clic droit sur un potard (aucun CC assigné par défaut).
+- **Skins** : les 6 coloris officiels de la FM-1 (Black, Purple, Orange, Black-Green, Cool Gray, White-Blue), couleurs de la coque, des pavés, des touches, des inscriptions et des LED réglables à la volée, skins enregistrables et échangeables (`.fm9skin`).
+- **Arturia KeyStep 37** : profil optionnel (clic droit > MIDI > Controller), les 4 banques de potards de la KeyStep pilotent filtre, enveloppe, effets et LFO.
+- **NKS** : export des presets pour Komplete Kontrol et Maschine (bibliothèque utilisateur), avec 6 pages de potards nommées.
+
+![Les 6 coloris de la FM-1](design/FM-9_Skins.jpg)
 
 ## Firmwares de la FM-1
 
@@ -55,6 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
+- **1.2.0** : skins (6 coloris de la FM-1), couleurs réglables à la volée et skins enregistrables ; profil Arturia KeyStep 37 ; export NKS (Komplete Kontrol / Maschine).
 - **1.1.0** : hôte de firmwares de la FM-1 (WebAssembly) : installation depuis GitHub ou un fichier, Hortator fourni ; façade : touches noires, écran agrandi, touches OCT à la taille de l'original.
 - **1.0.0** : première version.
 

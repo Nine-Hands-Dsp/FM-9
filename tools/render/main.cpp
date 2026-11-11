@@ -50,6 +50,35 @@ static int countOnsets (const std::vector<float>& x, int win = 256)
     return c;
 }
 
+static void keyStepTest()
+{
+    std::printf ("Arturia KeyStep 37\n");
+    FM9Processor p; p.prepareToPlay (48000, 512);
+    juce::AudioBuffer<float> buf (2, 512);
+    auto send = [&] (int cc, int v)
+    {
+        juce::MidiBuffer m; m.addEvent (juce::MidiMessage::controllerEvent (1, cc, v), 0);
+        p.processBlock (buf, m);
+        juce::MessageManager::getInstance()->runDispatchLoopUntil (400);    // le timer applique les CC (rampe anti-zip)
+    };
+    auto val = [&] (const char* id) { return p.apvts.getParameter (id)->getValue(); };
+    const float before = val ("reverb_mix");
+    send (18, 127);
+    check (std::abs (val ("reverb_mix") - before) < 1.0e-4f, "profil desactive par defaut : CC18 ignore (MIDI Learn seulement)");
+    p.ctlProfile.store (1);
+    send (18, 127);
+    check (val ("reverb_mix") > 0.95f && val ("reverb_on") > 0.5f, "banque violette : CC18 -> Reverb mix, reverb mise en marche");
+    send (74, 0);
+    check (val ("filter_a") < 0.05f && val ("filter_on") > 0.5f, "banque blanche : CC74 -> Cutoff, filtre en marche");
+    send (73, 127);
+    check (val ("attack") > 0.95f && val ("adsrOn") > 0.5f, "banque bleue : CC73 -> Attack, ADSR en marche");
+    send (80, 127);
+    check (val ("lfs") > 0.95f, "banque verte : CC80 -> LFO Speed");
+    juce::MemoryBlock st; p.getStateInformation (st);
+    FM9Processor q; q.setStateInformation (st.getData(), (int) st.getSize());
+    check (q.ctlProfile.load() == 1, "profil KeyStep 37 memorise avec le projet");
+}
+
 static void firmwareTest()
 {
     std::printf ("== firmware Hortator ==\n");
@@ -166,7 +195,7 @@ int main (int argc, char** argv)
 {
     juce::ScopedJuceInitialiser_GUI gui;
     juce::StringArray args (argv + 1, argc - 1);
-    if (args.isEmpty() || args.contains ("--test")) { audioTests(); firmwareTest(); }
+    if (args.isEmpty() || args.contains ("--test")) { audioTests(); keyStepTest(); firmwareTest(); }
     using juce::StringArray; using juce::String;
     if (args.contains ("--shot"))
     {
@@ -201,11 +230,42 @@ int main (int argc, char** argv)
                 for (int i = 0; i < 120; ++i) p.processBlock (b2, e);
             }
         }
+        if (args.contains ("--nks")) { std::printf ("nks %d\n", p.exportNksLibrary (juce::File (args[args.indexOf ("--nks") + 1]))); }
+        if (args.contains ("--skin")) p.uiState.setProperty ("skin", args[args.indexOf ("--skin") + 1], nullptr);
         std::unique_ptr<juce::AudioProcessorEditor> ed (p.createEditor());
         const float scale = arg ("--scale", 1.0f);
         if (auto* fe = dynamic_cast<FM9Editor*> (ed.get())) fe->prepareSnapshot (scale, (int) arg ("--mode", 0), (int) arg ("--page", 0), (int) arg ("--popup", 0));
+        if (auto* fe = dynamic_cast<FM9Editor*> (ed.get()))
+        {
+            if (args.contains ("--colours")) fe->setSnapshotColours (args[args.indexOf ("--colours") + 1]);
+            if (args.contains ("--saveskin")) std::printf ("save %d\n", (int) fe->saveUserSkin (args[args.indexOf ("--saveskin") + 1]));
+            if (args.contains ("--loadskin")) std::printf ("load %d\n", (int) fe->loadUserSkin (FM9Editor::skinFolder().getChildFile (args[args.indexOf ("--loadskin") + 1] + ".fm9skin")));
+            if (args.contains ("--panel"))
+            {
+                auto xy = StringArray::fromTokens (args[args.indexOf ("--panel") + 1], ",", "");
+                fe->openColourPanel ({ xy[0].getIntValue(), xy[1].getIntValue() }, xy.size() > 2 ? xy[2].getIntValue() : 0);
+            }
+        }
         if (auto* fw = p.firmware()) { juce::ignoreUnused (fw); }
         auto img = ed->createComponentSnapshot (ed->getLocalBounds(), true, scale);
+        if (args.contains ("--skinmenu"))
+            if (auto* fe = dynamic_cast<FM9Editor*> (ed.get()))
+            {
+                // menu principal ouvert au clic, sous-menu Skin deplie a cote de son entree
+                auto xy = StringArray::fromTokens (args[args.indexOf ("--skinmenu") + 1], ",", "");
+                const int x = xy[0].getIntValue(), y = xy[1].getIntValue();
+                int hy = 0;
+                auto main = fe->renderMenuPreview (fe->buildMainMenuForPreview(), "Skin", scale, &hy);
+                auto sub = fe->renderMenuPreview (fe->buildSkinMenu(), args.contains ("--hl") ? args[args.indexOf ("--hl") + 1] : String(), scale);
+                const int sy = juce::roundToInt ((y + hy - 7) * scale);
+                juce::Image canvas (juce::Image::ARGB, img.getWidth(), juce::jmax (img.getHeight(), sy + sub.getHeight() + juce::roundToInt (12 * scale)), true);
+                juce::Graphics g (canvas);
+                g.fillAll (juce::Colour (0xff2a2b2e));
+                g.drawImageAt (img, 0, 0);
+                g.drawImageAt (main, juce::roundToInt (x * scale), juce::roundToInt (y * scale));
+                g.drawImageAt (sub, juce::roundToInt (x * scale) + main.getWidth() - juce::roundToInt (6 * scale), sy);
+                img = canvas;
+            }
         juce::File out (args[args.indexOf ("--shot") + 1]);
         out.deleteFile(); juce::FileOutputStream os (out); juce::PNGImageFormat().writeImageToStream (img, os);
         std::printf ("capture %s (%dx%d)\n", out.getFullPathName().toRawUTF8(), img.getWidth(), img.getHeight());

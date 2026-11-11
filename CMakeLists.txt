@@ -6,7 +6,7 @@ if(APPLE)
   set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "" FORCE)
 endif()
 
-project(FM9 VERSION 1.1.0)
+project(FM9 VERSION 1.2.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -29,6 +29,7 @@ endif()
 # visuel integre au plugin (aucun fichier externe a l'execution)
 file(GLOB FM9_ASSET_FILES CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.png"
+  "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.jpg"
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.svg"
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.ttf"
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.wasm")
@@ -43,7 +44,7 @@ juce_add_plugin(FM9
   FORMATS VST3
   VST3_CATEGORIES Instrument Synth
   PRODUCT_NAME "FM-9"
-  VERSION 1.1.0
+  VERSION 1.2.0
   DESCRIPTION "6-operator FM synthesizer in the spirit of the M-VAVE FM-1 (DX7 SysEx compatible)"
   IS_SYNTH TRUE
   NEEDS_MIDI_INPUT TRUE

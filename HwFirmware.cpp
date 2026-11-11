@@ -377,7 +377,7 @@ static juce::Image rgb565ToImage (const uint16_t* fb, bool swapped)
     return img;
 }
 
-juce::Image FirmwareHost::renderPreview (const void* data, size_t size, double seconds)
+juce::Image FirmwareHost::renderPreview (const void* data, size_t size, double seconds, std::function<void (float)> progress)
 {
     if (isHardwarePackage (data, size))
     {
@@ -388,7 +388,10 @@ juce::Image FirmwareHost::renderPreview (const void* data, size_t size, double s
         const auto until = (uint64_t) (seconds * 1000.0);
         const double t0 = juce::Time::getMillisecondCounterHiRes();
         while (fm1hw_ms (m) < until && juce::Time::getMillisecondCounterHiRes() - t0 < 15000.0)
+        {
             if (fm1hw_run (m, 20000, nullptr, 0) < 0) break;
+            if (progress) progress (juce::jlimit (0.0f, 1.0f, (float) fm1hw_ms (m) / (float) until));
+        }
         juce::Image img;
         if (const auto* lcd = fm1hw_lcd (m)) img = rgb565ToImage (lcd, false);
         fm1hw_free (m);
@@ -401,7 +404,11 @@ juce::Image FirmwareHost::renderPreview (const void* data, size_t size, double s
     fw->master (0.0f);
     std::vector<float> l (512), r (512);
     const int blocks = (int) (seconds * fwRate / 512.0);
-    for (int i = 0; i < blocks; ++i) fw->render (l.data(), r.data(), 512, fwRate);
+    for (int i = 0; i < blocks; ++i)
+    {
+        fw->render (l.data(), r.data(), 512, fwRate);
+        if (progress && (i & 15) == 0) progress ((float) i / (float) blocks);
+    }
     juce::Image img;
     fw->copyScreen (img);
     return img;

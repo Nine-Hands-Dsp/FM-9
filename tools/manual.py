@@ -297,7 +297,8 @@ T = dict(
         "les deux existent), <b>Load</b> le lance, <b>Install all compatible</b> installe d'un coup tous les firmwares libres compatibles. "
         "<b>Refresh</b> télécharge la dernière liste publiée. Un double-clic sur une ligne ouvre la page du projet. "
         "<b>Aperçu</b> : laissez le curseur sur le nom d'un firmware compatible pendant un peu moins d'une seconde : FM-9 le démarre hors écran "
-        "et montre ce qu'affiche son écran (l'aperçu est gardé pour les fois suivantes).",
+        "et montre ce qu'affiche son écran (l'aperçu est gardé pour les fois suivantes). Une barre montre la progression : téléchargement, "
+        "puis démarrage du firmware ; pendant une installation, le bouton Install se remplit avec le pourcentage téléchargé.",
         "<b>Firmware d'origine</b> : il n'est pas libre, FM-9 ne le fournit pas ; l'entrée FM-1 original firmware du catalogue le télécharge "
         "depuis le serveur de M-VAVE, ou bien installez le FM-1.fwsc téléchargé sur le site de M-VAVE avec Install from file.",
         "<b>Autres installations</b> : <b>Install from GitHub...</b> (adresse du dépôt, de sa page github.io ou de son installeur web : FM-9 y cherche "

@@ -76,7 +76,7 @@ struct FirmwareCatalog
         return builtin;
     }
 
-    static bool download (const juce::String& url, juce::MemoryBlock& out, juce::String& error)
+    static bool download (const juce::String& url, juce::MemoryBlock& out, juce::String& error, std::function<void (float)> progress = {})
     {
         juce::URL u (url);
         int status = 0;
@@ -85,13 +85,25 @@ struct FirmwareCatalog
                                            .withStatusCode (&status).withNumRedirectsToFollow (5));
         if (in == nullptr || status >= 400) { error = "download failed (HTTP " + juce::String (status) + ")"; return false; }
         out.reset();
-        in->readIntoMemoryBlock (out);
+        // par morceaux, pour suivre la progression (taille annoncee par le serveur)
+        const auto total = in->getTotalLength();
+        juce::HeapBlock<char> chunk (65536);
+        for (;;)
+        {
+            const int n = in->read (chunk, 65536);
+            if (n <= 0) break;
+            out.append (chunk, (size_t) n);
+            if (progress && total > 0) progress (juce::jlimit (0.0f, 1.0f, (float) out.getSize() / (float) total));
+        }
         return out.getSize() > 0;
     }
 
     // installe le paquet materiel (.fwsc) et la version web (.wasm) quand ils existent ; thread d'arriere-plan
-    static bool install (const CatalogEntry& e, juce::String& error)
+    static bool install (const CatalogEntry& e, juce::String& error, std::function<void (float)> progress = {})
     {
+        // progression : paquet materiel puis version web (moitie chacun quand les deux existent)
+        const float parts = (e.hardware() ? 1.0f : 0.0f) + (e.web() ? 1.0f : 0.0f);
+        auto part = [&] (float base) { return [progress, base, parts] (float f) { if (progress) progress ((base + f) / juce::jmax (1.0f, parts)); }; };
         if (! e.compatible) { error = e.reason; return false; }
         FirmwareInstaller::folder().createDirectory();
         int done = 0;
@@ -105,14 +117,14 @@ struct FirmwareCatalog
         if (e.hardware())
         {
             juce::MemoryBlock fw; juce::String err;
-            if (! download (e.pkg, fw, err)) errs << "package: " << err << "  ";
+            if (! download (e.pkg, fw, err, part (0.0f))) errs << "package: " << err << "  ";
             else if (! FirmwareHost::isHardwarePackage (fw.getData(), fw.getSize())) errs << "package: not an FM-1 update package  ";
             else if (FirmwareInstaller::folder().getChildFile (e.fileName() + ".fwsc").replaceWithData (fw.getData(), fw.getSize())) { ++done; note ("package", e.pkg); }
         }
         if (e.web())
         {
             juce::MemoryBlock wasm; juce::String err;
-            if (! download (e.url, wasm, err)) errs << "web build: " << err;
+            if (! download (e.url, wasm, err, part (e.hardware() ? 1.0f : 0.0f))) errs << "web build: " << err;
             else if (FirmwareInstaller::abiOf (wasm.getData(), wasm.getSize()) == 0) errs << "web build: not an FM-1 web build";
             else if (FirmwareHost::create (wasm.getData(), wasm.getSize(), juce::File(), err) == nullptr) errs << "web build: " << err;
             else if (FirmwareInstaller::folder().getChildFile (e.fileName() + ".wasm").replaceWithData (wasm.getData(), wasm.getSize())) { ++done; if (! e.hardware()) note ("file", e.url); }
@@ -288,8 +300,20 @@ private:
                     const bool doing = o.current == r.entry;
                     g.setColour (inst ? kHover : kAccent.withAlpha (o.busy ? 0.3f : 0.9f)); g.fillRoundedRectangle (btn.toFloat(), 7.0f);
                     if (inst) { g.setColour (kBorder); g.drawRoundedRectangle (btn.toFloat().reduced (0.5f), 7.0f, 1.0f); }
-                    g.setColour (inst ? kText : juce::Colour (0xff0b1520)); g.setFont (font (o.fMed, 13.0f));
-                    g.drawText (doing ? "..." : inst ? "Load" : "Install", btn, juce::Justification::centred);
+                    if (doing)
+                    {
+                        // telechargement en cours : le bouton se remplit
+                        const float f = o.installProg.load();
+                        g.setColour (kHover); g.fillRoundedRectangle (btn.toFloat(), 7.0f);
+                        g.setColour (kAccent); g.fillRoundedRectangle (btn.toFloat().withWidth (juce::jmax (14.0f, btn.getWidth() * f)), 7.0f);
+                        g.setColour (kText); g.setFont (font (o.fMed, 13.0f));
+                        g.drawText (juce::String (juce::roundToInt (f * 100.0f)) + " %", btn, juce::Justification::centred);
+                    }
+                    else
+                    {
+                        g.setColour (inst ? kText : juce::Colour (0xff0b1520)); g.setFont (font (o.fMed, 13.0f));
+                        g.drawText (inst ? "Load" : "Install", btn, juce::Justification::centred);
+                    }
                 }
                 y += rowH;
             }
@@ -352,7 +376,8 @@ private:
                 if (stop) break;
                 { const juce::ScopedLock sl (lock); progress = "Installing " + e.name + " (" + juce::String (done.load() + 1) + "/" + juce::String (total) + ")..."; currentName = e.name; }
                 juce::String err;
-                if (! FirmwareCatalog::install (e, err)) { const juce::ScopedLock sl (lock); failures.add (e.name + ": " + err); }
+                installProg.store (0.0f);
+                if (! FirmwareCatalog::install (e, err, [this] (float f) { installProg.store (f); })) { const juce::ScopedLock sl (lock); failures.add (e.name + ": " + err); }
                 ++done;
             }
             finished = true;
@@ -387,6 +412,7 @@ private:
     void timerCallback() override
     {
         tickPreview();
+        if (previewBusy.load() && shown >= 0) repaint();
         if (! busy) return;
         {
             const juce::ScopedLock sl (lock);
@@ -445,10 +471,23 @@ public:
             g.setImageResamplingQuality (juce::Graphics::highResamplingQuality);
             g.drawImage (img, scr.toFloat());
         }
-        else
+        else if (previewFailed.count (shown))
         {
             g.setColour (kDim);
-            g.drawText (previewFailed.count (shown) ? "No preview" : "Starting the firmware...", scr, juce::Justification::centred);
+            g.drawText ("No preview", scr, juce::Justification::centred);
+        }
+        else
+        {
+            // progression : telechargement (moitie gauche) puis demarrage du firmware (moitie droite)
+            const int st = previewStage.load();
+            const float f = juce::jlimit (0.0f, 1.0f, (st == 0 ? 0.0f : 0.5f) + 0.5f * previewProg.load());
+            g.setColour (kText);
+            g.drawText (st == 0 ? "Downloading..." : "Starting the firmware...", scr.withTrimmedBottom (sz / 2 - 6), juce::Justification::centredBottom);
+            auto bar = juce::Rectangle<float> ((float) scr.getX() + 24.0f, (float) scr.getCentreY() + 8.0f, (float) sz - 48.0f, 6.0f);
+            g.setColour (kFaint); g.fillRoundedRectangle (bar, 3.0f);
+            g.setColour (kAccent); g.fillRoundedRectangle (bar.withWidth (juce::jmax (6.0f, bar.getWidth() * f)), 3.0f);
+            g.setColour (kDim);
+            g.drawText (juce::String (juce::roundToInt (f * 100.0f)) + " %", bar.translated (0, 10.0f).withHeight (16.0f).toNearestInt(), juce::Justification::centred);
         }
         g.setColour (kDim);
         g.drawText (entries[(size_t) shown].name, juce::Rectangle<int> (box.getX() + pad, scr.getBottom() + 4, sz, 16), juce::Justification::centredLeft);
@@ -469,20 +508,32 @@ public:
             }
     }
 
+    // capture de la notice : etat de chargement fige (apercu et installation en cours)
+    void showLoadingForTest (const juce::String& previewName, int stage, float f, juce::Point<int> at, const juce::String& installName, float inst)
+    {
+        for (size_t i = 0; i < entries.size(); ++i)
+        {
+            if (entries[i].name == previewName) { nameHover = shown = (int) i; previewAt = at; previewBusy.store (true); previewStage.store (stage); previewProg.store (f); }
+            if (entries[i].name == installName) { current = (int) i; busy = true; installProg.store (inst); status = "Installing " + installName + " (1/1)..."; }
+        }
+        list.repaint(); repaint();
+    }
+
     static juce::File previewFile (const CatalogEntry& e) { return FirmwareInstaller::folder().getChildFile ("Previews").getChildFile (e.fileName() + ".png"); }
 
     // l'apercu d'un firmware : fichier en cache, sinon le firmware (installe ou telecharge) demarre hors ecran
-    static juce::Image makePreview (const CatalogEntry& e)
+    static juce::Image makePreview (const CatalogEntry& e, std::function<void (int, float)> progress = {})
     {
+        auto stage = [progress] (int st) { return [progress, st] (float f) { if (progress) progress (st, f); }; };
         const auto cache = previewFile (e);
         if (cache.existsAsFile()) if (auto img = juce::ImageFileFormat::loadFrom (cache); img.isValid()) return img;
         juce::MemoryBlock data; juce::String err;
         const auto folder = FirmwareInstaller::folder();
         if (folder.getChildFile (e.fileName() + ".fwsc").loadFileAsData (data) || folder.getChildFile (e.fileName() + ".wasm").loadFileAsData (data)) {}
-        else if (e.web()) FirmwareCatalog::download (e.url, data, err);          // la version web est plus legere a telecharger
-        else if (e.hardware()) FirmwareCatalog::download (e.pkg, data, err);
+        else if (e.web()) FirmwareCatalog::download (e.url, data, err, stage (0));          // la version web est plus legere a telecharger
+        else if (e.hardware()) FirmwareCatalog::download (e.pkg, data, err, stage (0));
         if (data.getSize() == 0) return {};
-        auto img = FirmwareHost::renderPreview (data.getData(), data.getSize(), 3.0);
+        auto img = FirmwareHost::renderPreview (data.getData(), data.getSize(), 3.0, stage (1));
         if (img.isValid())
         {
             cache.getParentDirectory().createDirectory();
@@ -509,16 +560,18 @@ private:
         const auto e = entries[(size_t) idx];
         if (previewThread.joinable()) { if (previewBusy.load()) { const juce::ScopedLock sl (previewLock); pending.erase (idx); shown = -1; nameSince = juce::Time::getMillisecondCounterHiRes(); return; } previewThread.join(); }
         previewBusy.store (true);
-        previewThread = std::thread ([this, idx, e]
+        const juce::Component::SafePointer<FirmwareCatalogView> self (this);
+        previewThread = std::thread ([this, self, idx, e]
         {
-            auto img = makePreview (e);
+            previewStage.store (0); previewProg.store (0.0f);
+            auto img = makePreview (e, [this] (int st, float f) { previewStage.store (st); previewProg.store (f); });
             {
                 const juce::ScopedLock sl (previewLock);
                 pending.erase (idx);
                 if (img.isValid()) previews[idx] = img; else previewFailed.insert (idx);
             }
             previewBusy.store (false);
-            juce::MessageManager::callAsync ([safe = juce::Component::SafePointer<FirmwareCatalogView> (this)] { if (safe != nullptr) safe->repaint(); });
+            juce::MessageManager::callAsync ([self] { if (self != nullptr) self->repaint(); });
         });
     }
 
@@ -530,6 +583,8 @@ private:
     std::set<int> previewFailed, pending;
     std::thread previewThread;
     std::atomic<bool> previewBusy { false };
+    std::atomic<int> previewStage { 0 };       // 0 telechargement, 1 demarrage du firmware
+    std::atomic<float> previewProg { 0.0f };
 
     juce::Typeface::Ptr fReg, fMed, fBold;
     std::vector<CatalogEntry> entries;
@@ -541,6 +596,7 @@ private:
     std::atomic<bool> stop { false }, finished { false };
     int hover = -1, current = -1, total = 0;
     std::atomic<int> done { 0 }, refreshed { 0 };
+    std::atomic<float> installProg { 0.0f };
     bool busy = false;
 };
 } // namespace fm9

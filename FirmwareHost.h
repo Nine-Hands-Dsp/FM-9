@@ -31,7 +31,7 @@ public:
     static bool isHardwarePackage (const void* data, size_t size);
     // apercu : demarre le firmware hors ecran (sans son, a pleine vitesse) et rend ce que montre son ecran
     // apres 'seconds' secondes de fonctionnement (thread d'arriere-plan)
-    static juce::Image renderPreview (const void* data, size_t size, double seconds = 3.0);
+    static juce::Image renderPreview (const void* data, size_t size, double seconds = 3.0, std::function<void (float)> progress = {});
     virtual ~FirmwareHost() = default;
 
     // ---- thread audio ----

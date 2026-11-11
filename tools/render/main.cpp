@@ -292,6 +292,11 @@ int main (int argc, char** argv)
             if (args.contains ("--saveskin")) std::printf ("save %d\n", (int) fe->saveUserSkin (args[args.indexOf ("--saveskin") + 1]));
             if (args.contains ("--loadskin")) std::printf ("load %d\n", (int) fe->loadUserSkin (FM9Editor::skinFolder().getChildFile (args[args.indexOf ("--loadskin") + 1] + ".fm9skin")));
             if (args.contains ("--catalog")) fe->openCatalog();
+            if (args.contains ("--loading") && fe->catalog != nullptr)
+            {
+                const int k = args.indexOf ("--loading");
+                fe->catalog->showLoadingForTest (args[k + 1], args[k + 2].getIntValue(), args[k + 3].getFloatValue(), { 120, 250 }, args[k + 4], args[k + 5].getFloatValue());
+            }
             if (args.contains ("--preview") && fe->catalog != nullptr)
             {
                 auto xy = StringArray::fromTokens (args[args.indexOf ("--preview") + 2], ",", "");

@@ -36,6 +36,8 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     menuLnf.reg = light; menuLnf.med = med; menuLnf.bold = bold;
     if (auto xml = XmlDocument::parse (String::fromUTF8 (BinaryData::NineHandsLogoBlack_svg, BinaryData::NineHandsLogoBlack_svgSize)))
         logo = Drawable::createFromSVG (*xml);
+    if (auto xml = XmlDocument::parse (String::fromUTF8 (BinaryData::FM9Logo_svg, BinaryData::FM9Logo_svgSize)))
+        fm9Logo = Drawable::createFromSVG (*xml);
 
     auto img = [] (const char* d, int s) { return ImageCache::getFromMemory (d, s); };
     knobLayers.shadow    = img (BinaryData::knob_shadow_png, BinaryData::knob_shadow_pngSize);
@@ -870,10 +872,13 @@ void FM9Editor::drawPrint (Graphics& g)
         const float w = L::logoW, h = w * vb.getHeight() / jmax (1.0f, vb.getWidth());
         logo->drawWithin (g, { L::logoCentre.x - w * 0.5f, L::logoCentre.y - h * 0.5f, w, h }, RectanglePlacement::centred, 0.9f);
     }
-    // nom de l'instrument
-    g.setColour (cInk);
-    g.setFont (fontOf (bold, 30.0f).withExtraKerningFactor (0.06f));
-    g.drawText ("FM-9", Rectangle<float> (L::bezel.getX() + 1.0f, L::bezel.getY() - 40.0f, 140.0f, 34.0f), Justification::centredLeft, false);
+    // logo FM-9 (fichier fourni par l'utilisateur) au-dessus de l'ecran, cale sur son bord gauche
+    if (fm9Logo != nullptr)
+    {
+        const auto vb = fm9Logo->getDrawableBounds();
+        const float h = 21.0f, w = h * vb.getWidth() / jmax (1.0f, vb.getHeight());
+        fm9Logo->drawWithin (g, { L::bezel.getX() + 1.0f, L::bezel.getY() - 13.0f - h, w, h }, RectanglePlacement::xLeft | RectanglePlacement::yMid, 0.88f);
+    }
 
     // gravures non allumees des touches
     for (int i = 0; i < 12; ++i)

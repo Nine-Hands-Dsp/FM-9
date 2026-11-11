@@ -92,7 +92,7 @@ private:
     double lastPaintMs = 0, repaintAskedMs = 0, lastScaleCheckMs = 0, lastRendererCheckMs = 0;
 
     juce::Typeface::Ptr med, bold, light;
-    std::unique_ptr<juce::Drawable> logo;
+    std::unique_ptr<juce::Drawable> logo, fm9Logo;
     NineHandsMenu::MenuLnf menuLnf;
     std::unique_ptr<juce::FileChooser> chooser;
 

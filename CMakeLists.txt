@@ -6,7 +6,7 @@ if(APPLE)
   set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "" FORCE)
 endif()
 
-project(FM9 VERSION 1.0.0)
+project(FM9 VERSION 1.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -30,7 +30,8 @@ endif()
 file(GLOB FM9_ASSET_FILES CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.png"
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.svg"
-  "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.ttf")
+  "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.ttf"
+  "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.wasm")
 juce_add_binary_data(FM9Assets SOURCES ${FM9_ASSET_FILES})
 set_target_properties(FM9Assets PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
@@ -42,7 +43,7 @@ juce_add_plugin(FM9
   FORMATS VST3
   VST3_CATEGORIES Instrument Synth
   PRODUCT_NAME "FM-9"
-  VERSION 1.0.0
+  VERSION 1.1.0
   DESCRIPTION "6-operator FM synthesizer in the spirit of the M-VAVE FM-1 (DX7 SysEx compatible)"
   IS_SYNTH TRUE
   NEEDS_MIDI_INPUT TRUE
@@ -54,10 +55,19 @@ juce_add_plugin(FM9
 juce_generate_juce_header(FM9)
 
 target_sources(FM9 PRIVATE
-  PluginProcessor.cpp PluginEditor.cpp
+  PluginProcessor.cpp PluginEditor.cpp FirmwareHost.cpp
+  wasm3/m3_bind.c wasm3/m3_code.c wasm3/m3_compile.c wasm3/m3_core.c wasm3/m3_deterministic.c wasm3/m3_env.c wasm3/m3_exec.c
+  wasm3/m3_function.c wasm3/m3_info.c wasm3/m3_module.c wasm3/m3_parse.c wasm3/m3_snapshot.c wasm3/m3_validate.c wasm3/m3_xxh64.c
   msfa/dx7note.cc msfa/env.cc msfa/exp2.cc msfa/fm_core.cc msfa/fm_op_kernel.cc msfa/freqlut.cc
   msfa/lfo.cc msfa/pitchenv.cc msfa/porta.cpp msfa/sin.cc msfa/tuning.cc)
 target_include_directories(FM9 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/msfa)
+
+file(GLOB WASM3_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/wasm3/*.c")
+if(MSVC)
+  set_source_files_properties(${WASM3_SOURCES} PROPERTIES COMPILE_OPTIONS "/W0;/O2")
+else()
+  set_source_files_properties(${WASM3_SOURCES} PROPERTIES COMPILE_OPTIONS "-w;-O3")
+endif()
 
 if(MSVC)
   target_compile_options(FM9 PRIVATE /utf-8)

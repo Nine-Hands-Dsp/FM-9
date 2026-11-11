@@ -74,6 +74,14 @@ private:
     void openSaveDrum();
     void closeDrum (bool accept);
     void renameVoice();
+    void installFromGitHub();
+    void installFromFile();
+    void activateFirmware (const juce::String& name);
+
+    // mode firmware : ecran du firmware, touches tenues
+    juce::Image fwImage;
+    uint32_t fwDrawnSerial = 0;
+    int fwHeldKey = -1;
 
     FM9Processor& proc;
     juce::Image background, bgScaled;

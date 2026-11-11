@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -281,6 +281,16 @@ T = dict(
          "(dossier Nine Hands DSP/FM-9 de votre compte utilisateur).",
          "Banque A d'usine :"],
     fac_hdr=["N°", "Nom", "Caractère"],
+    fw_t="Firmwares de la FM-1",
+    fw=["FM-9 peut faire tourner les <b>firmwares libres de la FM-1</b> à la place de son synthé : l'écran du firmware s'affiche dans la vitre, "
+        "les touches, potards, touches OCT et LED de la façade sont les siens, et votre clavier maître le joue (notes FA3 à SOL5, ou MIDI complet pour la famille Felucca). "
+        "MASTER règle son volume.",
+        "<b>Hortator</b> (boîte à rythmes 8 pistes de DEADACTIVE) est fourni : clic droit &gt; <b>Firmware</b> &gt; Hortator. "
+        "Pour en ajouter : clic droit &gt; Firmware &gt; <b>Install from GitHub...</b>, collez l'adresse du dépôt, de sa page github.io ou de son installeur web "
+        "(par exemple https://deadactive.github.io/hortator/webapp/installer/) : FM-9 trouve l'émulateur web publié par le projet, le télécharge et le lance. "
+        "<b>Install from file (.wasm)</b> installe un fichier déjà téléchargé. <b>FM-9 synthesizer</b> revient au synthé.",
+        "Chaque firmware garde ses sauvegardes (patterns, réglages) dans le dossier Nine Hands DSP/FM-9/Firmwares ; le firmware choisi est mémorisé avec le projet Reaper. "
+        "Ces firmwares sont des projets libres (GPL-3.0 pour la famille Felucca) : leurs fonctions sont décrites dans leurs propres manuels."],
     win_t="Fenêtre et réglages",
     win=["La fenêtre s'ouvre à la taille « 60 % » et ne descend jamais en dessous. Clic droit &gt; <b>Plugin size</b> : 60 %, 75 %, 100 % ou 125 %, "
          "et taille par défaut des nouvelles fenêtres. Clic droit &gt; <b>Glow</b> : intensité des LED des touches (25, 50, 75 ou 100 %). "
@@ -299,6 +309,7 @@ T = dict(
           ["Séquences", "arpégiateur 7 modes ; séquenceur 16 pas, 16 patterns, chaîne, notes longues, swing, synchro hôte"],
           ["MIDI", "canal réglable, Program Change, pitch bend, molette, aftertouch, sustain, SysEx DX7, MIDI Learn"],
           ["Fenêtre", "60 / 75 / 100 / 125 %, jamais sous 60 % ; anti-gel v2 sous Windows"],
+          ["Firmwares", "firmwares web de la FM-1 (WebAssembly, moteur wasm3), installation depuis GitHub ou un fichier, Hortator fourni"],
           ["Licence", "GPL-3.0"]],
 )
 
@@ -339,6 +350,8 @@ def section():
     f.append(P(t["pre_t"], "h1")); f += [P(x) for x in t["pre"]]
     rows = [t["fac_hdr"]] + [[str(i + 1).zfill(3), "<b>" + n + "</b>", d] for i, (n, d) in enumerate(FACTORY)]
     f.append(table(rows, [12 * mm, 30 * mm, W - 42 * mm], small=True))
+    f.append(P(t["fw_t"], "h1")); f += [P(x) for x in t["fw"]]
+    f.append(img(os.path.join(SHOTS, "apercu_hortator.png"), W * 0.72)); f.append(P("Hortator dans FM-9.", "small"))
     f.append(P(t["win_t"], "h1")); f += [P(x) for x in t["win"]]
     f.append(KeepTogether([P(t["tips_t"], "h1")] + bullets(t["tips"], "tip") +
                           [P(t["tech_t"], "h1"), table(t["tech"], [28 * mm, W - 28 * mm], header=False, small=True)]))

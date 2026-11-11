@@ -49,12 +49,12 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     nh::RotaryLayers::Style ms;                    // MASTER : potentiometre 300 deg
     ms.startAngle = degreesToRadians (-150.0f); ms.endAngle = degreesToRadians (150.0f);
     master = std::make_unique<nh::Knob> (*proc.apvts.getParameter ("volume"), knobLayers, ms);
-    master->onValueChange = [this] { if (isShowing()) popup ("Volume", formatValue ("volume")); };
+    master->onValueChange = [this] { if (isShowing() && proc.firmware() == nullptr) popup ("Volume", formatValue ("volume")); };
     master->onRightClick = [this] (const MouseEvent&) { showContextMenu ("volume"); };
     addAndMakeVisible (*master);
 
     for (int i = 0; i < 7; ++i) { enc[i] = std::make_unique<nh::Encoder> (encLayers); addAndMakeVisible (*enc[i]); }
-    enc[0]->onStep = [this] (int s, bool) { selectTurn (s); };
+    enc[0]->onStep = [this] (int s, bool) { if (auto* fw = proc.firmware()) { fw->encoder (0, s); return; } selectTurn (s); };
     enc[0]->onPress = [this]
     {
         // SELECT (appui) : confirme la copie de voix / la reinitialisation d'une banque
@@ -74,6 +74,7 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     enc[0]->onRightClick = [this] (const MouseEvent&) { showContextMenu(); };
     enc[1]->onStep = [this] (int s, bool)
     {
+        if (auto* fw = proc.firmware()) { fw->encoder (2, s); return; }
         if (getParam ("seqActive") > 0.5f) { popup ("SEQ", "Presets inactive"); return; }
         proc.nextProgram (s);
         popup ({}, {}, 2);
@@ -81,13 +82,14 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     enc[1]->onRightClick = [this] (const MouseEvent&) { showContextMenu(); };
     enc[2]->onStep = [this] (int s, bool)
     {
+        if (auto* fw = proc.firmware()) { fw->encoder (1, s); return; }
         stepParam ("alg", s, false, "Algorithm");
         popup ({}, {}, 3);
     };
     enc[2]->onRightClick = [this] (const MouseEvent&) { showContextMenu ("alg"); };
     for (int k = 0; k < 4; ++k)
     {
-        enc[3 + k]->onStep = [this, k] (int s, bool fine) { turnSlot (k, s, fine); };
+        enc[3 + k]->onStep = [this, k] (int s, bool fine) { if (auto* fw = proc.firmware()) { fw->encoder (3 + k, s); return; } turnSlot (k, s, fine); };
         enc[3 + k]->onRightClick = [this, k] (const MouseEvent&)
         {
             const auto id = pageInfo().s[k].id;
@@ -573,6 +575,16 @@ void FM9Editor::mouseDown (const MouseEvent& e)
     heldSince = Time::getMillisecondCounterHiRes();
     holdUsed = false;
 
+    if (auto* fw = proc.firmware())              // firmware de la FM-1 : la facade lui appartient
+    {
+        for (int i = 0; i < 12; ++i) if (L::fnKeys[i].contains (u)) { heldFn = i; fw->button (i, true); repaint(); return; }
+        for (int i = 0; i < 2; ++i) if (L::octKeys[i].contains (u)) { heldOct = i; fw->button (12 + i, true); repaint(); return; }
+        bool black = false;
+        const int k = keyAt (u, black);
+        if (k >= 0) { fwHeldKey = black ? blackOffs[k] : whiteOffs[k]; fw->key (fwHeldKey, true); }
+        return;
+    }
+
     for (int i = 0; i < 12; ++i)
         if (L::fnKeys[i].contains (u)) { heldFn = i; fnPress (i); repaint(); return; }
     for (int i = 0; i < 2; ++i)
@@ -603,6 +615,16 @@ void FM9Editor::mouseDown (const MouseEvent& e)
 
 void FM9Editor::mouseDrag (const MouseEvent& e)
 {
+    if (auto* fw = proc.firmware())
+    {
+        if (fwHeldKey < 0) return;
+        bool black = false;
+        const int k = keyAt (toUnits (e.position), black);
+        if (k < 0) return;
+        const int n = black ? blackOffs[k] : whiteOffs[k];
+        if (n != fwHeldKey) { fw->key (fwHeldKey, false); fwHeldKey = n; fw->key (n, true); }
+        return;
+    }
     if (heldOct >= 0)
     {
         // OCT tenu + rotation (ici : glisser vertical ou molette) : transposition 0..-12 / 0..+12
@@ -625,6 +647,15 @@ void FM9Editor::mouseDrag (const MouseEvent& e)
 
 void FM9Editor::mouseUp (const MouseEvent&)
 {
+    if (auto* fw = proc.firmware())
+    {
+        if (heldFn >= 0) fw->button (heldFn, false);
+        if (heldOct >= 0) fw->button (12 + heldOct, false);
+        if (fwHeldKey >= 0) fw->key (fwHeldKey, false);
+        heldFn = heldOct = fwHeldKey = -1;
+        repaint();
+        return;
+    }
     const bool longPress = Time::getMillisecondCounterHiRes() - heldSince > 600.0;
     releaseMouseNote();
     if (heldFn >= 0) { fnRelease (heldFn, longPress); heldFn = -1; }
@@ -710,6 +741,16 @@ void FM9Editor::timerCallback()
     {
         repaintAskedMs = 0.0; lastPeer = nullptr; useSoftwareRenderer(); repaint();
     }
+
+    if (auto* fw = proc.firmware())
+    {
+        if (fw->fbSerial.load() != fwDrawnSerial) { fwDrawnSerial = fw->fbSerial.load(); fw->copyScreen (fwImage); askRepaint (toPx (L::bezel)); }
+        String ps; ps << (int64) fw->litButtons.load() << ',' << (int64) fw->litKeys.load() << ',' << (int64) fw->dimKeys.load() << ',' << heldFn << heldOct << fwHeldKey
+                      << (int) proc.uiState.getProperty ("glow", 75);
+        if (ps != drawnPanelSig) { drawnPanelSig = ps; repaint(); }
+        return;
+    }
+    fwImage = {};
 
     // SAVE tenu : sauvegarde du preset dans son emplacement
     if (heldFn == 7 && ! holdUsed && now - heldSince > 600.0)
@@ -857,6 +898,40 @@ void FM9Editor::drawPrint (Graphics& g)
 
 void FM9Editor::drawDynamic (Graphics& g)
 {
+    if (auto* fw = proc.firmware())
+    {
+        const uint32_t lb = fw->litButtons.load(), lk = fw->litKeys.load(), dk = fw->dimKeys.load();
+        for (int i = 0; i < 16; ++i)
+        {
+            const int n = whiteOffs[i];
+            drawKeyLed (g, L::whiteKeys[i], (lk >> n) & 1u ? 1.0f : ((dk >> n) & 1u ? 0.35f : 0.0f), cLed);
+            if (fwHeldKey == n) { g.setColour (Colours::black.withAlpha (0.12f)); g.fillRoundedRectangle (L::whiteKeys[i].reduced (2), 30); }
+        }
+        for (int i = 0; i < 11; ++i)
+        {
+            const int n = blackOffs[i];
+            drawKeyLed (g, L::blackKeys[i], (lk >> n) & 1u ? 1.0f : ((dk >> n) & 1u ? 0.35f : 0.0f), cLed);
+            if (fwHeldKey == n) { g.setColour (Colours::black.withAlpha (0.12f)); g.fillRoundedRectangle (L::blackKeys[i].reduced (2), 30); }
+        }
+        for (int i = 0; i < 12; ++i)
+        {
+            const auto r = L::fnKeys[i];
+            if (heldFn == i) { g.setColour (Colours::black.withAlpha (0.18f)); g.fillRoundedRectangle (r.reduced (3), 14); }
+            if (! ((lb >> i) & 1u)) continue;
+            if (i == 10)
+            {
+                drawEmbossed (g, "PLAY", r.withHeight (r.getHeight() * 0.5f).translated (0, r.getHeight() * 0.10f), 15.0f, true, Colour (0xffdfe6ea));
+                drawEmbossed (g, "STOP", r.withTrimmedTop (r.getHeight() * 0.5f).translated (0, -r.getHeight() * 0.06f), 15.0f, true, Colour (0xffdfe6ea));
+            }
+            else drawEmbossed (g, fnNames[i], r, 17.0f, true, Colour (0xffdfe6ea));
+        }
+        for (int i = 0; i < 2; ++i)
+        {
+            if (heldOct == i) { g.setColour (Colours::black.withAlpha (0.18f)); g.fillRoundedRectangle (L::octKeys[i].reduced (2), 8); }
+            if ((lb >> (12 + i)) & 1u) drawEmbossed (g, i == 0 ? "OCT-" : "OCT+", L::octKeys[i], 17.0f, true, Colour (0xffdfe6ea));
+        }
+        return;
+    }
     auto noteOn = [this] (int n) { return n >= 0 && n < 128 && (proc.keyBits[(size_t) (n >> 5)].load() >> (n & 31) & 1u) != 0; };
     const bool seqActive = getParam ("seqActive") > 0.5f;
     const int pat = roundToInt (getParam ("seqPattern")) - 1, ph = proc.seq.playhead.load(), len = roundToInt (getParam ("seqLen"));
@@ -1031,6 +1106,22 @@ void FM9Editor::drawAlgorithm (Graphics& g, Rectangle<float> area, int alg, floa
 void FM9Editor::drawScreen (Graphics& g)
 {
     const auto sr = L::screen;
+    if (proc.firmware() != nullptr)
+    {
+        // ecran 240 x 240 du firmware, mis a l'echelle de la vitre
+        g.saveState();
+        { Path clip; clip.addRoundedRectangle (sr, 7.5f); g.reduceClipRegion (clip); }
+        g.setColour (Colours::black); g.fillRect (sr);
+        if (fwImage.isValid())
+        {
+            g.setImageResamplingQuality (Graphics::highResamplingQuality);
+            g.drawImage (fwImage, sr.reduced (sr.getWidth() * 0.012f));
+        }
+        g.restoreState();
+        ColourGradient refl (Colours::white.withAlpha (0.055f), sr.getX(), sr.getY(), Colours::white.withAlpha (0.0f), sr.getX() + sr.getWidth() * 0.55f, sr.getY() + sr.getHeight() * 0.55f, false);
+        g.setGradientFill (refl); g.fillRoundedRectangle (sr, 7.5f);
+        return;
+    }
     const double now = Time::getMillisecondCounterHiRes();
     g.saveState();
     { Path clip; clip.addRoundedRectangle (sr, 7.5f); g.reduceClipRegion (clip); }    // vitre aux coins arrondis
@@ -1280,6 +1371,22 @@ void FM9Editor::showContextMenu (const String& learnId)
     menu.addItem (333, "Rename voice...");
     menu.addSeparator();
 
+    PopupMenu firmware;
+    {
+        const auto cur = proc.getFirmwareName();
+        firmware.addItem (700, "FM-9 synthesizer (built-in)", true, cur.isEmpty());
+        firmware.addSeparator();
+        const auto list = proc.availableFirmwares();
+        for (int i = 0; i < list.size() && i < 90; ++i)
+            firmware.addItem (710 + i, list[i] + (list[i] == FM9Processor::builtinFirmware ? "  (built-in)" : ""), true, cur == list[i]);
+        firmware.addSeparator();
+        firmware.addItem (801, "Install from GitHub...");
+        firmware.addItem (802, "Install from file (.wasm)...");
+        firmware.addItem (803, "Open firmware folder");
+    }
+    menu.addSubMenu ("Firmware", firmware);
+    menu.addSeparator();
+
     PopupMenu sizes;
     {
         const char* names[numSizes] = { "60 %", "75 %", "100 %", "125 %" };
@@ -1364,7 +1471,78 @@ void FM9Editor::showContextMenu (const String& learnId)
             else if (r > 500 && r < 600) { pr.uiState.setProperty ("glow", r - 500, nullptr); ed.repaint(); }
             else if (r == 600) for (auto* p : pr.getParameters()) if (auto* rp = dynamic_cast<RangedAudioParameter*> (p)) pr.clearMidiLearn (rp->getParameterID());
             else if (r >= 1000 && r < 1000 + pr.getNumPrograms()) pr.setCurrentProgram (r - 1000);
+            else if (r == 700) ed.activateFirmware ({});
+            else if (r >= 710 && r < 800) { const auto list = pr.availableFirmwares(); if (r - 710 < list.size()) ed.activateFirmware (list[r - 710]); }
+            else if (r == 801) ed.installFromGitHub();
+            else if (r == 802) ed.installFromFile();
+            else if (r == 803) { fm9::FirmwareInstaller::folder().createDirectory(); fm9::FirmwareInstaller::folder().startAsProcess(); }
         });
+}
+
+// --------------------------------------------------------------------------------------------- firmwares
+void FM9Editor::activateFirmware (const String& name)
+{
+    String err;
+    if (proc.firmware() == nullptr && name.isEmpty()) return;
+    if (! proc.activateFirmware (name, err))
+    {
+        AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Could not start " + name + " :\n" + err, "OK", this);
+        return;
+    }
+    heldFn = heldOct = fwHeldKey = -1; fwDrawnSerial = 0; fwImage = {};
+    drawnPanelSig.clear(); drawnScreenSig.clear();
+    if (name.isEmpty()) popup ("FM-9", "Synthesizer");
+    repaint();
+}
+
+void FM9Editor::installFromGitHub()
+{
+    auto* w = new AlertWindow ("Install a firmware from GitHub",
+                               "GitHub repository of an FM-1 firmware with a web emulator\n(owner/repo, github.com link or github.io page)", MessageBoxIconType::NoIcon, this);
+    w->addTextEditor ("repo", "https://deadactive.github.io/hortator/webapp/installer/");
+    w->addButton ("Install", 1, KeyPress (KeyPress::returnKey));
+    w->addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
+    w->enterModalState (true, ModalCallbackFunction::create ([safe = Component::SafePointer<FM9Editor> (this), w] (int r)
+    {
+        if (safe == nullptr || r != 1) return;
+        String owner, repo;
+        if (! fm9::FirmwareInstaller::parseRepo (w->getTextEditorContents ("repo"), owner, repo))
+        {
+            AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Not a GitHub repository.", "OK", safe.getComponent());
+            return;
+        }
+        safe->popup ("Firmware", "Downloading " + repo + "...");
+        Thread::launch ([safe, owner, repo]
+        {
+            String err;
+            const auto file = fm9::FirmwareInstaller::install (owner, repo, err);
+            MessageManager::callAsync ([safe, file, err, repo]
+            {
+                if (safe == nullptr) return;
+                if (file == File()) AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Installation failed:\n" + err, "OK", safe.getComponent());
+                else safe->activateFirmware (file.getFileNameWithoutExtension());
+            });
+        });
+    }), true);
+}
+
+void FM9Editor::installFromFile()
+{
+    chooser = std::make_unique<FileChooser> ("FM-1 firmware (web emulator build, .wasm)", File::getSpecialLocation (File::userHomeDirectory), "*.wasm");
+    chooser->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [safe = Component::SafePointer<FM9Editor> (this)] (const FileChooser& fc)
+    {
+        if (safe == nullptr || fc.getResult() == File()) return;
+        MemoryBlock mb;
+        if (! fc.getResult().loadFileAsData (mb) || fm9::FirmwareInstaller::abiOf (mb.getData(), mb.getSize()) == 0)
+        {
+            AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "This file is not an FM-1 firmware web build.", "OK", safe.getComponent());
+            return;
+        }
+        fm9::FirmwareInstaller::folder().createDirectory();
+        const auto dest = fm9::FirmwareInstaller::folder().getChildFile (fc.getResult().getFileName());
+        dest.replaceWithData (mb.getData(), mb.getSize());
+        safe->activateFirmware (dest.getFileNameWithoutExtension());
+    });
 }
 
 // --------------------------------------------------------------------------------------------- captures
@@ -1376,6 +1554,7 @@ void FM9Editor::prepareSnapshot (float scale, int md, int pg, int pop)
     editMode = mode == mOp || mode == mPitch || mode == mVoice;
     flashUntil = 0;
     if (pop > 0) { popKind = pop; popTitle = "Octave"; popValue = "+1"; popUntil = Time::getMillisecondCounterHiRes() + 60000.0; }
+    if (auto* fw = proc.firmware()) { fw->copyScreen (fwImage); fwDrawnSerial = fw->fbSerial.load(); }
     rebuildCaches (scale);
     master->prepareForSnapshot (scale);
     for (auto& e : enc) e->prepareForSnapshot (scale);

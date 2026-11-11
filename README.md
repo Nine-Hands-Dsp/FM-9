@@ -25,6 +25,15 @@ Synthétiseur FM 6 opérateurs au format VST3 (Windows et macOS), d'après le sy
 - **Façade de la FM-1** : 8 potards animés (MASTER + 7 encodeurs sans fin), écran couleur (oscilloscope, schéma de l'algorithme, grille des effets, pas du séquenceur), 12 touches de fonction, clavier 27 touches jouable à la souris avec ses LED.
 - **MIDI** : clavier maître sur tous les canaux ou un seul, Program Change 0-127, réception de SysEx DX7, **MIDI Learn** par clic droit sur un potard (aucun CC assigné par défaut).
 
+## Firmwares de la FM-1
+
+FM-9 fait tourner les **firmwares libres de la FM-1** à la place de son propre synthé : leur écran s'affiche dans la vitre, les touches, potards et LED de la façade sont les leurs, et le clavier maître les joue. Ce sont les versions web (émulateurs WebAssembly) que ces projets publient, exécutées par le moteur **wasm3** (MIT, dossier `wasm3/`).
+
+- **Hortator** (boîte à rythmes 8 pistes, DEADACTIVE, GPL-3.0, source : https://github.com/DeadActive/hortator) est fourni avec FM-9.
+- **Clic droit > Firmware > Install from GitHub...** : collez l'adresse du dépôt (ou de sa page github.io / de son installeur web), FM-9 trouve l'émulateur publié, le télécharge et le lance. Testé avec Hortator, X0X, TRIBE et GHOULBOX (familles « sim » et « web » de Felucca).
+- **Install from file (.wasm)** pour un fichier déjà téléchargé ; **FM-9 synthesizer** pour revenir au synthé.
+- Les sauvegardes de chaque firmware (patterns, réglages) sont gardées dans `Nine Hands DSP/FM-9/Firmwares` ; le firmware choisi est mémorisé avec le projet.
+
 ## Installation
 
 Les boutons ci-dessus téléchargent toujours la dernière version.
@@ -42,10 +51,11 @@ Anti-gel v2 : rendu logiciel sous Windows, caches reconstruits par le timer, chi
 
 ## Licence
 
-FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir les firmwares libres de la FM-1. Le cœur FM msfa reste sous Apache 2.0 (compatible, voir `msfa/NOTICE.md`).
+FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir les firmwares libres de la FM-1. Le cœur FM msfa reste sous Apache 2.0 (compatible, voir `msfa/NOTICE.md`) ; wasm3 sous licence MIT (`wasm3/LICENSE`) ; Hortator (fourni) sous GPL-3.0 (`assets/firmware-licenses/`, source : https://github.com/DeadActive/hortator).
 
 ## Historique
 
+- **1.1.0** : hôte de firmwares de la FM-1 (WebAssembly) : installation depuis GitHub ou un fichier, Hortator fourni ; façade : touches noires, écran agrandi, touches OCT à la taille de l'original.
 - **1.0.0** : première version.
 
 ---

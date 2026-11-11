@@ -49,7 +49,45 @@ FM9Processor::FM9Processor()
     startTimerHz (60);
 }
 
-FM9Processor::~FM9Processor() { stopTimer(); }
+FM9Processor::~FM9Processor()
+{
+    stopTimer();
+    if (fwOwner != nullptr) fwOwner->saveIfDirty();
+}
+
+// ------------------------------------------------------------------------------------------------ firmwares
+juce::StringArray FM9Processor::availableFirmwares() const
+{
+    juce::StringArray s { builtinFirmware };
+    for (auto& n : fm9::FirmwareInstaller::installed()) if (! n.equalsIgnoreCase (builtinFirmware)) s.add (n);
+    return s;
+}
+
+bool FM9Processor::activateFirmware (const juce::String& name, juce::String& error)
+{
+    std::unique_ptr<fm9::FirmwareHost> next;
+    if (name.isNotEmpty())
+    {
+        juce::MemoryBlock wasm;
+        const auto file = fm9::FirmwareInstaller::folder().getChildFile (juce::File::createLegalFileName (name) + ".wasm");
+        if (file.existsAsFile()) file.loadFileAsData (wasm);
+        else if (name.equalsIgnoreCase (builtinFirmware)) wasm.append (BinaryData::hortator_wasm, (size_t) BinaryData::hortator_wasmSize);
+        else { error = "firmware not found: " + name; return false; }
+        next = fm9::FirmwareHost::create (wasm.getData(), wasm.getSize(),
+                                          fm9::FirmwareInstaller::folder().getChildFile (juce::File::createLegalFileName (name) + ".flash"), error);
+        if (next == nullptr) return false;
+    }
+    // echange sans verrou : le thread audio ne garde jamais l'ancien firmware apres cette attente
+    auto* old = fwOwner.get();
+    fwActive.store (next.get());
+    for (int i = 0; i < 400 && fwInUse.load(); ++i) juce::Thread::sleep (1);
+    if (old != nullptr) old->saveIfDirty();
+    fwOwner = std::move (next);
+    firmwareName = name;
+    engine.allSoundOff();
+    sendChangeMessageToUi();
+    return true;
+}
 
 bool FM9Processor::isBusesLayoutSupported (const BusesLayout& l) const
 {
@@ -284,6 +322,14 @@ void FM9Processor::timerCallback()
     }
 
     if (const int pc = pendingProgram.exchange (-1); pc >= 0) setCurrentProgram (pc);
+    if (pendingFirmware.isNotEmpty())
+    {
+        const auto name = pendingFirmware == "-" ? juce::String() : pendingFirmware;
+        pendingFirmware.clear();
+        juce::String err;
+        if (name != firmwareName) activateFirmware (name, err);
+    }
+    if (++fwSaveDiv >= 60) { fwSaveDiv = 0; if (fwOwner != nullptr) fwOwner->saveIfDirty(); }
 
     // SEQ actif : chaque pattern joue (chaine) charge le preset qui lui est associe
     if (apvts.getRawParameterValue ("seqActive")->load() > 0.5f)
@@ -414,6 +460,37 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
     juce::ScopedNoDenormals noDenormals;
     const int n = buffer.getNumSamples();
     if ((int) mono.size() < n) { buffer.clear(); return; }
+
+    // firmware de la FM-1 actif : il remplace le synthe (son, MIDI, ecran)
+    fwInUse.store (true);
+    if (auto* fw = fwActive.load())
+    {
+        const int midiCh = juce::roundToInt (p[pMidiCh]->load());
+        for (const auto meta : midi)
+        {
+            const auto& m = meta.getMessage();
+            if (midiCh > 0 && m.getChannel() > 0 && m.getChannel() != midiCh) continue;
+            if (m.isController() && (learning.load() || ccTarget[(size_t) m.getControllerNumber()].load() >= 0))
+            {
+                juce::MidiBuffer tmp; handleMidi (m, 0, tmp);       // MIDI Learn (volume...)
+                continue;
+            }
+            fw->handleMidi (m);
+        }
+        midi.clear();
+        if (auto* vol = apvts.getParameter ("volume")) fw->master (vol->getValue());
+        float* L = buffer.getWritePointer (0);
+        float* R = buffer.getNumChannels() > 1 ? buffer.getWritePointer (1) : mono.data();
+        fw->render (L, R, n, sr);
+        float peak = 0;
+        for (int i = 0; i < n; ++i) peak = juce::jmax (peak, std::abs (L[i]));
+        outLevel.store (juce::jmax (peak, outLevel.load() * 0.9f));
+        if (buffer.getNumChannels() == 1) for (int i = 0; i < n; ++i) L[i] = 0.5f * (L[i] + R[i]);
+        for (int ch = 2; ch < buffer.getNumChannels(); ++ch) buffer.clear (ch, 0, n);
+        fwInUse.store (false);
+        return;
+    }
+    fwInUse.store (false);
 
     // voix et reglages de jeu
     {
@@ -576,6 +653,7 @@ void FM9Processor::getStateInformation (juce::MemoryBlock& destData)
     state.setProperty ("program", currentProgram, nullptr);
     state.setProperty ("voiceName", voiceName, nullptr);
     state.setProperty ("seq", seqData.toString(), nullptr);
+    state.setProperty ("firmware", firmwareName, nullptr);
     { juce::StringArray pv; for (auto& v : patternVoice) pv.add (juce::String (v.load())); state.setProperty ("patternVoice", pv.joinIntoString (","), nullptr); }
     juce::StringArray order; for (int o : getFxOrder()) order.add (juce::String (o));
     state.setProperty ("fxOrder", order.joinIntoString (","), nullptr);
@@ -599,6 +677,10 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
     currentProgram = juce::jlimit (0, getNumPrograms() - 1, (int) state.getProperty ("program", 0));
     voiceName = state.getProperty ("voiceName", "INIT VOICE").toString();
     seqData.fromString (state.getProperty ("seq").toString());
+    {
+        const auto fwName = state.getProperty ("firmware").toString();
+        pendingFirmware = fwName.isEmpty() ? juce::String ("-") : fwName;    // demarre par le timer (thread de messages)
+    }
     {
         auto pv = juce::StringArray::fromTokens (state.getProperty ("patternVoice").toString(), ",", "");
         for (int i = 0; i < 16; ++i) patternVoice[(size_t) i].store (i < pv.size() ? juce::jlimit (-1, 127, pv[i].getIntValue()) : -1);

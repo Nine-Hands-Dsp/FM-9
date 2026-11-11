@@ -50,6 +50,33 @@ static int countOnsets (const std::vector<float>& x, int win = 256)
     return c;
 }
 
+static void firmwareTest()
+{
+    std::printf ("== firmware Hortator ==\n");
+    Run r; juce::String err;
+    const bool ok = r.p.activateFirmware ("Hortator", err);
+    check (ok, "Hortator demarre dans FM-9 " + err);
+    if (! ok) return;
+    auto* fw = r.p.firmware();
+    const double t0 = juce::Time::getMillisecondCounterHiRes();
+    r.play (200);
+    fw->button (10, true); r.play (2); fw->button (10, false);
+    std::vector<float> x; r.play ((int) (48000 * 4 / 512), {}, &x);
+    const double ms = juce::Time::getMillisecondCounterHiRes() - t0;
+    float pk = 0; for (float v : x) pk = std::max (pk, std::abs (v));
+    check (pk > 0.01f && pk < 4.0f, "PLAY : la boite a rythmes joue (crete " + juce::String (pk, 3) + ")");
+    check (ms < 6.2 * 1000.0 / 2.0, "temps reel : " + juce::String ((6.2 * 1000.0) / ms, 1) + "x plus vite que le temps reel");
+    check (fw->fbSerial.load() > 2, "ecran du firmware mis a jour (" + juce::String ((int) fw->fbSerial.load()) + " images)");
+    juce::MemoryBlock mb; r.p.getStateInformation (mb);
+    Run b; b.p.setStateInformation (mb.getData(), (int) mb.getSize());
+    juce::Thread::sleep (50);
+    // le timer du processeur demarre le firmware memorise
+    for (int i = 0; i < 20 && b.p.getFirmwareName().isEmpty(); ++i) { juce::MessageManager::getInstance()->runDispatchLoopUntil (20); }
+    check (b.p.getFirmwareName() == "Hortator", "projet : firmware memorise et relance (" + b.p.getFirmwareName() + ")");
+    r.p.activateFirmware ({}, err);
+    check (r.p.firmware() == nullptr, "retour au synthe FM-9");
+}
+
 static void audioTests()
 {
     std::printf ("== tests audio ==\n");
@@ -139,7 +166,7 @@ int main (int argc, char** argv)
 {
     juce::ScopedJuceInitialiser_GUI gui;
     juce::StringArray args (argv + 1, argc - 1);
-    if (args.isEmpty() || args.contains ("--test")) audioTests();
+    if (args.isEmpty() || args.contains ("--test")) { audioTests(); firmwareTest(); }
     using juce::StringArray; using juce::String;
     if (args.contains ("--shot"))
     {
@@ -163,9 +190,21 @@ int main (int argc, char** argv)
             const int notes[16] = { 48, 0, 55, 60, 48, 0, 58, 0, 46, 0, 53, 58, 46, 53, 0, 0 };
             for (int i = 0; i < 16; ++i) if (notes[i] > 0) { fm9::SeqStep st; st.count = 1; st.notes[0] = notes[i]; st.vel = 100; p.seqData.put (0, i, st); }
         }
+        if (args.contains ("--firmware"))
+        {
+            juce::String err; p.activateFirmware (args[args.indexOf ("--firmware") + 1], err);
+            if (auto* fw = p.firmware())
+            {
+                juce::AudioBuffer<float> b2 (2, 512); juce::MidiBuffer e;
+                for (int i = 0; i < 100; ++i) p.processBlock (b2, e);
+                fw->button (10, true); p.processBlock (b2, e); fw->button (10, false);
+                for (int i = 0; i < 120; ++i) p.processBlock (b2, e);
+            }
+        }
         std::unique_ptr<juce::AudioProcessorEditor> ed (p.createEditor());
         const float scale = arg ("--scale", 1.0f);
         if (auto* fe = dynamic_cast<FM9Editor*> (ed.get())) fe->prepareSnapshot (scale, (int) arg ("--mode", 0), (int) arg ("--page", 0), (int) arg ("--popup", 0));
+        if (auto* fw = p.firmware()) { juce::ignoreUnused (fw); }
         auto img = ed->createComponentSnapshot (ed->getLocalBounds(), true, scale);
         juce::File out (args[args.indexOf ("--shot") + 1]);
         out.deleteFile(); juce::FileOutputStream os (out); juce::PNGImageFormat().writeImageToStream (img, os);

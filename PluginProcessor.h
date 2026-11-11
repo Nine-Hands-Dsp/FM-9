@@ -5,6 +5,7 @@
 #include "Effects.h"
 #include "ArpSeq.h"
 #include "Params.h"
+#include "FirmwareHost.h"
 
 class FM9Processor : public juce::AudioProcessor, private juce::Timer
 {
@@ -89,6 +90,13 @@ public:
         fxOrderPacked.store (v); sendChangeMessageToUi();
     }
 
+    // ---- firmwares de la FM-1 (WebAssembly) : remplacent le synthe FM-9 tant qu'ils sont actifs ----
+    static constexpr const char* builtinFirmware = "Hortator";
+    bool activateFirmware (const juce::String& name, juce::String& error);   // "" = synthe FM-9
+    juce::String getFirmwareName() const { return firmwareName; }
+    fm9::FirmwareHost* firmware() const { return fwOwner.get(); }          // thread de messages
+    juce::StringArray availableFirmwares() const;
+
     juce::MidiKeyboardState keyboardState;    // clavier de la facade (souris)
     std::atomic<int> pendingProgram { -1 };   // Program Change MIDI (applique par le timer)
     juce::AudioProcessorValueTreeState apvts;
@@ -149,6 +157,12 @@ private:
     std::array<CcRamp, 128> ramps;
 
     // voix recue en SysEx par le MIDI (copiee dans le thread audio, appliquee par le timer)
+    std::unique_ptr<fm9::FirmwareHost> fwOwner;
+    std::atomic<fm9::FirmwareHost*> fwActive { nullptr };
+    std::atomic<bool> fwInUse { false };
+    juce::String firmwareName, pendingFirmware;
+    int fwSaveDiv = 0;
+
     std::array<uint8_t, 4104> sysexBuf {};
     std::atomic<int> sysexSize { 0 };
 

@@ -55,7 +55,7 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     knobLayers.crown     = img (BinaryData::knob_crown_png, BinaryData::knob_crown_pngSize);
     knobLayers.base      = img (BinaryData::knob_base_png, BinaryData::knob_base_pngSize);           // centre gris, fixe
     knobLayers.highlight = img (BinaryData::knob_highlight_png, BinaryData::knob_highlight_pngSize);     // diffuse de la couronne, fixe
-    knobLayers.indicator = img (BinaryData::knob_indicator_png, BinaryData::knob_indicator_pngSize);     // point blanc chaud, tourne
+    // pas de point indicateur sur les potards (demande de l utilisateur)
     encLayers = knobLayers;
 
     nh::RotaryLayers::Style ms;                    // MASTER : potentiometre 300 deg

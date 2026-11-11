@@ -60,6 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
+- **1.3.3** : potards sans point indicateur.
 - **1.3.2** : plaques grises sans biseau, logement noir autour de chaque touche et bouton, ombres portées identiques pour tous les éléments, occlusion autour de l'écran ; réglage Lights (couleur) et curseur Glow (0 à 100 %) des lumières des touches et des boutons, halo qui suit la forme de la LED et des lettres ; logo FM-9 centré entre KNOB3 et KNOB4.
 - **1.3.1** : nouveau design de la façade d'après le mockup FM-9 (biseaux plats, ombres portées et occlusion, lumière à 45° en haut à gauche), nouveaux potards (centre fixe, couronne crantée qui tourne, point indicateur), logos FM-9 et NINE HANDS | DSP repositionnés.
 - **1.3.0** : firmwares matériels de la FM-1 (.fwsc) dans un émulateur de la puce (fm1-emu), y compris le firmware d'origine ; catalogue de 300 firmwares (215 compatibles) avec aperçu de l'écran.

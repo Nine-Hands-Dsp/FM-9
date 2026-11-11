@@ -21,6 +21,12 @@ public:
     void mouseDrag (const juce::MouseEvent&) override;
     void mouseUp (const juce::MouseEvent&) override;
     void mouseWheelMove (const juce::MouseEvent&, const juce::MouseWheelDetails&) override;
+    void mouseDoubleClick (const juce::MouseEvent&) override;
+    // ecran interactif : zones (en unites) et action selon l'endroit
+    enum ScreenZone { zNone, zTitle, zBar, zSlot, zFxCell, zCentre };
+    ScreenZone screenZoneAt (juce::Point<float> u, int& index) const;
+    void showPresetMenu();
+    int screenDrag = -1; float screenDragAcc = 0; float screenWheelAcc = 0;
     bool keyPressed (const juce::KeyPress&) override;
 
     static constexpr float baseW = fm9::layout::unitsW, baseH = fm9::layout::unitsH;
@@ -71,7 +77,9 @@ private:
     void drawEmbossed (juce::Graphics& g, const juce::String& t, juce::Rectangle<float> r, float h, bool lit, juce::Colour litCol);
     void drawKeyLed (juce::Graphics& g, juce::Rectangle<float> r, float level, juce::Colour c);
 
-    void showContextMenu (const juce::String& learnId = {});
+    void showContextMenu (const juce::String& learnId = {}, int ctl = -1);   // ctl : commande physique (FM9Processor::ctlId)
+    void midiMapAction (int r);
+    void syncShift() { proc.kbShift.store (12 * octave + kbTrans); }
     void openSaveDrum();
     void closeDrum (bool accept);
     void renameVoice();

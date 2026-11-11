@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.3"
+VERSION = "1.3.4"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -177,8 +177,11 @@ T = dict(
          "et pas encore sauvegardée) ; au centre, le contenu du mode ; en bas, le nom du mode et la page (ex. <b>1/2  LFO</b>). "
          "Quand vous tournez un potard, la barre du bas affiche le réglage et sa valeur (ex. <b>Cutoff: 1004Hz</b>) pendant un instant.",
          "Des fenêtres temporaires s'ouvrent au centre : liste des presets (PRESETS), schéma de l'algorithme (ALGORITHM), octave, transposition, "
-         "volume, « Preset Saved ». Elles disparaissent seules après environ une seconde. Un clic sur l'écran passe à la page suivante ; "
-         "la molette de la souris sur l'écran agit comme SELECT."],
+         "volume, « Preset Saved ». Elles disparaissent seules après environ une seconde.",
+         "<b>L'écran se pilote à la souris.</b> Un clic sur le nom du preset ouvre la liste des presets (banques A à D) ; la molette sur le nom "
+         "ou sur l'écran d'accueil fait défiler les presets. Sur les pages de réglages, glissez verticalement sur un cadre (Maj = réglage fin) "
+         "ou utilisez la molette dessus pour changer sa valeur ; un double-clic remet la valeur par défaut. Dans la page des effets, un clic "
+         "sur une case choisit l'effet. Un clic sur la barre du bas passe à la page suivante ; ailleurs, la molette agit comme SELECT."],
     scr_cap1="Accueil (oscilloscope), schéma d'un algorithme, chaîne d'effets.",
     scr_cap2="Mode EDIT (OP1, page 2/6), séquenceur en enregistrement.",
     knobs_t="Potards",
@@ -205,7 +208,7 @@ T = dict(
         "<b>OCT- / OCT+</b> décalent le clavier d'une octave (de -3 à +3). Leur LED est du côté du décalage : clignotement lent à ±1, rapide à ±2, "
         "fixe à ±3. <b>Tenez OCT- ou OCT+ et glissez vers le haut</b> pour transposer de 0 à -12 ou de 0 à +12 demi-tons "
         "(sur la FM-1 : OCT tenu + ALGORITHM). <b>Maj + clic</b> sur une touche OCT remet octave et transposition à zéro "
-        "(les deux touches ensemble sur la FM-1). Octave et transposition s'appliquent au clavier de la façade."],
+        "(les deux touches ensemble sur la FM-1). Octave et transposition s'appliquent au clavier de la façade et aux notes de votre clavier maître."],
     edit_t="Mode EDIT : édition des opérateurs",
     edit=["En mode EDIT, les touches noires deviennent des sélecteurs (leurs LED clignotent, la sélection est fixe) : <b>OP1 à OP6</b> ouvrent "
           "l'opérateur (un <b>appui long</b> le coupe ou le rétablit : LED rouge), <b>PIT</b> l'enveloppe de hauteur, <b>GLO</b> les paramètres "
@@ -269,8 +272,13 @@ T = dict(
     midi=["FM-9 reçoit le clavier maître sur tous les canaux ou sur un seul (GLO 1/2, MIDI Ch) : notes et vélocité, pitch bend (plages haut et bas "
           "séparées), molette de modulation (vibrato), aftertouch, pédale de sustain (CC 64), Program Change 0-127 (presets 001-128) "
           "et <b>SysEx DX7</b> (voix seule ou banque de 32 voix, chargée dans la banque du preset courant)."],
-    learn=["<b>MIDI Learn</b> : clic droit sur un potard &gt; MIDI Learn, puis bougez la commande MIDI. Pour KNOB1 à 4, c'est le réglage affiché "
-           "à ce moment qui est appris. Aucun CC n'est assigné d'usine.",
+    learn=["<b>MIDI Learn</b> : clic droit sur un potard &gt; MIDI Learn, puis bougez la commande MIDI. Aucun CC n'est assigné d'usine. "
+           "Tous les potards peuvent être appris : MASTER (volume) et, pour SELECT, PRESETS, ALGORITHM et KNOB1 à 4, "
+           "<b>le potard lui-même (all pages)</b> : votre potard MIDI agit alors comme le potard de la façade, quelle que soit la page affichée. "
+           "Pour ALGORITHM et KNOB1 à 4, le menu propose aussi d'apprendre le réglage affiché à ce moment (il reste alors lié à ce réglage).",
+           "<b>Configurations MIDI</b> : clic droit &gt; MIDI &gt; <b>Save MIDI map...</b> enregistre toutes vos assignations ; "
+           "<b>Load MIDI map</b> les recharge ; <b>Use current assignments for new FM-9 instances</b> les applique à chaque nouvelle FM-9 "
+           "(<b>Forget the default MIDI map</b> l'annule). Les assignations sont aussi gardées avec le projet.",
            "La course réelle de votre pédale d'expression est apprise automatiquement ; les réglages continus suivent la pédale sans à-coups.",
            "Clic droit &gt; MIDI &gt; <b>Clear all MIDI assignments</b> efface toutes les assignations."],
     pre_t="Presets et banques",

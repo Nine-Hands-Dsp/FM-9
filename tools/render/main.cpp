@@ -80,6 +80,38 @@ static void keyStepTest()
     check (q.ctlProfile.load() == 1, "profil KeyStep 37 memorise avec le projet");
 }
 
+static void midiTest()
+{
+    std::printf ("Octave du clavier maitre, MIDI Learn des commandes, configurations MIDI\n");
+    FM9Processor p; p.prepareToPlay (48000, 512);
+    juce::AudioBuffer<float> buf (2, 512);
+    auto block = [&] (juce::MidiMessage m) { juce::MidiBuffer mb; mb.addEvent (m, 0); p.processBlock (buf, mb); juce::MessageManager::getInstance()->runDispatchLoopUntil (150); };
+    auto on = [&] (int n) { return ((p.keyBits[n >> 5].load() >> (n & 31)) & 1u) != 0; };
+    p.kbShift.store (12);
+    block (juce::MidiMessage::noteOn (1, 60, (juce::uint8) 100));
+    check (on (72) && ! on (60), "OCT+ : la note 60 du clavier maitre joue 72");
+    p.kbShift.store (0);
+    block (juce::MidiMessage::noteOff (1, 60));
+    check (! on (72), "relachement correct meme si l'octave a change entre-temps");
+    p.applyMidiMapString ("20=ctl:presets;21=ctl:knob1;22=volume");
+    check (p.learnedCcFor ("ctl:presets") == 20 && p.learnedCcFor ("ctl:knob1") == 21, "commandes PRESETS et KNOB1 assignables");
+    const int prog = p.getCurrentProgram();
+    block (juce::MidiMessage::controllerEvent (1, 20, 10));
+    block (juce::MidiMessage::controllerEvent (1, 20, 11));
+    check (p.getCurrentProgram() == prog + 1, "CC sur PRESETS : preset suivant (interface fermee)");
+    p.ctlUi.store (true);
+    block (juce::MidiMessage::controllerEvent (1, 21, 40));
+    block (juce::MidiMessage::controllerEvent (1, 21, 43));
+    check (p.ctlSteps[3].load() == 3, "CC sur KNOB1 : 3 pas transmis a l'interface");
+    auto f = juce::File::getSpecialLocation (juce::File::tempDirectory).getChildFile ("t.fm9midi");
+    check (p.saveMidiMap (f), "configuration MIDI enregistree");
+    FM9Processor q; check (q.loadMidiMap (f) && q.learnedCcFor ("ctl:knob1") == 21 && q.learnedCcFor ("volume") == 22, "configuration MIDI rechargee");
+    juce::MemoryBlock st; p.getStateInformation (st);
+    FM9Processor r; r.setStateInformation (st.getData(), (int) st.getSize());
+    check (r.learnedCcFor ("ctl:presets") == 20, "assignations des commandes gardees avec le projet");
+    f.deleteFile();
+}
+
 static void firmwareTest()
 {
     std::printf ("== firmware Hortator ==\n");
@@ -215,7 +247,8 @@ int main (int argc, char** argv)
         std::printf ("fwcheck ok %s screen=%u peak=%.3f\n", fw->abi() == fm9::FirmwareHost::Abi::sim ? "sim" : "web", (unsigned) fw->fbSerial.load(), peak);
         return 0;
     }
-    if (args.isEmpty() || args.contains ("--test")) { audioTests(); keyStepTest(); firmwareTest(); }
+    if (args.isEmpty() || args.contains ("--test")) { audioTests(); keyStepTest();
+        midiTest(); firmwareTest(); }
     using juce::StringArray; using juce::String;
     if (args.contains ("--shot"))
     {

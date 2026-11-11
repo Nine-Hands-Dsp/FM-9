@@ -83,7 +83,7 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
         }
         ignoreUnused (pi);
     };
-    enc[0]->onRightClick = [this] (const MouseEvent&) { showContextMenu(); };
+    enc[0]->onRightClick = [this] (const MouseEvent&) { showContextMenu ({}, 0); };
     enc[1]->onStep = [this] (int s, bool)
     {
         if (auto* fw = proc.firmware()) { fw->encoder (2, s); return; }
@@ -91,21 +91,21 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
         proc.nextProgram (s);
         popup ({}, {}, 2);
     };
-    enc[1]->onRightClick = [this] (const MouseEvent&) { showContextMenu(); };
+    enc[1]->onRightClick = [this] (const MouseEvent&) { showContextMenu ({}, 1); };
     enc[2]->onStep = [this] (int s, bool)
     {
         if (auto* fw = proc.firmware()) { fw->encoder (1, s); return; }
         stepParam ("alg", s, false, "Algorithm");
         popup ({}, {}, 3);
     };
-    enc[2]->onRightClick = [this] (const MouseEvent&) { showContextMenu ("alg"); };
+    enc[2]->onRightClick = [this] (const MouseEvent&) { showContextMenu ("alg", 2); };
     for (int k = 0; k < 4; ++k)
     {
         enc[3 + k]->onStep = [this, k] (int s, bool fine) { if (auto* fw = proc.firmware()) { fw->encoder (3 + k, s); return; } turnSlot (k, s, fine); };
         enc[3 + k]->onRightClick = [this, k] (const MouseEvent&)
         {
             const auto id = pageInfo().s[k].id;
-            showContextMenu (id.startsWith ("!") ? String() : id);
+            showContextMenu (id.startsWith ("!") ? String() : id, 3 + k);
         };
     }
 
@@ -118,12 +118,16 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     setScaledHeight (sizeHeight (WigaWindowSize::defaultIndex ("FM-9", numSizes)));
     octave = (int) proc.uiState.getProperty ("octave", 0);
     kbTrans = (int) proc.uiState.getProperty ("transpose", 0);
+    syncShift();
+    for (auto& c : proc.ctlSteps) c.store (0);
+    proc.ctlUi.store (true);
     if (getParam ("seqActive") > 0.5f) mode = mSeq;
     startTimerHz (30);
 }
 
 FM9Editor::~FM9Editor()
 {
+    proc.ctlUi.store (false);
     stopTimer();
     releaseMouseNote();
 }
@@ -799,7 +803,7 @@ void FM9Editor::mouseDown (const MouseEvent& e)
             if (e.mods.isShiftDown() || e.mods.isAltDown())          // OCT- + OCT+ ensemble : remise a zero
             {
                 octave = 0; kbTrans = 0; holdUsed = true;
-                proc.uiState.setProperty ("octave", 0, nullptr); proc.uiState.setProperty ("transpose", 0, nullptr);
+                proc.uiState.setProperty ("octave", 0, nullptr); proc.uiState.setProperty ("transpose", 0, nullptr); syncShift();
                 popup ("Octave", "0  Transpose 0");
             }
             heldOct = i; octDragAcc = 0;
@@ -816,7 +820,91 @@ void FM9Editor::mouseDown (const MouseEvent& e)
         proc.keyboardState.noteOn (1, mouseNote, vel);
         return;
     }
-    if (L::screen.contains (u)) selectTurn (1);                     // clic sur l'ecran : page suivante
+    if (L::screen.contains (u))
+    {
+        // ecran interactif : titre = liste des presets, barre du bas = page suivante,
+        // cadre de reglage = glisser vertical (Maj = fin), case d'effet = choix de l'effet
+        int idx = -1;
+        switch (screenZoneAt (u, idx))
+        {
+            case zTitle:  showPresetMenu(); break;
+            case zSlot:   screenDrag = idx; screenDragAcc = 0; break;
+            case zFxCell: if (idx != fxSlot) selectTurn (idx - fxSlot); break;
+            case zBar:    selectTurn (1); break;
+            case zCentre: if (mode != mHome) selectTurn (1); break;
+            case zNone:   break;
+        }
+        repaint();
+    }
+}
+
+FM9Editor::ScreenZone FM9Editor::screenZoneAt (Point<float> p, int& index) const
+{
+    // meme geometrie que drawScreen
+    const auto sr = L::screen;
+    index = -1;
+    if (! sr.contains (p) || proc.firmware() != nullptr) return zNone;
+    const float u = sr.getWidth() / 100.0f;
+    const auto top = Rectangle<float> (sr.getX(), sr.getY(), sr.getWidth(), 13 * u);
+    const auto bottom = Rectangle<float> (sr.getX(), sr.getBottom() - 12 * u, sr.getWidth(), 12 * u);
+    if (top.contains (p)) return zTitle;
+    if (bottom.contains (p)) return zBar;
+    auto centre = Rectangle<float> (sr.getX(), top.getBottom() + 1 * u, sr.getWidth(), bottom.reduced (3 * u, 1.6f * u).getY() - top.getBottom() - 2.6f * u).reduced (3 * u, 1 * u);
+    if (mode == mHome) return zCentre;
+    Rectangle<float> fr = centre;
+    if (mode == mFx)
+    {
+        auto grid = fr.removeFromTop (fr.getHeight() * 0.42f);
+        const float cw = grid.getWidth() / 3.0f, ch = grid.getHeight() / 2.0f;
+        if (grid.contains (p)) { index = jlimit (0, 5, (int) ((p.x - grid.getX()) / cw) + 3 * (int) ((p.y - grid.getY()) / ch)); return zFxCell; }
+        fr = fr.withTrimmedTop (1 * u);
+    }
+    else if (mode == mSeq)
+    {
+        auto grid = fr.removeFromTop (fr.getHeight() * 0.40f);
+        if (grid.contains (p)) return zCentre;
+        fr = fr.withTrimmedTop (1 * u);
+    }
+    if (! fr.contains (p)) return zCentre;
+    const int k = jlimit (0, 3, (int) ((p.y - fr.getY()) / (fr.getHeight() / 4.0f)));
+    const auto pi = pageInfo();
+    if (pi.s[k].id.isEmpty() || pi.s[k].id == "-") return zCentre;
+    index = k;
+    return zSlot;
+}
+
+void FM9Editor::showPresetMenu()
+{
+    // liste des presets ouverte la ou l'on clique (banques A a D)
+    PopupMenu menu;
+    for (int b = 0; b < FM9Processor::numBanks; ++b)
+    {
+        PopupMenu bank;
+        for (int i = 0; i < FM9Processor::bankSize; ++i)
+        {
+            const int idx = b * FM9Processor::bankSize + i;
+            bank.addItem (1 + idx, FM9Processor::programLabel (idx) + "  " + String (fm9::voiceName (proc.bankVoice (idx))), true, proc.getCurrentProgram() == idx);
+        }
+        menu.addSubMenu ("Bank " + String::charToString ((juce_wchar) ('A' + b)), bank, true, nullptr, proc.getCurrentProgram() / FM9Processor::bankSize == b);
+    }
+    menu.setLookAndFeel (&menuLnf);
+    menu.showMenuAsync (PopupMenu::Options().withMousePosition(),
+        [safe = Component::SafePointer<FM9Editor> (this)] (int r)
+        {
+            if (safe == nullptr || r <= 0) return;
+            safe->proc.setCurrentProgram (r - 1);
+            safe->popup ({}, {}, 2);
+        });
+}
+
+void FM9Editor::mouseDoubleClick (const MouseEvent& e)
+{
+    // double-clic sur un cadre de reglage de l'ecran : valeur par defaut
+    int idx = -1;
+    if (screenZoneAt (toUnits (e.position), idx) != zSlot) return;
+    const auto id = pageInfo().s[idx].id;
+    if (id.startsWith ("!")) return;
+    if (auto* p = proc.apvts.getParameter (id)) { p->beginChangeGesture(); p->setValueNotifyingHost (p->getDefaultValue()); p->endChangeGesture(); flash (pageInfo().s[idx].label + ": " + slotValue (pageInfo().s[idx])); repaint(); }
 }
 
 void FM9Editor::mouseDrag (const MouseEvent& e)
@@ -831,6 +919,14 @@ void FM9Editor::mouseDrag (const MouseEvent& e)
         if (n != fwHeldKey) { fw->key (fwHeldKey, false); fwHeldKey = n; fw->key (n, true); }
         return;
     }
+    if (screenDrag >= 0)
+    {
+        // glisser vertical sur un cadre de l'ecran : comme tourner le potard KNOB correspondant
+        const float target = (float) -e.getDistanceFromDragStartY() / (e.mods.isShiftDown() ? 18.0f : 6.0f);
+        const int steps = (int) (target - screenDragAcc);
+        if (steps != 0) { screenDragAcc += (float) steps; turnSlot (screenDrag, steps, e.mods.isShiftDown()); repaint(); }
+        return;
+    }
     if (heldOct >= 0)
     {
         // OCT tenu + rotation (ici : glisser vertical ou molette) : transposition 0..-12 / 0..+12
@@ -839,7 +935,7 @@ void FM9Editor::mouseDrag (const MouseEvent& e)
         if (steps != 0)
         {
             const int t = heldOct == 0 ? jlimit (-12, 0, -std::abs (steps)) : jlimit (0, 12, std::abs (steps));
-            if (t != kbTrans || ! holdUsed) { kbTrans = t; holdUsed = true; proc.uiState.setProperty ("transpose", kbTrans, nullptr); popup ("Transpose", (kbTrans > 0 ? "+" : "") + String (kbTrans)); }
+            if (t != kbTrans || ! holdUsed) { kbTrans = t; holdUsed = true; proc.uiState.setProperty ("transpose", kbTrans, nullptr); syncShift(); popup ("Transpose", (kbTrans > 0 ? "+" : "") + String (kbTrans)); }
         }
         return;
     }
@@ -853,6 +949,7 @@ void FM9Editor::mouseDrag (const MouseEvent& e)
 
 void FM9Editor::mouseUp (const MouseEvent&)
 {
+    screenDrag = -1;
     if (auto* fw = proc.firmware())
     {
         if (heldFn >= 0) fw->button (heldFn, false);
@@ -871,6 +968,7 @@ void FM9Editor::mouseUp (const MouseEvent&)
         {
             octave = jlimit (-3, 3, octave + (heldOct == 0 ? -1 : 1));
             proc.uiState.setProperty ("octave", octave, nullptr);
+            syncShift();
             popup ("Octave", (octave > 0 ? "+" : "") + String (octave));
         }
         heldOct = -1;
@@ -905,11 +1003,26 @@ void FM9Editor::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& w)
         repaint();
         return;
     }
-    if (L::screen.contains (toUnits (e.position)))                  // molette sur l'ecran = SELECT
+    if (L::screen.contains (toUnits (e.position)))
     {
-        static float acc = 0; acc += w.deltaY * 8.0f;
-        while (acc >= 1.0f) { selectTurn (1); acc -= 1.0f; }
-        while (acc <= -1.0f) { selectTurn (-1); acc += 1.0f; }
+        // molette sur l'ecran : titre / ecran d'accueil = presets, cadre = reglage, ailleurs = SELECT
+        int idx = -1;
+        const auto z = screenZoneAt (toUnits (e.position), idx);
+        screenWheelAcc += (w.isReversed ? -w.deltaY : w.deltaY) * 8.0f;
+        int st = 0;
+        while (screenWheelAcc >= 1.0f) { ++st; screenWheelAcc -= 1.0f; }
+        while (screenWheelAcc <= -1.0f) { --st; screenWheelAcc += 1.0f; }
+        if (st == 0) return;
+        if (proc.firmware() != nullptr) { proc.firmware()->encoder (0, st); return; }
+        if (z == zTitle || (z == zCentre && mode == mHome))
+        {
+            if (getParam ("seqActive") > 0.5f) { popup ("SEQ", "Presets inactive"); return; }
+            proc.nextProgram (-st);                                 // molette vers le bas = preset suivant
+            popup ({}, {}, 2);
+        }
+        else if (z == zSlot) turnSlot (idx, st, e.mods.isShiftDown());
+        else selectTurn (st);
+        repaint();
     }
 }
 
@@ -937,6 +1050,10 @@ void FM9Editor::timerCallback()
 {
     const double now = Time::getMillisecondCounterHiRes();
     if (getPeer() != lastPeer || now - lastRendererCheckMs > 1000.0) { lastRendererCheckMs = now; useSoftwareRenderer(); }
+    // commandes physiques pilotees en MIDI Learn (SELECT, PRESETS, ALGORITHM, KNOB1-4)
+    for (int i = 0; i < FM9Processor::numCtl; ++i)
+        if (const int st = proc.ctlSteps[(size_t) i].exchange (0); st != 0 && enc[i] != nullptr && enc[i]->onStep)
+            enc[i]->onStep (st, false);
     if (resizeSettle > 0 && --resizeSettle == 0) rebuildCaches();
     else if (faceDirty && resizeSettle == 0) recomposeFace();      // couleur changee a la volee
     else if (resizeSettle == 0 && now - lastScaleCheckMs > 250.0)
@@ -1748,9 +1865,20 @@ PopupMenu FM9Editor::buildMainMenuForPreview()
 }
 
 // --------------------------------------------------------------------------------------------- menu clic droit
-void FM9Editor::showContextMenu (const String& learnId)
+void FM9Editor::showContextMenu (const String& learnId, int ctl)
 {
     PopupMenu menu;
+    if (ctl >= 0)
+    {
+        // la commande elle-meme (marche sur toutes les pages, comme le potard de la FM-1)
+        const auto cid = FM9Processor::ctlId (ctl);
+        const auto cname = FM9Processor::ctlName (ctl);
+        const int cc = proc.learnedCcFor (cid);
+        menu.addItem (4, "MIDI Learn: " + cname + " (all pages)" + (cc >= 0 ? "  (CC " + String (cc) + ")" : String()), true, proc.isLearning() && proc.getLearnTarget() == cid);
+        menu.addItem (5, "Clear MIDI: " + cname, cc >= 0);
+        if (learnId.isEmpty() && proc.isLearning()) menu.addItem (3, "Cancel MIDI learn");
+        if (learnId.isEmpty()) menu.addSeparator();
+    }
     if (learnId.isNotEmpty() && proc.apvts.getParameter (learnId) != nullptr)
     {
         const String name = proc.apvts.getParameter (learnId)->getName (40);
@@ -1833,6 +1961,20 @@ void FM9Editor::showContextMenu (const String& learnId)
     midi.addItem (600, "Clear all MIDI assignments");
     midi.addSeparator();
     {
+        // configurations de MIDI Learn enregistrees
+        PopupMenu maps;
+        auto files = proc.midiMapFolder().findChildFiles (File::findFiles, false, "*.fm9midi");
+        files.sort();
+        for (int i = 0; i < jmin (100, files.size()); ++i) maps.addItem (640 + i, files[i].getFileNameWithoutExtension());
+        if (files.isEmpty()) maps.addItem (639, "(no saved MIDI map)", false);
+        midi.addItem (630, "Save MIDI map...");
+        midi.addSubMenu ("Load MIDI map", maps);
+        midi.addItem (631, "Use current assignments for new FM-9 instances");
+        midi.addItem (632, "Forget the default MIDI map", proc.defaultMidiMapFile().existsAsFile());
+        midi.addItem (633, "Open MIDI maps folder");
+    }
+    midi.addSeparator();
+    {
         PopupMenu ctl;
         ctl.addItem (610, "None (MIDI Learn only)", true, proc.ctlProfile.load() == 0);
         ctl.addItem (611, "Arturia KeyStep 37", true, proc.ctlProfile.load() == 1);
@@ -1844,7 +1986,7 @@ void FM9Editor::showContextMenu (const String& learnId)
         midi.addSubMenu ("Controller", ctl);
     }
     midi.addSeparator();
-    midi.addItem (601, "Right-click a knob to learn its parameter", false);
+    midi.addItem (601, "Right-click a knob to learn it (the knob itself or its parameter)", false);
     midi.addItem (602, "Program Change 0-127 = presets 001-128", false);
     midi.addItem (603, "DX7 SysEx voice / bank dumps are accepted", false);
     menu.addSubMenu ("MIDI", midi);
@@ -1859,7 +2001,7 @@ void FM9Editor::showContextMenu (const String& learnId)
     menu.setLookAndFeel (&menuLnf);
     lastMenuPos = getMouseXYRelative();
     menu.showMenuAsync (PopupMenu::Options().withMousePosition(),       // toujours la ou l'on clique
-        [safe = Component::SafePointer<FM9Editor> (this), learnId] (int r)
+        [safe = Component::SafePointer<FM9Editor> (this), learnId, ctl] (int r)
         {
             if (safe == nullptr || r == 0) return;
             auto& ed = *safe;
@@ -1871,7 +2013,16 @@ void FM9Editor::showContextMenu (const String& learnId)
                                   | FileBrowserComponent::canSelectFiles;
                 ed.chooser->launchAsync (flags, [fn] (const FileChooser& fc) { if (fc.getResult() != File()) fn (fc.getResult()); });
             };
-            if (r == 1) pr.startMidiLearn (learnId);
+            if (r == 4 && ctl >= 0) pr.startMidiLearn (FM9Processor::ctlId (ctl));
+            else if (r == 5 && ctl >= 0) pr.clearMidiLearn (FM9Processor::ctlId (ctl));
+            else if (r >= 630 && r <= 633) ed.midiMapAction (r);
+            else if (r >= 640 && r < 740)
+            {
+                auto files = pr.midiMapFolder().findChildFiles (File::findFiles, false, "*.fm9midi");
+                files.sort();
+                if (r - 640 < files.size() && pr.loadMidiMap (files[r - 640])) ed.popup ("MIDI map", files[r - 640].getFileNameWithoutExtension());
+            }
+            else if (r == 1) pr.startMidiLearn (learnId);
             else if (r == 2) pr.clearMidiLearn (learnId);
             else if (r == 3) pr.cancelMidiLearn();
             else if (r >= 10 && r < 10 + numSizes) ed.setScaledHeight (sizeHeight (r - 10));
@@ -1965,7 +2116,7 @@ void FM9Editor::showContextMenu (const String& learnId)
                 });
             }
             else if (r == 622) { FM9Processor::nksUserFolder().createDirectory(); FM9Processor::nksUserFolder().startAsProcess(); }
-            else if (r == 600) for (auto* p : pr.getParameters()) if (auto* rp = dynamic_cast<RangedAudioParameter*> (p)) pr.clearMidiLearn (rp->getParameterID());
+            else if (r == 600) pr.applyMidiMapString ({});
             else if (r >= 1000 && r < 1000 + pr.getNumPrograms()) pr.setCurrentProgram (r - 1000);
             else if (r == 700) ed.activateFirmware ({});
             else if (r >= 710 && r < 800) { const auto list = pr.availableFirmwares(); if (r - 710 < list.size()) ed.activateFirmware (list[r - 710]); }
@@ -2082,4 +2233,24 @@ void FM9Editor::prepareSnapshot (float scale, int md, int pg, int pop)
     rebuildCaches (scale);
     master->prepareForSnapshot (scale);
     for (auto& e : enc) e->prepareForSnapshot (scale);
+}
+
+
+// --------------------------------------------------------------------------------------------- configurations de MIDI Learn
+void FM9Editor::midiMapAction (int r)
+{
+    if (r == 630)
+    {
+        chooser = std::make_unique<FileChooser> ("Save MIDI map", proc.midiMapFolder().getChildFile ("My MIDI map.fm9midi"), "*.fm9midi");
+        chooser->launchAsync (FileBrowserComponent::saveMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::warnAboutOverwriting,
+            [safe = Component::SafePointer<FM9Editor> (this)] (const FileChooser& fc)
+            {
+                if (safe == nullptr || fc.getResult() == File()) return;
+                const auto f = fc.getResult().withFileExtension ("fm9midi");
+                if (safe->proc.saveMidiMap (f)) safe->popup ("MIDI map saved", f.getFileNameWithoutExtension());
+            });
+    }
+    else if (r == 631) { if (proc.saveMidiMap (proc.defaultMidiMapFile())) popup ("MIDI map", "Default for new instances"); }
+    else if (r == 632) { proc.defaultMidiMapFile().deleteFile(); popup ("MIDI map", "No default"); }
+    else if (r == 633) proc.midiMapFolder().startAsProcess();
 }

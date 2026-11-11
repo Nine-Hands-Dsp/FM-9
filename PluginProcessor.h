@@ -62,6 +62,25 @@ public:
     bool isLearning() const { return learning.load(); }
     juce::String getLearnTarget() const { return learnTarget; }
 
+    // commandes physiques de la facade, assignables en MIDI Learn quelle que soit la page :
+    // 0 SELECT, 1 PRESETS, 2 ALGORITHM, 3-6 KNOB1-4 (cible "ctl:<nom>", un CC absolu donne des pas)
+    static constexpr int ctlBase = 10000, numCtl = 7;
+    static juce::String ctlId (int i);
+    static juce::String ctlName (int i);
+    std::array<std::atomic<int>, numCtl> ctlSteps {};     // pas en attente, consommes par l'interface
+    std::atomic<bool> ctlUi { false };                    // l'interface est ouverte et consomme les pas
+
+    // configurations de MIDI Learn enregistrees (Documents/NINE HANDS DSP/FM-9/MIDI Maps)
+    juce::File midiMapFolder() const;
+    juce::String midiMapString() const;
+    void applyMidiMapString (const juce::String& map);
+    bool saveMidiMap (const juce::File& f) const;
+    bool loadMidiMap (const juce::File& f);
+    juce::File defaultMidiMapFile() const { return midiMapFolder().getChildFile ("Default.fm9midi"); }
+
+    // OCT- / OCT+ et transposition : appliques aussi aux notes du clavier maitre (en demi-tons)
+    std::atomic<int> kbShift { 0 };
+
     // --- etat lu par l'interface ---
     std::atomic<uint32_t> keyBits[4] {};      // notes en cours (128 bits)
     std::atomic<float> outLevel { 0.0f };
@@ -169,6 +188,11 @@ private:
     juce::Array<juce::RangedAudioParameter*> allParams;
     struct CcRamp { float from = 0, to = 0, cur = 0; double t0 = 0, dur = 0.03, lastTime = 0; int lo = 127, hi = 0; bool active = false; };
     std::array<CcRamp, 128> ramps;
+    std::array<int, 128> ctlLast;
+    bool pendingDefaultMap = true;                         // derniere valeur recue par CC assigne a une commande
+    juce::String targetIdOf (int t) const;
+    int targetIndexOf (const juce::String& id) const;
+    uint8_t shiftedNote[16][128] {};                      // note jouee pour chaque note recue (relachement correct)
 
     // voix recue en SysEx par le MIDI (copiee dans le thread audio, appliquee par le timer)
     std::unique_ptr<fm9::FirmwareHost> fwOwner;

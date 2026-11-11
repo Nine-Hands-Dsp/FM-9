@@ -34,7 +34,8 @@ FM9Processor::FM9Processor()
     for (auto* prm : getParameters())
         if (auto* r = dynamic_cast<juce::RangedAudioParameter*> (prm)) allParams.add (r);
     for (auto& v : patternVoice) v.store (-1);
-    for (int i = 0; i < 128; ++i) { ccTarget[(size_t) i].store (-1); ccValue[(size_t) i].store (0); ccPending[(size_t) i].store (false); keyStepTarget[(size_t) i] = -1; }
+    for (int c = 0; c < 16; ++c) for (int i = 0; i < 128; ++i) shiftedNote[c][i] = (uint8_t) i;
+    for (int i = 0; i < 128; ++i) { ctlLast[(size_t) i] = -1; ccTarget[(size_t) i].store (-1); ccValue[(size_t) i].store (0); ccPending[(size_t) i].store (false); keyStepTarget[(size_t) i] = -1; }
     for (auto& k : keyStepMap)
         for (int i = 0; i < allParams.size(); ++i)
             if (allParams[i]->getParameterID() == k.paramId) keyStepTarget[(size_t) k.cc] = i;
@@ -294,40 +295,108 @@ void FM9Processor::resetBankToFactory (int bank)
 }
 
 // ------------------------------------------------------------------------------------------------
+juce::String FM9Processor::ctlId (int i)
+{
+    static const char* n[numCtl] = { "select", "presets", "algorithm", "knob1", "knob2", "knob3", "knob4" };
+    return "ctl:" + juce::String (n[juce::jlimit (0, numCtl - 1, i)]);
+}
+
+juce::String FM9Processor::ctlName (int i)
+{
+    static const char* n[numCtl] = { "SELECT", "PRESETS", "ALGORITHM", "KNOB1", "KNOB2", "KNOB3", "KNOB4" };
+    return n[juce::jlimit (0, numCtl - 1, i)];
+}
+
+juce::String FM9Processor::targetIdOf (int t) const
+{
+    if (t >= ctlBase && t < ctlBase + numCtl) return ctlId (t - ctlBase);
+    if (t >= 0 && t < allParams.size()) return allParams[t]->getParameterID();
+    return {};
+}
+
+int FM9Processor::targetIndexOf (const juce::String& id) const
+{
+    for (int i = 0; i < numCtl; ++i) if (ctlId (i) == id) return ctlBase + i;
+    for (int i = 0; i < allParams.size(); ++i) if (allParams[i]->getParameterID() == id) return i;
+    return -1;
+}
+
 void FM9Processor::clearMidiLearn (const juce::String& paramId)
 {
     for (int c = 0; c < 128; ++c)
-    {
-        const int t = ccTarget[(size_t) c].load();
-        if (t >= 0 && allParams[t]->getParameterID() == paramId) ccTarget[(size_t) c].store (-1);
-    }
+        if (targetIdOf (ccTarget[(size_t) c].load()) == paramId) ccTarget[(size_t) c].store (-1);
 }
 
 int FM9Processor::learnedCcFor (const juce::String& paramId) const
 {
     for (int c = 0; c < 128; ++c)
-    {
-        const int t = ccTarget[(size_t) c].load();
-        if (t >= 0 && allParams[t]->getParameterID() == paramId) return c;
-    }
+        if (targetIdOf (ccTarget[(size_t) c].load()) == paramId) return c;
     return -1;
+}
+
+juce::String FM9Processor::midiMapString() const
+{
+    juce::StringArray map;
+    for (int c = 0; c < 128; ++c)
+        if (const auto id = targetIdOf (ccTarget[(size_t) c].load()); id.isNotEmpty()) map.add (juce::String (c) + "=" + id);
+    return map.joinIntoString (";");
+}
+
+void FM9Processor::applyMidiMapString (const juce::String& mapText)
+{
+    for (int c = 0; c < 128; ++c) { ccTarget[(size_t) c].store (-1); ctlLast[(size_t) c] = -1; ramps[(size_t) c] = {}; }
+    for (auto& e : juce::StringArray::fromTokens (mapText, ";", ""))
+    {
+        const int c = e.upToFirstOccurrenceOf ("=", false, false).getIntValue();
+        const int t = targetIndexOf (e.fromFirstOccurrenceOf ("=", false, false));
+        if (t >= 0 && c >= 0 && c < 128) ccTarget[(size_t) c].store (t);
+    }
+    sendChangeMessageToUi();
+}
+
+juce::File FM9Processor::midiMapFolder() const
+{
+    auto d = userFolder().getChildFile ("MIDI Maps");
+    d.createDirectory();
+    return d;
+}
+
+bool FM9Processor::saveMidiMap (const juce::File& f) const
+{
+    auto* o = new juce::DynamicObject();
+    o->setProperty ("type", "FM-9 MIDI map");
+    o->setProperty ("map", midiMapString());
+    o->setProperty ("ctlProfile", ctlProfile.load());
+    return f.replaceWithText (juce::JSON::toString (juce::var (o)));
+}
+
+bool FM9Processor::loadMidiMap (const juce::File& f)
+{
+    const auto v = juce::JSON::parse (f.loadFileAsString());
+    if (! v.hasProperty ("map")) return false;
+    if (v.hasProperty ("ctlProfile")) ctlProfile.store ((int) v.getProperty ("ctlProfile", 0));
+    applyMidiMapString (v.getProperty ("map", "").toString());
+    return true;
 }
 
 void FM9Processor::timerCallback()
 {
     const double now = juce::Time::getMillisecondCounterHiRes() * 0.001;
 
+    // configuration MIDI par defaut (nouvelle instance sans assignation)
+    if (pendingDefaultMap) { pendingDefaultMap = false; if (midiMapString().isEmpty() && defaultMidiMapFile().existsAsFile()) loadMidiMap (defaultMidiMapFile()); }
+
     // apprentissage MIDI
     const int lc = learnCc.exchange (-1);
     if (lc >= 0 && learning.load())
     {
-        int target = -1;
-        for (int i = 0; i < allParams.size(); ++i) if (allParams[i]->getParameterID() == learnTarget) target = i;
+        const int target = targetIndexOf (learnTarget);
         if (target >= 0)
         {
             clearMidiLearn (learnTarget);
             ccTarget[(size_t) lc].store (target);
             ramps[(size_t) lc] = {};
+            ctlLast[(size_t) lc] = -1;
         }
         learning.store (false);
         learnTarget.clear();
@@ -342,6 +411,27 @@ void FM9Processor::timerCallback()
         const bool fromKeyStep = t < 0 && ctlProfile.load() == 1 && keyStepTarget[(size_t) c] >= 0;
         if (fromKeyStep) t = keyStepTarget[(size_t) c];
         if (t < 0) { r.active = false; continue; }
+        if (t >= ctlBase)
+        {
+            // commande physique (SELECT, PRESETS, ALGORITHM, KNOB1-4) : chaque cran de CC donne un pas
+            r.active = false;
+            if (! ccPending[(size_t) c].exchange (false)) continue;
+            const int v = juce::roundToInt (ccValue[(size_t) c].load());
+            int& last = ctlLast[(size_t) c];
+            int steps = last < 0 ? 0 : v - last;
+            if (last >= 0 && steps == 0 && (v == 0 || v == 127)) steps = v == 0 ? -1 : 1;     // encore tourne en butee
+            last = v;
+            if (steps == 0) continue;
+            const int k = t - ctlBase;
+            if (ctlUi.load()) ctlSteps[(size_t) k].fetch_add (steps);
+            else if (k == 1) nextProgram (steps > 0 ? 1 : -1);                         // interface fermee : PRESETS
+            else if (k == 2) if (auto* a = apvts.getParameter ("alg"))                // et ALGORITHM restent actifs
+            {
+                const auto& rg = a->getNormalisableRange();
+                a->setValueNotifyingHost (a->convertTo0to1 (juce::jlimit (rg.start, rg.end, a->convertFrom0to1 (a->getValue()) + (steps > 0 ? 1.0f : -1.0f))));
+            }
+            continue;
+        }
         auto* prm = allParams[t];
         if (fromKeyStep && ccPending[(size_t) c].load())
         {
@@ -606,6 +696,20 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
     {
         const auto& m = meta.getMessage();
         if (midiCh > 0 && m.getChannel() > 0 && m.getChannel() != midiCh && ! m.isSysEx()) continue;
+        if (m.isNoteOnOrOff())
+        {
+            // OCT- / OCT+ et transposition de la facade s'appliquent aussi au clavier maitre
+            const int ch = juce::jlimit (1, 16, m.getChannel()) - 1, in = m.getNoteNumber();
+            int out;
+            if (m.isNoteOn()) { out = juce::jlimit (0, 127, in + kbShift.load()); shiftedNote[ch][in] = (uint8_t) out; }
+            else out = shiftedNote[ch][in];
+            if (out != in)
+            {
+                auto mm = m.isNoteOn() ? juce::MidiMessage::noteOn (ch + 1, out, m.getVelocity()) : juce::MidiMessage::noteOff (ch + 1, out, m.getVelocity());
+                handleMidi (mm, meta.samplePosition, engineEvents);
+                continue;
+            }
+        }
         handleMidi (m, meta.samplePosition, engineEvents);
     }
     kbEvents.clear();
@@ -719,10 +823,7 @@ void FM9Processor::getStateInformation (juce::MemoryBlock& destData)
     { juce::StringArray pv; for (auto& v : patternVoice) pv.add (juce::String (v.load())); state.setProperty ("patternVoice", pv.joinIntoString (","), nullptr); }
     juce::StringArray order; for (int o : getFxOrder()) order.add (juce::String (o));
     state.setProperty ("fxOrder", order.joinIntoString (","), nullptr);
-    juce::StringArray map;
-    for (int c = 0; c < 128; ++c)
-        if (const int t = ccTarget[(size_t) c].load(); t >= 0) map.add (juce::String (c) + "=" + allParams[t]->getParameterID());
-    state.setProperty ("midiMap", map.joinIntoString (";"), nullptr);
+    state.setProperty ("midiMap", midiMapString(), nullptr);
     state.setProperty ("ctlProfile", ctlProfile.load(), nullptr);
     state.removeChild (state.getChildWithName ("UI"), nullptr);
     state.appendChild (uiState.createCopy(), nullptr);
@@ -757,14 +858,9 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
         if (ok) setFxOrder (o);
     }
     if (state.hasProperty ("ctlProfile")) ctlProfile.store ((int) state.getProperty ("ctlProfile"));
-    for (int c = 0; c < 128; ++c) ccTarget[(size_t) c].store (-1);
-    for (auto& e : juce::StringArray::fromTokens (state.getProperty ("midiMap").toString(), ";", ""))
-    {
-        const int c = e.upToFirstOccurrenceOf ("=", false, false).getIntValue();
-        const auto id = e.fromFirstOccurrenceOf ("=", false, false);
-        for (int i = 0; i < allParams.size(); ++i)
-            if (allParams[i]->getParameterID() == id && c >= 0 && c < 128) ccTarget[(size_t) c].store (i);
-    }
+    applyMidiMapString (state.getProperty ("midiMap").toString());
+    pendingDefaultMap = false;                       // le projet a sa propre configuration
+    kbShift.store (12 * (int) uiState.getProperty ("octave", 0) + (int) uiState.getProperty ("transpose", 0));
     apvts.replaceState (state);
     sendChangeMessageToUi();
 }

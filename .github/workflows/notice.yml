@@ -1,0 +1,25 @@
+name: Publish FM-9 notice
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'docs/**.pdf', '.github/workflows/notice.yml' ]
+  workflow_dispatch:
+
+jobs:
+  notice:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Publier la derniere notice dans la derniere Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          N=$(ls docs/*.pdf 2>/dev/null | grep -vi midi | sort -V | tail -1 || true)
+          [ -z "$N" ] && { echo "pas de notice"; exit 0; }
+          TAG=$(gh release view --json tagName -q .tagName 2>/dev/null || true)
+          [ -z "$TAG" ] && { echo "pas encore de Release"; exit 0; }
+          cp "$N" FM-9-Notice.pdf
+          gh release upload "$TAG" FM-9-Notice.pdf --clobber

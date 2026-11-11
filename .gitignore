@@ -1,0 +1,5 @@
+build/
+/tmp/
+*.user
+.DS_Store
+design/fm1_reference.jpg

@@ -1,0 +1,121 @@
+// FM-9 (NINE HANDS | DSP) - facade d'apres la M-VAVE FM-1 (fonctionnement du manuel de la FM-1)
+#pragma once
+#include <JuceHeader.h>
+#include "PluginProcessor.h"
+#include "Layout.h"
+#include "NHKnob.h"
+#include "NineHandsMenu.h"
+
+class FM9Editor : public juce::AudioProcessorEditor, private juce::Timer
+{
+public:
+    explicit FM9Editor (FM9Processor&);
+    ~FM9Editor() override;
+
+    void paint (juce::Graphics&) override;
+    void resized() override;
+    void parentHierarchyChanged() override;
+    void visibilityChanged() override;
+    void mouseDown (const juce::MouseEvent&) override;
+    void mouseDrag (const juce::MouseEvent&) override;
+    void mouseUp (const juce::MouseEvent&) override;
+    void mouseWheelMove (const juce::MouseEvent&, const juce::MouseWheelDetails&) override;
+    bool keyPressed (const juce::KeyPress&) override;
+
+    static constexpr float baseW = fm9::layout::unitsW, baseH = fm9::layout::unitsH;
+    static constexpr int numSizes = 4;
+    static int sizeHeight (int idx);
+    void setScaledHeight (int h);
+
+    enum Mode { mHome = 0, mFx, mEnv, mLfo, mOp, mPitch, mVoice, mGlobal, mArp, mSeq, mCount };
+    // outil de rendu : etat de demonstration + caches a l'echelle de la capture
+    void prepareSnapshot (float scale, int mode, int page, int popup = 0);
+
+private:
+    struct Slot { juce::String id, label; };
+    struct PageInfo { juce::String name; int numPages = 1; Slot s[4]; };
+
+    void timerCallback() override;
+    void useSoftwareRenderer();
+    void askRepaint (juce::Rectangle<int> r);
+    void rebuildCaches (float scale = 0.0f);
+    float physicalScale() const;
+    juce::Rectangle<int> toPx (juce::Rectangle<float> r) const;
+    juce::Point<float> toUnits (juce::Point<float> p) const { return p / ((float) getHeight() / baseH); }
+
+    PageInfo pageInfo() const;
+    int& pageRef();
+    juce::String formatValue (const juce::String& id) const;
+    juce::String slotValue (const Slot& s) const;
+    void turnSlot (int k, int steps, bool fine);
+    void stepParam (const juce::String& id, int steps, bool fine, const juce::String& label);
+    void setParam (const juce::String& id, float plain);
+    float getParam (const juce::String& id) const;
+    void flash (const juce::String& text);
+    void popup (const juce::String& title, const juce::String& value, int kind = 1);
+    void goMode (Mode m);
+    void fnPress (int idx);
+    void fnRelease (int idx, bool longPress);
+    void selectTurn (int steps);
+    int noteForKey (bool black, int idx) const;
+    int keyAt (juce::Point<float> u, bool& black) const;
+    void releaseMouseNote();
+    bool blinkOn (double periodMs) const;
+
+    void drawPrint (juce::Graphics& g);
+    void drawDynamic (juce::Graphics& g);
+    void drawScreen (juce::Graphics& g);
+    void drawAlgorithm (juce::Graphics& g, juce::Rectangle<float> r, int alg, float u);
+    void drawDrum (juce::Graphics& g);
+    void drawEmbossed (juce::Graphics& g, const juce::String& t, juce::Rectangle<float> r, float h, bool lit, juce::Colour litCol);
+    void drawKeyLed (juce::Graphics& g, juce::Rectangle<float> r, float level, juce::Colour c);
+
+    void showContextMenu (const juce::String& learnId = {});
+    void openSaveDrum();
+    void closeDrum (bool accept);
+    void renameVoice();
+
+    FM9Processor& proc;
+    juce::Image background, bgScaled;
+    int cacheW = 0, cacheH = 0;
+    float cacheScale = 0.0f, forcedScale = 0.0f;
+    int resizeSettle = 0;
+    void* lastPeer = nullptr;
+    double lastPaintMs = 0, repaintAskedMs = 0, lastScaleCheckMs = 0, lastRendererCheckMs = 0;
+
+    juce::Typeface::Ptr med, bold, light;
+    std::unique_ptr<juce::Drawable> logo;
+    NineHandsMenu::MenuLnf menuLnf;
+    std::unique_ptr<juce::FileChooser> chooser;
+
+    nh::RotaryLayers::Layers knobLayers, encLayers;
+    std::unique_ptr<nh::Knob> master;
+    std::unique_ptr<nh::Encoder> enc[7];          // select, presets, algorithm, knob1..4
+
+    // etat de la facade
+    Mode mode = mHome;
+    int pages[mCount] {};                         // page courante de chaque mode
+    int opPages[7] {};                            // page retenue pour chaque operateur
+    int op = 1, fxSlot = 0, octave = 0, kbTrans = 0;
+    bool editMode = false, fxGrab = false;
+    int mouseNote = -1;
+    int heldFn = -1, heldBlack = -1, heldOct = -1;
+    double heldSince = 0;
+    bool holdUsed = false;                        // la touche tenue a servi (SELECT tourne, sauvegarde faite...)
+    float octDragAcc = 0;
+    int copySrc = 0, resetBank = 0;
+    juce::String flashText;
+    double flashUntil = 0;
+    juce::String popTitle, popValue;
+    int popKind = 0;                              // 1 texte, 2 liste de presets, 3 schema d'algorithme
+    double popUntil = 0;
+
+    // tambour de sauvegarde vers un autre emplacement (menu clic droit), centre sur la touche SAVE
+    bool drumOpen = false;
+    int drumIndex = 0;
+    float drumScroll = 0;
+
+    juce::String drawnScreenSig, drawnPanelSig;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FM9Editor)
+};

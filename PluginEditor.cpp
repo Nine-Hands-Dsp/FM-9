@@ -1965,7 +1965,7 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
         PopupMenu maps;
         auto files = proc.midiMapFolder().findChildFiles (File::findFiles, false, "*.fm9midi");
         files.sort();
-        for (int i = 0; i < jmin (100, files.size()); ++i) maps.addItem (640 + i, files[i].getFileNameWithoutExtension());
+        for (int i = 0; i < jmin (100, files.size()); ++i) maps.addItem (2400 + i, files[i].getFileNameWithoutExtension());
         if (files.isEmpty()) maps.addItem (639, "(no saved MIDI map)", false);
         midi.addItem (630, "Save MIDI map...");
         midi.addSubMenu ("Load MIDI map", maps);
@@ -2016,11 +2016,11 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
             if (r == 4 && ctl >= 0) pr.startMidiLearn (FM9Processor::ctlId (ctl));
             else if (r == 5 && ctl >= 0) pr.clearMidiLearn (FM9Processor::ctlId (ctl));
             else if (r >= 630 && r <= 633) ed.midiMapAction (r);
-            else if (r >= 640 && r < 740)
+            else if (r >= 2400 && r < 2500)
             {
                 auto files = pr.midiMapFolder().findChildFiles (File::findFiles, false, "*.fm9midi");
                 files.sort();
-                if (r - 640 < files.size() && pr.loadMidiMap (files[r - 640])) ed.popup ("MIDI map", files[r - 640].getFileNameWithoutExtension());
+                if (r - 2400 < files.size() && pr.loadMidiMap (files[r - 2400])) ed.popup ("MIDI map", files[r - 2400].getFileNameWithoutExtension());
             }
             else if (r == 1) pr.startMidiLearn (learnId);
             else if (r == 2) pr.clearMidiLearn (learnId);

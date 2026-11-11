@@ -16,7 +16,7 @@ public:
     {
         float startAngle = juce::degreesToRadians (-135.0f);
         float endAngle   = juce::degreesToRadians ( 135.0f);
-        juce::Point<float> shadowOffset { 0.03f, 0.03f };
+        juce::Point<float> shadowOffset { 0.045f, 0.045f };   // lumiere en haut a gauche a 45 deg : ombre a 45 deg vers le bas a droite
         float blurMax    = juce::degreesToRadians (40.0f);
         float blurStep   = juce::degreesToRadians (3.0f);
         float blurDecay  = 0.6f;

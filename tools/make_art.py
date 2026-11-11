@@ -109,9 +109,12 @@ def pad(r, rad, lip=7.0):
     mix(img, rubber, m)
     inner = np.clip(1 - (-sd) / (lip * 2.2), 0, 1) * m
     sh = blur((sd > -lip * 1.5).astype(np.float32) * m, lip)
-    off = np.zeros_like(sh); s = int(lip * 0.8)
+    off = np.zeros_like(sh); s = int(lip * 1.2)
     off[s:, s:] = sh[:-s, :-s]
-    img[:] *= (1 - 0.35 * np.clip(off * m, 0, 1))[..., None]
+    img[:] *= (1 - 0.50 * np.clip(off * m, 0, 1))[..., None]
+    # occlusion de contact sur la coque tout autour de la cuvette
+    aoc = blur((sd < 0).astype(np.float32), 6.0)
+    img[:] *= (1 - 0.16 * np.clip(aoc - m, 0, 1))[..., None]
     # liseré de la coque autour : arete claire en bas a droite (lumiere sur la levre), sombre en haut a gauche
     ring = np.clip(1 - np.abs(sd - 2.0) / 3.0, 0, 1)
     nx = np.gradient(sd, axis=1); ny = np.gradient(sd, axis=0)
@@ -119,7 +122,7 @@ def pad(r, rad, lip=7.0):
     img[:] += (ring * facing * 18)[..., None]
     return sd
 
-pad(KB_PAD, KB_PAD_R); pad(FN_PAD, FN_PAD_R); pad(OCT_PAD, OCT_PAD_R, 5)
+pad(KB_PAD, KB_PAD_R, 10); pad(FN_PAD, FN_PAD_R, 10); pad(OCT_PAD, OCT_PAD_R, 7)
 
 # ------------------------------------------------------------------ touches en silicone (champ de hauteur)
 keyH = np.zeros((H, W), np.float32); keyM = np.zeros((H, W), np.float32)
@@ -150,12 +153,14 @@ for i, r in enumerate(OCT_KEYS):
     key("oct%d" % i, r, 10 * F, bevel=12.0)
 
 # ombre portee des touches sur le pave (45 deg vers le bas a droite)
-shadow = blur(keyM, 9.0)
-off = np.zeros_like(shadow); s = 9
+shadow = blur(keyM, 13.0)
+off = np.zeros_like(shadow); s = 15
 off[s:, s:] = shadow[:-s, :-s]
-img *= (1 - 0.45 * np.clip(off - keyM, 0, 1))[..., None]
-ao = blur(keyM, 22.0)
-img *= (1 - 0.10 * np.clip(ao - keyM, 0, 1))[..., None]
+img *= (1 - 0.58 * np.clip(off - keyM, 0, 1))[..., None]
+contact = blur(keyM, 4.0)
+img *= (1 - 0.30 * np.clip(contact - keyM, 0, 1))[..., None]
+ao = blur(keyM, 24.0)
+img *= (1 - 0.18 * np.clip(ao - keyM, 0, 1))[..., None]
 
 lam, spec, _ = shade_from_height(keyH, 1.0)
 keycol = np.array([72, 76, 80], np.float32)
@@ -175,8 +180,10 @@ for (x, y) in DOTS:
 # ------------------------------------------------------------------ ecran
 sdb = sdf_rrect(SCREEN_BEZEL, BEZEL_R)
 mb = cov(sdb)
-sh = blur(mb, 10.0); off = np.zeros_like(sh); off[8:, 8:] = sh[:-8, :-8]
-img *= (1 - 0.30 * np.clip(off - mb, 0, 1))[..., None]
+sh = blur(mb, 18.0); off = np.zeros_like(sh); off[18:, 18:] = sh[:-18, :-18]
+img *= (1 - 0.42 * np.clip(off - mb, 0, 1))[..., None]
+con = blur(mb, 5.0)
+img *= (1 - 0.28 * np.clip(con - mb, 0, 1))[..., None]
 bez = np.clip(-sdb / 14.0, 0, 1)
 lamb, specb, _ = shade_from_height((1 - (1 - bez) ** 2) * 14.0, 1.0)
 bcol = np.array([20, 21, 24], np.float32) * (0.75 + 0.45 * lamb / flat)[..., None] + (specb ** 40 * 60)[..., None]
@@ -192,9 +199,9 @@ img = img * (1 - mg[..., None]) + g * mg[..., None]
 
 # ------------------------------------------------------------------ eclairage d'ambiance a 45 deg (fond seulement)
 dn = (xx + yy) / (W + H)
-gain = 1.10 - 0.24 * dn
+gain = 1.12 - 0.28 * dn
 band = np.exp(-((dn - 0.30) / 0.10) ** 2) * 12.0
-img = img * gain[..., None] + band[..., None] * 0.6
+img = img * gain[..., None] + band[..., None]
 
 out = np.dstack([np.clip(img, 0, 255), alpha * 255]).astype(np.uint8)
 Image.fromarray(out, "RGBA").save(os.path.join(OUT, "background.png"), optimize=True)
@@ -252,9 +259,9 @@ mk = np.clip(np.minimum(np.minimum(kx - x0, x1 - kx), np.minimum(ky - y0, y1 - k
 save("marker", np.zeros((S, S, 3), np.float32) + np.array([236, 234, 228], np.float32), mk)
 
 # ombre portee centree (decalage ajoute par le code)
-sh = aa(R_OUT - 0.01 - rr)
-sh = cv2.GaussianBlur(sh, (0, 0), 22)
-save("shadow", np.zeros((S, S, 3), np.float32), sh * 0.55)
+sh0 = aa(R_OUT - 0.01 - rr)
+sh = cv2.GaussianBlur(sh0, (0, 0), 26) * 0.55 + cv2.GaussianBlur(sh0, (0, 0), 7) * 0.40
+save("shadow", np.zeros((S, S, 3), np.float32), np.clip(sh, 0, 0.85))
 
 # calque FIXE de lumiere : lumiere douce en haut a gauche a 45 deg (eclaire le flanc de la couronne et le liseré du chapeau),
 # ombre propre en bas a droite. Ne tourne jamais.

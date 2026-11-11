@@ -289,6 +289,11 @@ T = dict(
         "Pour en ajouter : clic droit &gt; Firmware &gt; <b>Install from GitHub...</b>, collez l'adresse du dépôt, de sa page github.io ou de son installeur web "
         "(par exemple https://deadactive.github.io/hortator/webapp/installer/) : FM-9 trouve l'émulateur web publié par le projet, le télécharge et le lance. "
         "<b>Install from file (.wasm)</b> installe un fichier déjà téléchargé. <b>FM-9 synthesizer</b> revient au synthé.",
+        "<b>Quels firmwares ?</b> Ceux dont le projet publie une <b>version web</b> (un émulateur qui tourne dans le navigateur, fichier .wasm, "
+        "souvent sur une page github.io de démo ou d'installation) : Hortator, X0X, TRIBE et GHOULBOX sont testés. Le firmware « matériel » seul "
+        "(fichier .bin flashé dans la FM-1 avec l'outil de mise à jour) ne peut pas tourner dans FM-9 : c'est du code pour la puce de la FM-1. "
+        "FM-9 reconnaît les deux façons de dialoguer avec l'émulateur utilisées par les firmwares de la FM-1 (celle de Hortator et celle de la "
+        "famille Felucca) ; un fichier d'un autre type est refusé avec un message, sans rien modifier.",
         "Chaque firmware garde ses sauvegardes (patterns, réglages) dans le dossier Nine Hands DSP/FM-9/Firmwares ; le firmware choisi est mémorisé avec le projet Reaper. "
         "Ces firmwares sont des projets libres (GPL-3.0 pour la famille Felucca) : leurs fonctions sont décrites dans leurs propres manuels."],
     skin_t="Skins et couleurs",

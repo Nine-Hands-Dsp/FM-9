@@ -72,14 +72,28 @@ bool FM9Processor::activateFirmware (const juce::String& name, juce::String& err
     std::unique_ptr<fm9::FirmwareHost> next;
     if (name.isNotEmpty())
     {
-        juce::MemoryBlock wasm;
-        const auto file = fm9::FirmwareInstaller::folder().getChildFile (juce::File::createLegalFileName (name) + ".wasm");
-        if (file.existsAsFile()) file.loadFileAsData (wasm);
-        else if (name.equalsIgnoreCase (builtinFirmware)) wasm.append (BinaryData::hortator_wasm, (size_t) BinaryData::hortator_wasmSize);
-        else { error = "firmware not found: " + name; return false; }
-        next = fm9::FirmwareHost::create (wasm.getData(), wasm.getSize(),
-                                          fm9::FirmwareInstaller::folder().getChildFile (juce::File::createLegalFileName (name) + ".flash"), error);
+        const auto folder = fm9::FirmwareInstaller::folder();
+        if (name.endsWith (fm9::FirmwareInstaller::hardwareSuffix))
+        {
+            // paquet materiel (.fwsc) : emulateur de la puce de la FM-1
+            const auto stem = name.dropLastCharacters (fm9::FirmwareInstaller::hardwareSuffix.length());
+            const auto file = folder.getChildFile (juce::File::createLegalFileName (stem) + ".fwsc");
+            juce::MemoryBlock pkg;
+            if (! file.existsAsFile() || ! file.loadFileAsData (pkg)) { error = "firmware not found: " + name; return false; }
+            next = fm9::FirmwareHost::createHardware (pkg.getData(), pkg.getSize(), folder.getChildFile (juce::File::createLegalFileName (stem) + ".hwflash"), error);
+        }
+        else
+        {
+            juce::MemoryBlock wasm;
+            const auto file = folder.getChildFile (juce::File::createLegalFileName (name) + ".wasm");
+            if (file.existsAsFile()) file.loadFileAsData (wasm);
+            else if (name.equalsIgnoreCase (builtinFirmware)) wasm.append (BinaryData::hortator_wasm, (size_t) BinaryData::hortator_wasmSize);
+            else { error = "firmware not found: " + name; return false; }
+            next = fm9::FirmwareHost::create (wasm.getData(), wasm.getSize(),
+                                              folder.getChildFile (juce::File::createLegalFileName (name) + ".flash"), error);
+        }
         if (next == nullptr) return false;
+        next->prepare (sr, blockSize);
     }
     // echange sans verrou : le thread audio ne garde jamais l'ancien firmware apres cette attente
     auto* old = fwOwner.get();
@@ -88,6 +102,8 @@ bool FM9Processor::activateFirmware (const juce::String& name, juce::String& err
     if (old != nullptr) old->saveIfDirty();
     fwOwner = std::move (next);
     firmwareName = name;
+    // le firmware materiel tourne un peu en avance : Reaper compense ce decalage
+    setLatencySamples (fwOwner != nullptr ? fwOwner->latencySamples (sr) : 0);
     engine.allSoundOff();
     sendChangeMessageToUi();
     return true;
@@ -102,6 +118,8 @@ bool FM9Processor::isBusesLayoutSupported (const BusesLayout& l) const
 void FM9Processor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     sr = sampleRate;
+    blockSize = samplesPerBlock;
+    if (auto* fw = fwOwner.get()) { fw->prepare (sr, samplesPerBlock); setLatencySamples (fw->latencySamples (sr)); }
     engine.prepare (sr);
     fx.prepare (sr, juce::jmax (samplesPerBlock, 4096) + 64);
     mono.assign ((size_t) juce::jmax (samplesPerBlock, 4096) + 64, 0.0f);

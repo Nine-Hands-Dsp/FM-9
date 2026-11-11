@@ -15,42 +15,73 @@ struct M3Environment; struct M3Runtime; struct M3Module; struct M3Function;
 
 namespace fm9
 {
+// interface commune : firmwares web (WasmFirmware, moteur wasm3) et paquets materiels .fwsc (HwFirmware,
+// emulateur de la puce fm1-emu). L'editeur et le processeur ne voient que celle-ci.
 class FirmwareHost
 {
 public:
-    enum class Abi { sim, web };
+    enum class Abi { sim, web, hw };
     static constexpr int fbW = 240, fbH = 240;
     static constexpr double fwRate = 44100.0;
 
-    // charge et demarre un firmware (thread de messages) ; storage = fichier de sauvegarde (flash) du firmware
+    // firmware web (.wasm) ; storage = fichier de sauvegarde (flash) du firmware
     static std::unique_ptr<FirmwareHost> create (const void* wasm, size_t size, const juce::File& storage, juce::String& error);
-    ~FirmwareHost();
+    // paquet materiel (.fwsc), lance dans l'emulateur de la puce ; storage = secteurs de flash sauvegardes
+    static std::unique_ptr<FirmwareHost> createHardware (const void* fwsc, size_t size, const juce::File& storage, juce::String& error);
+    static bool isHardwarePackage (const void* data, size_t size);
+    virtual ~FirmwareHost() = default;
 
     // ---- thread audio ----
-    void render (float* left, float* right, int numSamples, double hostRate);
-    void handleMidi (const juce::MidiMessage& m);
+    virtual void prepare (double /*hostRate*/, int /*block*/) {}
+    virtual void render (float* left, float* right, int numSamples, double hostRate) = 0;
+    virtual void handleMidi (const juce::MidiMessage& m) = 0;
+    virtual int latencySamples (double /*hostRate*/) const { return 0; }
 
-    // ---- interface (n'importe quel thread : file sans verrou) ----
-    void button (int index, bool down) { push (evButton, index, down ? 1 : 0); }     // 0-11 touches de fonction, 12 OCT-, 13 OCT+
-    void key (int index, bool down)    { push (evKey, index, down ? 1 : 0); }        // 0 (F3) .. 26 (G5)
-    void encoder (int role, int steps) { push (evEnc, role, steps); }                // 0 SELECT, 1 ALGORITHM, 2 PRESETS, 3-6 KNOB1-4
-    void master (float normalised)     { masterNorm.store (juce::jlimit (0.0f, 1.0f, normalised)); }
-    void releaseAll()                  { push (evReleaseAll, 0, 0); }
+    // ---- interface (n'importe quel thread) ----
+    virtual void button (int index, bool down) = 0;     // 0-11 touches de fonction, 12 OCT-, 13 OCT+
+    virtual void key (int index, bool down) = 0;        // 0 (F3) .. 26 (G5)
+    virtual void encoder (int role, int steps) = 0;     // 0 SELECT, 1 ALGORITHM, 2 PRESETS, 3-6 KNOB1-4
+    virtual void master (float normalised) = 0;
+    virtual void releaseAll() = 0;
 
     // ---- etat lu par l'interface ----
     std::atomic<uint32_t> litButtons { 0 }, litKeys { 0 }, dimKeys { 0 };
     std::atomic<uint32_t> fbSerial { 0 };
-    void copyScreen (juce::Image& dest);                                 // RGB565 -> image 240 x 240
+    virtual void copyScreen (juce::Image& dest) = 0;    // RGB565 -> image 240 x 240
     Abi abi() const { return kind; }
+    virtual juce::String status() const { return {}; }  // erreur eventuelle (firmware arrete)
 
     // ---- sauvegarde (thread de messages, a appeler regulierement) ----
-    void saveIfDirty();
+    virtual void saveIfDirty() = 0;
+
+protected:
+    FirmwareHost() = default;
+    Abi kind = Abi::sim;
+    JUCE_DECLARE_NON_COPYABLE (FirmwareHost)
+};
+
+class WasmFirmware : public FirmwareHost
+{
+public:
+    static std::unique_ptr<WasmFirmware> make (const void* wasm, size_t size, const juce::File& storage, juce::String& error);
+    ~WasmFirmware() override;
+
+    void render (float* left, float* right, int numSamples, double hostRate) override;
+    void handleMidi (const juce::MidiMessage& m) override;
+    void button (int index, bool down) override { push (evButton, index, down ? 1 : 0); }
+    void key (int index, bool down) override    { push (evKey, index, down ? 1 : 0); }
+    void encoder (int role, int steps) override { push (evEnc, role, steps); }
+    void master (float normalised) override     { masterNorm.store (juce::jlimit (0.0f, 1.0f, normalised)); }
+    void releaseAll() override                  { push (evReleaseAll, 0, 0); }
+    void copyScreen (juce::Image& dest) override;
+    void saveIfDirty() override;
 
 private:
     enum EvType { evButton, evKey, evEnc, evReleaseAll, evMidi };
+    Abi wasmAbi() const { return kind; }
     struct Event { int type, a, b; };
 
-    FirmwareHost() = default;
+    WasmFirmware() = default;
     bool start (const void* wasm, size_t size, juce::String& error);
     void push (int type, int a, int b);
     void applyEvents();
@@ -102,8 +133,6 @@ private:
     juce::SpinLock storageLock;
     uint32_t lastWrites = 0;
     juce::File storageFile;
-
-    JUCE_DECLARE_NON_COPYABLE (FirmwareHost)
 };
 
 // installation depuis GitHub : trouve le firmware (.wasm) publie par un depot (branche gh-pages, sinon depot)
@@ -115,6 +144,8 @@ struct FirmwareInstaller
     static juce::File install (const juce::String& owner, const juce::String& repo, juce::String& error,
                                std::function<void (const juce::String&)> progress = {});
     static int abiOf (const void* wasm, size_t size);                    // 1 sim, 2 web, 0 inconnu
-    static juce::StringArray installed();                                // noms des firmwares installes
+    static juce::StringArray installed();                                // noms des firmwares installes (.wasm, puis .fwsc + suffixe)
+    static inline const juce::String hardwareSuffix { " (hardware)" };   // paquet materiel .fwsc, emule
+    static juce::File installPackage (const juce::File& src, juce::String& error);   // .wasm ou .fwsc
 };
 } // namespace fm9

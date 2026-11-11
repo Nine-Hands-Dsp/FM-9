@@ -1,0 +1,26 @@
+[package]
+name = "fm1hw"
+description = "FM-9 : pont C vers l'emulateur materiel de la FM-1 (fm1-emu, MIT) pour lancer les firmwares .fwsc"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["staticlib", "rlib"]
+
+[dependencies]
+fm1-core = { path = "../third_party/fm1-emu/crates/fm1-core" }
+fm1-soc = { path = "../third_party/fm1-emu/crates/fm1-soc" }
+
+[[bin]]
+name = "fm1hw-check"
+path = "src/check.rs"
+
+# workspace a part : le depot de FM-9 n'est pas un projet Rust
+[workspace]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"

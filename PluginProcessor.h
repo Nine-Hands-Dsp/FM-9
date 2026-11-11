@@ -170,6 +170,7 @@ private:
 
     // voix recue en SysEx par le MIDI (copiee dans le thread audio, appliquee par le timer)
     std::unique_ptr<fm9::FirmwareHost> fwOwner;
+    int blockSize = 512;
     std::atomic<fm9::FirmwareHost*> fwActive { nullptr };
     std::atomic<bool> fwInUse { false };
     juce::String firmwareName, pendingFirmware;

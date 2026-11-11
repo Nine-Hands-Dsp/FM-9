@@ -28,26 +28,31 @@ static m3ApiRawFunction (stubVoid) { m3ApiSuccess(); }
 // ------------------------------------------------------------------------------------------- creation
 std::unique_ptr<FirmwareHost> FirmwareHost::create (const void* wasm, size_t size, const juce::File& storage, juce::String& error)
 {
-    std::unique_ptr<FirmwareHost> h (new FirmwareHost());
+    return WasmFirmware::make (wasm, size, storage, error);
+}
+
+std::unique_ptr<WasmFirmware> WasmFirmware::make (const void* wasm, size_t size, const juce::File& storage, juce::String& error)
+{
+    std::unique_ptr<WasmFirmware> h (new WasmFirmware());
     h->storageFile = storage;
     if (! h->start (wasm, size, error)) return nullptr;
     return h;
 }
 
-FirmwareHost::~FirmwareHost()
+WasmFirmware::~WasmFirmware()
 {
     if (rt != nullptr) m3_FreeRuntime (rt);
     if (env != nullptr) m3_FreeEnvironment (env);
 }
 
-M3Function* FirmwareHost::fn (const char* name)
+M3Function* WasmFirmware::fn (const char* name)
 {
     IM3Function f = nullptr;
     if (m3_FindFunction (&f, rt, name) != m3Err_none) return nullptr;
     return f;
 }
 
-bool FirmwareHost::call (M3Function* f, ...)
+bool WasmFirmware::call (M3Function* f, ...)
 {
     if (f == nullptr) return false;
     va_list a;
@@ -57,7 +62,7 @@ bool FirmwareHost::call (M3Function* f, ...)
     return r == m3Err_none;
 }
 
-uint32_t FirmwareHost::callU (M3Function* f)
+uint32_t WasmFirmware::callU (M3Function* f)
 {
     if (f == nullptr || m3_CallV (f) != m3Err_none) return 0;
     uint32_t v = 0;
@@ -65,7 +70,7 @@ uint32_t FirmwareHost::callU (M3Function* f)
     return v;
 }
 
-uint8_t* FirmwareHost::mem (size_t* size)
+uint8_t* WasmFirmware::mem (size_t* size)
 {
     size_t s = 0;
     auto* m = m3_GetMemory (mod, &s, 0);
@@ -73,7 +78,7 @@ uint8_t* FirmwareHost::mem (size_t* size)
     return m;
 }
 
-bool FirmwareHost::start (const void* wasm, size_t size, juce::String& error)
+bool WasmFirmware::start (const void* wasm, size_t size, juce::String& error)
 {
     wasmBytes.assign ((const uint8_t*) wasm, (const uint8_t*) wasm + size);
     env = m3_NewEnvironment();
@@ -171,7 +176,7 @@ bool FirmwareHost::start (const void* wasm, size_t size, juce::String& error)
 }
 
 // ------------------------------------------------------------------------------------------- evenements
-void FirmwareHost::push (int type, int a, int b)
+void WasmFirmware::push (int type, int a, int b)
 {
     const juce::SpinLock::ScopedLockType sl (pushLock);
     int s1, n1, s2, n2;
@@ -181,7 +186,7 @@ void FirmwareHost::push (int type, int a, int b)
     fifo.finishedWrite (n1 + n2);
 }
 
-void FirmwareHost::applyEvents()
+void WasmFirmware::applyEvents()
 {
     int s1, n1, s2, n2;
     fifo.prepareToRead (fifo.getNumReady(), s1, n1, s2, n2);
@@ -212,7 +217,7 @@ void FirmwareHost::applyEvents()
     fifo.finishedRead (n1 + n2);
 }
 
-void FirmwareHost::handleMidi (const juce::MidiMessage& m)
+void WasmFirmware::handleMidi (const juce::MidiMessage& m)
 {
     // famille Felucca : le firmware a son propre MIDI ; sinon les notes jouent les touches de la facade (F3-G5)
     if (fMidi != nullptr && m.getRawDataSize() <= 3 && ! m.isSysEx())
@@ -233,7 +238,7 @@ void FirmwareHost::handleMidi (const juce::MidiMessage& m)
 }
 
 // ------------------------------------------------------------------------------------------- audio
-void FirmwareHost::renderChunk (int frames)
+void WasmFirmware::renderChunk (int frames)
 {
     uint32_t ui = 0;
     if (kind == Abi::sim)
@@ -267,7 +272,7 @@ void FirmwareHost::renderChunk (int frames)
     written += frames;
 }
 
-void FirmwareHost::render (float* left, float* right, int n, double hostRate)
+void WasmFirmware::render (float* left, float* right, int n, double hostRate)
 {
     applyEvents();
     const int mv = juce::roundToInt (masterNorm.load() * masterMax);
@@ -308,7 +313,7 @@ void FirmwareHost::render (float* left, float* right, int n, double hostRate)
     if (sinceStorage >= 1.0) { sinceStorage = 0; captureStorage (false); }
 }
 
-void FirmwareHost::captureScreen()
+void WasmFirmware::captureScreen()
 {
     if (kind == Abi::web && fBlits != nullptr)
     {
@@ -330,7 +335,7 @@ void FirmwareHost::captureScreen()
     fbSerial.fetch_add (1);
 }
 
-void FirmwareHost::copyScreen (juce::Image& dest)
+void WasmFirmware::copyScreen (juce::Image& dest)
 {
     if (! dest.isValid() || dest.getWidth() != fbW) dest = juce::Image (juce::Image::RGB, fbW, fbH, false);
     const auto& src = fb[(size_t) fbFront.load()];
@@ -346,7 +351,7 @@ void FirmwareHost::copyScreen (juce::Image& dest)
 }
 
 // ------------------------------------------------------------------------------------------- sauvegarde
-void FirmwareHost::captureStorage (bool force)
+void WasmFirmware::captureStorage (bool force)
 {
     if (storageMirror.empty()) return;
     const juce::SpinLock::ScopedTryLockType tl (storageLock);
@@ -393,7 +398,7 @@ void FirmwareHost::captureStorage (bool force)
     }
 }
 
-void FirmwareHost::saveIfDirty()
+void WasmFirmware::saveIfDirty()
 {
     if (! storageDirty.load()) return;
     std::vector<uint8_t> copy;
@@ -417,7 +422,25 @@ juce::StringArray FirmwareInstaller::installed()
     juce::StringArray s;
     for (auto& f : folder().findChildFiles (juce::File::findFiles, false, "*.wasm")) s.add (f.getFileNameWithoutExtension());
     s.sort (true);
+    juce::StringArray hw;
+    for (auto& f : folder().findChildFiles (juce::File::findFiles, false, "*.fwsc")) hw.add (f.getFileNameWithoutExtension() + hardwareSuffix);
+    hw.sort (true);
+    s.addArray (hw);
     return s;
+}
+
+juce::File FirmwareInstaller::installPackage (const juce::File& src, juce::String& error)
+{
+    juce::MemoryBlock mb;
+    if (! src.loadFileAsData (mb)) { error = "cannot read " + src.getFileName(); return {}; }
+    juce::String ext;
+    if (abiOf (mb.getData(), mb.getSize()) != 0) ext = ".wasm";
+    else if (FirmwareHost::isHardwarePackage (mb.getData(), mb.getSize())) ext = ".fwsc";
+    else { error = "this file is not an FM-1 firmware (web build .wasm or update package .fwsc)"; return {}; }
+    folder().createDirectory();
+    const auto dest = folder().getChildFile (juce::File::createLegalFileName (src.getFileNameWithoutExtension()) + ext);
+    if (dest != src && ! dest.replaceWithData (mb.getData(), mb.getSize())) { error = "cannot write " + dest.getFullPathName(); return {}; }
+    return dest;
 }
 
 bool FirmwareInstaller::parseRepo (const juce::String& text, juce::String& owner, juce::String& repo)

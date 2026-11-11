@@ -1,0 +1,6 @@
+[package]
+name = "fm1-isa"
+description = "FM-1 instruction set: decoder/disassembler generated from isa/fm1.yaml"
+version = "0.4.0"
+edition = "2021"
+license = "MIT"

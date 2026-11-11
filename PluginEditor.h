@@ -5,6 +5,7 @@
 #include "Layout.h"
 #include "NHKnob.h"
 #include "NineHandsMenu.h"
+namespace fm9 { class FirmwareCatalogView; }
 
 class FM9Editor : public juce::AudioProcessorEditor, private juce::Timer
 {
@@ -111,6 +112,8 @@ public:
     bool saveUserSkin (const juce::String& name);
     bool loadUserSkin (const juce::File& f);
     void askSaveSkin();
+    void openCatalog();
+    std::unique_ptr<fm9::FirmwareCatalogView> catalog;
     juce::PopupMenu buildSkinMenu();
     juce::Image renderMenuPreview (const juce::PopupMenu& m, const juce::String& highlight, float scale, int* highlightY = nullptr);
     juce::PopupMenu buildMainMenuForPreview();

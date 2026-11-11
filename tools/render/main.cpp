@@ -195,6 +195,25 @@ int main (int argc, char** argv)
 {
     juce::ScopedJuceInitialiser_GUI gui;
     juce::StringArray args (argv + 1, argc - 1);
+    if (args.contains ("--fwcheck"))
+    {
+        // le firmware demarre-t-il dans l'hote de FM-9 ? (catalogue tools/gen_fw_catalog.py)
+        juce::MemoryBlock mb; juce::String err;
+        if (! juce::File (args[args.indexOf ("--fwcheck") + 1]).loadFileAsData (mb)) { std::printf ("fwcheck fail: unreadable\n"); return 1; }
+        auto fw = fm9::FirmwareHost::create (mb.getData(), mb.getSize(), juce::File(), err);
+        if (fw == nullptr) { std::printf ("fwcheck fail: %s\n", err.toRawUTF8()); return 1; }
+        std::vector<float> l (512), r (512);
+        float peak = 0.0f;
+        for (int i = 0; i < 200; ++i)
+        {
+            if (i == 20) fw->key (12, true);
+            if (i == 60) fw->key (12, false);
+            fw->render (l.data(), r.data(), 512, 48000.0);
+            for (int k = 0; k < 512; ++k) peak = std::max (peak, std::abs (l[(size_t) k]));
+        }
+        std::printf ("fwcheck ok %s screen=%u peak=%.3f\n", fw->abi() == fm9::FirmwareHost::Abi::sim ? "sim" : "web", (unsigned) fw->fbSerial.load(), peak);
+        return 0;
+    }
     if (args.isEmpty() || args.contains ("--test")) { audioTests(); keyStepTest(); firmwareTest(); }
     using juce::StringArray; using juce::String;
     if (args.contains ("--shot"))
@@ -219,6 +238,37 @@ int main (int argc, char** argv)
             const int notes[16] = { 48, 0, 55, 60, 48, 0, 58, 0, 46, 0, 53, 58, 46, 53, 0, 0 };
             for (int i = 0; i < 16; ++i) if (notes[i] > 0) { fm9::SeqStep st; st.count = 1; st.notes[0] = notes[i]; st.vel = 100; p.seqData.put (0, i, st); }
         }
+        if (args.contains ("--hwfw"))
+        {
+            // paquet materiel .fwsc : installe, lance, joue en temps reel (le thread d'emulation avance seul)
+            juce::String err;
+            const auto dest = fm9::FirmwareInstaller::installPackage (juce::File (args[args.indexOf ("--hwfw") + 1]), err);
+            const auto name = dest.getFileNameWithoutExtension() + fm9::FirmwareInstaller::hardwareSuffix;
+            const bool ok = dest != juce::File() && p.activateFirmware (name, err);
+            std::printf ("hwfw %s : %s (latence %d)\n", name.toRawUTF8(), ok ? "ok" : err.toRawUTF8(), p.getLatencySamples());
+            if (auto* fw = p.firmware())
+            {
+                juce::AudioBuffer<float> b2 (2, 512); float peak = 0;
+                const double t0 = juce::Time::getMillisecondCounterHiRes();
+                for (int i = 0; i < 470; ++i)                     // ~5 s de musique a 48 kHz
+                {
+                    juce::MidiBuffer e;
+                    if (i == 150) fw->button (10, true);
+                    if (i == 200) fw->button (10, false);
+                    if (i >= 250 && i % 20 == 0) fw->key ((i / 20) % 8, true);            // frappe des touches (pads)
+                    if (i >= 250 && i % 20 == 10) fw->key ((i / 20) % 8, false);
+                    if (i == 420) e.addEvent (juce::MidiMessage::noteOn (1, 60, (juce::uint8) 110), 0);   // et une note MIDI
+                    if (i == 440) e.addEvent (juce::MidiMessage::noteOff (1, 60), 0);
+                    p.processBlock (b2, e);
+                    if (i > 100) peak = juce::jmax (peak, b2.getMagnitude (0, 0, 512));
+                    const double due = t0 + (i + 1) * 512.0 / 48.0;
+                    const double now = juce::Time::getMillisecondCounterHiRes();
+                    if (due > now) juce::Thread::sleep ((int) (due - now));
+                }
+                std::printf ("hwfw son crete %.3f, ecran %u images, LED touches %x boutons %x, etat '%s'\n", peak, (unsigned) fw->fbSerial.load(),
+                             (unsigned) fw->litKeys.load(), (unsigned) fw->litButtons.load(), fw->status().toRawUTF8());
+            }
+        }
         if (args.contains ("--firmware"))
         {
             juce::String err; p.activateFirmware (args[args.indexOf ("--firmware") + 1], err);
@@ -240,6 +290,7 @@ int main (int argc, char** argv)
             if (args.contains ("--colours")) fe->setSnapshotColours (args[args.indexOf ("--colours") + 1]);
             if (args.contains ("--saveskin")) std::printf ("save %d\n", (int) fe->saveUserSkin (args[args.indexOf ("--saveskin") + 1]));
             if (args.contains ("--loadskin")) std::printf ("load %d\n", (int) fe->loadUserSkin (FM9Editor::skinFolder().getChildFile (args[args.indexOf ("--loadskin") + 1] + ".fm9skin")));
+            if (args.contains ("--catalog")) fe->openCatalog();
             if (args.contains ("--panel"))
             {
                 auto xy = StringArray::fromTokens (args[args.indexOf ("--panel") + 1], ",", "");

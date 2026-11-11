@@ -1,5 +1,6 @@
 // FM-9 (NINE HANDS | DSP) - facade d'apres la M-VAVE FM-1, fonctionnement du manuel de la FM-1
 #include "PluginEditor.h"
+#include "FirmwareCatalog.h"
 #include "WigaWindowSize.h"
 
 using namespace juce;
@@ -151,6 +152,7 @@ float FM9Editor::physicalScale() const
 void FM9Editor::resized()
 {
     // anti-gel : jamais de setSize ici
+    if (catalog != nullptr) catalog->setBounds (getLocalBounds());
     const float s = (float) getHeight() / baseH;
     auto place = [s] (Component& c, Point<float> centre)
     {
@@ -1765,8 +1767,9 @@ void FM9Editor::showContextMenu (const String& learnId)
         for (int i = 0; i < list.size() && i < 90; ++i)
             firmware.addItem (710 + i, list[i] + (list[i] == FM9Processor::builtinFirmware ? "  (built-in)" : ""), true, cur == list[i]);
         firmware.addSeparator();
+        firmware.addItem (804, "Catalog (all FM-1 firmwares)...");
         firmware.addItem (801, "Install from GitHub...");
-        firmware.addItem (802, "Install from file (.wasm)...");
+        firmware.addItem (802, "Install from file (.fwsc or .wasm)...");
         firmware.addItem (803, "Open firmware folder");
     }
     menu.addSubMenu ("Firmware", firmware);
@@ -1940,6 +1943,7 @@ void FM9Editor::showContextMenu (const String& learnId)
             else if (r >= 1000 && r < 1000 + pr.getNumPrograms()) pr.setCurrentProgram (r - 1000);
             else if (r == 700) ed.activateFirmware ({});
             else if (r >= 710 && r < 800) { const auto list = pr.availableFirmwares(); if (r - 710 < list.size()) ed.activateFirmware (list[r - 710]); }
+            else if (r == 804) ed.openCatalog();
             else if (r == 801) ed.installFromGitHub();
             else if (r == 802) ed.installFromFile();
             else if (r == 803) { fm9::FirmwareInstaller::folder().createDirectory(); fm9::FirmwareInstaller::folder().startAsProcess(); }
@@ -1960,6 +1964,18 @@ void FM9Editor::activateFirmware (const String& name)
     drawnPanelSig.clear(); drawnScreenSig.clear();
     if (name.isEmpty()) popup ("FM-9", "Synthesizer");
     repaint();
+}
+
+void FM9Editor::openCatalog()
+{
+    catalog = std::make_unique<fm9::FirmwareCatalogView> (light, med, bold);
+    catalog->onClose = [this] { MessageManager::callAsync ([safe = Component::SafePointer<FM9Editor> (this)] { if (safe != nullptr) safe->catalog.reset(); }); };
+    catalog->onActivate = [this] (const String& name)
+    {
+        MessageManager::callAsync ([safe = Component::SafePointer<FM9Editor> (this), name] { if (safe != nullptr) { safe->catalog.reset(); safe->activateFirmware (name); } });
+    };
+    addAndMakeVisible (*catalog);
+    catalog->setBounds (getLocalBounds());
 }
 
 void FM9Editor::installFromGitHub()
@@ -1995,20 +2011,14 @@ void FM9Editor::installFromGitHub()
 
 void FM9Editor::installFromFile()
 {
-    chooser = std::make_unique<FileChooser> ("FM-1 firmware (web emulator build, .wasm)", File::getSpecialLocation (File::userHomeDirectory), "*.wasm");
+    chooser = std::make_unique<FileChooser> ("FM-1 firmware (update package .fwsc or web build .wasm)", File::getSpecialLocation (File::userHomeDirectory), "*.fwsc;*.wasm");
     chooser->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [safe = Component::SafePointer<FM9Editor> (this)] (const FileChooser& fc)
     {
         if (safe == nullptr || fc.getResult() == File()) return;
-        MemoryBlock mb;
-        if (! fc.getResult().loadFileAsData (mb) || fm9::FirmwareInstaller::abiOf (mb.getData(), mb.getSize()) == 0)
-        {
-            AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "This file is not an FM-1 firmware web build.", "OK", safe.getComponent());
-            return;
-        }
-        fm9::FirmwareInstaller::folder().createDirectory();
-        const auto dest = fm9::FirmwareInstaller::folder().getChildFile (fc.getResult().getFileName());
-        dest.replaceWithData (mb.getData(), mb.getSize());
-        safe->activateFirmware (dest.getFileNameWithoutExtension());
+        String err;
+        const auto dest = fm9::FirmwareInstaller::installPackage (fc.getResult(), err);
+        if (dest == File()) { AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", err, "OK", safe.getComponent()); return; }
+        safe->activateFirmware (dest.getFileNameWithoutExtension() + (dest.hasFileExtension ("fwsc") ? fm9::FirmwareInstaller::hardwareSuffix : String()));
     });
 }
 

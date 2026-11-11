@@ -30,6 +30,7 @@ endif()
 file(GLOB FM9_ASSET_FILES CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.png"
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.jpg"
+  "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.json"
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.svg"
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.ttf"
   "${CMAKE_CURRENT_SOURCE_DIR}/assets/plugin/*.wasm")
@@ -56,7 +57,7 @@ juce_add_plugin(FM9
 juce_generate_juce_header(FM9)
 
 target_sources(FM9 PRIVATE
-  PluginProcessor.cpp PluginEditor.cpp FirmwareHost.cpp
+  PluginProcessor.cpp PluginEditor.cpp FirmwareHost.cpp HwFirmware.cpp
   wasm3/m3_bind.c wasm3/m3_code.c wasm3/m3_compile.c wasm3/m3_core.c wasm3/m3_deterministic.c wasm3/m3_env.c wasm3/m3_exec.c
   wasm3/m3_function.c wasm3/m3_info.c wasm3/m3_module.c wasm3/m3_parse.c wasm3/m3_snapshot.c wasm3/m3_validate.c wasm3/m3_xxh64.c
   msfa/dx7note.cc msfa/env.cc msfa/exp2.cc msfa/fm_core.cc msfa/fm_op_kernel.cc msfa/freqlut.cc
@@ -85,9 +86,12 @@ target_compile_definitions(FM9 PUBLIC
   JUCE_VST3_CAN_REPLACE_VST2=0
   JUCE_DISPLAY_SPLASH_SCREEN=0)
 
+include(cmake/Fm1hw.cmake)
+
 target_link_libraries(FM9
   PRIVATE
     FM9Assets
+    fm1hw
     juce::juce_audio_utils
     juce::juce_dsp
   PUBLIC

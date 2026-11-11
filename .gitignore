@@ -3,3 +3,4 @@ build/
 *.user
 .DS_Store
 design/fm1_reference.jpg
+fm1hw/target/

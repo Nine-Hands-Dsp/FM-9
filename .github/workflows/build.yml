@@ -9,6 +9,11 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v5
+      - name: Rust (emulateur de la puce de la FM-1)
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+          cargo --version
       - name: Configure
         run: cmake -B build -G "Visual Studio 17 2022" -A x64
       - name: Build
@@ -24,6 +29,12 @@ jobs:
     runs-on: macos-15-intel   # Mac Intel : file Apple Silicon saturee (binaire universel quand meme)
     steps:
       - uses: actions/checkout@v5
+      - name: Rust (emulateur de la puce de la FM-1, universel)
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+          rustup target add aarch64-apple-darwin x86_64-apple-darwin
+          cargo --version
       - name: Configure (binaire universel Intel + Apple Silicon)
         run: cmake -B build -G Xcode -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13
       - name: Build

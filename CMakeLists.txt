@@ -64,7 +64,7 @@ target_include_directories(FM9 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRE
 
 file(GLOB WASM3_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/wasm3/*.c")
 if(MSVC)
-  set_source_files_properties(${WASM3_SOURCES} PROPERTIES COMPILE_OPTIONS "/W0;/O2")
+  set_source_files_properties(${WASM3_SOURCES} PROPERTIES COMPILE_OPTIONS "/W0;/O2;/Zc:preprocessor")   # ##__VA_ARGS__ de wasm3
 else()
   set_source_files_properties(${WASM3_SOURCES} PROPERTIES COMPILE_OPTIONS "-w;-O3")
 endif()

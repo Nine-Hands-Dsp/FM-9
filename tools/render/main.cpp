@@ -133,6 +133,19 @@ static void midiTest()
     }
 }
 
+static void deleteTest()
+{
+    std::printf ("Suppression d'un firmware\n");
+    auto d = fm9::FirmwareInstaller::folder(); d.createDirectory(); d.getChildFile ("Previews").createDirectory();
+    for (auto ext : { ".wasm", ".fwsc", ".txt", ".hwflash" }) d.getChildFile (juce::String ("ZzTest") + ext).replaceWithText ("x");
+    d.getChildFile ("ZzTest [fork].wasm").replaceWithText ("x");
+    d.getChildFile ("Previews").getChildFile ("ZzTest.png").replaceWithText ("x");
+    check (fm9::FirmwareInstaller::installed().contains ("ZzTest (hardware)"), "firmware de test installe");
+    check (fm9::FirmwareInstaller::remove ("ZzTest (hardware)") == 5, "tout est supprime : web, paquet, notes, sauvegardes, apercu");
+    check (! fm9::FirmwareInstaller::installed().contains ("ZzTest") && d.getChildFile ("ZzTest [fork].wasm").existsAsFile(), "un firmware au nom voisin n'est pas touche");
+    d.getChildFile ("ZzTest [fork].wasm").deleteFile();
+}
+
 static void golanaTest()
 {
     // la page de Golana contient sa version native : extraite, elle demarre et joue
@@ -326,7 +339,7 @@ int main (int argc, char** argv)
         return 0;
     }
     if (args.isEmpty() || args.contains ("--test")) { audioTests(); keyStepTest();
-        midiTest(); golanaTest(); firmwareTest(); }
+        midiTest(); deleteTest(); golanaTest(); firmwareTest(); }
     using juce::StringArray; using juce::String;
     if (args.contains ("--shot"))
     {

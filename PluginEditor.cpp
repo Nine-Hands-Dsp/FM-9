@@ -1944,6 +1944,13 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
         const auto list = proc.availableFirmwares();
         for (int i = 0; i < list.size() && i < 90; ++i)
             firmware.addItem (710 + i, list[i] + (list[i] == FM9Processor::builtinFirmware ? "  (built-in)" : ""), true, cur == list[i]);
+        {
+            // suppression complete d'un firmware installe
+            PopupMenu del;
+            for (int i = 0; i < list.size() && i < 90; ++i)
+                if (list[i] != FM9Processor::builtinFirmware) del.addItem (2600 + i, list[i]);
+            firmware.addSubMenu ("Delete firmware", del, del.getNumItems() > 0);
+        }
         firmware.addSeparator();
         firmware.addItem (804, "Catalog (all FM-1 firmwares)...");
         firmware.addItem (801, "Install from GitHub...");
@@ -2166,6 +2173,7 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
             else if (r == 600) pr.applyMidiMapString ({});
             else if (r >= 1000 && r < 1000 + pr.getNumPrograms()) pr.setCurrentProgram (r - 1000);
             else if (r == 700) ed.activateFirmware ({});
+            else if (r >= 2600 && r < 2690) { const auto list = pr.availableFirmwares(); if (r - 2600 < list.size()) ed.deleteFirmware (list[r - 2600]); }
             else if (r >= 710 && r < 800) { const auto list = pr.availableFirmwares(); if (r - 710 < list.size()) ed.activateFirmware (list[r - 710]); }
             else if (r >= 850 && r <= 852)
             {
@@ -2227,6 +2235,7 @@ void FM9Editor::openCatalog()
     };
     // Load : le firmware est prepare en arriere-plan (progression dans le bouton), puis active ici
     FM9Processor* pr = &proc;
+    catalog->onDelete = [self] (const String& stem) { if (self != nullptr) self->deleteFirmware (stem); };
     catalog->loader = [pr] (const String& name, String& err, std::function<void (float)> progress) { return pr->loadFirmware (name, err, progress); };
     catalog->onLoaded = [self] (const String& name, std::shared_ptr<std::unique_ptr<fm9::FirmwareHost>> fw, const String& err)
     {
@@ -2330,4 +2339,24 @@ void FM9Editor::octStep (int dir)
     syncShift();
     popup ("Octave", (octave > 0 ? "+" : "") + String (octave));
     repaint();
+}
+
+void FM9Editor::deleteFirmware (const String& name)
+{
+    // confirmation, puis retour au synthe de FM-9 si c'est le firmware en cours, puis suppression de tout ce qui a ete installe
+    const auto stem = name.endsWith (fm9::FirmwareInstaller::hardwareSuffix) ? name.dropLastCharacters (String (fm9::FirmwareInstaller::hardwareSuffix).length()) : name;
+    AlertWindow::showOkCancelBox (MessageBoxIconType::WarningIcon, "Delete " + stem,
+        "Delete " + stem + " from this computer?\nIts package, web build, saved patterns and settings and its preview are removed.",
+        "Delete", "Cancel", this,
+        ModalCallbackFunction::create ([self = Component::SafePointer<FM9Editor> (this), stem] (int ok)
+        {
+            if (self == nullptr || ok == 0) return;
+            const auto cur = self->proc.getFirmwareName();
+            if (cur == stem || cur == stem + fm9::FirmwareInstaller::hardwareSuffix) self->activateFirmware ({});
+            const int n = fm9::FirmwareInstaller::remove (stem);
+            // le firmware arrete peut encore ecrire sa sauvegarde en se fermant : second passage un peu plus tard
+            Timer::callAfterDelay (800, [stem] { fm9::FirmwareInstaller::remove (stem); });
+            if (self->catalog != nullptr) self->catalog->refreshInstalled();
+            self->popup ("Firmware deleted", stem + " (" + String (n) + " files)");
+        }));
 }

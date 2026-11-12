@@ -32,6 +32,15 @@ struct CatalogEntry
         return inst.contains (fileName()) || inst.contains (fileName() + FirmwareInstaller::hardwareSuffix);
     }
     // ce que Load lance : le paquet materiel (le vrai firmware) s'il est installe, sinon la version web
+    // une version plus recente est au catalogue : le paquet installe ne vient pas de la meme adresse
+    bool needsUpdate (const juce::StringArray& inst) const
+    {
+        if (! hardware() || ! inst.contains (fileName() + FirmwareInstaller::hardwareSuffix)) return false;
+        const auto txt = FirmwareInstaller::folder().getChildFile (fileName() + ".txt").loadFileAsString();
+        const auto line = txt.fromFirstOccurrenceOf ("package: ", false, false).upToFirstOccurrenceOf ("\n", false, false).trim();
+        return line.isEmpty() || line != pkg;
+    }
+
     juce::String loadName (const juce::StringArray& inst) const
     {
         if (preferWeb && inst.contains (fileName())) return fileName();
@@ -166,6 +175,8 @@ public:
     // chargement avec progression (bouton Load) : prepare le firmware hors du thread de l'interface, puis l'editeur l'active
     std::function<std::unique_ptr<FirmwareHost> (const juce::String&, juce::String&, std::function<void (float)>)> loader;
     std::function<void (const juce::String&, std::shared_ptr<std::unique_ptr<FirmwareHost>>, const juce::String&)> onLoaded;
+    std::function<void (const juce::String&)> onDelete;          // suppression complete d'un firmware installe (nom du fichier)
+    void refreshInstalled() { installed = FirmwareInstaller::installed(); repaint(); list.repaint(); }
     std::function<void()> onClose;
 
     FirmwareCatalogView (juce::Typeface::Ptr reg, juce::Typeface::Ptr med, juce::Typeface::Ptr bold) : fReg (reg), fMed (med), fBold (bold)
@@ -325,7 +336,8 @@ private:
                 // bouton
                 if (e.compatible)
                 {
-                    const bool inst = e.isInstalled (o.installed);
+                    const bool upd = e.needsUpdate (o.installed);
+                    const bool inst = e.isInstalled (o.installed) && ! upd;
                     const bool doing = o.current == r.entry;
                     const bool loading = o.loadingIdx == r.entry;
                     g.setColour (inst ? kHover : kAccent.withAlpha (o.busy ? 0.3f : 0.9f)); g.fillRoundedRectangle (btn.toFloat(), 7.0f);
@@ -342,7 +354,7 @@ private:
                     else
                     {
                         g.setColour (inst ? kText : juce::Colour (0xff0b1520)); g.setFont (font (o.fMed, 13.0f));
-                        g.drawText (inst ? "Load" : "Install", btn, juce::Justification::centred);
+                        g.drawText (inst ? "Load" : upd ? "Update" : "Install", btn, juce::Justification::centred);
                     }
                 }
                 y += rowH;
@@ -382,6 +394,17 @@ private:
             const int i = entryAt (ev.getPosition(), &row);
             if (i < 0) return;
             const auto& e = owner->entries[(size_t) i];
+            if (ev.mods.isPopupMenu())
+            {
+                // clic droit sur un firmware installe : le supprimer completement
+                const bool any = owner->installed.contains (e.fileName()) || owner->installed.contains (e.fileName() + FirmwareInstaller::hardwareSuffix);
+                if (! any || owner->onDelete == nullptr) return;
+                juce::PopupMenu m;
+                m.addItem (1, "Delete " + e.name + " (everything installed)");
+                m.showMenuAsync (juce::PopupMenu::Options().withMousePosition(),
+                    [o = juce::Component::SafePointer<FirmwareCatalogView> (owner), stem = e.fileName()] (int r) { if (r == 1 && o != nullptr && o->onDelete) o->onDelete (stem); });
+                return;
+            }
             if (! owner->installRect (row).contains (ev.getPosition()))
             {
                 // clic sur la ligne : page du projet
@@ -390,7 +413,7 @@ private:
                 return;
             }
             if (! e.compatible || owner->busy) return;
-            if (e.isInstalled (owner->installed)) { owner->startLoad (i, e.loadName (owner->installed)); return; }
+            if (e.isInstalled (owner->installed) && ! e.needsUpdate (owner->installed)) { owner->startLoad (i, e.loadName (owner->installed)); return; }
             owner->runInstall ({ e });
         }
     } list;

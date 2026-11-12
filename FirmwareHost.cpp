@@ -417,6 +417,18 @@ juce::File FirmwareInstaller::folder()
     return juce::File::getSpecialLocation (juce::File::userApplicationDataDirectory).getChildFile ("Nine Hands DSP").getChildFile ("FM-9").getChildFile ("Firmwares");
 }
 
+int FirmwareInstaller::remove (const juce::String& name)
+{
+    // version web, paquet materiel, notes, sauvegardes (.hwflash, .sav...) et apercu : tout ce qui porte ce nom
+    const auto stem = name.endsWith (hardwareSuffix) ? name.dropLastCharacters (juce::String (hardwareSuffix).length()) : name;
+    if (stem.isEmpty()) return 0;
+    int n = 0;
+    for (auto& f : folder().findChildFiles (juce::File::findFiles, false))
+        if (f.getFileName().startsWith (stem + ".") && f.deleteFile()) ++n;
+    if (folder().getChildFile ("Previews").getChildFile (stem + ".png").deleteFile()) ++n;
+    return n;
+}
+
 juce::StringArray FirmwareInstaller::installed()
 {
     juce::StringArray s;

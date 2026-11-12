@@ -60,6 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
+- **1.3.9** : suppression complète d'un firmware (menu Firmware > Delete firmware ou clic droit dans le catalogue) ; bouton Update quand le catalogue a une version plus récente ; ChoralRoot FM-1 passe en 0.33 (notes MIDI du clavier maître sur le canal 1).
 - **1.3.8** : firmwares matériels sans craquements dans Reaper (la puce n'avance plus seule pendant les rafales du calcul anticipé ; marge d'émulation automatique, re-annoncée au DAW) ; Golana installé dans sa version native (page « Try it in your browser »), bien plus légère.
 - **1.3.7** : skin d'usine NINE HANDS | DSP ; KNOB1-4 actifs sur l'écran d'accueil (Cutoff, Resonance, Reverb, Delay), utile avec le MIDI Learn.
 - **1.3.6** : catalogue des firmwares en plus gros caractères ; firmwares matériels sans crépitements : horloge de la puce émulée réglable (240 / 360 / 480 MHz, 360 par défaut), marge d'émulation réglable, calcul de la puce en priorité haute, retombée douce au lieu d'un clic si l'émulation prend du retard.

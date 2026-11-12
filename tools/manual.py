@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.8"
+VERSION = "1.3.9"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -310,6 +310,10 @@ T = dict(
         "<b>Automatic</b>), cette avance est courte quand vous jouez en direct et grandit seule quand Reaper calcule en avance (lecture, "
         "calcul anticipé) ; Reaper compense le décalage. Low latency, Normal et Safe fixent une avance de 35, 70 ou 140 ms. "
         "<b>Chip clock</b> règle l'horloge de la puce émulée (240 MHz comme la FM-1, 360 MHz par défaut, 480 MHz ; plus de calcul). "
+        "<b>Supprimer un firmware</b> : clic droit &gt; Firmware &gt; <b>Delete firmware</b>, ou clic droit sur sa ligne dans le catalogue. "
+        "Tout ce qui a été installé est effacé de l'ordinateur (Windows ou macOS) : paquet, version web, sauvegardes (patterns, réglages) et aperçu ; "
+        "si c'était le firmware en cours, FM-9 revient à son propre synthé. Quand le catalogue propose une version plus récente d'un firmware "
+        "installé, son bouton devient <b>Update</b>. "
         "<b>Golana</b> s'installe dans sa version native (celle de sa page « Try it in your browser »), bien plus légère que la puce émulée. "
 "<b>Aperçu</b> : laissez le curseur sur le nom d'un firmware compatible pendant un peu moins d'une seconde : FM-9 le démarre hors écran "
         "et montre ce qu'affiche son écran (l'aperçu est gardé pour les fois suivantes). Une barre montre la progression : téléchargement, "

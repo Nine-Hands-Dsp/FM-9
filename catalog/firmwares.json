@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/aroum/fm1-custom-fw",
- "generated": "2026-11-12",
+ "generated": "2026-11-12 10:05",
  "firmwares": [
   {
    "name": "FM-1 original firmware",
@@ -85,7 +85,7 @@
    "abi": "web",
    "size": 1091631,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://thefirmwarehub.com/fw/choralroot-0.29.2.fwsc",
+   "pkg": "https://raw.githubusercontent.com/briksquared/fm1-emulator/main/site/fw/choralroot-0.33.fwsc",
    "pkgVersion": "0.29.2",
    "license": "GPL-3.0"
   },

@@ -80,6 +80,7 @@ private:
     void showContextMenu (const juce::String& learnId = {}, int ctl = -1);   // ctl : commande physique (FM9Processor::ctlId)
     void midiMapAction (int r);
     void octStep (int dir);
+    void deleteFirmware (const juce::String& name);
     void syncShift() { proc.kbShift.store (12 * octave + kbTrans); }
     void openSaveDrum();
     void closeDrum (bool accept);

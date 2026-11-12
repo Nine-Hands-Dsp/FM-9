@@ -152,7 +152,8 @@ struct FirmwareInstaller
     static juce::File install (const juce::String& owner, const juce::String& repo, juce::String& error,
                                std::function<void (const juce::String&)> progress = {});
     static int abiOf (const void* wasm, size_t size);                    // 1 sim, 2 web, 0 inconnu
-    static juce::StringArray installed();                                // noms des firmwares installes (.wasm, puis .fwsc + suffixe)
+    static juce::StringArray installed();
+    static int remove (const juce::String& name);                         // supprime tout ce qui a ete installe pour ce firmware                                // noms des firmwares installes (.wasm, puis .fwsc + suffixe)
     static inline const juce::String hardwareSuffix { " (hardware)" };   // paquet materiel .fwsc, emule
     static juce::File installPackage (const juce::File& src, juce::String& error);   // .wasm ou .fwsc
 };

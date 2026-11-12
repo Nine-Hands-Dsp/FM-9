@@ -88,8 +88,8 @@
    "abi": "web",
    "size": 1091631,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://raw.githubusercontent.com/briksquared/fm1-emulator/main/site/fw/choralroot-0.33.fwsc",
-   "pkgVersion": "0.29.2",
+   "pkg": "https://thefirmwarehub.com/fw/choralroot-0.41.fwsc",
+   "pkgVersion": "0.41",
    "license": "GPL-3.0",
    "added": "2026-10-08"
   },
@@ -174,10 +174,10 @@
    "url": "https://raw.githubusercontent.com/DeadActive/hortator/gh-pages/fm1sim.wasm",
    "abi": "sim",
    "size": 655879,
-   "pkg": "https://thefirmwarehub.com/fw/hortator-bt-1.0.1.fwsc",
+   "pkg": "https://thefirmwarehub.com/fw/hortator-1.0.1.fwsc",
    "pkgVersion": "1.0.1",
    "license": "GPL-3.0",
-   "added": "2026-10-28"
+   "added": "2026-10-08"
   },
   {
    "name": "April OS",
@@ -983,7 +983,7 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://github.com/dpwe/fm1-amy/releases/download/v0.1.0/fm1-amy-0.1.0.fwsc",
+   "pkg": "https://thefirmwarehub.com/fw/fm1amy-0.1.0.fwsc",
    "pkgVersion": "0.1.0",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
    "added": "2026-11-11"
@@ -1162,8 +1162,9 @@
    "url": "https://raw.githubusercontent.com/dmajka/elixir/gh-pages/try/elixir.wasm",
    "abi": "web",
    "size": 999572,
-   "pkg": "https://raw.githubusercontent.com/dmajka/elixir/main/firmware/elixir-v1.3.fwsc",
-   "added": "2026-11-05"
+   "pkg": "https://thefirmwarehub.com/fw/elixir-1.3.1.fwsc",
+   "added": "2026-11-05",
+   "pkgVersion": "1.3.1"
   },
   {
    "name": "PALEOTONE",
@@ -3434,8 +3435,9 @@
    "url": "https://raw.githubusercontent.com/Philip-Bos/echofield-fm1/main/companion/emulator/app.wasm",
    "abi": "web",
    "size": 428145,
-   "pkg": "https://raw.githubusercontent.com/Philip-Bos/echofield-fm1/main/companion/firmware/echofield-0.2.10.fwsc",
-   "added": "2026-11-09"
+   "pkg": "https://thefirmwarehub.com/fw/echofield-0.2.11.fwsc",
+   "added": "2026-11-09",
+   "pkgVersion": "0.2.11"
   },
   {
    "name": "CHOPPAH",
@@ -3487,7 +3489,7 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://github.com/MichaelAPerry/MIKU-FM1/releases/download/v0.8/miku-fm-0.8.fwsc",
+   "pkg": "https://thefirmwarehub.com/https://github.com/MichaelAPerry/MIKU-FM1/releases/download/v0.8/miku-fm-0.8.fwsc",
    "pkgVersion": "0.8",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
    "added": "2026-11-09"
@@ -3583,7 +3585,7 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://github.com/esbenvb/fm1-dx747/releases/download/v0.1/FM1_DX747.fwsc",
+   "pkg": "https://thefirmwarehub.com/fw/dx747-0.1.fwsc",
    "pkgVersion": "0.1",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
    "added": "2026-11-06"
@@ -4070,7 +4072,7 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://github.com/adamcharleswilsonmusic-code/Trumpagotchi/releases/download/v1.0.1/trumpagotchi.fwsc",
+   "pkg": "https://thefirmwarehub.com/fw/trumpagotchi-1.0.1.fwsc",
    "pkgVersion": "1.0.1",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
    "added": "2026-11-10"
@@ -5752,6 +5754,25 @@
    "pkgVersion": "0.2",
    "license": "GPL-3.0",
    "added": "2026-11-12"
+  },
+  {
+   "name": "Hortator (Bluetooth)",
+   "author": "DEADACTIVE",
+   "group": "thefirmwarehub.com",
+   "section": "Sound & groovebox",
+   "desc": "Hortator's Bluetooth build: the same eight-track drum machine, plus Bluetooth MIDI for a BLE keyboard or clock, or the M-VAVE SMC-Mixer as a mixer fo…",
+   "repo": "deadactive/hortator",
+   "page": "https://deadactive.github.io/hortator/",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 609649,
+   "pkg": "https://thefirmwarehub.com/fw/hortator-bt-1.0.1.fwsc",
+   "pkgVersion": "1.0.1",
+   "license": "GPL-3.0",
+   "added": "2026-10-28",
+   "unverified": true
   }
  ],
  "hwSource": "https://github.com/joakimeriksson/fm1-emu (web/firmwares.json)"

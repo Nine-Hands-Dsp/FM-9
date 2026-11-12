@@ -75,6 +75,7 @@ namespace NineHandsMenu
     struct MenuLnf : public LookAndFeel_V4
     {
         Typeface::Ptr reg, med, bold;
+        float textScale = 1.0f;                               // texte plus petit pour certains menus (catalogue)
         MenuLnf()
         {
             setColour (PopupMenu::backgroundColourId, Colours::transparentBlack);       // fenetre transparente : coins arrondis
@@ -83,7 +84,7 @@ namespace NineHandsMenu
             setColour (PopupMenu::highlightedBackgroundColourId, kHover);
             setColour (PopupMenu::highlightedTextColourId, Colours::white);
         }
-        Font getPopupMenuFont() override { return fnt (med, 15.0f); }
+        Font getPopupMenuFont() override { return fnt (med, 15.0f * textScale); }
         int getPopupMenuBorderSize() override { return 7; }
         void drawPopupMenuBackground (Graphics& g, int w, int h) override
         {
@@ -96,12 +97,12 @@ namespace NineHandsMenu
         void getIdealPopupMenuItemSize (const String& text, bool isSeparator, int standardHeight, int& w, int& h) override
         {
             if (isSeparator) { w = 50; h = 11; return; }
-            h = standardHeight > 0 ? standardHeight : 32;
+            h = standardHeight > 0 ? standardHeight : juce::roundToInt (32.0f * (0.4f + 0.6f * textScale));
             w = (int) std::ceil (GlyphArrangement::getStringWidth (getPopupMenuFont(), text)) + 34 + 40;
         }
         void drawPopupMenuSectionHeader (Graphics& g, const Rectangle<int>& area, const String& name) override
         {
-            g.setFont (fnt (bold, 11.5f).withExtraKerningFactor (0.14f));
+            g.setFont (fnt (bold, 11.5f * textScale).withExtraKerningFactor (0.14f));
             g.setColour (kDim);
             g.drawFittedText (name.toUpperCase(), area.withTrimmedLeft (14).withTrimmedRight (10).withTrimmedTop (6), Justification::centredLeft, 1);
         }

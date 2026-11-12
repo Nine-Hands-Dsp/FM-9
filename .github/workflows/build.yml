@@ -26,7 +26,7 @@ jobs:
           if-no-files-found: error
 
   macos:
-    runs-on: macos-15-intel   # Mac Intel : file Apple Silicon saturee (binaire universel quand meme)
+    runs-on: macos-15         # Apple Silicon (la file Intel ne trouvait plus de machine) ; binaire universel quand meme
     steps:
       - uses: actions/checkout@v5
       - name: Rust (emulateur de la puce de la FM-1, universel)

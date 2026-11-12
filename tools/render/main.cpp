@@ -379,6 +379,15 @@ int main (int argc, char** argv)
         std::printf ("moyenne crete (note) %.1f dB, %d presets sous -18 dB\n", sumPk / nprog, quiet);
         std::fflush (stdout); std::_Exit (0);
     }
+    if (args.contains ("--cachelist"))
+    {
+        // copie locale d'une liste ajoutee (test hors ligne)
+        const auto url = args[args.indexOf ("--cachelist") + 1];
+        auto f = fm9::FirmwareCatalog::userListCache (url); f.getParentDirectory().createDirectory();
+        juce::File (args[args.indexOf ("--cachelist") + 2]).copyFileTo (f);
+        juce::String d; const auto all = fm9::FirmwareCatalog::load (d);
+        std::printf ("catalogue : %d firmwares\n", (int) all.size()); std::fflush (stdout); std::_Exit (0);
+    }
     if (args.contains ("--hubkeys"))
     {
         for (auto l : { "https://thefirmwarehub.com/firmware/argo/", "https://play.thefirmwarehub.com/?fw=zp12n", "https://thefirmwarehub.com/fw/argo-1.8.3.fwsc", "Argo", "https://thefirmwarehub.com/" })

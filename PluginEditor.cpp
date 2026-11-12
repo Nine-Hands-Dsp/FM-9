@@ -2374,6 +2374,8 @@ void FM9Editor::openCatalog()
     // Load : le firmware est prepare en arriere-plan (progression dans le bouton), puis active ici
     FM9Processor* pr = &proc;
     catalog->onDelete = [self] (const String& stem) { if (self != nullptr) self->deleteFirmware (stem); };
+    catalog->onInstallFile = [self] { if (self != nullptr) self->installFromFile(); };
+    catalog->onInstallLink = [self] { if (self != nullptr) self->installFromGitHub(); };
     catalog->loader = [pr] (const String& name, String& err, std::function<void (float)> progress) { return pr->loadFirmware (name, err, progress); };
     catalog->onLoaded = [self] (const String& name, std::shared_ptr<std::unique_ptr<fm9::FirmwareHost>> fw, const String& err)
     {

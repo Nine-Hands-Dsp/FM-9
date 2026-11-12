@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/aroum/fm1-custom-fw",
- "generated": "2026-11-12 16:50",
+ "generated": "2026-11-12 16:16",
  "firmwares": [
   {
    "name": "FM-1 original firmware",
@@ -88,8 +88,8 @@
    "abi": "web",
    "size": 1091631,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://raw.githubusercontent.com/briksquared/fm1-emulator/main/site/fw/choralroot-0.33.fwsc",
-   "pkgVersion": "0.29.2",
+   "pkg": "https://thefirmwarehub.com/fw/choralroot-0.41.fwsc",
+   "pkgVersion": "0.41",
    "license": "GPL-3.0",
    "added": "2026-10-08"
   },
@@ -174,10 +174,10 @@
    "url": "https://raw.githubusercontent.com/DeadActive/hortator/gh-pages/fm1sim.wasm",
    "abi": "sim",
    "size": 655879,
-   "pkg": "https://thefirmwarehub.com/fw/hortator-bt-1.0.1.fwsc",
+   "pkg": "https://thefirmwarehub.com/fw/hortator-1.0.1.fwsc",
    "pkgVersion": "1.0.1",
    "license": "GPL-3.0",
-   "added": "2026-10-28"
+   "added": "2026-10-08"
   },
   {
    "name": "April OS",
@@ -983,7 +983,7 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://github.com/dpwe/fm1-amy/releases/download/v0.1.0/fm1-amy-0.1.0.fwsc",
+   "pkg": "https://thefirmwarehub.com/fw/fm1amy-0.1.0.fwsc",
    "pkgVersion": "0.1.0",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
    "added": "2026-11-11"
@@ -1162,8 +1162,9 @@
    "url": "https://raw.githubusercontent.com/dmajka/elixir/gh-pages/try/elixir.wasm",
    "abi": "web",
    "size": 999572,
-   "pkg": "https://raw.githubusercontent.com/dmajka/elixir/main/firmware/elixir-v1.3.fwsc",
-   "added": "2026-11-05"
+   "pkg": "https://thefirmwarehub.com/fw/elixir-1.3.1.fwsc",
+   "added": "2026-11-05",
+   "pkgVersion": "1.3.1"
   },
   {
    "name": "PALEOTONE",
@@ -3434,8 +3435,9 @@
    "url": "https://raw.githubusercontent.com/Philip-Bos/echofield-fm1/main/companion/emulator/app.wasm",
    "abi": "web",
    "size": 428145,
-   "pkg": "https://raw.githubusercontent.com/Philip-Bos/echofield-fm1/main/companion/firmware/echofield-0.2.10.fwsc",
-   "added": "2026-11-09"
+   "pkg": "https://thefirmwarehub.com/fw/echofield-0.2.11.fwsc",
+   "added": "2026-11-09",
+   "pkgVersion": "0.2.11"
   },
   {
    "name": "CHOPPAH",
@@ -3487,7 +3489,7 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://github.com/MichaelAPerry/MIKU-FM1/releases/download/v0.8/miku-fm-0.8.fwsc",
+   "pkg": "https://thefirmwarehub.com/https://github.com/MichaelAPerry/MIKU-FM1/releases/download/v0.8/miku-fm-0.8.fwsc",
    "pkgVersion": "0.8",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
    "added": "2026-11-09"
@@ -3583,7 +3585,7 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://github.com/esbenvb/fm1-dx747/releases/download/v0.1/FM1_DX747.fwsc",
+   "pkg": "https://thefirmwarehub.com/fw/dx747-0.1.fwsc",
    "pkgVersion": "0.1",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
    "added": "2026-11-06"
@@ -4070,7 +4072,7 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://github.com/adamcharleswilsonmusic-code/Trumpagotchi/releases/download/v1.0.1/trumpagotchi.fwsc",
+   "pkg": "https://thefirmwarehub.com/fw/trumpagotchi-1.0.1.fwsc",
    "pkgVersion": "1.0.1",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
    "added": "2026-11-10"
@@ -5103,8 +5105,7 @@
    "pkg": "https://thefirmwarehub.com/fw/vibe-link-0.4.fwsc",
    "pkgVersion": "0.4",
    "license": "GPL-3.0",
-   "added": "2026-11-07",
-   "unverified": true
+   "added": "2026-11-07"
   },
   {
    "name": "LSDJ Burrito",
@@ -5122,8 +5123,7 @@
    "pkg": "https://thefirmwarehub.com/fw/lsdjburrito-0.9.97.fwsc",
    "pkgVersion": "0.9.97",
    "license": "GPL-3.0",
-   "added": "2026-10-31",
-   "unverified": true
+   "added": "2026-10-31"
   },
   {
    "name": "Skiff Atlatl",
@@ -5141,8 +5141,7 @@
    "pkg": "https://thefirmwarehub.com/fw/atlatl-1.1.fwsc",
    "pkgVersion": "1.1",
    "license": "GPL-3.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "COQUÍ",
@@ -5152,16 +5151,15 @@
    "desc": "Latin and Caribbean groovebox: synthesized congas, bongos, timbales, guiro and cowbell, 14 grooves from salsa and bomba to dembow, tumbao and montuno…",
    "repo": "saulofilho/coqui-fm1",
    "page": "https://saulofilho.github.io/coqui-fm1/",
-   "compatible": true,
-   "reason": "",
+   "compatible": false,
+   "reason": "does not start in FM-9 (chip emulation)",
    "url": "",
    "abi": "",
    "size": 610183,
    "pkg": "https://thefirmwarehub.com/fw/coqui-1.1.1.fwsc",
    "pkgVersion": "1.1.1",
    "license": "GPL-3.0",
-   "added": "2026-11-07",
-   "unverified": true
+   "added": "2026-11-07"
   },
   {
    "name": "ARTIHIVE",
@@ -5179,8 +5177,7 @@
    "pkg": "https://thefirmwarehub.com/fw/artihive-2.0.4.fwsc",
    "pkgVersion": "2.0.4",
    "license": "GPL-3.0",
-   "added": "2026-11-07",
-   "unverified": true
+   "added": "2026-11-07"
   },
   {
    "name": "CULTBOX",
@@ -5198,8 +5195,7 @@
    "pkg": "https://thefirmwarehub.com/fw/cultbox-1.2.fwsc",
    "pkgVersion": "1.2",
    "license": "GPL-3.0",
-   "added": "2026-11-07",
-   "unverified": true
+   "added": "2026-11-07"
   },
   {
    "name": "Piterfly",
@@ -5217,8 +5213,7 @@
    "pkg": "https://thefirmwarehub.com/fw/piterfly-1.0.1.fwsc",
    "pkgVersion": "1.0.1",
    "license": "GPL-3.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "Sardine",
@@ -5236,8 +5231,7 @@
    "pkg": "https://thefirmwarehub.com/fw/sardine-1.0.6.fwsc",
    "pkgVersion": "1.0.6",
    "license": "GPL-3.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "ATEK303",
@@ -5255,8 +5249,7 @@
    "pkg": "https://thefirmwarehub.com/fw/atek303-1.2.fwsc",
    "pkgVersion": "1.2",
    "license": "GPL-3.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "FM1 Audio Router",
@@ -5274,8 +5267,7 @@
    "pkg": "https://thefirmwarehub.com/fw/audiorouter-0.3.0.fwsc",
    "pkgVersion": "0.3.0",
    "license": "MPL-2.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "Drumlab",
@@ -5293,8 +5285,7 @@
    "pkg": "https://thefirmwarehub.com/fw/drumlab-0.1.4-insertbluetoothpunhere.fwsc",
    "pkgVersion": "0.1.4-insertbluetoothpunhere",
    "license": "GPL-3.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "M-Vance",
@@ -5312,8 +5303,7 @@
    "pkg": "https://thefirmwarehub.com/fw/mvance-2.4.fwsc",
    "pkgVersion": "2.4",
    "license": "GPL-3.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "Patchwerk",
@@ -5331,8 +5321,7 @@
    "pkg": "https://thefirmwarehub.com/fw/patchwerk-1.0.3.fwsc",
    "pkgVersion": "1.0.3",
    "license": "GPL-3.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "Rhythmer",
@@ -5350,8 +5339,7 @@
    "pkg": "https://thefirmwarehub.com/fw/rhythmer-0.1.1-beta3.fwsc",
    "pkgVersion": "0.1.1-beta3",
    "license": "GPL-3.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "Ombak",
@@ -5369,8 +5357,7 @@
    "pkg": "https://thefirmwarehub.com/fw/ombak-1.2.fwsc",
    "pkgVersion": "1.2",
    "license": "GPL-3.0",
-   "added": "2026-11-09",
-   "unverified": true
+   "added": "2026-11-09"
   },
   {
    "name": "XENOLITH",
@@ -5388,8 +5375,7 @@
    "pkg": "https://thefirmwarehub.com/fw/xenolith-1.0.fwsc",
    "pkgVersion": "1.0",
    "license": "GPL-3.0",
-   "added": "2026-11-10",
-   "unverified": true
+   "added": "2026-11-10"
   },
   {
    "name": "Hungry Travis",
@@ -5407,8 +5393,7 @@
    "pkg": "https://thefirmwarehub.com/fw/hungrytravis-2026.11.10.fwsc",
    "pkgVersion": "2026.11.10",
    "license": "GPL-3.0",
-   "added": "2026-11-10",
-   "unverified": true
+   "added": "2026-11-10"
   },
   {
    "name": "FM-FAM",
@@ -5426,8 +5411,7 @@
    "pkg": "https://thefirmwarehub.com/fw/fmfam-0.3.0.fwsc",
    "pkgVersion": "0.3.0",
    "license": "MPL-2.0",
-   "added": "2026-11-10",
-   "unverified": true
+   "added": "2026-11-10"
   },
   {
    "name": "JAMTRACK",
@@ -5445,8 +5429,7 @@
    "pkg": "https://thefirmwarehub.com/fw/jamtrack-0.2.3.fwsc",
    "pkgVersion": "0.2.3",
    "license": "MIT",
-   "added": "2026-11-10",
-   "unverified": true
+   "added": "2026-11-10"
   },
   {
    "name": "Quartet",
@@ -5464,8 +5447,7 @@
    "pkg": "https://thefirmwarehub.com/fw/quartet-1.2.fwsc",
    "pkgVersion": "1.2",
    "license": "GPL-3.0",
-   "added": "2026-11-10",
-   "unverified": true
+   "added": "2026-11-10"
   },
   {
    "name": "keySTEP ONE",
@@ -5483,8 +5465,7 @@
    "pkg": "https://thefirmwarehub.com/fw/keystepone-0.5.42.fwsc",
    "pkgVersion": "0.5.42",
    "license": "MPL-2.0",
-   "added": "2026-11-10",
-   "unverified": true
+   "added": "2026-11-10"
   },
   {
    "name": "RAMBEAVER",
@@ -5502,8 +5483,7 @@
    "pkg": "https://thefirmwarehub.com/fw/rambeaver-745-hub.fwsc",
    "pkgVersion": "745-hub",
    "license": "GPL-3.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "M-PYRE",
@@ -5521,8 +5501,7 @@
    "pkg": "https://thefirmwarehub.com/fw/mpyre-1.0.3.fwsc",
    "pkgVersion": "1.0.3",
    "license": "GPL-3.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "ASS-ID",
@@ -5540,8 +5519,7 @@
    "pkg": "https://thefirmwarehub.com/fw/assid-1.0.fwsc",
    "pkgVersion": "1.0",
    "license": "GPL-3.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "sloop-DUB",
@@ -5559,8 +5537,7 @@
    "pkg": "https://thefirmwarehub.com/fw/sloopdub-1.3.fwsc",
    "pkgVersion": "1.3",
    "license": "GPL-3.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "SATIE-1",
@@ -5578,8 +5555,7 @@
    "pkg": "https://thefirmwarehub.com/fw/satie1-0.1.3-beta.fwsc",
    "pkgVersion": "0.1.3-beta",
    "license": "GPL-3.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "Guru-600",
@@ -5597,8 +5573,7 @@
    "pkg": "https://thefirmwarehub.com/fw/guru600-1.0.2+d9c0fd52.fwsc",
    "pkgVersion": "1.0.2",
    "license": "GPL-3.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "PLAYA",
@@ -5616,8 +5591,7 @@
    "pkg": "https://thefirmwarehub.com/fw/playa-0.1.fwsc",
    "pkgVersion": "0.1",
    "license": "GPL-3.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "Kris Jangle",
@@ -5635,8 +5609,7 @@
    "pkg": "https://thefirmwarehub.com/fw/krisjangle-0.12.fwsc",
    "pkgVersion": "0.12",
    "license": "MPL-2.0",
-   "added": "2026-11-10",
-   "unverified": true
+   "added": "2026-11-10"
   },
   {
    "name": "CORD",
@@ -5654,8 +5627,7 @@
    "pkg": "https://thefirmwarehub.com/fw/cord-1.0.3.fwsc",
    "pkgVersion": "1.0.3",
    "license": "GPL-3.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "Pocket Band",
@@ -5673,8 +5645,7 @@
    "pkg": "https://thefirmwarehub.com/fw/pocketband-0.4.fwsc",
    "pkgVersion": "0.4",
    "license": "GPL-3.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "Mighty Arp",
@@ -5692,8 +5663,7 @@
    "pkg": "https://thefirmwarehub.com/fw/mightyarp-1.4.fwsc",
    "pkgVersion": "1.4",
    "license": "MPL-2.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "DUB-BOX",
@@ -5711,8 +5681,7 @@
    "pkg": "https://thefirmwarehub.com/fw/dubbox-1.0.8.fwsc",
    "pkgVersion": "1.0.8",
    "license": "MPL-2.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "DEEP FIELD",
@@ -5730,8 +5699,7 @@
    "pkg": "https://thefirmwarehub.com/fw/deepfield-1.6.fwsc",
    "pkgVersion": "1.6",
    "license": "MPL-2.0",
-   "added": "2026-11-11",
-   "unverified": true
+   "added": "2026-11-11"
   },
   {
    "name": "SPLITMILK",
@@ -5749,8 +5717,7 @@
    "pkg": "https://thefirmwarehub.com/fw/splitmilk-1.0.fwsc",
    "pkgVersion": "1.0",
    "license": "GPL-3.0",
-   "added": "2026-11-12",
-   "unverified": true
+   "added": "2026-11-12"
   },
   {
    "name": "Argo",
@@ -5768,8 +5735,7 @@
    "pkg": "https://thefirmwarehub.com/fw/argo-1.8.3.fwsc",
    "pkgVersion": "1.8.3",
    "license": "GPL-3.0",
-   "added": "2026-11-12",
-   "unverified": true
+   "added": "2026-11-12"
   },
   {
    "name": "KRIECHSTROM",
@@ -5787,7 +5753,25 @@
    "pkg": "https://thefirmwarehub.com/fw/kriechstrom-0.2.fwsc",
    "pkgVersion": "0.2",
    "license": "GPL-3.0",
-   "added": "2026-11-12",
+   "added": "2026-11-12"
+  },
+  {
+   "name": "Hortator (Bluetooth)",
+   "author": "DEADACTIVE",
+   "group": "thefirmwarehub.com",
+   "section": "Sound & groovebox",
+   "desc": "Hortator's Bluetooth build: the same eight-track drum machine, plus Bluetooth MIDI for a BLE keyboard or clock, or the M-VAVE SMC-Mixer as a mixer fo…",
+   "repo": "deadactive/hortator",
+   "page": "https://deadactive.github.io/hortator/",
+   "compatible": true,
+   "reason": "",
+   "url": "",
+   "abi": "",
+   "size": 609649,
+   "pkg": "https://thefirmwarehub.com/fw/hortator-bt-1.0.1.fwsc",
+   "pkgVersion": "1.0.1",
+   "license": "GPL-3.0",
+   "added": "2026-10-28",
    "unverified": true
   }
  ],

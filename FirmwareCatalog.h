@@ -84,14 +84,81 @@ struct FirmwareCatalog
     static std::vector<CatalogEntry> load (juce::String& date)
     {
         juce::String bd, cd;
-        auto builtin = parse (juce::String::fromUTF8 (BinaryData::firmwares_json, BinaryData::firmwares_jsonSize), &bd);
+        auto list = parse (juce::String::fromUTF8 (BinaryData::firmwares_json, BinaryData::firmwares_jsonSize), &bd);
+        date = bd;
         if (cacheFile().existsAsFile())
         {
             auto cached = parse (cacheFile().loadFileAsString(), &cd);
-            if (! cached.empty() && cd >= bd) { date = cd; return cached; }
+            if (! cached.empty() && cd >= bd) { date = cd; list = std::move (cached); }
         }
-        date = bd;
-        return builtin;
+        // listes ajoutees par l'utilisateur (copies gardees a jour par Refresh), fusionnees sans doublons
+        for (auto& url : userLists())
+            if (auto f = userListCache (url); f.existsAsFile())
+                merge (list, parseAny (f.loadFileAsString(), url));
+        return list;
+    }
+
+    // ---- listes de firmwares ajoutees (clic droit > Add > Add a firmware list) : un lien par ligne
+    static juce::File userListsFile() { return FirmwareInstaller::folder().getChildFile ("Firmware lists.txt"); }
+    static constexpr const char* hubList = "https://thefirmwarehub.com/catalog.json";
+    static juce::StringArray userLists()
+    {
+        if (! userListsFile().existsAsFile()) return juce::StringArray (hubList);     // par defaut : la liste de The Firmware Hub
+        auto a = juce::StringArray::fromLines (userListsFile().loadFileAsString()); a.trim(); a.removeEmptyStrings(); return a;
+    }
+    static void setUserLists (const juce::StringArray& a) { FirmwareInstaller::folder().createDirectory(); userListsFile().replaceWithText (a.joinIntoString ("\n")); }
+    static juce::File userListCache (const juce::String& url)
+    {
+        return FirmwareInstaller::folder().getChildFile ("Lists").getChildFile (juce::String::toHexString (url.hashCode64()) + ".json");
+    }
+    static juce::String listLabel (const juce::String& url) { return juce::URL (url).getDomain().replace ("www.", ""); }
+    // une liste au format de FM-9, ou celle de thefirmwarehub.com (nom, auteur, depot, "what", paquet relatif "pkg")
+    static std::vector<CatalogEntry> parseAny (const juce::String& json, const juce::String& url)
+    {
+        auto fm9 = parse (json);
+        const auto v = juce::JSON::parse (json);
+        auto* arr = v.getProperty ("firmwares", {}).getArray();
+        if (arr == nullptr || (! fm9.empty() && arr->size() > 0 && (*arr)[0].hasProperty ("compatible"))) return fm9;
+        std::vector<CatalogEntry> out;
+        const auto base = url.upToLastOccurrenceOf ("/", true, false);
+        for (auto& f : *arr)
+        {
+            CatalogEntry e;
+            e.name = f.getProperty ("name", {}).toString();
+            auto pkg = f.getProperty ("pkg", {}).toString();
+            if (e.name.isEmpty() || pkg.isEmpty()) continue;
+            e.author = f.getProperty ("author", {}).toString(); e.repo = f.getProperty ("repo", {}).toString();
+            e.desc = f.getProperty ("what", f.getProperty ("desc", {})).toString();
+            e.page = f.getProperty ("site", f.getProperty ("page", {})).toString();
+            e.pkg = pkg.startsWith ("http") ? pkg : base + pkg;
+            e.pkgVersion = f.getProperty ("version", {}).toString(); e.license = f.getProperty ("lic", {}).toString();
+            e.added = f.getProperty ("added", {}).toString();
+            e.group = listLabel (url); e.compatible = true;
+            out.push_back (e);
+        }
+        return out;
+    }
+    // ajoute les firmwares absents (meme nom ou meme depot avec un seul firmware = doublon) ; complete la date d'ajout
+    static void merge (std::vector<CatalogEntry>& list, const std::vector<CatalogEntry>& extra)
+    {
+        auto norm = [] (const juce::String& n) { return n.toLowerCase().retainCharacters ("abcdefghijklmnopqrstuvwxyz0123456789"); };
+        std::map<juce::String, int> repoCount;
+        for (auto& e : list) if (e.repo.isNotEmpty()) ++repoCount[e.repo.toLowerCase()];
+        for (auto& x : extra)
+        {
+            bool dup = false;
+            // meme firmware : meme nom, meme paquet, ou meme depot qui n'en porte qu'un (sauf variante nommee entre parentheses)
+            const bool sameRepoOk = x.repo.isNotEmpty() && ! x.name.containsChar ('(') && repoCount[x.repo.toLowerCase()] == 1;
+            for (auto& e : list)
+                if (norm (e.name) == norm (x.name) || (x.pkg.isNotEmpty() && e.pkg == x.pkg)
+                    || (sameRepoOk && e.repo.equalsIgnoreCase (x.repo)))
+                {
+                    dup = true;
+                    if (e.added.isEmpty()) e.added = x.added;
+                    break;
+                }
+            if (! dup) list.push_back (x);
+        }
     }
 
     static bool download (const juce::String& url, juce::MemoryBlock& out, juce::String& error, std::function<void (float)> progress = {},
@@ -259,10 +326,13 @@ public:
     std::function<void (const juce::String&)> onDelete;          // suppression complete d'un firmware installe (nom du fichier)
     void refreshInstalled() { installed = FirmwareInstaller::installed(); repaint(); list.repaint(); }
     std::function<void()> onClose;
+    std::function<void()> onInstallFile, onInstallLink;          // installation manuelle (fichier .fwsc / .wasm, lien GitHub ou Firmware Hub)
+    NineHandsMenu::MenuLnf menuLnf;                              // menus au style de FM-9
 
     FirmwareCatalogView (juce::Typeface::Ptr reg, juce::Typeface::Ptr med, juce::Typeface::Ptr bold) : fReg (reg), fMed (med), fBold (bold)
     {
         entries = FirmwareCatalog::load (date);
+        menuLnf.reg = reg; menuLnf.med = med; menuLnf.bold = bold; menuLnf.textScale = 0.82f;
         installed = FirmwareInstaller::installed();
         loadFavorites();
         addAndMakeVisible (viewport);
@@ -334,7 +404,7 @@ public:
         const bool filtered = filterMode != 0 || search.getText().trim().isNotEmpty();
         g.drawText (juce::String (ok) + " compatible / " + juce::String ((int) entries.size()) + " firmwares"
                     + (filtered ? "  -  " + juce::String (shownCount) + " shown" : juce::String())
-                    + "  -  lists: aroum/fm1-custom-fw, fm1-emu"
+                    + "  -  lists: aroum/fm1-custom-fw, fm1-emu" + listLabels()
                     + (date.isNotEmpty() ? "  -  " + date : juce::String()), head.removeFromTop (28), juce::Justification::centredLeft);
         {
             // champ de recherche : pastille arrondie et loupe (le texte est saisi par-dessus)
@@ -362,10 +432,11 @@ public:
         // pied : etat + boutons
         auto foot = getLocalBounds().reduced (18).removeFromBottom (footerH).toFloat();
         g.setColour (status.startsWith ("!") ? juce::Colour (0xffff8a80) : kDim); g.setFont (font (fReg, 13.0f));
-        g.drawText (status.trimCharactersAtStart ("!"), foot.withTrimmedRight (440).toNearestInt(), juce::Justification::centredLeft);
+        g.drawText (status.trimCharactersAtStart ("!"), foot.withTrimmedRight (550).toNearestInt(), juce::Justification::centredLeft);
         drawButton (g, btnClose (), "Close", false);
         drawButton (g, btnRefresh (), busy ? "..." : "Refresh", false);
         drawButton (g, btnAll (), "Install all compatible", true);
+        drawButton (g, btnAdd (), "Add...", false);
     }
 
     void mouseDown (const juce::MouseEvent& e) override
@@ -384,6 +455,7 @@ public:
                 if (segs[(size_t) i].contains (p)) { filterMode = i; layoutList(); viewport.setViewPosition (0, 0); repaint(); return; }
         }
         if (busy) return;
+        if (btnAdd().contains (p)) { showAddMenu(); return; }
         if (btnRefresh().contains (p)) refresh();
         else if (btnAll().contains (p))
         {
@@ -454,6 +526,59 @@ private:
     juce::Rectangle<int> footArea() const { auto a = getLocalBounds().reduced (18).removeFromBottom (footerH).withTrimmedTop (8); return a.withSizeKeepingCentre (a.getWidth(), 34); }   // boutons compacts, texte inchange
     juce::Rectangle<int> btnClose() const   { return footArea().removeFromRight (90); }
     juce::Rectangle<int> btnRefresh() const { auto a = footArea(); a.removeFromRight (100); return a.removeFromRight (104); }
+    juce::Rectangle<int> btnAdd() const     { auto a = footArea(); a.removeFromRight (212 + 176 + 12); return a.removeFromRight (96); }
+    juce::String listLabels() const
+    {
+        juce::StringArray l;
+        for (auto& u : FirmwareCatalog::userLists()) l.addIfNotAlreadyThere (FirmwareCatalog::listLabel (u));
+        return l.isEmpty() ? juce::String() : ", " + l.joinIntoString (", ");
+    }
+    void showAddMenu()
+    {
+        juce::PopupMenu m, rem;
+        m.setLookAndFeel (&menuLnf);
+        m.addSectionHeader ("Install manually");
+        m.addItem (1, "Install a firmware file (.fwsc or .wasm)...", onInstallFile != nullptr);
+        m.addItem (2, "Install from a link (GitHub or The Firmware Hub)...", onInstallLink != nullptr);
+        m.addSeparator();
+        m.addSectionHeader ("Firmware lists");
+        m.addItem (3, "Add a firmware list (link to its JSON)...");
+        const auto lists = FirmwareCatalog::userLists();
+        for (int i = 0; i < lists.size(); ++i) rem.addItem (10 + i, lists[i]);
+        m.addSubMenu ("Remove a list", rem, ! lists.isEmpty());
+        m.showMenuAsync (juce::PopupMenu::Options().withMousePosition(), [self = juce::Component::SafePointer<FirmwareCatalogView> (this), lists] (int r)
+        {
+            if (self == nullptr || r == 0) return;
+            if (r == 1 && self->onInstallFile) self->onInstallFile();
+            else if (r == 2 && self->onInstallLink) self->onInstallLink();
+            else if (r == 3) self->askNewList();
+            else if (r >= 10 && r - 10 < lists.size())
+            {
+                auto l = lists; FirmwareCatalog::userListCache (l[r - 10]).deleteFile(); l.remove (r - 10);
+                FirmwareCatalog::setUserLists (l);
+                self->entries = FirmwareCatalog::load (self->date); self->layoutList(); self->status = "List removed."; self->repaint();
+            }
+        });
+    }
+    void askNewList()
+    {
+        auto* w = new juce::AlertWindow ("Add a firmware list",
+                                         "Link to a list of FM-1 firmwares (JSON): an FM-9 catalog or a Firmware Hub style catalog.json.\n"
+                                         "Its firmwares are added to the catalog without duplicates and updated with Refresh.",
+                                         juce::MessageBoxIconType::NoIcon, this);
+        w->addTextEditor ("url", "https://");
+        w->addButton ("Add", 1, juce::KeyPress (juce::KeyPress::returnKey));
+        w->addButton ("Cancel", 0, juce::KeyPress (juce::KeyPress::escapeKey));
+        w->enterModalState (true, juce::ModalCallbackFunction::create ([self = juce::Component::SafePointer<FirmwareCatalogView> (this), w] (int r)
+        {
+            if (self == nullptr || r != 1) return;
+            const auto url = w->getTextEditorContents ("url").trim();
+            if (! url.startsWith ("http")) return;
+            auto l = FirmwareCatalog::userLists(); l.addIfNotAlreadyThere (url);
+            FirmwareCatalog::setUserLists (l);
+            self->refresh();                                   // telecharge la nouvelle liste et la fusionne
+        }), true);
+    }
     juce::Rectangle<int> btnAll() const     { auto a = footArea(); a.removeFromRight (212); return a.removeFromRight (176); }
 
     void drawButton (juce::Graphics& g, juce::Rectangle<int> r, const juce::String& t, bool primary) const
@@ -797,6 +922,20 @@ private:
             juce::String txt;
             if (auto in = u.createInputStream (juce::URL::InputStreamOptions (juce::URL::ParameterHandling::inAddress).withConnectionTimeoutMs (15000).withStatusCode (&st)))
                 txt = in->readEntireStreamAsString();
+            // listes ajoutees : copie locale de chacune
+            int listsOk = 0;
+            for (auto& url : FirmwareCatalog::userLists())
+            {
+                if (stop) break;
+                juce::MemoryBlock mb; juce::String e2;
+                if (FirmwareCatalog::download (url, mb, e2, {}, &stop) && ! FirmwareCatalog::parseAny (mb.toString(), url).empty())
+                {
+                    auto f = FirmwareCatalog::userListCache (url);
+                    f.getParentDirectory().createDirectory();
+                    f.replaceWithText (mb.toString());
+                    ++listsOk;
+                }
+            }
             const juce::ScopedLock sl (lock);
             if (st < 400 && ! FirmwareCatalog::parse (txt).empty())
             {
@@ -804,7 +943,7 @@ private:
                 FirmwareCatalog::cacheFile().replaceWithText (txt);
                 refreshed = 1;
             }
-            else refreshed = -1;
+            else refreshed = listsOk > 0 ? 1 : -1;
             finished = true;
         });
         repaint();

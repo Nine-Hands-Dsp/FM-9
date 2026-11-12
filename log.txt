@@ -1,0 +1,7 @@
+tensor-programming/fm1-t1: rc=0 wasm=/tmp/src_tensor-programming_fm1-t1/build/emu/felucca.wasm
+gaumondp/patricktronics: rc=0 wasm=/tmp/src_gaumondp_patricktronics/build/emu/felucca.wasm
+tamabotmusic/TamaMPE: rc=0 wasm=/tmp/src_tamabotmusic_TamaMPE/build/emulator/fm6.wasm
+TristanoSuriani/fel-tracker: rc=0 wasm=/tmp/src_TristanoSuriani_fel-tracker/build/emu/bluehare.wasm
+briwil/Felucca: rc=0 wasm=/tmp/src_briwil_Felucca/build/emu/felucca.wasm
+synthi/fm1-1971: rc=0 wasm=/tmp/src_synthi_fm1-1971/build/sim/melodee.wasm
+JB-Interactive/Felucca-Meow: rc=0 wasm=/tmp/src_JB-Interactive_Felucca-Meow/build/emu/felucca.wasm

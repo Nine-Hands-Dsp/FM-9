@@ -1,0 +1,35 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0 24.8M    0  163k    0     0  57845      0  0:07:29  0:00:02  0:07:27  151k  8 24.8M    8 2075k    0     0   550k      0  0:00:46  0:00:03  0:00:43 1058k 73 24.8M   73 18.2M    0     0  3897k      0  0:00:06  0:00:04  0:00:02 6265k100 24.8M  100 24.8M    0     0  4938k      0  0:00:05  0:00:05 --:--:-- 7623k
+JIELI_TOOLCHAIN=/home/runner/.jieli/toolchain (jieli-linux-toolchains-20260730.1)
+usage: build.py [-h] [--release X.Y] [--sdk SDK]
+build.py: error: unrecognized arguments: gen
+In file included from firmware/src/felucca.c:75:
+In file included from firmware/src/torso_t1.c:5:
+firmware/src/torso_t1.h:11:10: fatal error: 'assert.h' file not found
+#include <assert.h>
+         ^~~~~~~~~~
+1 error generated.
+loader: image 8216 B at 0x1c0a800, bss end 0x1c0f510
+loader: ota.bin 6930 B
+face S: InterTight[wght].ttf@400 12px h15 base12  105 glyphs x 4  data 10410 B + table 3360 B + kern 2757 B (919 pairs) = 16537 B   digit adv 7.00px
+face M: InterTight[wght].ttf@500 15px h19 base15  105 glyphs x 4  data 13083 B + table 3360 B + kern 2976 B (992 pairs) = 19429 B   digit adv 9.00px
+face L: InterTight[wght].ttf@600 28px h35 base28  41 glyphs x 2  data 5761 B + table 656 B + kern 369 B (123 pairs) = 6826 B   digit adv 18.00px
+fonts total 42792 B  -> /tmp/src_tensor-programming_fm1-t1/build/gen/ui_fonts.h
+2 extra bytes in post.stringData array
+2 extra bytes in post.stringData array
+icons: x_oct_up: symbol_pitch_up not in the font yet, using control_arrow_up
+icons: x_oct_dn: symbol_pitch_down not in the font yet, using control_arrow_down
+icons 12px: 105 cells, 4237 B
+icons 16px: 39 cells, 2590 B
+icons 24px: 6 cells, 667 B
+icons code: 57 B
+icons total 7551 B -> /tmp/src_tensor-programming_fm1-t1/build/gen/ui_icons.h   (87 legacy names + 36 new)
+keycaps: 29 pills, data 4948 B + table 232 B; knob arcs 584 B = 5764 B -> /tmp/src_tensor-programming_fm1-t1/build/gen/ui_keycaps.h
+fm6 patches: 8 -> /tmp/src_tensor-programming_fm1-t1/build/gen/felucca_fm6.h
+generated waves into /tmp/src_tensor-programming_fm1-t1/build/genwav
+samples: 5 sets, 11 zones, 126244 B ADPCM, SLICE BREAK 44100 samples, SLICE PIANO (shared) 16537 samples
+build: pi32v2/bin/clang failed
+shared:INFO: (Emscripten: Running sanity checks)
+emu: build/emu (769935 B wasm, v1.6)

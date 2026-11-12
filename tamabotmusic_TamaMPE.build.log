@@ -1,0 +1,80 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0 24.8M    0  3621    0     0   1593      0  4:32:18  0:00:02  4:32:16  3668  3 24.8M    3  819k    0     0   250k      0  0:01:41  0:00:03  0:01:38  412k 44 24.8M   44 10.9M    0     0  2631k      0  0:00:09  0:00:04  0:00:05 3761k100 24.8M  100 24.8M    0     0  5023k      0  0:00:05  0:00:05 --:--:-- 6736k
+JIELI_TOOLCHAIN=/home/runner/.jieli/toolchain (jieli-linux-toolchains-20260730.1)
+usage: build.py [-h] [--nightly | --release X.Y[.Z]] [--sdk SDK]
+build.py: error: unrecognized arguments: gen
+gen_909_tables: EXP pot ranges -> /tmp/src_tamabotmusic_TamaMPE/build/gen/x0x_drum_tables.h
+size: 1058 main-loop functions built for size (42 not in this build)
+loader: image 7980 B at 0x1c0a800, bss end 0x1c0f300
+loader: ota.bin 6721 B
+face X: Rubik[wght].ttf@490 10px h12 base9  105 glyphs x 2  data 3972 B + table 1680 B + kern 2898 B (1550 pairs) = 8560 B   digit adv 6.00px
+face S: Rubik[wght].ttf@400 12px h14 base11  105 glyphs x 2  data 5259 B + table 1680 B + kern 2898 B (1522 pairs) = 9847 B   digit adv 7.00px
+face M: Rubik[wght].ttf@500 15px h19 base15  105 glyphs x 2  data 6716 B + table 1680 B + kern 2946 B (1612 pairs) = 11352 B   digit adv 10.00px
+face L: Rubik[wght].ttf@500 30px h37 base29  69 glyphs x 2  data 10103 B + table 1104 B + kern 1634 B (846 pairs) = 12909 B   digit adv 19.00px
+fonts total 42668 B  -> /tmp/src_tamabotmusic_TamaMPE/build/gen/ui_fonts.h
+icons 12px: 61 cells, 4523 B
+icons 16px: 34 cells, 4483 B
+icons 24px: 7 cells, 2147 B
+icons total 11153 B -> /tmp/src_tamabotmusic_TamaMPE/build/gen/ui_icons.h   (61 drawings)
+keycaps: 25 pills, data 4399 B + table 200 B; knob arcs 1478 B = 6077 B -> /tmp/src_tamabotmusic_TamaMPE/build/gen/ui_keycaps.h
+tables: /tmp/src_tamabotmusic_TamaMPE/build/gen/melodee_tables.h
+fm6 patches: 8 -> /tmp/src_tamabotmusic_TamaMPE/build/gen/melodee_fm6.h
+cz1 factory: 64 tones, 5389 B packed -> /tmp/src_tamabotmusic_TamaMPE/build/gen/melodee_cz1.h
+Prophet factory: 200 exact native programs -> /tmp/src_tamabotmusic_TamaMPE/build/gen/melodee_prophet_factory.h
+  ok    .ram_text: 1019 insns, no calls
+  ok    FM6: sample kernel and operator helpers in internal DSP RAM
+  ok    CPU1: RAM polling loop, private 8 KiB stacks, bounded startup/join
+  ok    image 488172 B; RAM .data+.bss 94224 B of 98304; pool 185832 B of 344064
+  ok    audio working arena 148544 B available on demand (minimum 142336)
+  ok    low SRAM tail 56 B: 0x01c07ec8..0x01c07f00 (end exclusive)
+  ok    data SRAM tail 4080 B: 0x01c1f010..0x01c20000 (end exclusive)
+  ok    retained SRAM tail 4088 B: 0x01c7ed58..0x01c7fd50 (end exclusive)
+  ok    total audio resources 156768 B in four separate SRAM banks; reclaimed 8224 B
+  ok    register access: hal/ only (src/, loader/ clean)
+app      /tmp/src_tamabotmusic_TamaMPE/build/melodee.bin  488172 B
+loader   /tmp/src_tamabotmusic_TamaMPE/build/loader/ota.bin  6721 B
+package  /tmp/src_tamabotmusic_TamaMPE/build/melodee.fwsc  609877 B, identity FM-1_900
+In file included from web/emulator/../../tests/../firmware/src/usb.c:21,
+                 from web/emulator/../../tests/hostsim.c:58,
+                 from web/emulator/fm6_bridge.c:5:
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h: In function ‘fm1_usb_attach’:
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:29:30: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+   29 | #define FM1_USB_EP_RADR(n) (*(volatile uint32_t *)(0x11820u + 8u * ((n) - 1u)))  /* EP1..3 */
+      |                              ^
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:49:9: note: in expansion of macro ‘FM1_USB_EP_RADR’
+   49 |         FM1_USB_EP_RADR(n) = (uint32_t)(uintptr_t)ep0;
+      |         ^~~~~~~~~~~~~~~
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h: In function ‘fm1_usb_ep_txbuf’:
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:28:30: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+   28 | #define FM1_USB_EP_TADR(n) (*(volatile uint32_t *)(0x1181Cu + 8u * ((n) - 1u)))  /* EP1..3 */
+      |                              ^
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:84:58: note: in expansion of macro ‘FM1_USB_EP_TADR’
+   84 | FM1_INLINE void fm1_usb_ep_txbuf(uint32_t ep, void *p) { FM1_USB_EP_TADR(ep) = (uint32_t)(uintptr_t)p; }
+      |                                                          ^~~~~~~~~~~~~~~
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h: In function ‘fm1_usb_ep_rxbuf’:
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:29:30: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+   29 | #define FM1_USB_EP_RADR(n) (*(volatile uint32_t *)(0x11820u + 8u * ((n) - 1u)))  /* EP1..3 */
+      |                              ^
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:85:58: note: in expansion of macro ‘FM1_USB_EP_RADR’
+   85 | FM1_INLINE void fm1_usb_ep_rxbuf(uint32_t ep, void *p) { FM1_USB_EP_RADR(ep) = (uint32_t)(uintptr_t)p; }
+      |                                                          ^~~~~~~~~~~~~~~
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h: In function ‘fm1_usb_ep_send’:
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:28:30: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+   28 | #define FM1_USB_EP_TADR(n) (*(volatile uint32_t *)(0x1181Cu + 8u * ((n) - 1u)))  /* EP1..3 */
+      |                              ^
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:95:5: note: in expansion of macro ‘FM1_USB_EP_TADR’
+   95 |     FM1_USB_EP_TADR(ep) = (uint32_t)(uintptr_t)p;
+      |     ^~~~~~~~~~~~~~~
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:26:29: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+   26 | #define FM1_USB_EP_CNT(n) (*(volatile uint32_t *)(0x11808u + 4u * (n)))          /* EP0..3 */
+      |                             ^
+web/emulator/../../tests/../firmware/src/../hal/fm1_usb.h:96:5: note: in expansion of macro ‘FM1_USB_EP_CNT’
+   96 |     FM1_USB_EP_CNT(ep) = n;
+      |     ^~~~~~~~~~~~~~
+FM6 WASM/native hostsim: 131072 samples, peak=0.12801361083984375, relative RMS error=0, max error=0
+AudioWorklet adapter: 22050 Hz, variable quanta, stereo duplication OK
+AudioWorklet adapter: 44100 Hz, variable quanta, stereo duplication OK
+AudioWorklet adapter: 48000 Hz, variable quanta, stereo duplication OK
+AudioWorklet adapter: 96000 Hz, variable quanta, stereo duplication OK

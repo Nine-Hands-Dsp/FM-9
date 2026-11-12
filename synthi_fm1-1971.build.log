@@ -1,0 +1,39 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0 24.8M    0 28197    0     0  11006      0  0:39:24  0:00:02  0:39:22 34386  3 24.8M    3  815k    0     0   228k      0  0:01:51  0:00:03  0:01:48  448k 43 24.8M   43 10.8M    0     0  2421k      0  0:00:10  0:00:04  0:00:06 3910k100 24.8M  100 24.8M    0     0  4754k      0  0:00:05  0:00:05 --:--:-- 7054k
+JIELI_TOOLCHAIN=/home/runner/.jieli/toolchain (jieli-linux-toolchains-20260730.1)
+usage: build.py [-h] [--nightly | --release X.Y[.Z]] [--sdk SDK]
+build.py: error: unrecognized arguments: gen
+gen_909_tables: EXP pot ranges -> /tmp/src_synthi_fm1-1971/build/gen/x0x_drum_tables.h
+size: 1031 main-loop functions built for size (40 not in this build)
+loader: image 8596 B at 0x1c0a800, bss end 0x1c0f570
+loader: ota.bin 7378 B
+face X: Rubik[wght].ttf@490 10px h12 base9  105 glyphs x 2  data 3972 B + table 1680 B + kern 2898 B (1550 pairs) = 8560 B   digit adv 6.00px
+face S: Rubik[wght].ttf@400 12px h14 base11  105 glyphs x 2  data 5259 B + table 1680 B + kern 2898 B (1522 pairs) = 9847 B   digit adv 7.00px
+face M: Rubik[wght].ttf@500 15px h19 base15  105 glyphs x 2  data 6716 B + table 1680 B + kern 2946 B (1612 pairs) = 11352 B   digit adv 10.00px
+face L: Rubik[wght].ttf@500 30px h37 base29  69 glyphs x 2  data 10103 B + table 1104 B + kern 1634 B (846 pairs) = 12909 B   digit adv 19.00px
+fonts total 42668 B  -> /tmp/src_synthi_fm1-1971/build/gen/ui_fonts.h
+icons 12px: 61 cells, 4523 B
+icons 16px: 34 cells, 4483 B
+icons 24px: 7 cells, 2147 B
+icons total 11153 B -> /tmp/src_synthi_fm1-1971/build/gen/ui_icons.h   (61 drawings)
+keycaps: 25 pills, data 4399 B + table 200 B; knob arcs 1478 B = 6077 B -> /tmp/src_synthi_fm1-1971/build/gen/ui_keycaps.h
+tables: /tmp/src_synthi_fm1-1971/build/gen/melodee_tables.h
+fm6 patches: 8 -> /tmp/src_synthi_fm1-1971/build/gen/melodee_fm6.h
+Prophet factory: 200 exact native programs -> /tmp/src_synthi_fm1-1971/build/gen/melodee_prophet_factory.h
+stub: 2268 B of 3808 (59.6%), version 3, sha256 baee55ed142fe1cc
+  ok    .ram_text: 925 insns, no calls
+  ok    FM6: sample kernel and operator helpers in internal DSP RAM
+  ok    CPU1: RAM polling loop, private 8 KiB stacks, bounded startup/join
+  ok    image 487328 B; RAM .data+.bss 91708 B of 98304; pool 182808 B of 344064
+  ok    audio working arena 151584 B available on demand (minimum 142336)
+  ok    low SRAM tail 360 B: 0x01c07d98..0x01c07f00 (end exclusive)
+  ok    data SRAM tail 6596 B: 0x01c1e63c..0x01c20000 (end exclusive)
+  ok    retained SRAM tail 4064 B: 0x01c7ed70..0x01c7fd50 (end exclusive)
+  ok    total audio resources 162604 B in four separate SRAM banks; reclaimed 11020 B
+  ok    register access: hal/ only (src/, loader/ clean)
+app      /tmp/src_synthi_fm1-1971/build/melodee.bin  487328 B
+loader   /tmp/src_synthi_fm1-1971/build/loader/ota.bin  7378 B
+package  /tmp/src_synthi_fm1-1971/build/melodee.fwsc  610534 B, identity FM-1_971
+sim      build/sim/melodee.wasm  767283 B   (serve build/sim/ and open index.html)

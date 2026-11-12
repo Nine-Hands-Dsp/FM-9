@@ -40,6 +40,7 @@ def api(path):
 
 
 def save(entry, url, tag):
+    if sum(1 for f in os.listdir(os.path.join(OUT, "files")) if f.startswith(re.sub(r"[^A-Za-z0-9._-]+", "_", entry["name"])[:40] + "__")) >= 6: return None
     data = get(url, raw=True)
     if not data or len(data) < 64: return None
     name = re.sub(r"[^A-Za-z0-9._-]+", "_", entry["name"])[:40] + "__" + tag + "__" + re.sub(r"[^A-Za-z0-9._-]+", "_", url.rsplit("/", 1)[-1])[-60:]

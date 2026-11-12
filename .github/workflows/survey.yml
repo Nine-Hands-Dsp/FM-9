@@ -8,13 +8,17 @@ on:
 jobs:
   survey:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v5
       - name: Survey
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 tools/survey_incompatible.py assets/plugin/firmwares.json survey_out
-      - uses: actions/upload-artifact@v4
-        with:
-          name: survey
-          path: survey_out
+      - name: Publish results on branch survey/results
+        run: |
+          cd survey_out
+          git init -q -b survey/results && git add -A
+          git -c user.name=survey -c user.email=survey@users.noreply.github.com commit -qm "survey results"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" survey/results

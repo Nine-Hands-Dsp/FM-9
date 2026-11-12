@@ -130,6 +130,7 @@ public:
 
     // profil de controleur (optionnel, jamais par defaut) : 0 = MIDI Learn seulement, 1 = Arturia KeyStep 37
     std::atomic<int> ctlProfile { 0 };
+    std::atomic<int> fwOutCh { 0 };                        // canal MIDI envoye au firmware (0 = tel que recu)
     struct KeyStepMap { int cc; const char* paramId; const char* label; };
     static const KeyStepMap keyStepMap[16];
     static juce::StringArray keyStepBankNames();

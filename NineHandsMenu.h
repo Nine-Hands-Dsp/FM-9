@@ -23,7 +23,7 @@ namespace NineHandsMenu
         if (s.startsWith ("footswitch") || s.contains ("momentary")) return icoStomp;
         if (s.contains ("latching") || s.contains ("toggles")) return icoLatch;
         if (s.startsWith ("midi") || s.startsWith ("learn") || s.startsWith ("program change") || s.startsWith ("cc ")) return icoMidi;
-        if (s.contains ("size") || s.endsWith ("%")) return icoSize;
+        if (s.startsWith ("size") || s.contains (" size") || s.endsWith ("%")) return icoSize;     // pas "synthesizer"
         if (s.startsWith ("settings") || s.contains ("sensitivity") || s.contains ("gate")) return icoParams;
         if (s.contains ("preset")) return icoPreset;
         if (s.contains ("bypass")) return icoBypass;

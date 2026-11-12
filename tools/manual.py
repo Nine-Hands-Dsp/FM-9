@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.10"
+VERSION = "1.3.11"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -317,6 +317,9 @@ T = dict(
         "Avec un firmware chargé, les touches des notes reçues de votre clavier maître s'éclairent aussi, même si le firmware ne les allume pas lui-même. "
         "<b>Lumières</b> : avec un firmware, les touches et boutons s'allument comme le firmware le décide, et aussi quand vous jouez : "
         "notes reçues du clavier maître (la touche de même nom, ramenée par octaves sur F3 à G5), touche, bouton ou OCT tenus à la souris. "
+        "<b>Canal MIDI</b> : certains firmwares ne jouent une piste que sur son canal (Melodee : canal 1 pour la piste 1, 2 pour la piste 2...). "
+        "Clic droit &gt; Firmware &gt; <b>MIDI channel sent to firmware</b> renvoie tout ce que joue votre clavier maître sur le canal choisi "
+        "(<b>As received</b> : canal d'origine, par défaut). Si votre clavier ne fait rien avec un firmware, choisissez Channel 1. "
         "<b>Golana</b> s'installe dans sa version native (celle de sa page « Try it in your browser »), bien plus légère que la puce émulée. "
 "<b>Aperçu</b> : laissez le curseur sur le nom d'un firmware compatible pendant un peu moins d'une seconde : FM-9 le démarre hors écran "
         "et montre ce qu'affiche son écran (l'aperçu est gardé pour les fois suivantes). Une barre montre la progression : téléchargement, "

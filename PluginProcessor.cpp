@@ -654,7 +654,12 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
             if (m.isNoteOn()) setKey (m.getNoteNumber(), true);          // la touche jouee s'eclaire aussi en mode firmware
             else if (m.isNoteOff()) setKey (m.getNoteNumber(), false);
             else if (m.isAllNotesOff() || m.isAllSoundOff()) for (auto& w : keyBits) w.store (0);
-            fw->handleMidi (m);
+            if (const int oc = fwOutCh.load(); oc > 0 && m.getChannel() > 0)
+            {
+                auto mm = m; mm.setChannel (oc);                      // tout le clavier sur le canal choisi (Melodee : 1 canal par piste)
+                fw->handleMidi (mm);
+            }
+            else fw->handleMidi (m);
         }
         midi.clear();
         if (auto* vol = apvts.getParameter ("volume")) fw->master (vol->getValue());
@@ -855,6 +860,7 @@ void FM9Processor::getStateInformation (juce::MemoryBlock& destData)
     state.setProperty ("fxOrder", order.joinIntoString (","), nullptr);
     state.setProperty ("midiMap", midiMapString(), nullptr);
     state.setProperty ("ctlProfile", ctlProfile.load(), nullptr);
+    state.setProperty ("fwOutCh", fwOutCh.load(), nullptr);
     state.removeChild (state.getChildWithName ("UI"), nullptr);
     state.appendChild (uiState.createCopy(), nullptr);
     if (auto xml = state.createXml()) copyXmlToBinary (*xml, destData);
@@ -891,6 +897,7 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
         if (ok) setFxOrder (o);
     }
     if (state.hasProperty ("ctlProfile")) ctlProfile.store ((int) state.getProperty ("ctlProfile"));
+    fwOutCh.store (juce::jlimit (0, 16, (int) state.getProperty ("fwOutCh", 0)));
     applyMidiMapString (state.getProperty ("midiMap").toString());
     pendingDefaultMap = false;                       // le projet a sa propre configuration
     kbShift.store (12 * (int) uiState.getProperty ("octave", 0) + (int) uiState.getProperty ("transpose", 0));

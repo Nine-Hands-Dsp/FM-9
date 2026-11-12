@@ -2032,6 +2032,12 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
             buf.addItem (857, "Safe (140 ms)", true, ! aut && mar == 6144);
             firmware.addSubMenu ("Chip clock (if a firmware crackles)", clk);
             firmware.addSubMenu ("Emulation buffer", buf);
+            PopupMenu och;
+            const int oc = proc.fwOutCh.load();
+            och.addItem (860, "As received", true, oc == 0);
+            och.addSeparator();
+            for (int c = 1; c <= 16; ++c) och.addItem (860 + c, "Channel " + String (c), true, oc == c);
+            firmware.addSubMenu ("MIDI channel sent to firmware", och);
         }
     }
     menu.addSubMenu ("Firmware", firmware);
@@ -2255,6 +2261,11 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
                 fm9::FirmwareHost::hwMargin().store (r == 855 ? 1536 : r == 856 ? 3072 : 6144);
                 pr.updateFirmwareLatency();
                 ed.popup ("Emulation buffer", r == 855 ? "35 ms" : r == 856 ? "70 ms" : "140 ms");
+            }
+            else if (r >= 860 && r <= 876)
+            {
+                pr.fwOutCh.store (r - 860);
+                ed.popup ("MIDI channel to firmware", r == 860 ? String ("As received") : "Channel " + String (r - 860));
             }
             else if (r == 804) ed.openCatalog();
             else if (r == 801) ed.installFromGitHub();

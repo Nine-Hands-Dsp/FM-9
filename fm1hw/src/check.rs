@@ -26,7 +26,7 @@ fn main() {
         if t != step { step = t;
             if t == 2 && std::env::var("FM1_NOPLAY").is_err() { fm1hw::fm1hw_key(m, 12, 1, 0); }
             if t == 3 { fm1hw::fm1hw_key(m, 12, 0, 0); }
-            if t >= 4 && std::env::var("FM1_MIDI").is_err() { fm1hw::fm1hw_key(m, 21 + (t as i32 % 5), (t % 2 == 0) as i32, 100); }
+            if t >= 4 && std::env::var("FM1_MIDI").is_err() && std::env::var("FM1_NONE").is_err() { fm1hw::fm1hw_key(m, 21 + (t as i32 % 5), (t % 2 == 0) as i32, 100); }
             if t >= 4 && std::env::var("FM1_MIDI").is_ok() {
                 // notes par le MIDI (comme un clavier maitre), plus un flux d'aftertouch
                 let n = 60 + (t as u8 % 5) * 2;

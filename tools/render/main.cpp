@@ -292,10 +292,12 @@ int main (int argc, char** argv)
         const double t0 = juce::Time::getMillisecondCounterHiRes();
         for (int i = 0; i < 600; ++i)
         {
-            if (i == 20 || i == 300) fw->key (12, true);
-            if (i == 60 || i == 360) fw->key (12, false);
-            if (i == 400) fw->handleMidi (juce::MidiMessage::noteOn (1, 60, (juce::uint8) 100));
-            if (i == 480) fw->handleMidi (juce::MidiMessage::noteOff (1, 60));
+            const bool midiOnly = std::getenv ("FWCHECK_MIDIONLY") != nullptr;
+            const int ch = std::getenv ("FWCHECK_CH") ? std::atoi (std::getenv ("FWCHECK_CH")) : 1;
+            if (! midiOnly && (i == 20 || i == 300)) fw->key (12, true);
+            if (! midiOnly && (i == 60 || i == 360)) fw->key (12, false);
+            if (i == 400) fw->handleMidi (juce::MidiMessage::noteOn (ch, 60, (juce::uint8) 100));
+            if (i == 480) fw->handleMidi (juce::MidiMessage::noteOff (ch, 60));
             fw->render (l.data(), r.data(), 512, 48000.0);
             for (int k = 0; k < 512; ++k) peak = std::max (peak, std::abs (l[(size_t) k]));
         }
@@ -362,6 +364,30 @@ int main (int argc, char** argv)
         {
             const int notes[16] = { 48, 0, 55, 60, 48, 0, 58, 0, 46, 0, 53, 58, 46, 53, 0, 0 };
             for (int i = 0; i < 16; ++i) if (notes[i] > 0) { fm9::SeqStep st; st.count = 1; st.notes[0] = notes[i]; st.vel = 100; p.seqData.put (0, i, st); }
+        }
+        if (args.contains ("--hwmidi"))
+        {
+            // canal MIDI envoye au firmware : note sur le canal HWMIDI_CH, option fwOutCh = HWMIDI_OUT
+            juce::String err;
+            const auto dest = fm9::FirmwareInstaller::installPackage (juce::File (args[args.indexOf ("--hwmidi") + 1]), err);
+            const auto name = dest.getFileNameWithoutExtension() + fm9::FirmwareInstaller::hardwareSuffix;
+            if (dest == juce::File() || ! p.activateFirmware (name, err)) { std::printf ("hwmidi fail %s\n", err.toRawUTF8()); return 1; }
+            const int ch = std::getenv ("HWMIDI_CH") ? std::atoi (std::getenv ("HWMIDI_CH")) : 1;
+            p.fwOutCh.store (std::getenv ("HWMIDI_OUT") ? std::atoi (std::getenv ("HWMIDI_OUT")) : 0);
+            juce::AudioBuffer<float> b2 (2, 512); float before = 0, after = 0;
+            const double t0 = juce::Time::getMillisecondCounterHiRes();
+            for (int i = 0; i < 420; ++i)
+            {
+                juce::MidiBuffer e;
+                if (i == 300) e.addEvent (juce::MidiMessage::noteOn (ch, 60, (juce::uint8) 110), 0);
+                if (i == 400) e.addEvent (juce::MidiMessage::noteOff (ch, 60), 0);
+                p.processBlock (b2, e);
+                (i < 300 ? before : after) = juce::jmax (i < 300 ? before : after, i > 150 ? b2.getMagnitude (0, 0, 512) : 0.0f);
+                const double due = t0 + (i + 1) * 512.0 / 48.0, now = juce::Time::getMillisecondCounterHiRes();
+                if (due > now) juce::Thread::sleep ((int) (due - now));
+            }
+            std::printf ("hwmidi ch=%d out=%d silence=%.3f note=%.3f\n", ch, p.fwOutCh.load(), before, after);
+            return 0;
         }
         if (args.contains ("--hwfw"))
         {

@@ -60,6 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
+- **1.3.11** : menu Firmware > MIDI channel sent to firmware : tout le clavier maître sur le canal choisi (Melodee et les firmwares à une piste par canal).
 - **1.3.10** : poubelle Delete dans le catalogue avec confirmation au style de FM-9 ; en mode firmware, les touches des notes du clavier maître s'éclairent, ainsi que les touches, boutons et OCT tenus à la souris.
 - **1.3.9** : suppression complète d'un firmware (menu Firmware > Delete firmware ou clic droit dans le catalogue) ; bouton Update quand le catalogue a une version plus récente ; ChoralRoot FM-1 passe en 0.33 (notes MIDI du clavier maître sur le canal 1).
 - **1.3.8** : firmwares matériels sans craquements dans Reaper (la puce n'avance plus seule pendant les rafales du calcul anticipé ; marge d'émulation automatique, re-annoncée au DAW) ; Golana installé dans sa version native (page « Try it in your browser »), bien plus légère.

@@ -3,6 +3,8 @@
 # Ligne : depot branche script
 set +e
 OUT="$PWD/web_out"; mkdir -p "$OUT"
+# SDK JieLi AC79 (attendu par build.sh des derives de Felucca dans ~/fw-AC79_AIoT_SDK)
+[ -d "$HOME/fw-AC79_AIoT_SDK" ] || git clone -q --depth 1 https://github.com/Jieli-Tech/fw-AC79_AIoT_SDK "$HOME/fw-AC79_AIoT_SDK" || echo "SDK clone fail" >> "$OUT/log.txt"
 while read -r repo br script; do
   [ -z "$repo" ] && continue
   n=$(echo "$repo" | tr '/' '_')

@@ -379,6 +379,12 @@ int main (int argc, char** argv)
         std::printf ("moyenne crete (note) %.1f dB, %d presets sous -18 dB\n", sumPk / nprog, quiet);
         std::fflush (stdout); std::_Exit (0);
     }
+    if (args.contains ("--hubkeys"))
+    {
+        for (auto l : { "https://thefirmwarehub.com/firmware/argo/", "https://play.thefirmwarehub.com/?fw=zp12n", "https://thefirmwarehub.com/fw/argo-1.8.3.fwsc", "Argo", "https://thefirmwarehub.com/" })
+            std::printf ("%s -> [%s]\n", l, fm9::FirmwareHub::keyOf (l).toRawUTF8());
+        std::fflush (stdout); std::_Exit (0);
+    }
     if (args.contains ("--webtrial"))
     {
         juce::MemoryBlock mb; juce::File (args[args.indexOf ("--webtrial") + 1]).loadFileAsData (mb);

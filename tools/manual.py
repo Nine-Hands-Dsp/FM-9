@@ -339,7 +339,7 @@ T = dict(
         "sans vignette publiée, FM-9 le démarre hors écran pour en montrer l'écran.",
         "<b>Firmware d'origine</b> : il n'est pas libre, FM-9 ne le fournit pas ; l'entrée FM-1 original firmware du catalogue le télécharge "
         "depuis le serveur de M-VAVE, ou bien installez le FM-1.fwsc téléchargé sur le site de M-VAVE avec Install from file.",
-        "<b>Autres installations</b> : <b>Install from GitHub...</b> (adresse du dépôt, de sa page github.io ou de son installeur web : FM-9 y cherche "
+        "<b>Autres installations</b> : <b>Install from GitHub or The Firmware Hub...</b> accepte le lien d'une page de thefirmwarehub.com (par exemple thefirmwarehub.com/firmware/argo/), son lien de jeu ou simplement le nom du firmware : FM-9 télécharge le paquet publié par le site, l'installe et le lance. Il accepte aussi un dépôt GitHub (adresse du dépôt, de sa page github.io ou de son installeur web : FM-9 y cherche "
         "une version web, sinon un paquet .fwsc) et <b>Install from file</b> (.fwsc ou .wasm). <b>FM-9 synthesizer</b> revient au synthé.",
         "<b>Quels firmwares ne marchent pas ?</b> Ceux qui ne publient ni paquet .fwsc ni version web (seulement un installateur en ligne fermé), "
         "et les portages pour un autre appareil (SMK-37). Un fichier d'un autre type est refusé avec un message, sans rien modifier.",

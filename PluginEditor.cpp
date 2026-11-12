@@ -2082,7 +2082,7 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
         // les firmwares se lancent et se suppriment depuis le catalogue (bouton Load, corbeille)
         firmware.addSeparator();
         firmware.addItem (804, "Catalog (all FM-1 firmwares)...");
-        firmware.addItem (801, "Install from GitHub...");
+        firmware.addItem (801, "Install from GitHub or The Firmware Hub...");
         firmware.addItem (802, "Install from file (.fwsc or .wasm)...");
         firmware.addItem (803, "Open firmware folder");
         firmware.addSeparator();
@@ -2398,16 +2398,34 @@ void FM9Editor::openCatalog()
 
 void FM9Editor::installFromGitHub()
 {
-    auto* w = new AlertWindow ("Install a firmware from GitHub",
-                               "GitHub repository of an FM-1 firmware: update package (.fwsc) or web build\n(owner/repo, github.com link or github.io page)", MessageBoxIconType::NoIcon, this);
-    w->addTextEditor ("repo", "https://deadactive.github.io/hortator/webapp/installer/");
+    auto* w = new AlertWindow ("Install a firmware from GitHub or The Firmware Hub",
+                               "Link of an FM-1 firmware:\n- a page of thefirmwarehub.com (or just the firmware's name)\n- a GitHub repository (owner/repo, github.com link or github.io page)", MessageBoxIconType::NoIcon, this);
+    w->addTextEditor ("repo", "https://thefirmwarehub.com/firmware/argo/");
     w->addButton ("Install", 1, KeyPress (KeyPress::returnKey));
     w->addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
     w->enterModalState (true, ModalCallbackFunction::create ([safe = Component::SafePointer<FM9Editor> (this), w] (int r)
     {
         if (safe == nullptr || r != 1) return;
+        const auto text = w->getTextEditorContents ("repo").trim();
         String owner, repo;
-        if (! fm9::FirmwareInstaller::parseRepo (w->getTextEditorContents ("repo"), owner, repo))
+        if (fm9::FirmwareHub::isHubLink (text) || ! fm9::FirmwareInstaller::parseRepo (text, owner, repo))
+        {
+            // thefirmwarehub.com : page, lien ou nom du firmware
+            safe->popup ("Firmware", "Downloading from The Firmware Hub...");
+            Thread::launch ([safe, text]
+            {
+                String err;
+                const auto name = fm9::FirmwareHub::install (text, err);
+                MessageManager::callAsync ([safe, name, err]
+                {
+                    if (safe == nullptr) return;
+                    if (name.isEmpty()) AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Installation failed:\n" + err, "OK", safe.getComponent());
+                    else { if (safe->catalog != nullptr) safe->catalog->refreshInstalled(); safe->activateFirmware (name); }
+                });
+            });
+            return;
+        }
+        if (! fm9::FirmwareInstaller::parseRepo (text, owner, repo))
         {
             AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Not a GitHub repository.", "OK", safe.getComponent());
             return;

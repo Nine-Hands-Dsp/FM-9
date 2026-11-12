@@ -196,6 +196,58 @@ struct FirmwareCatalog
     }
 };
 
+// ------------------------------------------------------------------------------- thefirmwarehub.com
+// installation depuis un lien du site : page d'un firmware (/firmware/<id>/), lien de jeu (?fw=<id>), paquet (/fw/<nom>.fwsc),
+// ou simplement le nom du firmware. Le site publie la liste complete dans catalog.json (adresse du paquet, version, auteur).
+struct FirmwareHub
+{
+    static constexpr const char* base = "https://thefirmwarehub.com/";
+    static bool isHubLink (const juce::String& t) { return t.containsIgnoreCase ("thefirmwarehub.com"); }
+    static juce::String keyOf (const juce::String& link)
+    {
+        auto t = link.trim();
+        if (t.containsIgnoreCase ("/firmware/")) return t.fromFirstOccurrenceOf ("/firmware/", false, true).upToFirstOccurrenceOf ("/", false, false).upToFirstOccurrenceOf ("?", false, false);
+        if (t.containsIgnoreCase ("fw=")) return t.fromFirstOccurrenceOf ("fw=", false, true).upToFirstOccurrenceOf ("&", false, false);
+        if (t.endsWithIgnoreCase (".fwsc")) return t.fromLastOccurrenceOf ("/", false, false);
+        if (isHubLink (t)) return {};
+        return t;
+    }
+    // installe et rend le nom a lancer (paquet materiel), vide si echec
+    static juce::String install (const juce::String& link, juce::String& error, std::function<void (float)> progress = {})
+    {
+        const auto key = keyOf (link);
+        if (key.isEmpty()) { error = "Paste the link of a firmware page (thefirmwarehub.com/firmware/...) or its name."; return {}; }
+        juce::MemoryBlock data; juce::String err;
+        if (! FirmwareCatalog::download (juce::String (base) + "catalog.json", data, err)) { error = "The Firmware Hub: " + err; return {}; }
+        const auto v = juce::JSON::parse (data.toString());
+        auto* arr = v.getProperty ("firmwares", {}).getArray();
+        if (arr == nullptr) { error = "The Firmware Hub: unreadable list"; return {}; }
+        for (auto& f : *arr)
+        {
+            const auto id = f.getProperty ("id", {}).toString(), name = f.getProperty ("name", {}).toString(), pkg = f.getProperty ("pkg", {}).toString();
+            const bool match = key.equalsIgnoreCase (id) || key.equalsIgnoreCase (name) || (key.endsWithIgnoreCase (".fwsc") && pkg.endsWithIgnoreCase (key))
+                               || (key.endsWithIgnoreCase (".fwsc") && key.upToFirstOccurrenceOf ("-", false, false).equalsIgnoreCase (id));
+            if (! match) continue;
+            if (pkg.isEmpty()) { error = name + " has no FM-1 package on The Firmware Hub."; return {}; }
+            CatalogEntry e;
+            e.name = name; e.author = f.getProperty ("author", {}).toString(); e.repo = f.getProperty ("repo", {}).toString();
+            e.license = f.getProperty ("lic", {}).toString(); e.pkg = juce::String (base) + pkg; e.compatible = true;
+            e.pkgVersion = f.getProperty ("version", {}).toString();
+            if (! FirmwareCatalog::install (e, error, progress)) return {};
+            return e.fileName() + FirmwareInstaller::hardwareSuffix;
+        }
+        // lien de jeu (?fw=zp12n) : l'identifiant du firmware le plus long par lequel la cle commence
+        if (! key.endsWithIgnoreCase (".fwsc"))
+        {
+            juce::String best;
+            for (auto& f : *arr) { const auto id = f.getProperty ("id", {}).toString(); if (id.length() > best.length() && key.startsWithIgnoreCase (id)) best = id; }
+            if (best.isNotEmpty() && best != key) return install (best, error, progress);
+        }
+        error = "\"" + key + "\" was not found on The Firmware Hub.";
+        return {};
+    }
+};
+
 // ------------------------------------------------------------------------------- fenetre du catalogue
 class FirmwareCatalogView : public juce::Component, private juce::Timer
 {

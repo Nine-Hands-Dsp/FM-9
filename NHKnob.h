@@ -234,15 +234,26 @@ public:
     void step (int s, bool fine)
     {
         moved = true;
+        turn (s, fine);
+    }
+    // pas venus d'ailleurs (MIDI Learn de la commande) : le potard tourne d'autant de crans, comme a la main
+    void turn (int s, bool fine)
+    {
         angle += s * juce::MathConstants<float>::twoPi / 24.0f;
+        lastTurnMs = juce::Time::getMillisecondCounterHiRes();
         if (onStep) onStep (s, fine);
     }
+    // le parametre affiche a change sans passer par le potard (MIDI Learn du parametre, automation) : rotation seule
+    void spin (float radians) { angle += radians; }
+    double lastTurn() const { return lastTurnMs; }
+    float angleNow() const { return angle; }
 
 protected:
     float currentAngle() const override { return angle; }
 
 private:
     float angle = 0.0f, acc = 0.0f, wheelAcc = 0.0f, lastY = 0.0f;
+    double lastTurnMs = 0.0;
     bool dragging = false, moved = false;
 };
 } // namespace nh

@@ -313,6 +313,7 @@ void WasmFirmware::render (float* left, float* right, int n, double hostRate)
     litButtons.store (callU (fLeds));
     litKeys.store (callU (fKeyLeds));
     if (fDimKeys != nullptr) dimKeys.store (callU (fDimKeys));
+    publishBits (litButtons.load(), litKeys.load(), dimKeys.load());
     const double dt = n / juce::jmax (8000.0, hostRate);
     sinceScreen += dt; sinceStorage += dt;
     if (sinceScreen >= 1.0 / 30.0) { sinceScreen = 0; captureScreen(); }

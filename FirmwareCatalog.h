@@ -481,13 +481,12 @@ public:
         auto r = getLocalBounds().reduced (18);
         auto head = r.removeFromTop (headerH);
         g.setColour (kText); g.setFont (font (fBold, 20.0f));
-        g.drawText ("FM-1 firmware catalog", head.removeFromTop (40), juce::Justification::centredLeft);
+        g.drawText ("FM-1 Firmware Catalog", head.removeFromTop (40), juce::Justification::centredLeft);
         int ok = 0; for (auto& e : entries) ok += e.compatible ? 1 : 0;
         g.setColour (kDim); g.setFont (font (fReg, 13.0f));
         const bool filtered = filterMode != 0 || search.getText().trim().isNotEmpty();
         g.drawText (juce::String (ok) + " compatible / " + juce::String ((int) entries.size()) + " firmwares"
                     + (filtered ? "  -  " + juce::String (shownCount) + " shown" : juce::String())
-                    + "  -  lists: aroum/fm1-custom-fw, fm1-emu" + listLabels()
                     + (date.isNotEmpty() ? "  -  " + date : juce::String()), head.removeFromTop (28), juce::Justification::centredLeft);
         {
             // champ de recherche : pastille arrondie et loupe (le texte est saisi par-dessus)
@@ -601,7 +600,7 @@ private:
     {
         auto a = getLocalBounds().reduced (18).removeFromTop (40);
         a.removeFromRight (filterRect().getWidth() + 12);
-        const int title = juce::roundToInt (juce::GlyphArrangement::getStringWidth (font (fBold, 20.0f), "FM-1 firmware catalog")) + 18;
+        const int title = juce::roundToInt (juce::GlyphArrangement::getStringWidth (font (fBold, 20.0f), "FM-1 Firmware Catalog")) + 18;
         a.removeFromLeft (title);
         return a.withSizeKeepingCentre (juce::jmin (a.getWidth(), 340), 34).withX (a.getRight() - juce::jmin (a.getWidth(), 340));
     }

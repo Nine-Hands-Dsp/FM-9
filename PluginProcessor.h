@@ -164,6 +164,7 @@ public:
     static juce::File nksUserFolder();
     int exportNksLibrary (const juce::File& root);           // banques A-D (voix non vides)
     bool exportNksPreset (int program, const juce::File& file);
+    void tickForTest() { timerCallback(); }
 
 private:
     void timerCallback() override;

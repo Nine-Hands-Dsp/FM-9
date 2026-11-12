@@ -1114,8 +1114,24 @@ void FM9Editor::timerCallback()
         {
             if (i >= FM9Processor::firstFn) continue;                     // boutons de fonction : ci-dessous
             if (i >= 7) { if (auto* fw = proc.firmware()) { fw->button (12 + i - 7, true); fw->button (12 + i - 7, false); } else for (int n = 0; n < st; ++n) octStep (i == 7 ? -1 : 1); }
-            else if (enc[i] != nullptr && enc[i]->onStep) enc[i]->onStep (st, false);
+            else if (enc[i] != nullptr) enc[i]->turn (st, false);
         }
+    // parametre affiche sous ALGORITHM / KNOB1-4 change sans le potard (MIDI Learn du parametre, automation) : le potard tourne aussi
+    // (seulement un parametre appris en MIDI, et pas au changement de preset : comme sur la FM-1, les encodeurs ne bougent pas seuls)
+    const auto encPage = pageInfo();
+    const bool programChanged = encProgram != proc.getCurrentProgram();
+    encProgram = proc.getCurrentProgram();
+    for (int i = 2; i < 7; ++i)
+    {
+        String id = i == 2 ? String ("alg") : encPage.s[i - 3].id;
+        auto* prm = proc.firmware() == nullptr && id.isNotEmpty() && ! id.startsWith ("!") ? proc.apvts.getParameter (id) : nullptr;
+        const float v = prm != nullptr ? prm->getValue() : -1.0f;
+        auto& f = encFollow[(size_t) i];
+        if (prm != nullptr && ! programChanged && f.id == id && f.value >= 0.0f && std::abs (v - f.value) > 1.0e-5f
+            && now - enc[i]->lastTurn() > 250.0 && proc.learnedCcFor (id) >= 0)
+            enc[i]->spin ((v - f.value) * MathConstants<float>::twoPi * 0.75f);
+        f.id = id; f.value = v;
+    }
     // octave suivie depuis le clavier maitre : la facade se met a jour
     if (proc.kbFollow.load() && proc.firmware() == nullptr && proc.kbOct.load() != octave)
     {
@@ -1155,7 +1171,9 @@ void FM9Editor::timerCallback()
     if (auto* fw = proc.firmware())
     {
         if (fw->fbSerial.load() != fwDrawnSerial) { fwDrawnSerial = fw->fbSerial.load(); fw->copyScreen (fwImage); askRepaint (toPx (L::bezel)); }
-        String ps; ps << (int64) fw->litButtons.load() << ',' << (int64) fw->litKeys.load() << ',' << (int64) playedFwKeys() << ',' << (int64) fw->dimKeys.load() << ',' << heldFn << midiHeldFn << heldOct << fwHeldKey
+        updateFwLeds (*fw);
+        String ps; for (auto v : ledShown) ps << (int) (v * 24.0f) << '.';
+        ps << (int64) playedFwKeys() << ',' << heldFn << midiHeldFn << heldOct << fwHeldKey
                       << (int) proc.uiState.getProperty ("glow", 75);
         if (ps != drawnPanelSig) { drawnPanelSig = ps; repaint(); }
         return;
@@ -1323,19 +1341,23 @@ void FM9Editor::drawDynamic (Graphics& g)
 {
     if (auto* fw = proc.firmware())
     {
+        if (std::getenv ("DYNDBG")) std::printf ("drawDynamic lk=%08x dk=%08x\n", (unsigned) fw->litKeys.load(), (unsigned) fw->dimKeys.load());
         // lumieres du firmware, plus ce que l'on joue soi-meme : notes du clavier maitre, touche, bouton ou OCT tenus a la souris
-        const uint32_t lb = fw->litButtons.load() | (heldFn >= 0 ? 1u << heldFn : 0u) | (midiHeldFn >= 0 ? 1u << midiHeldFn : 0u) | (heldOct >= 0 ? 1u << (12 + heldOct) : 0u);
-        const uint32_t lk = fw->litKeys.load() | playedFwKeys() | (fwHeldKey >= 0 ? 1u << fwHeldKey : 0u), dk = fw->dimKeys.load();
+        uint32_t shownButtons = 0;
+        for (int b = 0; b < 14; ++b) if (ledShown[(size_t) (27 + b)] > 0.6f) shownButtons |= 1u << b;
+        const uint32_t lb = fw->litButtons.load() | shownButtons | (heldFn >= 0 ? 1u << heldFn : 0u) | (midiHeldFn >= 0 ? 1u << midiHeldFn : 0u) | (heldOct >= 0 ? 1u << (12 + heldOct) : 0u);
+        const uint32_t played = playedFwKeys() | (fwHeldKey >= 0 ? 1u << fwHeldKey : 0u);
+        auto keyLevel = [&] (int n) { return (played >> n) & 1u ? 1.0f : ledShown[(size_t) n]; };
         for (int i = 0; i < 16; ++i)
         {
             const int n = whiteOffs[i];
-            drawKeyLed (g, L::whiteKeys[i], (lk >> n) & 1u ? 1.0f : ((dk >> n) & 1u ? 0.35f : 0.0f), ledCol);
+            drawKeyLed (g, L::whiteKeys[i], keyLevel (n), ledCol);
             if (fwHeldKey == n) { g.setColour (Colours::black.withAlpha (0.12f)); g.fillRoundedRectangle (L::whiteKeys[i].reduced (2), 30); }
         }
         for (int i = 0; i < 11; ++i)
         {
             const int n = blackOffs[i];
-            drawKeyLed (g, L::blackKeys[i], (lk >> n) & 1u ? 1.0f : ((dk >> n) & 1u ? 0.35f : 0.0f), ledCol);
+            drawKeyLed (g, L::blackKeys[i], keyLevel (n), ledCol);
             if (fwHeldKey == n) { g.setColour (Colours::black.withAlpha (0.12f)); g.fillRoundedRectangle (L::blackKeys[i].reduced (2), 30); }
         }
         for (int i = 0; i < 12; ++i)
@@ -2091,14 +2113,24 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
             PopupMenu clk, buf;
             const int mhz = fm9::FirmwareHost::hwMhz().load(), mar = fm9::FirmwareHost::hwMargin().load();
             clk.addItem (850, "240 MHz (like the FM-1)", true, mhz == 240);
-            clk.addItem (851, "360 MHz (default)", true, mhz == 360);
+            clk.addItem (851, "360 MHz (recommended)", true, mhz == 360);
             clk.addItem (852, "480 MHz (heavy firmwares, more CPU)", true, mhz == 480);
+            clk.addItem (853, "720 MHz (mega heavy, much more CPU)", true, mhz == 720);
+            clk.addItem (849, "960 MHz (extreme, needs a fast CPU)", true, mhz == 960);
+            clk.addSeparator();
+            const int dm = fm9::FirmwareHost::defaultMhz();
+            clk.addItem (854, dm == mhz ? "Default: " + String (dm) + " MHz" : "Save " + String (mhz) + " MHz as default", dm != mhz, false);
             const bool aut = fm9::FirmwareHost::hwAutoMargin().load();
             buf.addItem (858, "Automatic (grows if the DAW renders ahead)", true, aut);
             buf.addSeparator();
             buf.addItem (855, "Low latency (35 ms)", true, ! aut && mar == 1536);
             buf.addItem (856, "Normal (70 ms)", true, ! aut && mar == 3072);
             buf.addItem (857, "Safe (140 ms)", true, ! aut && mar == 6144);
+            buf.addSeparator();
+            auto bufName = [] (bool a, int m) { return a ? String ("Automatic") : m == 3072 ? String ("Normal") : m == 6144 ? String ("Safe") : String ("Low latency"); };
+            const int db = fm9::FirmwareHost::defaultBuffer();
+            const bool isDef = aut ? db <= 0 : db == mar;
+            buf.addItem (859, isDef ? "Default: " + bufName (db <= 0, db) : "Save " + bufName (aut, mar) + " as default", ! isDef, false);
             firmware.addSubMenu ("Chip clock (if a firmware crackles)", clk);
             firmware.addSubMenu ("Emulation buffer", buf);
             PopupMenu och;
@@ -2308,9 +2340,19 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
             else if (r == 700) ed.activateFirmware ({});
             else if (r >= 2600 && r < 2690) { const auto list = pr.availableFirmwares(); if (r - 2600 < list.size()) ed.deleteFirmware (list[r - 2600]); }
             else if (r >= 710 && r < 800) { const auto list = pr.availableFirmwares(); if (r - 710 < list.size()) ed.activateFirmware (list[r - 710]); }
-            else if (r >= 850 && r <= 852)
+            else if (r == 854)
             {
-                fm9::FirmwareHost::hwMhz().store (r == 850 ? 240 : r == 851 ? 360 : 480);
+                fm9::FirmwareHost::saveDefaultMhz (fm9::FirmwareHost::hwMhz().load());
+                ed.popup ("Default chip clock", String (fm9::FirmwareHost::hwMhz().load()) + " MHz");
+            }
+            else if (r == 859)
+            {
+                fm9::FirmwareHost::saveDefaultBuffer (fm9::FirmwareHost::hwAutoMargin().load(), fm9::FirmwareHost::hwMargin().load());
+                ed.popup ("Default buffer", fm9::FirmwareHost::hwAutoMargin().load() ? "Automatic" : String (juce::roundToInt (fm9::FirmwareHost::hwMargin().load() / 44.1)) + " ms");
+            }
+            else if (r >= 849 && r <= 853)
+            {
+                fm9::FirmwareHost::hwMhz().store (r == 849 ? 960 : r == 850 ? 240 : r == 851 ? 360 : r == 852 ? 480 : 720);
                 const auto cur = pr.getFirmwareName();                               // redemarre le firmware a la nouvelle horloge
                 if (cur.endsWith (fm9::FirmwareInstaller::hardwareSuffix)) ed.activateFirmware (cur);
                 ed.popup ("Chip clock", String (fm9::FirmwareHost::hwMhz().load()) + " MHz");
@@ -2495,7 +2537,7 @@ void FM9Editor::prepareSnapshot (float scale, int md, int pg, int pop)
     editMode = mode == mOp || mode == mPitch || mode == mVoice;
     flashUntil = 0;
     if (pop > 0) { popKind = pop; popTitle = "Octave"; popValue = "+1"; popUntil = Time::getMillisecondCounterHiRes() + 60000.0; }
-    if (auto* fw = proc.firmware()) { fw->copyScreen (fwImage); fwDrawnSerial = fw->fbSerial.load(); }
+    if (auto* fw = proc.firmware()) { fw->copyScreen (fwImage); fwDrawnSerial = fw->fbSerial.load(); updateFwLeds (*fw); }
     rebuildCaches (scale);
     master->prepareForSnapshot (scale);
     for (auto& e : enc) e->prepareForSnapshot (scale);
@@ -2555,6 +2597,20 @@ void FM9Editor::deleteFirmware (const String& name)
     host.addAndMakeVisible (*c);
     c->setBounds (host.getLocalBounds());
     c->toFront (true);
+}
+
+void FM9Editor::updateFwLeds (fm9::FirmwareHost& fw)
+{
+    // crete depuis la derniere image (un eclair de quelques ms reste visible), luminosite percue ~ racine du rapport cyclique,
+    // extinction rapide comme la persistance de l'oeil sur le vrai FM-1
+    for (size_t i = 0; i < ledShown.size(); ++i)
+    {
+        const float peak = (float) fw.ledPeak[i].exchange (fw.ledLevel[i].load()) / 255.0f;
+        const float seen = std::sqrt (peak);
+        auto& v = ledShown[i];
+        v = jmax (seen, v * 0.3f);
+        if (v < 0.03f) v = 0.0f;
+    }
 }
 
 uint32_t FM9Editor::playedFwKeys() const

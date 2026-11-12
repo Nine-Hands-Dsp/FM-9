@@ -36,10 +36,33 @@ extern "C"
 
 namespace fm9
 {
-std::atomic<int>& FirmwareHost::hwMargin() { static std::atomic<int> m { 1536 }; return m; }   // automatique : part court, grandit si le DAW lit en avance
-std::atomic<int>& FirmwareHost::hwMhz() { static std::atomic<int> m { 360 }; return m; }
+// reglages par defaut de l'emulation ("Save as default" des menus Chip clock / Emulation buffer), pour toute nouvelle instance ;
+// un projet garde ses propres reglages
+static juce::File emulationDefaultsFile() { return FirmwareInstaller::folder().getChildFile ("Emulation defaults.txt"); }
+static int emulationDefault (const char* key, int fallback)
+{
+    for (auto& l : juce::StringArray::fromLines (emulationDefaultsFile().loadFileAsString()))
+        if (l.upToFirstOccurrenceOf ("=", false, false).trim() == key) return l.fromFirstOccurrenceOf ("=", false, false).trim().getIntValue();
+    return fallback;
+}
+static void writeEmulationDefault (const char* key, int value)
+{
+    juce::StringArray out;
+    for (auto& l : juce::StringArray::fromLines (emulationDefaultsFile().loadFileAsString()))
+        if (l.trim().isNotEmpty() && l.upToFirstOccurrenceOf ("=", false, false).trim() != key) out.add (l);
+    out.add (juce::String (key) + "=" + juce::String (value));
+    emulationDefaultsFile().getParentDirectory().createDirectory();
+    emulationDefaultsFile().replaceWithText (out.joinIntoString ("\n") + "\n");
+}
+int FirmwareHost::defaultMhz() { return juce::jlimit (60, maxMhz, emulationDefault ("clock", 360)); }
+int FirmwareHost::defaultBuffer() { return emulationDefault ("buffer", 0); }          // 0 = automatique
+void FirmwareHost::saveDefaultMhz (int mhz) { writeEmulationDefault ("clock", mhz); }
+void FirmwareHost::saveDefaultBuffer (bool automatic, int margin) { writeEmulationDefault ("buffer", automatic ? 0 : margin); }
+
+std::atomic<int>& FirmwareHost::hwMargin() { static std::atomic<int> m { defaultBuffer() > 0 ? juce::jlimit (512, 8192, defaultBuffer()) : 1536 }; return m; }   // automatique : part court, grandit si le DAW lit en avance
+std::atomic<int>& FirmwareHost::hwMhz() { static std::atomic<int> m { defaultMhz() }; return m; }
 std::atomic<bool>& FirmwareHost::hwLatencyChanged() { static std::atomic<bool> b { false }; return b; }
-std::atomic<bool>& FirmwareHost::hwAutoMargin() { static std::atomic<bool> b { true }; return b; }
+std::atomic<bool>& FirmwareHost::hwAutoMargin() { static std::atomic<bool> b { defaultBuffer() <= 0 }; return b; }
 
 namespace
 {
@@ -362,6 +385,7 @@ private:
         {
             const float v = juce::jlimit (0.0f, 1.0f, leds[(size_t) id] / 0.08f);
             const bool on = v > 0.55f, dim = ! on && v > 0.08f;
+            publishLed (id < 2 ? 39 + id : id < 14 ? 27 + id - 2 : id - 14, v < 0.03f ? 0.0f : v);   // luminosite reelle (PWM)
             if (id < 2) { if (on) b |= 1u << (12 + id); }
             else if (id < 14) { if (on) b |= 1u << (id - 2); }
             else { if (on) k |= 1u << (id - 14); else if (dim) d |= 1u << (id - 14); }

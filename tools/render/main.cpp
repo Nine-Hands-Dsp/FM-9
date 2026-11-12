@@ -400,6 +400,41 @@ int main (int argc, char** argv)
         for (auto& e : fm9::FirmwareCatalog::load (d)) if (e.repo.equalsIgnoreCase (o + "/" + r)) std::printf ("%s/%s -> fiche %s (%s)\n", o.toRawUTF8(), r.toRawUTF8(), e.name.toRawUTF8(), e.pkg.toRawUTF8());
         std::fflush (stdout); std::_Exit (0);
     }
+    if (args.contains ("--enctest"))
+    {
+        // MIDI Learn d'un potard : la commande (ctl:knob1) puis le parametre affiche sous KNOB2 font tourner l'image du potard
+        FM9Processor p; p.setRateAndBufferSizeDetails (48000.0, 512); p.prepareToPlay (48000.0, 512);
+        std::unique_ptr<juce::AudioProcessorEditor> ed (p.createEditor());
+        auto* fe = dynamic_cast<FM9Editor*> (ed.get());
+        const auto slot = fe->slotIdForTest (1);
+        p.applyMidiMapString ("20=ctl:knob1;21=" + slot + ";22=ctl:algorithm");
+        const float a3 = fe->encoderAngleForTest (3), a4 = fe->encoderAngleForTest (4), a2 = fe->encoderAngleForTest (2);
+        juce::AudioBuffer<float> b (2, 512);
+        for (int v = 10; v <= 40; v += 3)
+        {
+            juce::MidiBuffer m;
+            m.addEvent (juce::MidiMessage::controllerEvent (1, 20, v), 0);
+            m.addEvent (juce::MidiMessage::controllerEvent (1, 21, v * 2), 0);
+            m.addEvent (juce::MidiMessage::controllerEvent (1, 22, v), 0);
+            p.processBlock (b, m);
+            p.tickForTest(); fe->tickForTest();
+        }
+        for (int i = 0; i < 20; ++i) { juce::MidiBuffer m; p.processBlock (b, m); p.tickForTest(); fe->tickForTest(); }
+        if (const char* dir = std::getenv ("ENCGIF"))
+            for (int v = 0, f = 0; v < 120; v += 2, ++f)
+            {
+                juce::MidiBuffer m;
+                m.addEvent (juce::MidiMessage::controllerEvent (1, 20, 40 + (v < 60 ? v : 120 - v)), 0);
+                m.addEvent (juce::MidiMessage::controllerEvent (1, 21, 10 + (v < 60 ? v : 120 - v) * 2), 0);
+                p.processBlock (b, m); p.tickForTest(); fe->tickForTest();
+                fe->prepareSnapshot (1.0f, 0, 0, 0);
+                auto img = ed->createComponentSnapshot (ed->getLocalBounds(), true, 1.0f);
+                juce::File out (juce::String (dir) + "/e" + juce::String (f).paddedLeft ('0', 4) + ".png");
+                juce::FileOutputStream os (out); os.setPosition (0); os.truncate(); juce::PNGImageFormat().writeImageToStream (img, os);
+            }
+        std::printf ("enctest knob1 %.2f rad, knob2 (%s) %.2f rad, algorithm %.2f rad\n", fe->encoderAngleForTest (3) - a3, slot.toRawUTF8(), fe->encoderAngleForTest (4) - a4, fe->encoderAngleForTest (2) - a2);
+        return 0;
+    }
     if (args.contains ("--hubkeys"))
     {
         for (auto l : { "https://thefirmwarehub.com/firmware/argo/", "https://play.thefirmwarehub.com/?fw=zp12n", "https://thefirmwarehub.com/fw/argo-1.8.3.fwsc", "Argo", "https://thefirmwarehub.com/" })
@@ -431,6 +466,7 @@ int main (int argc, char** argv)
     {
         // firmware materiel en temps reel, comme dans un DAW : blocs de 512 a 48 kHz au rythme reel, notes MIDI, sortie en wav
         juce::MemoryBlock mb; juce::String err;
+        if (args.contains ("--mhz")) fm9::FirmwareHost::hwMhz().store (args[args.indexOf ("--mhz") + 1].getIntValue());
         juce::File (args[args.indexOf ("--hwrt") + 1]).loadFileAsData (mb);
         auto fw = fm9::FirmwareHost::createHardware (mb.getData(), mb.getSize(), juce::File(), err);
         if (fw == nullptr) { std::printf ("hwrt fail %s\n", err.toRawUTF8()); return 1; }
@@ -530,6 +566,43 @@ int main (int argc, char** argv)
             if (auto* fw = p.firmware())
             {
                 juce::AudioBuffer<float> b2 (2, 512); float peak = 0;
+                std::unique_ptr<juce::AudioProcessorEditor> ged;
+                const char* gifDir = std::getenv ("LEDGIF");
+                if (gifDir != nullptr)
+                {
+                    // fil audio separe (comme un DAW) ; le fil principal capture l'editeur toutes les 66 ms
+                    ged.reset (p.createEditor());
+                    std::atomic<bool> stopAudio { false };
+                    std::thread audio ([&]
+                    {
+                        juce::AudioBuffer<float> ab (2, 512);
+                        const double ta = juce::Time::getMillisecondCounterHiRes();
+                        for (int i = 0; ! stopAudio; ++i)
+                        {
+                            juce::MidiBuffer e;
+                            if (i == 150) fw->button (10, true);
+                            if (i == 155) fw->button (10, false);
+                            p.processBlock (ab, e);
+                            const double due = ta + (i + 1) * 512.0 / 48.0, now = juce::Time::getMillisecondCounterHiRes();
+                            if (due > now) juce::Thread::sleep ((int) (due - now));
+                        }
+                    });
+                    juce::Thread::sleep (2200);
+                    auto* fe = dynamic_cast<FM9Editor*> (ged.get());
+                    for (int k = 0; k < 75 && fe != nullptr; ++k)
+                    {
+                        const double tk = juce::Time::getMillisecondCounterHiRes();
+                        fe->prepareSnapshot (1.0f, 0, 0, 0);
+                        auto img = ged->createComponentSnapshot (ged->getLocalBounds(), true, 1.0f);
+                        juce::File f (juce::String (gifDir) + "/f" + juce::String (k).paddedLeft ('0', 4) + ".png");
+                        juce::FileOutputStream os (f); os.setPosition (0); os.truncate(); juce::PNGImageFormat().writeImageToStream (img, os);
+                        const double w = 66.0 - (juce::Time::getMillisecondCounterHiRes() - tk);
+                        if (w > 0) juce::Thread::sleep ((int) w);
+                    }
+                    stopAudio = true; audio.join();
+                    ged.reset();
+                    return 0;
+                }
                 const double t0 = juce::Time::getMillisecondCounterHiRes();
                 for (int i = 0; i < 470; ++i)                     // ~5 s de musique a 48 kHz
                 {
@@ -542,6 +615,7 @@ int main (int argc, char** argv)
                     if (i == 440) e.addEvent (juce::MidiMessage::noteOff (1, 60), 0);
                     p.processBlock (b2, e);
                     if (i > 100) peak = juce::jmax (peak, b2.getMagnitude (0, 0, 512));
+                    if (std::getenv ("LEDTRACE") && i % 5 == 0) std::printf ("t=%4d keys=%08x dim=%08x btn=%04x\n", i, (unsigned) fw->litKeys.load(), (unsigned) fw->dimKeys.load(), (unsigned) fw->litButtons.load());
                     const double due = t0 + (i + 1) * 512.0 / 48.0;
                     const double now = juce::Time::getMillisecondCounterHiRes();
                     if (due > now) juce::Thread::sleep ((int) (due - now));
@@ -549,6 +623,31 @@ int main (int argc, char** argv)
                 std::printf ("hwfw son crete %.3f, ecran %u images, LED touches %x boutons %x, etat '%s'\n", peak, (unsigned) fw->fbSerial.load(),
                              (unsigned) fw->litKeys.load(), (unsigned) fw->litButtons.load(), fw->status().toRawUTF8());
             }
+        }
+        if (args.contains ("--ledtrace"))
+        {
+            // LED des touches d'un firmware installe pendant quelques secondes (bouton PLAY = argument 2)
+            juce::String err; const bool ok = p.activateFirmware (args[args.indexOf ("--ledtrace") + 1], err);
+            std::printf ("ledtrace %s\n", ok ? "ok" : err.toRawUTF8());
+            const int play = args[args.indexOf ("--ledtrace") + 2].getIntValue();
+            if (auto* fw = p.firmware())
+            {
+                juce::AudioBuffer<float> b2 (2, 512); float peak = 0;
+                const double t0 = juce::Time::getMillisecondCounterHiRes();
+                for (int i = 0; i < 400; ++i)
+                {
+                    juce::MidiBuffer e;
+                    if (i == 100) fw->button (play, true);
+                    if (i == 105) fw->button (play, false);
+                    p.processBlock (b2, e);
+                    if (i > 100) peak = juce::jmax (peak, b2.getMagnitude (0, 0, 512));
+                    if (i % 6 == 0) std::printf ("t=%4d keys=%08x dim=%08x btn=%04x\n", i, (unsigned) fw->litKeys.load(), (unsigned) fw->dimKeys.load(), (unsigned) fw->litButtons.load());
+                    const double due = t0 + (i + 1) * 512.0 / 48.0, now = juce::Time::getMillisecondCounterHiRes();
+                    if (due > now) juce::Thread::sleep ((int) (due - now));
+                }
+                std::printf ("peak %.3f\n", peak);
+            }
+            return 0;
         }
         if (args.contains ("--firmware"))
         {
@@ -561,10 +660,13 @@ int main (int argc, char** argv)
                 for (int i = 0; i < 120; ++i) p.processBlock (b2, e);
             }
         }
+        if (args.contains ("--emumhz")) fm9::FirmwareHost::hwMhz().store (args[args.indexOf ("--emumhz") + 1].getIntValue());
+        if (args.contains ("--emubuf")) { fm9::FirmwareHost::hwAutoMargin().store (false); fm9::FirmwareHost::hwMargin().store (args[args.indexOf ("--emubuf") + 1].getIntValue()); }
         if (args.contains ("--nks")) { std::printf ("nks %d\n", p.exportNksLibrary (juce::File (args[args.indexOf ("--nks") + 1]))); }
         if (args.contains ("--glow")) p.uiState.setProperty ("glow", args[args.indexOf ("--glow") + 1].getIntValue(), nullptr);
         if (args.contains ("--skin")) p.uiState.setProperty ("skin", args[args.indexOf ("--skin") + 1], nullptr);
         if (args.contains ("--startup")) FM9Editor::setStartupSkin (args[args.indexOf ("--startup") + 1]);   // skin des nouvelles instances
+        if (auto* fw0 = p.firmware()) std::printf ("avant capture keys=%08x dim=%08x\n", (unsigned) fw0->litKeys.load(), (unsigned) fw0->dimKeys.load());
         std::unique_ptr<juce::AudioProcessorEditor> ed (p.createEditor());
         const float scale = arg ("--scale", 1.0f);
         if (auto* fe = dynamic_cast<FM9Editor*> (ed.get())) fe->prepareSnapshot (scale, (int) arg ("--mode", 0), (int) arg ("--page", 0), (int) arg ("--popup", 0));
@@ -604,6 +706,36 @@ int main (int argc, char** argv)
                 auto ci = fe->catalog->createComponentSnapshot (fe->catalog->getLocalBounds(), true, scale);
                 juce::File (args[args.indexOf ("--catbig") + 1]).deleteFile();
                 juce::FileOutputStream os (juce::File (args[args.indexOf ("--catbig") + 1])); juce::PNGImageFormat().writeImageToStream (ci, os);
+            }
+        if (args.contains ("--emumenu"))
+            if (auto* fe = dynamic_cast<FM9Editor*> (ed.get()))
+            {
+                // sous-menus Chip clock et Emulation buffer, cote a cote
+                std::function<const juce::PopupMenu* (const juce::PopupMenu&, const juce::String&)> find = [&] (const juce::PopupMenu& m, const juce::String& t) -> const juce::PopupMenu*
+                {
+                    for (juce::PopupMenu::MenuItemIterator it (m); it.next();)
+                    {
+                        auto& item = it.getItem();
+                        if (item.subMenu == nullptr) continue;
+                        if (item.text.startsWith (t)) return item.subMenu.get();
+                        if (auto* r = find (*item.subMenu, t)) return r;
+                    }
+                    return nullptr;
+                };
+                const auto mainMenu = fe->buildContextMenu ({}, -1);
+                auto* c = find (mainMenu, "Chip clock"); auto* bb = find (mainMenu, "Emulation buffer");
+                if (c != nullptr && bb != nullptr)
+                {
+                    auto ci = fe->renderMenuPreview (*c, args[args.indexOf ("--emumenu") + 1], scale), bi = fe->renderMenuPreview (*bb, args[args.indexOf ("--emumenu") + 2], scale);
+                    const int pad = juce::roundToInt (20 * scale);
+                    juce::Image canvas (juce::Image::ARGB, ci.getWidth() + bi.getWidth() + pad * 3, juce::jmax (ci.getHeight(), bi.getHeight()) + pad * 2, true);
+                    juce::Graphics g (canvas); g.fillAll (juce::Colour (0xff2a2b2e));
+                    g.drawImageAt (ci, pad, pad); g.drawImageAt (bi, pad * 2 + ci.getWidth(), pad);
+                    juce::File o (args[args.indexOf ("--shot") + 1]); o.deleteFile(); juce::FileOutputStream os (o); juce::PNGImageFormat().writeImageToStream (canvas, os);
+                    std::printf ("emumenu ok\n");
+                }
+                else std::printf ("emumenu: sous-menus introuvables\n");
+                return 0;
             }
         auto img = ed->createComponentSnapshot (ed->getLocalBounds(), true, scale);
         if (args.contains ("--skinmenu"))

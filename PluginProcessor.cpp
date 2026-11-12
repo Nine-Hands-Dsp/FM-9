@@ -1002,7 +1002,7 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
     currentProgram = juce::jlimit (0, getNumPrograms() - 1, (int) state.getProperty ("program", 0));
     voiceName = state.getProperty ("voiceName", "INIT VOICE").toString();
     seqData.fromString (state.getProperty ("seq").toString());
-    if (state.hasProperty ("fwMhz")) fm9::FirmwareHost::hwMhz().store (juce::jlimit (60, 480, (int) state.getProperty ("fwMhz")));
+    if (state.hasProperty ("fwMhz")) fm9::FirmwareHost::hwMhz().store (juce::jlimit (60, fm9::FirmwareHost::maxMhz, (int) state.getProperty ("fwMhz")));
     if (state.hasProperty ("fwAuto")) fm9::FirmwareHost::hwAutoMargin().store ((bool) state.getProperty ("fwAuto"));
     if (state.hasProperty ("fwBuffer")) fm9::FirmwareHost::hwMargin().store (juce::jlimit (512, 8192, (int) state.getProperty ("fwBuffer")));
     {

@@ -27,6 +27,11 @@ public:
     static std::atomic<int>& hwMargin();
     static std::atomic<int>& hwMhz();
     static std::atomic<bool>& hwLatencyChanged();   // la marge a grandi seule : le processeur annonce la nouvelle latence
+    static constexpr int maxMhz = 960;              // "Extreme"
+    static int defaultMhz();                        // horloge par defaut enregistree (360 sinon)
+    static int defaultBuffer();                     // marge par defaut enregistree, 0 = automatique
+    static void saveDefaultMhz (int mhz);
+    static void saveDefaultBuffer (bool automatic, int margin);
     static std::atomic<bool>& hwAutoMargin();       // marge qui grandit selon l'avance du DAW (calcul anticipe de Reaper)         // horloge emulee de la puce (240 = FM-1 ; plus haut pour les firmwares lourds)
 
     // firmware web (.wasm) ; storage = fichier de sauvegarde (flash) du firmware
@@ -54,6 +59,22 @@ public:
 
     // ---- etat lu par l'interface ----
     std::atomic<uint32_t> litButtons { 0 }, litKeys { 0 }, dimKeys { 0 };
+    // luminosite de chaque LED (0-255, PWM comprise) et crete depuis la derniere lecture de l'interface,
+    // pour qu'un eclair plus court qu'une image de l'ecran ne soit jamais perdu : 0-26 touches, 27-38 fonctions, 39-40 OCT
+    static constexpr int numLeds = 41;
+    std::array<std::atomic<uint8_t>, numLeds> ledLevel {}, ledPeak {};
+    void publishLed (int i, float v)
+    {
+        const auto b = (uint8_t) juce::jlimit (0, 255, juce::roundToInt (v * 255.0f));
+        ledLevel[(size_t) i].store (b);
+        auto p = ledPeak[(size_t) i].load();
+        while (b > p && ! ledPeak[(size_t) i].compare_exchange_weak (p, b)) {}
+    }
+    void publishBits (uint32_t buttons, uint32_t keys, uint32_t dim)     // firmwares qui ne donnent que allume / faible
+    {
+        for (int k = 0; k < 27; ++k) publishLed (k, (keys >> k) & 1u ? 1.0f : ((dim >> k) & 1u ? 0.12f : 0.0f));
+        for (int b = 0; b < 14; ++b) publishLed (27 + b, (buttons >> b) & 1u ? 1.0f : 0.0f);
+    }
     std::atomic<uint32_t> fbSerial { 0 };
     virtual void copyScreen (juce::Image& dest) = 0;    // RGB565 -> image 240 x 240
     Abi abi() const { return kind; }

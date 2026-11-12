@@ -116,6 +116,9 @@ private:
     void applySkin (const juce::String& id, bool rebuild);
 public:
     void deleteFirmware (const juce::String& name);
+    float encoderAngleForTest (int i) const { return enc[(size_t) i]->angleNow(); }
+    juce::String slotIdForTest (int k) { return pageInfo().s[k].id; }
+    void tickForTest() { timerCallback(); }
     static void captureScreenFor (const juce::String& installedName);   // ecran d'un firmware installe pour sa fiche       // confirmation puis suppression complete
     void setElementColour (int e, juce::Colour c);
     void openColourPanel (juce::Point<int> at, int element = 0);
@@ -162,7 +165,12 @@ private:
     bool editMode = false, fxGrab = false;
     int mouseNote = -1;
     int heldFn = -1, heldBlack = -1, heldOct = -1;
-    int midiHeldFn = -1;                                  // bouton tenu depuis le clavier (MIDI Learn)
+    int midiHeldFn = -1;
+    struct EncFollow { String id; float value = -1.0f; };
+    std::array<EncFollow, 7> encFollow;
+    int encProgram = -1;           // valeur du parametre sous chaque potard, pour le faire tourner s'il change ailleurs
+    std::array<float, 41> ledShown {};               // LED du firmware telles que l'oeil les voit (persistance)
+    void updateFwLeds (fm9::FirmwareHost& fw);                                  // bouton tenu depuis le clavier (MIDI Learn)
     double heldSince = 0;
     bool holdUsed = false;                        // la touche tenue a servi (SELECT tourne, sauvegarde faite...)
     float octDragAcc = 0;

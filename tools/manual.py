@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.17"
+VERSION = "1.3.18"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -276,6 +276,7 @@ T = dict(
            "Tous les potards peuvent être appris : MASTER (volume) et, pour SELECT, PRESETS, ALGORITHM et KNOB1 à 4, "
            "<b>le potard lui-même (all pages)</b> : votre potard MIDI agit alors comme le potard de la façade, quelle que soit la page affichée. "
            "Pour ALGORITHM et KNOB1 à 4, le menu propose aussi d'apprendre le réglage affiché à ce moment (il reste alors lié à ce réglage). "
+           "Dans les deux cas, le potard de la façade tourne à l'écran en suivant votre commande MIDI. "
            "Sur l'écran d'accueil (HOME), KNOB1 à 4 règlent Cutoff, Resonance, Reverb et Delay (l'effet se met en marche). Le clic droit marche sur le potard, sur son nom et tout autour. <b>OCT- et OCT+</b> s'apprennent aussi (clic droit sur la touche) : "
            "un bouton ou un pad de votre clavier qui envoie un CC décale alors l'octave à chaque appui. Les boutons d'octave de la plupart des claviers (dont l'Arturia KeyStep 37) n'envoient pas de CC : ils décalent directement les notes envoyées, FM-9 joue donc déjà à la bonne hauteur.",
            "<b>Boutons de la façade</b> : les douze boutons (FX, SEL, ENV, LFO, EDIT, GLO, HOME, SAVE, ARP, SEQ, PLAY/STOP, REC) et OCT- / OCT+ "
@@ -329,13 +330,18 @@ T = dict(
         "<b>Firmwares matériels et DAW</b> : l'émulation de la puce tourne en avance sur le son. Par défaut (Firmware &gt; Emulation buffer &gt; "
         "<b>Automatic</b>), cette avance est courte quand vous jouez en direct et grandit seule quand Reaper calcule en avance (lecture, "
         "calcul anticipé) ; Reaper compense le décalage. Low latency, Normal et Safe fixent une avance de 35, 70 ou 140 ms. "
-        "<b>Chip clock</b> règle l'horloge de la puce émulée (240 MHz comme la FM-1, 360 MHz par défaut, 480 MHz ; plus de calcul). "
+        "<b>Chip clock</b> règle l'horloge de la puce émulée (240 MHz comme la FM-1, 360 MHz recommandé, 480 MHz pour les firmwares lourds, "
+        "720 MHz Mega heavy et 960 MHz Extreme pour un processeur rapide : plus l'horloge est haute, plus le calcul est lourd). "
+        "En bas de chaque sous-menu, <b>Save ... as default</b> enregistre l'horloge ou l'avance choisie : toute nouvelle instance de FM-9 démarre avec "
+        "(un projet garde ses propres réglages) ; la ligne devient alors « Default: ... ». "
         "<b>Supprimer un firmware</b> : la corbeille de sa fiche dans le catalogue (une confirmation est demandée). "
         "Tout ce qui a été installé est effacé de l'ordinateur (Windows ou macOS) : paquet, version web, sauvegardes (patterns, réglages) et aperçu ; "
         "si c'était le firmware en cours, FM-9 revient à son propre synthé. "
         "Avec un firmware chargé, les touches des notes reçues de votre clavier maître s'éclairent aussi, même si le firmware ne les allume pas lui-même. "
         "<b>Lumières</b> : avec un firmware, les touches et boutons s'allument comme le firmware le décide, et aussi quand vous jouez : "
         "notes reçues du clavier maître (la touche de même nom, ramenée par octaves sur F3 à G5), touche, bouton ou OCT tenus à la souris. "
+        "Chaque touche prend la luminosité exacte voulue par le firmware (rétroéclairage faible, pas programmés, accents) et un éclair, même de quelques "
+        "millisecondes (frappe d'une boîte à rythmes, tête de lecture d'un séquenceur), reste visible un court instant comme une vraie LED. "
         "<b>Canal MIDI</b> : certains firmwares ne jouent une piste que sur son canal (Melodee : canal 1 pour la piste 1, 2 pour la piste 2...). "
         "Clic droit &gt; Firmware &gt; <b>MIDI channel sent to firmware</b> renvoie tout ce que joue votre clavier maître sur le canal choisi "
         "(<b>As received</b> : canal d'origine, par défaut). Si votre clavier ne fait rien avec un firmware, choisissez Channel 1. "

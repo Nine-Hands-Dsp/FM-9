@@ -79,6 +79,7 @@ private:
 
     void showContextMenu (const juce::String& learnId = {}, int ctl = -1);   // ctl : commande physique (FM9Processor::ctlId)
     void midiMapAction (int r);
+    void octStep (int dir);
     void syncShift() { proc.kbShift.store (12 * octave + kbTrans); }
     void openSaveDrum();
     void closeDrum (bool accept);
@@ -128,6 +129,7 @@ public:
     juce::PopupMenu buildSkinMenu();
     juce::Image renderMenuPreview (const juce::PopupMenu& m, const juce::String& highlight, float scale, int* highlightY = nullptr);
     juce::PopupMenu buildMainMenuForPreview();
+    juce::PopupMenu buildContextMenu (const juce::String& learnId = {}, int ctl = -1);
 private:
     int cacheW = 0, cacheH = 0;
     float cacheScale = 0.0f, forcedScale = 0.0f;

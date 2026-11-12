@@ -781,7 +781,23 @@ void FM9Editor::mouseDown (const MouseEvent& e)
         repaint();
         return;
     }
-    if (e.mods.isPopupMenu()) { showContextMenu(); return; }
+    if (e.mods.isPopupMenu())
+    {
+        for (int i = 0; i < 2; ++i) if (L::octKeys[i].contains (u)) { showContextMenu ({}, 7 + i); return; }   // OCT- / OCT+ : MIDI Learn
+        // nom du potard ou contour : meme menu que le potard lui-meme (MIDI Learn)
+        const Point<float> kp[8] = { L::knob_master, L::knob_select, L::knob_presets, L::knob_algorithm, L::knob_knob1, L::knob_knob2, L::knob_knob3, L::knob_knob4 };
+        for (int i = 0; i < 8; ++i)
+            if (Rectangle<float> (kp[i].x - 60, kp[i].y - L::knobR - 42, 120, 2 * L::knobR + 52).contains (u))
+            {
+                if (i == 0) showContextMenu ("volume");
+                else if (i == 3) showContextMenu ("alg", 2);
+                else if (i >= 4) { const auto id = pageInfo().s[i - 4].id; showContextMenu (id.startsWith ("!") ? String() : id, i - 1); }
+                else showContextMenu ({}, i - 1);
+                return;
+            }
+        showContextMenu();
+        return;
+    }
     heldSince = Time::getMillisecondCounterHiRes();
     holdUsed = false;
 
@@ -966,10 +982,7 @@ void FM9Editor::mouseUp (const MouseEvent&)
     {
         if (! holdUsed)
         {
-            octave = jlimit (-3, 3, octave + (heldOct == 0 ? -1 : 1));
-            proc.uiState.setProperty ("octave", octave, nullptr);
-            syncShift();
-            popup ("Octave", (octave > 0 ? "+" : "") + String (octave));
+            octStep (heldOct == 0 ? -1 : 1);
         }
         heldOct = -1;
     }
@@ -1050,10 +1063,13 @@ void FM9Editor::timerCallback()
 {
     const double now = Time::getMillisecondCounterHiRes();
     if (getPeer() != lastPeer || now - lastRendererCheckMs > 1000.0) { lastRendererCheckMs = now; useSoftwareRenderer(); }
-    // commandes physiques pilotees en MIDI Learn (SELECT, PRESETS, ALGORITHM, KNOB1-4)
+    // commandes physiques pilotees en MIDI Learn (SELECT, PRESETS, ALGORITHM, KNOB1-4, OCT- / OCT+)
     for (int i = 0; i < FM9Processor::numCtl; ++i)
-        if (const int st = proc.ctlSteps[(size_t) i].exchange (0); st != 0 && enc[i] != nullptr && enc[i]->onStep)
-            enc[i]->onStep (st, false);
+        if (const int st = proc.ctlSteps[(size_t) i].exchange (0); st != 0)
+        {
+            if (i >= 7) { if (auto* fw = proc.firmware()) { fw->button (12 + i - 7, true); fw->button (12 + i - 7, false); } else for (int n = 0; n < st; ++n) octStep (i == 7 ? -1 : 1); }
+            else if (enc[i] != nullptr && enc[i]->onStep) enc[i]->onStep (st, false);
+        }
     if (resizeSettle > 0 && --resizeSettle == 0) rebuildCaches();
     else if (faceDirty && resizeSettle == 0) recomposeFace();      // couleur changee a la volee
     else if (resizeSettle == 0 && now - lastScaleCheckMs > 250.0)
@@ -1865,7 +1881,7 @@ PopupMenu FM9Editor::buildMainMenuForPreview()
 }
 
 // --------------------------------------------------------------------------------------------- menu clic droit
-void FM9Editor::showContextMenu (const String& learnId, int ctl)
+PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
 {
     PopupMenu menu;
     if (ctl >= 0)
@@ -1874,7 +1890,7 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
         const auto cid = FM9Processor::ctlId (ctl);
         const auto cname = FM9Processor::ctlName (ctl);
         const int cc = proc.learnedCcFor (cid);
-        menu.addItem (4, "MIDI Learn: " + cname + " (all pages)" + (cc >= 0 ? "  (CC " + String (cc) + ")" : String()), true, proc.isLearning() && proc.getLearnTarget() == cid);
+        menu.addItem (4, "MIDI Learn: " + cname + (ctl >= 7 ? String() : String (" (all pages)")) + (cc >= 0 ? "  (CC " + String (cc) + ")" : String()), true, proc.isLearning() && proc.getLearnTarget() == cid);
         menu.addItem (5, "Clear MIDI: " + cname, cc >= 0);
         if (learnId.isEmpty() && proc.isLearning()) menu.addItem (3, "Cancel MIDI learn");
         if (learnId.isEmpty()) menu.addSeparator();
@@ -1998,6 +2014,12 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
     menu.addSeparator();
     menu.addItem (999, "FM-9 v" + String (JucePlugin_VersionString) + " - NINE HANDS | DSP", false);
 
+    return menu;
+}
+
+void FM9Editor::showContextMenu (const String& learnId, int ctl)
+{
+    PopupMenu menu = buildContextMenu (learnId, ctl);
     menu.setLookAndFeel (&menuLnf);
     lastMenuPos = getMouseXYRelative();
     menu.showMenuAsync (PopupMenu::Options().withMousePosition(),       // toujours la ou l'on clique
@@ -2253,4 +2275,13 @@ void FM9Editor::midiMapAction (int r)
     else if (r == 631) { if (proc.saveMidiMap (proc.defaultMidiMapFile())) popup ("MIDI map", "Default for new instances"); }
     else if (r == 632) { proc.defaultMidiMapFile().deleteFile(); popup ("MIDI map", "No default"); }
     else if (r == 633) proc.midiMapFolder().startAsProcess();
+}
+
+void FM9Editor::octStep (int dir)
+{
+    octave = jlimit (-3, 3, octave + dir);
+    proc.uiState.setProperty ("octave", octave, nullptr);
+    syncShift();
+    popup ("Octave", (octave > 0 ? "+" : "") + String (octave));
+    repaint();
 }

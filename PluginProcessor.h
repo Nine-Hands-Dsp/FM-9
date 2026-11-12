@@ -63,8 +63,9 @@ public:
     juce::String getLearnTarget() const { return learnTarget; }
 
     // commandes physiques de la facade, assignables en MIDI Learn quelle que soit la page :
-    // 0 SELECT, 1 PRESETS, 2 ALGORITHM, 3-6 KNOB1-4 (cible "ctl:<nom>", un CC absolu donne des pas)
-    static constexpr int ctlBase = 10000, numCtl = 7;
+    // 0 SELECT, 1 PRESETS, 2 ALGORITHM, 3-6 KNOB1-4 (cible "ctl:<nom>", un CC absolu donne des pas),
+    // 7-8 OCT- / OCT+ (boutons : un appui quand le CC passe au-dessus de 63)
+    static constexpr int ctlBase = 10000, numCtl = 9;
     static juce::String ctlId (int i);
     static juce::String ctlName (int i);
     std::array<std::atomic<int>, numCtl> ctlSteps {};     // pas en attente, consommes par l'interface

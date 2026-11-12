@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.4"
+VERSION = "1.3.5"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -275,7 +275,9 @@ T = dict(
     learn=["<b>MIDI Learn</b> : clic droit sur un potard &gt; MIDI Learn, puis bougez la commande MIDI. Aucun CC n'est assigné d'usine. "
            "Tous les potards peuvent être appris : MASTER (volume) et, pour SELECT, PRESETS, ALGORITHM et KNOB1 à 4, "
            "<b>le potard lui-même (all pages)</b> : votre potard MIDI agit alors comme le potard de la façade, quelle que soit la page affichée. "
-           "Pour ALGORITHM et KNOB1 à 4, le menu propose aussi d'apprendre le réglage affiché à ce moment (il reste alors lié à ce réglage).",
+           "Pour ALGORITHM et KNOB1 à 4, le menu propose aussi d'apprendre le réglage affiché à ce moment (il reste alors lié à ce réglage). "
+           "Le clic droit marche sur le potard, sur son nom et tout autour. <b>OCT- et OCT+</b> s'apprennent aussi (clic droit sur la touche) : "
+           "un bouton ou un pad de votre clavier qui envoie un CC décale alors l'octave à chaque appui.",
            "<b>Configurations MIDI</b> : clic droit &gt; MIDI &gt; <b>Save MIDI map...</b> enregistre toutes vos assignations ; "
            "<b>Load MIDI map</b> les recharge ; <b>Use current assignments for new FM-9 instances</b> les applique à chaque nouvelle FM-9 "
            "(<b>Forget the default MIDI map</b> l'annule). Les assignations sont aussi gardées avec le projet.",

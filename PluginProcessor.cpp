@@ -297,13 +297,13 @@ void FM9Processor::resetBankToFactory (int bank)
 // ------------------------------------------------------------------------------------------------
 juce::String FM9Processor::ctlId (int i)
 {
-    static const char* n[numCtl] = { "select", "presets", "algorithm", "knob1", "knob2", "knob3", "knob4" };
+    static const char* n[numCtl] = { "select", "presets", "algorithm", "knob1", "knob2", "knob3", "knob4", "octdown", "octup" };
     return "ctl:" + juce::String (n[juce::jlimit (0, numCtl - 1, i)]);
 }
 
 juce::String FM9Processor::ctlName (int i)
 {
-    static const char* n[numCtl] = { "SELECT", "PRESETS", "ALGORITHM", "KNOB1", "KNOB2", "KNOB3", "KNOB4" };
+    static const char* n[numCtl] = { "SELECT", "PRESETS", "ALGORITHM", "KNOB1", "KNOB2", "KNOB3", "KNOB4", "OCT-", "OCT+" };
     return n[juce::jlimit (0, numCtl - 1, i)];
 }
 
@@ -418,6 +418,22 @@ void FM9Processor::timerCallback()
             if (! ccPending[(size_t) c].exchange (false)) continue;
             const int v = juce::roundToInt (ccValue[(size_t) c].load());
             int& last = ctlLast[(size_t) c];
+            if (t - ctlBase >= 7)
+            {
+                // OCT- / OCT+ : un appui a chaque passage au-dessus de 63 (bouton ou pad du clavier)
+                const bool press = v >= 64 && last < 64;
+                last = v;
+                if (! press) continue;
+                const int dir = t - ctlBase == 7 ? -1 : 1;
+                if (ctlUi.load()) ctlSteps[(size_t) (t - ctlBase)].fetch_add (1);
+                else
+                {
+                    const int oct = juce::jlimit (-3, 3, (int) uiState.getProperty ("octave", 0) + dir);
+                    uiState.setProperty ("octave", oct, nullptr);
+                    kbShift.store (12 * oct + (int) uiState.getProperty ("transpose", 0));
+                }
+                continue;
+            }
             int steps = last < 0 ? 0 : v - last;
             if (last >= 0 && steps == 0 && (v == 0 || v == 127)) steps = v == 0 ? -1 : 1;     // encore tourne en butee
             last = v;

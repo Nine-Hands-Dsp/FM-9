@@ -110,6 +110,22 @@ static void midiTest()
     FM9Processor r; r.setStateInformation (st.getData(), (int) st.getSize());
     check (r.learnedCcFor ("ctl:presets") == 20, "assignations des commandes gardees avec le projet");
     f.deleteFile();
+    p.ctlUi.store (false);
+    p.applyMidiMapString ("30=ctl:octup");
+    block (juce::MidiMessage::controllerEvent (1, 30, 127));
+    block (juce::MidiMessage::controllerEvent (1, 30, 0));
+    block (juce::MidiMessage::controllerEvent (1, 30, 127));
+    check (p.kbShift.load() == 24, "OCT+ en MIDI Learn (bouton) : deux appuis = +2 octaves");
+    {
+        FM9Editor ed (p); ed.setVisible (true);
+        const float sc = (float) ed.getHeight() / fm9::layout::unitsH;
+        for (auto kp : { fm9::layout::knob_knob1, fm9::layout::knob_knob4, fm9::layout::knob_select, fm9::layout::knob_presets })
+        {
+            auto* c = ed.getComponentAt ((kp * sc).toInt());
+            std::printf ("    editeur %dx%d, point %d,%d -> %s %s\n", ed.getWidth(), ed.getHeight(), (kp * sc).toInt().x, (kp * sc).toInt().y, c == nullptr ? "null" : typeid (*c).name(), c == nullptr ? "" : c->getBounds().toString().toRawUTF8());
+            check (dynamic_cast<nh::Encoder*> (c) != nullptr, "clic droit au centre du potard : c'est bien le potard qui le recoit");
+        }
+    }
 }
 
 static void firmwareTest()
@@ -351,6 +367,13 @@ int main (int argc, char** argv)
                 auto xy = StringArray::fromTokens (args[args.indexOf ("--skinmenu") + 1], ",", "");
                 const int x = xy[0].getIntValue(), y = xy[1].getIntValue();
                 int hy = 0;
+                if (args.contains ("--ctxmenu"))
+                {
+                    const auto a = juce::StringArray::fromTokens (args[args.indexOf ("--ctxmenu") + 1], ",", "");
+                    auto img = fe->renderMenuPreview (fe->buildContextMenu (a[0] == "-" ? juce::String() : a[0], a[1].getIntValue()), {}, scale);
+                    juce::PNGImageFormat png; juce::FileOutputStream os (juce::File (args[args.indexOf ("--shot") + 1]).getSiblingFile ("ctxmenu.png"));
+                    os.setPosition (0); os.truncate(); png.writeImageToStream (img, os);
+                }
                 auto main = fe->renderMenuPreview (fe->buildMainMenuForPreview(), "Skin", scale, &hy);
                 auto sub = fe->renderMenuPreview (fe->buildSkinMenu(), args.contains ("--hl") ? args[args.indexOf ("--hl") + 1] : String(), scale);
                 const int sy = juce::roundToInt ((y + hy - 7) * scale);

@@ -35,10 +35,12 @@ jobs:
           PY
       - name: Ecrans des firmwares
         run: python3 tools/gen_previews.py catalog/firmwares.json build-render/FM9Render_artefacts/Release/FM9Render catalog/previews
+      - name: Calibrage (horloge et canal MIDI Auto)
+        run: python3 tools/calibrate_catalog.py catalog/firmwares.json build-render/FM9Render_artefacts/Release/FM9Render 150 60 || true
       - name: Publier les ecrans
         run: |
           git config user.name "FM-9 previews"; git config user.email "previews@users.noreply.github.com"
           git add catalog/previews catalog/firmwares.json
           git diff --cached --quiet && exit 0
-          git commit -qm "Catalogue : paquets a jour et ecrans des firmwares"
+          git commit -qm "Catalogue : paquets a jour, ecrans et calibrage des firmwares"
           for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done

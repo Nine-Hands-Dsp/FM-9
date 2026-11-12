@@ -1172,6 +1172,7 @@ void FM9Editor::timerCallback()
         repaintAskedMs = 0.0; lastPeer = nullptr; useSoftwareRenderer(); repaint();
     }
 
+    if (const auto note = proc.takeAutoNote(); note.isNotEmpty()) popup ("Auto", note);   // reglage automatique de l'emulation
     if (auto* fw = proc.firmware())
     {
         if (fw->fbSerial.load() != fwDrawnSerial) { fwDrawnSerial = fw->fbSerial.load(); fw->copyScreen (fwImage); askRepaint (toPx (L::bezel)); }
@@ -2118,14 +2119,19 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
             // emulation de la puce (firmwares materiels .fwsc) : horloge et marge d'avance
             PopupMenu clk, buf;
             const int mhz = fm9::FirmwareHost::hwMhz().load(), mar = fm9::FirmwareHost::hwMargin().load();
-            clk.addItem (850, "240 MHz (like the FM-1)", true, mhz == 240);
-            clk.addItem (851, "360 MHz (recommended)", true, mhz == 360);
-            clk.addItem (852, "480 MHz (heavy firmwares, more CPU)", true, mhz == 480);
-            clk.addItem (853, "720 MHz (mega heavy, much more CPU)", true, mhz == 720);
-            clk.addItem (849, "960 MHz (extreme, needs a fast CPU)", true, mhz == 960);
+            auto* fwNow = proc.firmware();
+            const bool hwNow = fwNow != nullptr && fwNow->abi() == fm9::FirmwareHost::Abi::hw;
+            const int running = hwNow ? fwNow->liveMhz.load() : 0;
+            // Auto : l'horloge mesuree pour chaque firmware (catalogue ou calibrage), ajustee pendant le jeu
+            clk.addItem (845, "Auto (set for each firmware)" + String (mhz == 0 && running > 0 ? "  -  now " + String (running) + " MHz" : String()), true, mhz == 0);
+            clk.addSeparator();
+            const int fixed[] = { 120, 160, 240, 360, 480 };
+            const char* hint[] = { " (light, less CPU)", "", " (like the FM-1)", "", " (heavy firmwares, more CPU)" };
+            for (int k = 0; k < 5; ++k) clk.addItem (846 + k, String (fixed[k]) + " MHz" + hint[k], true, mhz == fixed[k]);
             clk.addSeparator();
             const int dm = fm9::FirmwareHost::defaultMhz();
-            clk.addItem (854, dm == mhz ? "Default: " + String (dm) + " MHz" : "Save " + String (mhz) + " MHz as default", dm != mhz, false);
+            auto clkName = [] (int m) { return m <= 0 ? String ("Auto") : String (m) + " MHz"; };
+            clk.addItem (854, dm == mhz ? "Default: " + clkName (dm) : "Save " + clkName (mhz) + " as default", dm != mhz, false);
             const bool aut = fm9::FirmwareHost::hwAutoMargin().load();
             buf.addItem (858, "Automatic (grows if the DAW renders ahead)", true, aut);
             buf.addSeparator();
@@ -2137,14 +2143,38 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
             const int db = fm9::FirmwareHost::defaultBuffer();
             const bool isDef = aut ? db <= 0 : db == mar;
             buf.addItem (859, isDef ? "Default: " + bufName (db <= 0, db) : "Save " + bufName (aut, mar) + " as default", ! isDef, false);
-            firmware.addSubMenu ("Chip clock (if a firmware crackles)", clk);
+            firmware.addSubMenu ("Chip clock", clk);
             firmware.addSubMenu ("Emulation buffer", buf);
             PopupMenu och;
             const int oc = proc.fwOutCh.load();
+            String det;
+            if (const uint32_t mask = proc.fwChannels.load(); hwNow && mask != 0)
+            {
+                if (mask == 0xffffu) det = "all channels";
+                else
+                {
+                    StringArray chs; for (int k = 0; k < 16; ++k) if ((mask >> k) & 1u) chs.add (String (k + 1));
+                    det = "channels " + chs.joinIntoString (", ");
+                }
+            }
+            else if (hwNow && fm9::FirmwareHost::isCalibrating (proc.firmwareStem())) det = "measuring...";
+            och.addItem (877, "Auto" + String (det.isNotEmpty() ? "  (" + det + ")" : String()), true, oc == FM9Processor::fwChAuto);
             och.addItem (860, "As received", true, oc == 0);
             och.addSeparator();
             for (int c = 1; c <= 16; ++c) och.addItem (860 + c, "Channel " + String (c), true, oc == c);
             firmware.addSubMenu ("MIDI channel sent to firmware", och);
+            // surveillance en direct de l'emulation
+            if (hwNow)
+            {
+                const float sp = fwNow->liveSpeed.load();
+                const int st = fwNow->liveStarved.load(), lt = fwNow->liveLate.load();
+                String a = sp > 0.0f ? "Emulation: " + String (sp, sp < 10.0f ? 1 : 0) + "x real time" : String ("Emulation: waiting for audio");
+                a << (st > 0 ? "  -  dropouts" : "  -  no dropouts");
+                firmware.addSeparator();
+                firmware.addItem (878, a, false, false);
+                if (lt > 0) firmware.addItem (879, "Firmware short of time: raising the clock", false, false);
+                else if (sp > 0.0f && sp < 1.05f) firmware.addItem (879, "This computer is at its limit: lowering the clock", false, false);
+            }
         }
     }
     menu.addSubMenu ("Firmware", firmware);
@@ -2351,20 +2381,23 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
             else if (r >= 710 && r < 800) { const auto list = pr.availableFirmwares(); if (r - 710 < list.size()) ed.activateFirmware (list[r - 710]); }
             else if (r == 854)
             {
-                fm9::FirmwareHost::saveDefaultMhz (fm9::FirmwareHost::hwMhz().load());
-                ed.popup ("Default chip clock", String (fm9::FirmwareHost::hwMhz().load()) + " MHz");
+                const int m = fm9::FirmwareHost::hwMhz().load();
+                fm9::FirmwareHost::saveDefaultMhz (m);
+                ed.popup ("Default chip clock", m <= 0 ? String ("Auto") : String (m) + " MHz");
             }
             else if (r == 859)
             {
                 fm9::FirmwareHost::saveDefaultBuffer (fm9::FirmwareHost::hwAutoMargin().load(), fm9::FirmwareHost::hwMargin().load());
                 ed.popup ("Default buffer", fm9::FirmwareHost::hwAutoMargin().load() ? "Automatic" : String (juce::roundToInt (fm9::FirmwareHost::hwMargin().load() / 44.1)) + " ms");
             }
-            else if (r >= 849 && r <= 853)
+            else if (r >= 845 && r <= 850)
             {
-                fm9::FirmwareHost::hwMhz().store (r == 849 ? 960 : r == 850 ? 240 : r == 851 ? 360 : r == 852 ? 480 : 720);
+                static const int vals[] = { 0, 120, 160, 240, 360, 480 };
+                fm9::FirmwareHost::hwMhz().store (vals[r - 845]);
                 const auto cur = pr.getFirmwareName();                               // redemarre le firmware a la nouvelle horloge
                 if (cur.endsWith (fm9::FirmwareInstaller::hardwareSuffix)) ed.activateFirmware (cur);
-                ed.popup ("Chip clock", String (fm9::FirmwareHost::hwMhz().load()) + " MHz");
+                const int now = pr.firmware() != nullptr ? pr.firmware()->liveMhz.load() : 0;
+                ed.popup ("Chip clock", vals[r - 845] == 0 ? "Auto" + String (now > 0 ? " (" + String (now) + " MHz)" : String()) : String (vals[r - 845]) + " MHz");
             }
             else if (r == 858)
             {
@@ -2379,6 +2412,11 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
                 fm9::FirmwareHost::hwMargin().store (r == 855 ? 1536 : r == 856 ? 3072 : 6144);
                 pr.updateFirmwareLatency();
                 ed.popup ("Emulation buffer", r == 855 ? "35 ms" : r == 856 ? "70 ms" : "140 ms");
+            }
+            else if (r == 877)
+            {
+                pr.fwOutCh.store (FM9Processor::fwChAuto);
+                ed.popup ("MIDI channel to firmware", "Auto");
             }
             else if (r >= 860 && r <= 876)
             {

@@ -7,11 +7,17 @@
 // annoncee a l'hote comme latence, que Reaper compense.
 #include "FirmwareHost.h"
 #include <thread>
+#include <set>
 #if JUCE_WINDOWS
  #include <windows.h>
+ #include <avrt.h>
  #pragma comment (lib, "winmm.lib")
+ #pragma comment (lib, "avrt.lib")
 #elif JUCE_MAC
  #include <pthread.h>
+ #include <mach/mach.h>
+ #include <mach/mach_time.h>
+ #include <mach/thread_policy.h>
 #endif
 
 extern "C"
@@ -32,6 +38,8 @@ extern "C"
     void fm1hw_restore_sector (Fm1Machine*, uint32_t at, const uint8_t* data);
     void fm1hw_error (Fm1Machine*, char* out, int cap);
     int fm1hw_probe (const uint8_t* pkg, size_t len);
+    uint64_t fm1hw_late (Fm1Machine*);
+    int fm1hw_calibrate (const uint8_t* pkg, size_t len, uint32_t* minMhz, uint32_t* channels);
 }
 
 namespace fm9
@@ -54,7 +62,7 @@ static void writeEmulationDefault (const char* key, int value)
     emulationDefaultsFile().getParentDirectory().createDirectory();
     emulationDefaultsFile().replaceWithText (out.joinIntoString ("\n") + "\n");
 }
-int FirmwareHost::defaultMhz() { return juce::jlimit (60, maxMhz, emulationDefault ("clock", 360)); }
+int FirmwareHost::defaultMhz() { const int v = emulationDefault ("clock", 0); return v <= 0 ? 0 : juce::jlimit (60, maxMhz, v); }   // 0 = Auto
 int FirmwareHost::defaultBuffer() { return emulationDefault ("buffer", 0); }          // 0 = automatique
 void FirmwareHost::saveDefaultMhz (int mhz) { writeEmulationDefault ("clock", mhz); }
 void FirmwareHost::saveDefaultBuffer (bool automatic, int margin) { writeEmulationDefault ("buffer", automatic ? 0 : margin); }
@@ -63,6 +71,105 @@ std::atomic<int>& FirmwareHost::hwMargin() { static std::atomic<int> m { default
 std::atomic<int>& FirmwareHost::hwMhz() { static std::atomic<int> m { defaultMhz() }; return m; }
 std::atomic<bool>& FirmwareHost::hwLatencyChanged() { static std::atomic<bool> b { false }; return b; }
 std::atomic<bool>& FirmwareHost::hwAutoMargin() { static std::atomic<bool> b { defaultBuffer() <= 0 }; return b; }
+
+// ------------------------------------------------------------------------------------------ profils des firmwares
+static juce::File profilesFile() { return FirmwareInstaller::folder().getChildFile ("Firmware profiles.json"); }
+static juce::CriticalSection& profilesLock() { static juce::CriticalSection c; return c; }
+std::atomic<int>& FirmwareHost::profilesVersion() { static std::atomic<int> v { 0 }; return v; }
+
+FirmwareHost::Profile FirmwareHost::profileOf (const juce::String& name)
+{
+    const juce::ScopedLock sl (profilesLock());
+    Profile p;
+    const auto v = juce::JSON::parse (profilesFile().loadFileAsString());
+    const auto o = v.getProperty (name, {});
+    if (o.isObject())
+    {
+        p.minMhz = (int) o.getProperty ("minMhz", -1);
+        p.channels = (uint32_t) (juce::int64) o.getProperty ("channels", 0);
+        p.pcMhz = (int) o.getProperty ("pcMhz", 0);
+    }
+    return p;
+}
+
+void FirmwareHost::storeProfile (const juce::String& name, const Profile& p)
+{
+    {
+        const juce::ScopedLock sl (profilesLock());
+        auto v = juce::JSON::parse (profilesFile().loadFileAsString());
+        if (! v.isObject()) v = juce::var (new juce::DynamicObject());
+        auto* o = new juce::DynamicObject();
+        o->setProperty ("minMhz", p.minMhz);
+        o->setProperty ("channels", (juce::int64) p.channels);
+        o->setProperty ("pcMhz", p.pcMhz);
+        v.getDynamicObject()->setProperty (name, juce::var (o));
+        profilesFile().getParentDirectory().createDirectory();
+        profilesFile().replaceWithText (juce::JSON::toString (v));
+    }
+    profilesVersion().fetch_add (1);
+}
+
+int FirmwareHost::recommendedMhz (int minMhz)
+{
+    if (minMhz < 0) return 240;                     // inconnue : l'horloge de la FM-1
+    if (minMhz == 0) return maxMhz;                 // en retard meme a 480 MHz : le maximum
+    if (minMhz > 240) return juce::jmin (maxMhz, minMhz);
+    // marge x2 (des accords plus charges que ceux du calibrage, des effets...), par pas de 40 MHz, de 120 a 240
+    return juce::jlimit (120, 240, (int) std::ceil (2.0 * minMhz / 40.0) * 40);
+}
+
+int FirmwareHost::clockFor (const Profile& p)
+{
+    if (const int m = hwMhz().load(); m > 0) return m;                 // reglage manuel
+    if (p.pcMhz > 0) return p.pcMhz;                                    // horloge retenue sur cet ordinateur
+    return recommendedMhz (p.minMhz);
+}
+
+bool FirmwareHost::calibrate (const void* fwsc, size_t size, int& minMhz, uint32_t& channels)
+{
+    uint32_t m = 0, ch = 0;
+    if (fm1hw_calibrate ((const uint8_t*) fwsc, size, &m, &ch) != 1) return false;
+    minMhz = (int) m; channels = ch;
+    return true;
+}
+
+static std::set<juce::String>& calibrating() { static std::set<juce::String> s; return s; }
+static juce::SpinLock calibratingLock;
+bool FirmwareHost::isCalibrating (const juce::String& name) { const juce::SpinLock::ScopedLockType sl (calibratingLock); return calibrating().count (name) > 0; }
+
+void FirmwareHost::calibrateAsync (const juce::String& name, juce::MemoryBlock pkg)
+{
+    {
+        const juce::SpinLock::ScopedLockType sl (calibratingLock);
+        if (! calibrating().insert (name).second) return;
+    }
+    std::thread ([name, pkg]
+    {
+       #if JUCE_WINDOWS
+        SetThreadPriority (GetCurrentThread(), THREAD_PRIORITY_LOWEST);     // ne gene pas le son
+       #endif
+        int mhz = -1; uint32_t ch = 0;
+        if (calibrate (pkg.getData(), pkg.getSize(), mhz, ch))
+        {
+            auto p = profileOf (name);
+            p.minMhz = mhz; p.channels = ch;
+            storeProfile (name, p);
+        }
+        const juce::SpinLock::ScopedLockType sl (calibratingLock);
+        calibrating().erase (name);
+    }).detach();
+}
+
+// groupe de calcul audio de l'hote (macOS) : la machine s'y joint depuis son thread
+static juce::SpinLock workgroupLock;
+static juce::AudioWorkgroup& sharedWorkgroup() { static juce::AudioWorkgroup w; return w; }
+static std::atomic<int> workgroupVersion { 0 };
+void FirmwareHost::setAudioWorkgroup (const juce::AudioWorkgroup& wg)
+{
+    const juce::SpinLock::ScopedLockType sl (workgroupLock);
+    sharedWorkgroup() = wg;
+    workgroupVersion.fetch_add (1);
+}
 
 namespace
 {
@@ -73,11 +180,13 @@ class HwFirmware final : public FirmwareHost
 public:
     HwFirmware() { kind = Abi::hw; }
 
-    bool start (const void* data, size_t size, const juce::File& storage, juce::String& error)
+    bool start (const void* data, size_t size, const juce::File& storage, juce::String& error, int mhz)
     {
         storageFile = storage;
         char err[256] = {};
-        machine = fm1hw_boot ((const uint8_t*) data, size, (uint32_t) FirmwareHost::hwMhz().load(), err, (int) sizeof (err));
+        if (mhz <= 0) mhz = FirmwareHost::hwMhz().load() > 0 ? FirmwareHost::hwMhz().load() : 240;
+        liveMhz.store (mhz);
+        machine = fm1hw_boot ((const uint8_t*) data, size, (uint32_t) mhz, err, (int) sizeof (err));
         if (machine == nullptr) { error = juce::String (err).isNotEmpty() ? juce::String (err) : juce::String ("the package does not start"); return false; }
         // sauvegardes du firmware (patterns, reglages) : secteurs de flash ecrits lors des sessions precedentes
         juce::MemoryBlock saved;
@@ -147,7 +256,7 @@ public:
             {
                 // la machine est en retard : on retombe doucement a zero au lieu d'un trou sec (pas de clic)
                 holdL *= 0.995f; holdR *= 0.995f;
-                left[i] = holdL; right[i] = holdR; ++starved; continue;
+                left[i] = holdL; right[i] = holdR; starved.fetch_add (1, std::memory_order_relaxed); continue;
             }
             const float t = (float) (readPos - (double) i0);
             auto h = [t] (const std::vector<float>& b, int64_t k)
@@ -209,7 +318,7 @@ public:
         const juce::SpinLock::ScopedLockType sl (errLock);
         if (error.isNotEmpty()) return error;
         return juce::SystemStats::getEnvironmentVariable ("FM9_HWDEBUG", {}).isNotEmpty()
-                 ? "made " + juce::String (writePos.load()) + " read " + juce::String (readFrame.load()) + " starved " + juce::String (starved)
+                 ? "made " + juce::String (writePos.load()) + " read " + juce::String (readFrame.load()) + " starved " + juce::String (starved.load())
                  : juce::String();
     }
 
@@ -280,20 +389,42 @@ private:
         if (mb != sectors) { sectors = mb; sectorsDirty = true; }
     }
 
-    static void raisePriority()
+    void raisePriority()
     {
         // le calcul de la puce passe avant les taches ordinaires (sinon le DAW le retarde et le son craque)
        #if JUCE_WINDOWS
         timeBeginPeriod (1);                       // pauses de 1 ms au lieu de 15,6 ms
-        SetThreadPriority (GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+        // classe "Pro Audio" du planificateur multimedia (MMCSS), comme le thread audio du DAW
+        DWORD task = 0;
+        mmcss = AvSetMmThreadCharacteristicsW (L"Pro Audio", &task);
+        if (mmcss != nullptr) AvSetMmThreadPriority (mmcss, AVRT_PRIORITY_HIGH);
+        else SetThreadPriority (GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
        #elif JUCE_MAC
         pthread_set_qos_class_self_np (QOS_CLASS_USER_INTERACTIVE, 0);
+        // thread temps reel (periode = 2,9 ms de calcul sur 5,8 ms) : condition pour rejoindre le groupe audio du DAW
+        mach_timebase_info_data_t tb; mach_timebase_info (&tb);
+        auto abs = [&tb] (double ms) { return (uint32_t) (ms * 1.0e6 * (double) tb.denom / (double) tb.numer); };
+        thread_time_constraint_policy_data_t pol { abs (5.8), abs (2.9), abs (5.8), 1 };
+        thread_policy_set (pthread_mach_thread_np (pthread_self()), THREAD_TIME_CONSTRAINT_POLICY, (thread_policy_t) &pol, THREAD_TIME_CONSTRAINT_POLICY_COUNT);
        #endif
+    }
+    void joinWorkgroupIfChanged()
+    {
+        // macOS (Apple Silicon) : dans le groupe de calcul audio du DAW, la machine tourne sur les coeurs rapides
+        const int v = workgroupVersion.load();
+        if (v == joinedVersion) return;
+        joinedVersion = v;
+        juce::AudioWorkgroup wg;
+        { const juce::SpinLock::ScopedLockType sl (workgroupLock); wg = sharedWorkgroup(); }
+        wgToken.reset();
+        if (wg) wg.join (wgToken);
     }
 
     void loop()
     {
         raisePriority();
+        double secT0 = juce::Time::getMillisecondCounterHiRes(), busyMs = 0.0;
+        uint64_t secEmu0 = fm1hw_ms (machine), secLate0 = 0; int64_t secStarved0 = 0;
         std::vector<int16_t> buf (16384);
         std::vector<Event> due;
         std::vector<float> leds (41);
@@ -317,7 +448,9 @@ private:
                 freeRun = false;
                 // MIDI arrive a sa date (en echantillons produits)
                 while (! due.empty() && due.front().due <= made) { fm1hw_midi (machine, (uint8_t) due.front().a); due.erase (due.begin()); }
+                const double tr = juce::Time::getMillisecondCounterHiRes();
                 const int n = fm1hw_run (machine, 20000, buf.data(), buf.size() / 2);
+                busyMs += juce::Time::getMillisecondCounterHiRes() - tr;
                 if (n < 0) { halt(); break; }
                 for (int i = 0; i < n; ++i)
                 {
@@ -346,6 +479,17 @@ private:
             {
                 lastView = now;
                 publishView (leds);
+                joinWorkgroupIfChanged();
+            }
+            if (now - secT0 >= 1000.0)
+            {
+                // surveillance : vitesse (quand l'hote prend le son), trous cote hote, retard du firmware
+                const uint64_t emu = fm1hw_ms (machine), lt = fm1hw_late (machine);
+                const int64_t st = starved.load();
+                liveSpeed.store (busyMs > 1.0 && ! hostIdle ? (float) ((double) (emu - secEmu0) / busyMs) : 0.0f);
+                liveStarved.store ((int) juce::jmin<int64_t> (1 << 30, st - secStarved0));
+                liveLate.store ((int) (lt - secLate0));
+                secT0 = now; busyMs = 0.0; secEmu0 = emu; secLate0 = lt; secStarved0 = st;
             }
             if (now - lastFlash > 2000.0 && ! fm1hw_flash_busy (machine))
             {
@@ -354,7 +498,9 @@ private:
             }
             if (! ran) std::this_thread::sleep_for (std::chrono::microseconds (500));
         }
+        wgToken.reset();
        #if JUCE_WINDOWS
+        if (mmcss != nullptr) AvRevertMmThreadCharacteristics (mmcss);
         timeEndPeriod (1);
        #endif
     }
@@ -410,7 +556,12 @@ private:
     std::atomic<double> hostRate { 48000.0 };
     std::atomic<int> hostBlock { 512 };
     std::atomic<uint32_t> lastTakeMs { 0 };
-    int64_t starved = 0;
+    std::atomic<int64_t> starved { 0 };
+    juce::WorkgroupToken wgToken;
+    int joinedVersion = -1;
+   #if JUCE_WINDOWS
+    HANDLE mmcss = nullptr;
+   #endif
     float holdL = 0.0f, holdR = 0.0f;
     double lastRenderMs = 0.0, ahead = 0.0;
 
@@ -426,10 +577,10 @@ private:
 };
 } // namespace
 
-std::unique_ptr<FirmwareHost> FirmwareHost::createHardware (const void* fwsc, size_t size, const juce::File& storage, juce::String& error)
+std::unique_ptr<FirmwareHost> FirmwareHost::createHardware (const void* fwsc, size_t size, const juce::File& storage, juce::String& error, int mhz)
 {
     auto h = std::make_unique<HwFirmware>();
-    if (! h->start (fwsc, size, storage, error)) return nullptr;
+    if (! h->start (fwsc, size, storage, error, mhz)) return nullptr;
     return h;
 }
 
@@ -452,7 +603,7 @@ juce::Image FirmwareHost::renderPreview (const void* data, size_t size, double s
     if (isHardwarePackage (data, size))
     {
         char err[128] = {};
-        auto* m = fm1hw_boot ((const uint8_t*) data, size, (uint32_t) FirmwareHost::hwMhz().load(), err, (int) sizeof (err));
+        auto* m = fm1hw_boot ((const uint8_t*) data, size, (uint32_t) (FirmwareHost::hwMhz().load() > 0 ? FirmwareHost::hwMhz().load() : 240), err, (int) sizeof (err));
         if (m == nullptr) return {};
         fm1hw_master (m, 0);
         const auto until = (uint64_t) (seconds * 1000.0);

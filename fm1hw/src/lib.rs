@@ -22,6 +22,37 @@ pub struct Machine {
     halted: bool,
     flash0: Vec<u8>,
     error: String,
+    /// retard du firmware : demi-buffers que le DAC a rejoues (identiques a celui d'avant-avant : pas rempli a temps)
+    late: LateMeter,
+}
+
+/// Compte les demi-buffers audio rejoues par le DAC : quand le firmware n'a pas eu le temps de remplir
+/// le suivant, la DMA rejoue le meme (contenu identique a celui de deux demi-buffers plus tot).
+#[derive(Default)]
+pub struct LateMeter {
+    halves: u64,
+    hist: Vec<Vec<i16>>,
+    pub late: u64,
+    pub counted: u64,
+}
+
+impl LateMeter {
+    fn feed(&mut self, audio: &[i16], halves_now: u64) {
+        let d = halves_now.saturating_sub(self.halves);
+        self.halves = halves_now;
+        if d == 0 || audio.is_empty() || audio.len() as u64 % d != 0 { return; }
+        let per = audio.len() / d as usize;
+        if per < 64 { return; }
+        for h in audio.chunks_exact(per) {
+            if self.hist.len() == 2 {
+                let loud = h.iter().any(|v| v.unsigned_abs() > 64);
+                if loud && self.hist[0].as_slice() == h { self.late += 1; }
+                self.counted += 1;
+                self.hist.remove(0);
+            }
+            self.hist.push(h.to_vec());
+        }
+    }
 }
 
 fn boot(pkg: &[u8], mhz: u64) -> Result<Machine, String> {
@@ -39,7 +70,7 @@ fn boot(pkg: &[u8], mhz: u64) -> Result<Machine, String> {
     soc.write32(params, params + 0x40);
     cpu.regs[0] = fm1_soc::stock_boot(&mut soc, &st.flash, params, st.board);
     let flash0 = soc.flash.mem.clone();
-    Ok(Machine { cpu, cpu1: None, soc, pending_tick: false, halted: false, flash0, error: String::new() })
+    Ok(Machine { cpu, cpu1: None, soc, pending_tick: false, halted: false, flash0, error: String::new(), late: LateMeter::default() })
 }
 
 fn write_err(out: *mut c_char, cap: c_int, msg: &str) {
@@ -88,6 +119,7 @@ pub extern "C" fn fm1hw_run(m: *mut Machine, blocks: u32, out: *mut i16, cap: us
         Err(_) => { m.halted = true; m.error = "the emulator stopped".into(); return -1; }
     }
     let a = std::mem::take(&mut m.soc.periph.audio);
+    m.late.feed(&a, m.soc.periph.audio_halves);
     let frames = (a.len() / 2).min(cap);
     if !out.is_null() && frames > 0 {
         unsafe { std::ptr::copy_nonoverlapping(a.as_ptr(), out, frames * 2); }
@@ -193,6 +225,115 @@ pub extern "C" fn fm1hw_probe(pkg: *const u8, len: usize) -> c_int {
     let data = unsafe { std::slice::from_raw_parts(pkg, len) };
     match std::panic::catch_unwind(|| fm1_soc::stock_from_package(data, None)) {
         Ok(Ok(st)) if st.board == Board::Fm1 => 1,
+        _ => 0,
+    }
+}
+
+/// Mesures (outil fm1hw-bench) : demi-buffers audio joues, cycles emules, cycles sautes (boucles d'attente).
+pub fn stats(m: *mut Machine) -> (u64, u64, u64) {
+    unsafe { m.as_ref() }.map_or((0, 0, 0), |m| (m.soc.periph.audio_halves, m.soc.periph.cycles, m.soc.loop_skip.skipped))
+}
+
+/// Demi-buffers rejoues par le DAC depuis le demarrage (le firmware manque de temps de calcul : horloge trop basse).
+#[no_mangle]
+pub extern "C" fn fm1hw_late(m: *mut Machine) -> u64 {
+    unsafe { m.as_ref() }.map_or(0, |m| m.late.late)
+}
+
+// ------------------------------------------------------------------------------------------- calibrage
+/// Essai hors temps reel : demarre a `mhz`, ~3 s de mise en route (PLAY), puis `secs` s d'accords de 4 notes
+/// en MIDI ; renvoie (demi-buffers rejoues, demi-buffers comptes), None si le firmware ne demarre pas.
+fn trial(pkg: &[u8], mhz: u32, secs: f64) -> Option<(u64, u64)> {
+    let mut err = [0i8; 256];
+    let m = fm1hw_boot(pkg.as_ptr(), pkg.len(), mhz, err.as_mut_ptr(), 256);
+    if m.is_null() { return None; }
+    fm1hw_master(m, 900);
+    let mut buf = vec![0i16; 65536];
+    let (mut frames, mut step) = (0u64, 0u64);
+    let warm = 3 * 44100u64;
+    let mut base = (0, 0);
+    let mut ok = true;
+    while (frames as f64) < warm as f64 + secs * 44100.0 {
+        let n = fm1hw_run(m, 20000, buf.as_mut_ptr(), buf.len() / 2);
+        if n < 0 { ok = false; break; }
+        frames += n as u64;
+        if frames >= warm && base == (0, 0) { let mm = unsafe { &*m }; base = (mm.late.late, mm.late.counted.max(1)); }
+        let t = frames / 11025;
+        if t != step {
+            step = t;
+            if t == 4 { fm1hw_key(m, 12, 1, 0); }
+            if t == 5 { fm1hw_key(m, 12, 0, 0); }
+            if t >= 8 {
+                let b0 = 48 + ((t / 4) % 4) as u8 * 3;
+                for k in 0..4u8 { for b in [0x80u8, b0.wrapping_sub(3) + k * 4, 0] { fm1hw_midi(m, b); } }
+                for k in 0..4u8 { for b in [0x90u8, b0 + k * 4, 100] { fm1hw_midi(m, b); } }
+            }
+        }
+    }
+    let r = { let mm = unsafe { &*m }; (mm.late.late - base.0, mm.late.counted.saturating_sub(base.1)) };
+    fm1hw_free(m);
+    if ok { Some(r) } else { None }
+}
+
+/// Canaux MIDI auxquels le firmware repond (bit k = canal k+1), en jouant une note sur chacun.
+fn probe_channels(pkg: &[u8]) -> u32 {
+    let mut err = [0i8; 256];
+    let m = fm1hw_boot(pkg.as_ptr(), pkg.len(), 240, err.as_mut_ptr(), 256);
+    if m.is_null() { return 0; }
+    fm1hw_master(m, 900);
+    let mut buf = vec![0i16; 65536];
+    let mut run = |frames: u64| -> f64 {
+        let (mut got, mut e) = (0u64, 0f64);
+        while got < frames {
+            let n = fm1hw_run(m, 20000, buf.as_mut_ptr(), buf.len() / 2);
+            if n < 0 { return -1.0; }
+            for v in &buf[..n as usize * 2] { e += (*v as f64) * (*v as f64); }
+            got += n as u64;
+        }
+        (e / (2 * got.max(1)) as f64).sqrt()
+    };
+    run(44100 * 3);
+    let base = run(13230).max(0.0);
+    let mut out = [0f64; 16];
+    for ch in 0..16u8 {
+        for b in [0x90 | ch, 64, 110] { fm1hw_midi(m, b); }
+        out[ch as usize] = run(13230);
+        for b in [0x80 | ch, 64, 0] { fm1hw_midi(m, b); }
+        run(22050);
+    }
+    fm1hw_free(m);
+    let mx = out.iter().cloned().fold(0.0, f64::max);
+    let mut mask = 0u32;
+    for k in 0..16 { if out[k] > base * 2.0 + 30.0 && out[k] > mx * 0.05 { mask |= 1 << k; } }
+    mask
+}
+
+/// Calibrage d'un paquet (hors temps reel, quelques dizaines de secondes de calcul) :
+/// `min_mhz` = plus petite horloge ou le firmware ne rejoue aucun demi-buffer sous des accords de 4 notes
+/// (0 : il en rejoue meme a 480 MHz), `channels` = canaux MIDI qui le font jouer (0 : aucun son detecte).
+/// Ne depend que du firmware, pas de l'ordinateur. Renvoie 1 si le paquet a demarre, 0 sinon.
+#[no_mangle]
+pub extern "C" fn fm1hw_calibrate(pkg: *const u8, len: usize, min_mhz: *mut u32, channels: *mut u32) -> c_int {
+    if pkg.is_null() || len == 0 { return 0; }
+    let data = unsafe { std::slice::from_raw_parts(pkg, len) }.to_vec();
+    let r = std::panic::catch_unwind(move || {
+        let late = |mhz: u32| trial(&data, mhz, 4.0).map(|(l, _)| l > 0);
+        let mut found = 0u32;
+        match late(240)? {
+            false => {
+                let (mut lo, mut hi) = (40u32, 240u32);
+                for _ in 0..4 { let mid = (lo + hi) / 2; if late(mid)? { lo = mid } else { hi = mid } }
+                found = hi;
+            }
+            true => { for c in [360u32, 480] { if !late(c)? { found = c; break; } } }
+        }
+        Some((found, probe_channels(&data)))
+    });
+    match r {
+        Ok(Some((f, ch))) => {
+            unsafe { if !min_mhz.is_null() { *min_mhz = f; } if !channels.is_null() { *channels = ch; } }
+            1
+        }
         _ => 0,
     }
 }

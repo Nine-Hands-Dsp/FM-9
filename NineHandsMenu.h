@@ -33,7 +33,7 @@ namespace NineHandsMenu
         if (s.contains ("glow") || s.contains ("halo")) return icoGlow;             // reglage du halo des lumieres (nov. 2026)
         if (s.contains ("latching") || s.contains ("momentary")) return icoLatch;
         if (s.startsWith ("midi") || s.startsWith ("learn") || s.startsWith ("program change") || s.startsWith ("cc ")) return icoMidi;
-        if (s.contains ("size") || s.endsWith ("%") || s.contains ("% ")) return icoSize;
+        if ((s.contains ("size") && ! s.contains ("synthesizer")) || s.endsWith ("%") || s.contains ("% ")) return icoSize;
         if (s.contains ("preset") || s.startsWith ("user ")) return icoPreset;
         if (s.contains ("gate")) return icoGate;
         if (s.startsWith ("settings")) return icoSettings;

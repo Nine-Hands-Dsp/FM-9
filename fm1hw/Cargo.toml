@@ -16,6 +16,18 @@ fm1-soc = { path = "../third_party/fm1-emu/crates/fm1-soc" }
 name = "fm1hw-check"
 path = "src/check.rs"
 
+[[bin]]
+name = "fm1hw-calibrate"
+path = "src/calibrate.rs"
+
+[[bin]]
+name = "fm1hw-probe"
+path = "src/probe.rs"
+
+[[bin]]
+name = "fm1hw-bench"
+path = "src/bench.rs"
+
 # workspace a part : le depot de FM-9 n'est pas un projet Rust
 [workspace]
 

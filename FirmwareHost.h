@@ -27,8 +27,8 @@ public:
     static std::atomic<int>& hwMargin();
     static std::atomic<int>& hwMhz();
     static std::atomic<bool>& hwLatencyChanged();   // la marge a grandi seule : le processeur annonce la nouvelle latence
-    static constexpr int maxMhz = 960;              // "Extreme"
-    static int defaultMhz();                        // horloge par defaut enregistree (360 sinon)
+    static constexpr int maxMhz = 480;
+    static int defaultMhz();                        // horloge par defaut enregistree (0 = Auto, sinon MHz)
     static int defaultBuffer();                     // marge par defaut enregistree, 0 = automatique
     static void saveDefaultMhz (int mhz);
     static void saveDefaultBuffer (bool automatic, int margin);
@@ -37,7 +37,25 @@ public:
     // firmware web (.wasm) ; storage = fichier de sauvegarde (flash) du firmware
     static std::unique_ptr<FirmwareHost> create (const void* wasm, size_t size, const juce::File& storage, juce::String& error);
     // paquet materiel (.fwsc), lance dans l'emulateur de la puce ; storage = secteurs de flash sauvegardes
-    static std::unique_ptr<FirmwareHost> createHardware (const void* fwsc, size_t size, const juce::File& storage, juce::String& error);
+    // mhz : horloge de la puce (0 = reglage hwMhz, et 240 s'il est sur Auto)
+    static std::unique_ptr<FirmwareHost> createHardware (const void* fwsc, size_t size, const juce::File& storage, juce::String& error, int mhz = 0);
+
+    // ---- profil de chaque firmware materiel (fichier Firmware profiles.json) ----
+    // minMhz : plus petite horloge sans retard du firmware (-1 inconnue, 0 : en retard meme a 480 MHz) ;
+    // channels : canaux MIDI qui le font jouer (bit k = canal k+1, 0 inconnu) ; pcMhz : horloge retenue sur cet ordinateur
+    struct Profile { int minMhz = -1; uint32_t channels = 0; int pcMhz = 0; };
+    static Profile profileOf (const juce::String& name);
+    static void storeProfile (const juce::String& name, const Profile& p);
+    static std::atomic<int>& profilesVersion();     // change a chaque profil enregistre (calibrage termine)
+    static int recommendedMhz (int minMhz);         // le double de l'horloge mini, de 120 a 240 MHz (240 si inconnue)
+    static int clockFor (const Profile& p);         // horloge a utiliser : reglage manuel, sinon Auto
+    // calibrage hors temps reel (quelques dizaines de secondes) : horloge mini et canaux MIDI ; false si le paquet ne demarre pas
+    static bool calibrate (const void* fwsc, size_t size, int& minMhz, uint32_t& channels);
+    // calibre en arriere-plan un firmware sans profil, puis l'enregistre (un seul a la fois par firmware)
+    static void calibrateAsync (const juce::String& name, juce::MemoryBlock pkg);
+    static bool isCalibrating (const juce::String& name);
+    // groupe de calcul audio de l'hote (macOS : coeurs rapides et echeances du DAW) : la machine s'y joint
+    static void setAudioWorkgroup (const juce::AudioWorkgroup& wg);
     static bool isHardwarePackage (const void* data, size_t size);
     // apercu : demarre le firmware hors ecran (sans son, a pleine vitesse) et rend ce que montre son ecran
     // apres 'seconds' secondes de fonctionnement (thread d'arriere-plan)
@@ -76,6 +94,10 @@ public:
         for (int b = 0; b < 14; ++b) publishLed (27 + b, (buttons >> b) & 1u ? 1.0f : 0.0f);
     }
     std::atomic<uint32_t> fbSerial { 0 };
+    // surveillance en direct (firmwares materiels), chaque seconde : vitesse de l'emulation (temps emule / temps de calcul,
+    // au-dessous de 1 l'ordinateur ne suit pas), echantillons manquants cote hote, demi-buffers rejoues par le firmware
+    std::atomic<float> liveSpeed { 0.0f };
+    std::atomic<int> liveStarved { 0 }, liveLate { 0 }, liveMhz { 0 };
     virtual void copyScreen (juce::Image& dest) = 0;    // RGB565 -> image 240 x 240
     Abi abi() const { return kind; }
     virtual juce::String status() const { return {}; }  // erreur eventuelle (firmware arrete)

@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.19"
+VERSION = "1.4.1"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -332,8 +332,13 @@ T = dict(
         "<b>Firmwares matériels et DAW</b> : l'émulation de la puce tourne en avance sur le son. Par défaut (Firmware &gt; Emulation buffer &gt; "
         "<b>Automatic</b>), cette avance est courte quand vous jouez en direct et grandit seule quand Reaper calcule en avance (lecture, "
         "calcul anticipé) ; Reaper compense le décalage. Low latency, Normal et Safe fixent une avance de 35, 70 ou 140 ms. "
-        "<b>Chip clock</b> règle l'horloge de la puce émulée (240 MHz comme la FM-1, 360 MHz recommandé, 480 MHz pour les firmwares lourds, "
-        "720 MHz Mega heavy et 960 MHz Extreme pour un processeur rapide : plus l'horloge est haute, plus le calcul est lourd). "
+        "<b>Chip clock</b> règle l'horloge de la puce émulée. Par défaut, <b>Auto</b> la choisit pour chaque firmware : la plus petite horloge où il "
+        "remplit tous ses blocs de son à temps est mesurée (chaque nuit pour le catalogue, sinon au premier chargement, en arrière-plan), et FM-9 prend "
+        "le double, de 120 à 240 MHz. Une horloge plus haute n'améliore pas le son : elle demande plus de calcul à l'ordinateur et peut faire craquer. "
+        "Pendant le jeu, FM-9 surveille l'émulation (ligne <b>Emulation</b> en bas du menu Firmware : vitesse par rapport au temps réel, trous) : "
+        "si le firmware manque de temps, il monte l'horloge ; si l'ordinateur ne suit plus, il la baisse, sans descendre sous le minimum du firmware. "
+        "Le changement se fait quand rien ne joue (le firmware redémarre en une à deux secondes, ses sauvegardes restent) et reste retenu pour ce firmware. "
+        "On peut aussi fixer 120, 160, 240 (comme la FM-1), 360 ou 480 MHz. "
         "En bas de chaque sous-menu, <b>Save ... as default</b> enregistre l'horloge ou l'avance choisie : toute nouvelle instance de FM-9 démarre avec "
         "(un projet garde ses propres réglages) ; la ligne devient alors « Default: ... ». "
         "<b>Supprimer un firmware</b> : la corbeille de sa fiche dans le catalogue (une confirmation est demandée). "
@@ -345,8 +350,10 @@ T = dict(
         "Chaque touche prend la luminosité exacte voulue par le firmware (rétroéclairage faible, pas programmés, accents) et un éclair, même de quelques "
         "millisecondes (frappe d'une boîte à rythmes, tête de lecture d'un séquenceur), reste visible un court instant comme une vraie LED. "
         "<b>Canal MIDI</b> : certains firmwares ne jouent une piste que sur son canal (Melodee : canal 1 pour la piste 1, 2 pour la piste 2...). "
-        "Clic droit &gt; Firmware &gt; <b>MIDI channel sent to firmware</b> renvoie tout ce que joue votre clavier maître sur le canal choisi "
-        "(<b>As received</b> : canal d'origine, par défaut). Si votre clavier ne fait rien avec un firmware, choisissez Channel 1. "
+        "Clic droit &gt; Firmware &gt; <b>MIDI channel sent to firmware</b> : par défaut, <b>Auto</b> utilise les canaux détectés pour le firmware "
+        "(affichés dans le menu) : une note sur un canal qu'il écoute passe telle quelle (vous choisissez la piste depuis votre clavier), "
+        "sinon elle part sur son premier canal, si bien que votre clavier joue toujours. <b>As received</b> garde le canal d'origine ; "
+        "Channel 1 à 16 envoie tout sur le canal choisi. "
         "<b>Golana</b> s'installe dans sa version native (celle de sa page « Try it in your browser »), bien plus légère que la puce émulée. "
 "<b>Écrans</b> : les vignettes de la galerie sont publiées avec le catalogue et gardées sur l'ordinateur ; pour un firmware installé "
         "sans vignette publiée, FM-9 le démarre hors écran pour en montrer l'écran.",

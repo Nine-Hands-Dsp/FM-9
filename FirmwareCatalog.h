@@ -21,6 +21,8 @@ struct CatalogEntry
     juce::String modified() const { return updated.isNotEmpty() ? updated : added; }   // tri par date de modification
     bool compatible = false, vendor = false, preferWeb = false;   // preferWeb : la version native (web) est plus legere que la puce emulee
     juce::int64 size = 0;
+    int clock = -1;              // calibrage : plus petite horloge sans retard (MHz ; -1 inconnue, 0 en retard meme a 480)
+    int midiCh = 0;              // calibrage : canaux MIDI qui le font jouer (bit k = canal k+1)
     // nom des fichiers installes : le nom du firmware (les forks partagent souvent le nom du depot)
     juce::String fileName() const
     {
@@ -75,6 +77,8 @@ struct FirmwareCatalog
                 e.pkgVersion = f.getProperty ("pkgVersion", {}).toString();
                 e.added = f.getProperty ("added", {}).toString();
                 e.updated = f.getProperty ("updated", {}).toString();
+                e.clock = (int) f.getProperty ("clock", -1);
+                e.midiCh = (int) f.getProperty ("midiCh", 0);
                 e.preferWeb = f.getProperty ("prefer", {}).toString() == "web";
                 if (e.name.isNotEmpty()) out.push_back (e);
             }

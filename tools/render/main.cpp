@@ -435,6 +435,60 @@ int main (int argc, char** argv)
         std::printf ("enctest knob1 %.2f rad, knob2 (%s) %.2f rad, algorithm %.2f rad\n", fe->encoderAngleForTest (3) - a3, slot.toRawUTF8(), fe->encoderAngleForTest (4) - a4, fe->encoderAngleForTest (2) - a2);
         return 0;
     }
+    if (args.contains ("--calibrate"))
+    {
+        // calibrage d'un paquet materiel : horloge mini sans retard et canaux MIDI (outil du catalogue)
+        juce::MemoryBlock mb; juce::File (args[args.indexOf ("--calibrate") + 1]).loadFileAsData (mb);
+        int mhz = -1; uint32_t ch = 0;
+        if (fm9::FirmwareHost::isHardwarePackage (mb.getData(), mb.getSize()) && fm9::FirmwareHost::calibrate (mb.getData(), mb.getSize(), mhz, ch))
+            std::printf ("calib %d %u\n", mhz, (unsigned) ch);
+        else std::printf ("calib fail\n");
+        return 0;
+    }
+    if (args.contains ("--autotest"))
+    {
+        // horloge Auto + canal MIDI Auto : 1er chargement (calibrage en arriere-plan), puis rechargement
+        FM9Processor p; p.setRateAndBufferSizeDetails (48000.0, 512); p.prepareToPlay (48000.0, 512);
+        juce::String err;
+        const auto dest = fm9::FirmwareInstaller::installPackage (juce::File (args[args.indexOf ("--autotest") + 1]), err);
+        const auto name = dest.getFileNameWithoutExtension() + fm9::FirmwareInstaller::hardwareSuffix;
+        const auto stem = dest.getFileNameWithoutExtension();
+        fm9::FirmwareHost::storeProfile (stem, {});            // profil vide : comme un firmware jamais vu
+        fm9::FirmwareHost::hwMhz().store (0);
+        if (! p.activateFirmware (name, err)) { std::printf ("autotest fail %s\n", err.toRawUTF8()); return 1; }
+        std::printf ("1er chargement : %d MHz, calibrage %s\n", p.firmware()->liveMhz.load(), fm9::FirmwareHost::isCalibrating (stem) ? "en cours" : "non");
+        juce::AudioBuffer<float> b (2, 512);
+        const double t0 = juce::Time::getMillisecondCounterHiRes();
+        while (fm9::FirmwareHost::isCalibrating (stem) && juce::Time::getMillisecondCounterHiRes() - t0 < 180000.0)
+        {
+            juce::MidiBuffer m; p.processBlock (b, m); juce::Thread::sleep (10);
+        }
+        p.tickForTest();
+        const auto prof = fm9::FirmwareHost::profileOf (stem);
+        std::printf ("calibre en %.0f s : mini %d MHz, canaux %x -> Auto %d MHz ; canaux du processeur %x\n",
+                     (juce::Time::getMillisecondCounterHiRes() - t0) / 1000.0, prof.minMhz, (unsigned) prof.channels,
+                     fm9::FirmwareHost::recommendedMhz (prof.minMhz), (unsigned) p.fwChannels.load());
+        p.activateFirmware (name, err);
+        std::printf ("2e chargement : %d MHz\n", p.firmware()->liveMhz.load());
+        // clavier sur le canal 10 : Auto l'envoie sur le 1er canal ecoute
+        p.fwOutCh.store (FM9Processor::fwChAuto);
+        float before = 0, after = 0;
+        const double t1 = juce::Time::getMillisecondCounterHiRes();
+        for (int i = 0; i < 420; ++i)
+        {
+            juce::MidiBuffer e;
+            if (i == 300) e.addEvent (juce::MidiMessage::noteOn (10, 60, (juce::uint8) 110), 0);
+            if (i == 400) e.addEvent (juce::MidiMessage::noteOff (10, 60), 0);
+            p.processBlock (b, e);
+            (i < 300 ? before : after) = juce::jmax (i < 300 ? before : after, i > 150 ? b.getMagnitude (0, 0, 512) : 0.0f);
+            const double due = t1 + (i + 1) * 512.0 / 48.0, now = juce::Time::getMillisecondCounterHiRes();
+            if (due > now) juce::Thread::sleep ((int) (due - now));
+            if (i % 94 == 0) p.tickForTest();
+        }
+        std::printf ("canal 10 en Auto : silence %.3f, note %.3f ; surveillance : %.2fx temps reel, trous %d, retard %d\n", before, after,
+                     p.firmware()->liveSpeed.load(), p.firmware()->liveStarved.load(), p.firmware()->liveLate.load());
+        return 0;
+    }
     if (args.contains ("--hubkeys"))
     {
         for (auto l : { "https://thefirmwarehub.com/firmware/argo/", "https://play.thefirmwarehub.com/?fw=zp12n", "https://thefirmwarehub.com/fw/argo-1.8.3.fwsc", "Argo", "https://thefirmwarehub.com/" })
@@ -739,6 +793,36 @@ int main (int argc, char** argv)
                     return nullptr;
                 };
                 const auto mainMenu = fe->buildContextMenu ({}, -1);
+                if (args.contains ("--pump"))
+                    if (p.firmware() != nullptr)
+                    {
+                        // quelques secondes de jeu en temps reel, pour la surveillance de l'emulation
+                        juce::AudioBuffer<float> b2 (2, 512);
+                        const double t1 = juce::Time::getMillisecondCounterHiRes();
+                        for (int i = 0; i < (int) (args[args.indexOf ("--pump") + 1].getDoubleValue() * 93.75); ++i)
+                        {
+                            juce::MidiBuffer e;
+                            if (i % 40 == 0) e.addEvent (juce::MidiMessage::noteOn (1, 60 + (i / 40) % 5, (juce::uint8) 100), 0);
+                            if (i % 40 == 30) e.addEvent (juce::MidiMessage::noteOff (1, 60 + (i / 40) % 5), 0);
+                            p.processBlock (b2, e);
+                            const double due = t1 + (i + 1) * 512.0 / 48.0, now = juce::Time::getMillisecondCounterHiRes();
+                            if (due > now) juce::Thread::sleep ((int) (due - now));
+                        }
+                        p.tickForTest();
+                    }
+                const auto mainMenu2 = fe->buildContextMenu ({}, -1);
+                if (auto* fm = find (mainMenu2, "Firmware"))
+                {
+                    auto* c2 = find (*fm, "Chip clock"); auto* mc = find (*fm, "MIDI channel sent");
+                    auto fi = fe->renderMenuPreview (*fm, "Chip clock", scale), ci2 = fe->renderMenuPreview (*c2, {}, scale), mi2 = fe->renderMenuPreview (*mc, {}, scale);
+                    const int pad = juce::roundToInt (20 * scale);
+                    juce::Image canvas (juce::Image::ARGB, fi.getWidth() + ci2.getWidth() + mi2.getWidth() + pad * 4, juce::jmax (fi.getHeight(), juce::jmax (ci2.getHeight(), mi2.getHeight())) + pad * 2, true);
+                    juce::Graphics g (canvas); g.fillAll (juce::Colour (0xff2a2b2e));
+                    g.drawImageAt (fi, pad, pad); g.drawImageAt (ci2, pad * 2 + fi.getWidth(), pad); g.drawImageAt (mi2, pad * 3 + fi.getWidth() + ci2.getWidth(), pad);
+                    juce::File o (args[args.indexOf ("--shot") + 1]); o.deleteFile(); juce::FileOutputStream os (o); juce::PNGImageFormat().writeImageToStream (canvas, os);
+                    std::printf ("emumenu ok\n");
+                    return 0;
+                }
                 auto* c = find (mainMenu, "Chip clock"); auto* bb = find (mainMenu, "Emulation buffer");
                 if (c != nullptr && bb != nullptr)
                 {

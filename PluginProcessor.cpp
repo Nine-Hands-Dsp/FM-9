@@ -3,6 +3,7 @@
 #include "NksExport.h"
 #include "PluginEditor.h"
 #include "FactoryBank.h"
+#include "FirmwareCatalog.h"
 
 using namespace fm9;
 
@@ -84,7 +85,22 @@ std::unique_ptr<fm9::FirmwareHost> FM9Processor::loadFirmware (const juce::Strin
         juce::MemoryBlock pkg;
         if (! file.existsAsFile() || ! file.loadFileAsData (pkg)) { error = "firmware not found: " + name; return {}; }
         say (0.25f);
-        next = fm9::FirmwareHost::createHardware (pkg.getData(), pkg.getSize(), folder.getChildFile (juce::File::createLegalFileName (stem) + ".hwflash"), error);
+        // profil du firmware : horloge mini et canaux MIDI (catalogue, sinon calibrage en arriere-plan)
+        auto prof = fm9::FirmwareHost::profileOf (stem);
+        if (prof.minMhz < 0)
+        {
+            juce::String date;
+            for (auto& e : fm9::FirmwareCatalog::load (date))
+                if (e.clock >= 0 && (e.fileName() == stem || juce::File::createLegalFileName (e.fileName()) == juce::File::createLegalFileName (stem)))
+                {
+                    prof.minMhz = e.clock; prof.channels = (uint32_t) e.midiCh;
+                    fm9::FirmwareHost::storeProfile (stem, prof);
+                    break;
+                }
+        }
+        if (prof.minMhz < 0) fm9::FirmwareHost::calibrateAsync (stem, pkg);
+        next = fm9::FirmwareHost::createHardware (pkg.getData(), pkg.getSize(), folder.getChildFile (juce::File::createLegalFileName (stem) + ".hwflash"), error,
+                                                  fm9::FirmwareHost::clockFor (prof));
         if (next == nullptr) return {};
         say (0.5f);
         // la machine demarre seule : on attend son premier ecran (quelques centaines de ms)
@@ -124,6 +140,60 @@ bool FM9Processor::activateFirmware (const juce::String& name, juce::String& err
     return true;
 }
 
+juce::String FM9Processor::firmwareStem() const
+{
+    return firmwareName.endsWith (fm9::FirmwareInstaller::hardwareSuffix) ? firmwareName.dropLastCharacters (fm9::FirmwareInstaller::hardwareSuffix.length()) : juce::String();
+}
+
+void FM9Processor::autoTune (double now)
+{
+    // chaque seconde : l'ordinateur suit-il (vitesse, trous) ? le firmware a-t-il le temps (demi-buffers rejoues) ?
+    auto* fw = fwOwner.get();
+    const auto stem = firmwareStem();
+    if (fw == nullptr || stem.isEmpty() || now - lastTuneSec < 1.0) return;
+    lastTuneSec = now;
+    const float speed = fw->liveSpeed.load();
+    const int late = fw->liveLate.load(), starved = fw->liveStarved.load(), mhz = fw->liveMhz.load();
+    lateSecs = late > 0 ? lateSecs + 1 : 0;
+    slowSecs = speed > 0.0f && speed < 1.05f ? slowSecs + 1 : 0;
+    starvedSecs = starved > 0 ? starvedSecs + 1 : juce::jmax (0, starvedSecs - 1);
+    if (fm9::FirmwareHost::hwMhz().load() > 0 || mhz <= 0) return;          // horloge manuelle : on ne touche a rien
+    auto prof = fm9::FirmwareHost::profileOf (stem);
+    int target = 0;
+    if (lateSecs >= 2 && mhz < fm9::FirmwareHost::maxMhz)                   // le firmware manque de calcul : plus vite
+        target = juce::jmin (fm9::FirmwareHost::maxMhz, (mhz * 4 / 3 + 19) / 20 * 20);
+    else if ((slowSecs >= 3 || starvedSecs >= 3) && lateSecs == 0)         // l'ordinateur ne suit pas : moins de calcul
+    {
+        const int floor = prof.minMhz > 0 ? juce::jmax (80, (prof.minMhz * 5 / 4 + 19) / 20 * 20) : 160;
+        const int lower = juce::jmax (floor, (mhz * 3 / 4) / 20 * 20);
+        if (lower < mhz) target = lower;
+    }
+    if (target > 0 && target != wantMhz.load())
+    {
+        wantMhz.store (target);
+        prof.pcMhz = target;                                               // retenue pour ce firmware sur cet ordinateur
+        fm9::FirmwareHost::storeProfile (stem, prof);
+        profVersion = fm9::FirmwareHost::profilesVersion().load();
+    }
+    // applique la nouvelle horloge quand rien ne joue (le firmware redemarre ; ses sauvegardes restent)
+    if (const int w = wantMhz.load(); w > 0 && w != mhz)
+    {
+        bool held = false;
+        for (auto& k : keyBits) held = held || k.load() != 0;
+        if (! held && now - lastNoteSec.load() > 2.0)
+        {
+            const auto name = firmwareName;
+            juce::String err;
+            wantMhz.store (0);
+            if (activateFirmware (name, err))
+            {
+                const juce::SpinLock::ScopedLockType sl (noteLock);
+                autoNote = "Chip clock " + juce::String (w) + " MHz";
+            }
+        }
+    }
+}
+
 void FM9Processor::updateFirmwareLatency()
 {
     if (auto* fw = fwOwner.get()) setLatencySamples (fw->latencySamples (sr));
@@ -140,6 +210,8 @@ void FM9Processor::activatePrepared (const juce::String& name, std::unique_ptr<f
     if (old != nullptr) old->saveIfDirty();
     fwOwner = std::move (next);
     firmwareName = name;
+    fwChannels.store (name.endsWith (fm9::FirmwareInstaller::hardwareSuffix) ? fm9::FirmwareHost::profileOf (firmwareStem()).channels : 0u);
+    slowSecs = lateSecs = starvedSecs = 0; wantMhz.store (0);
     // le firmware materiel tourne un peu en avance : Reaper compense ce decalage
     setLatencySamples (fwOwner != nullptr ? fwOwner->latencySamples (sr) : 0);
     engine.allSoundOff();
@@ -480,6 +552,13 @@ void FM9Processor::timerCallback()
     const double now = juce::Time::getMillisecondCounterHiRes() * 0.001;
 
     if (fm9::FirmwareHost::hwLatencyChanged().exchange (false)) updateFirmwareLatency();   // la marge de l'emulation a grandi
+    // calibrage termine en arriere-plan : canaux MIDI du firmware en cours
+    if (const int pv = fm9::FirmwareHost::profilesVersion().load(); pv != profVersion)
+    {
+        profVersion = pv;
+        if (const auto stem = firmwareStem(); stem.isNotEmpty()) fwChannels.store (fm9::FirmwareHost::profileOf (stem).channels);
+    }
+    autoTune (now);
     if (kbOctChanged.exchange (false))                       // l'octave a suivi le clavier maitre
     {
         uiState.setProperty ("octave", kbOct.load(), nullptr);
@@ -752,10 +831,20 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
                 juce::MidiBuffer tmp; handleMidi (m, 0, tmp);       // MIDI Learn (volume...)
                 continue;
             }
+            if (m.isNoteOnOrOff()) lastNoteSec.store (juce::Time::getMillisecondCounterHiRes() * 0.001);
             if (m.isNoteOn()) setKey (m.getNoteNumber(), true);          // la touche jouee s'eclaire aussi en mode firmware
             else if (m.isNoteOff()) setKey (m.getNoteNumber(), false);
             else if (m.isAllNotesOff() || m.isAllSoundOff()) for (auto& w : keyBits) w.store (0);
-            if (const int oc = fwOutCh.load(); oc > 0 && m.getChannel() > 0)
+            if (const int oc = fwOutCh.load(); oc == fwChAuto && m.getChannel() > 0)
+            {
+                // Auto : un canal que le firmware ecoute passe tel quel (piste choisie au clavier), sinon son premier canal
+                const uint32_t mask = fwChannels.load();
+                auto mm = m;
+                if (mask != 0 && mask != 0xffffu && ((mask >> (m.getChannel() - 1)) & 1u) == 0)
+                    for (int k = 0; k < 16; ++k) if ((mask >> k) & 1u) { mm.setChannel (k + 1); break; }
+                fw->handleMidi (mm);
+            }
+            else if (oc > 0 && oc <= 16 && m.getChannel() > 0)
             {
                 auto mm = m; mm.setChannel (oc);                      // tout le clavier sur le canal choisi (Melodee : 1 canal par piste)
                 fw->handleMidi (mm);
@@ -769,6 +858,11 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
         float* L = buffer.getWritePointer (0);
         float* R = buffer.getNumChannels() > 1 ? buffer.getWritePointer (1) : mono.data();
         fw->render (L, R, n, sr);
+        {
+            float pk = 0.0f;
+            for (int i = 0; i < n; i += 4) pk = juce::jmax (pk, std::abs (L[i]));
+            if (pk > 0.003f) lastNoteSec.store (juce::Time::getMillisecondCounterHiRes() * 0.001);   // le firmware joue (pattern...) : pas de redemarrage
+        }
         {
             const float g = juce::Decibels::decibelsToGain (p[pVolume]->load());
             for (int i = 0; i < n; ++i)
@@ -1002,7 +1096,7 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
     currentProgram = juce::jlimit (0, getNumPrograms() - 1, (int) state.getProperty ("program", 0));
     voiceName = state.getProperty ("voiceName", "INIT VOICE").toString();
     seqData.fromString (state.getProperty ("seq").toString());
-    if (state.hasProperty ("fwMhz")) fm9::FirmwareHost::hwMhz().store (juce::jlimit (60, fm9::FirmwareHost::maxMhz, (int) state.getProperty ("fwMhz")));
+    if (state.hasProperty ("fwMhz")) { const int v = (int) state.getProperty ("fwMhz"); fm9::FirmwareHost::hwMhz().store (v <= 0 ? 0 : juce::jlimit (60, fm9::FirmwareHost::maxMhz, v)); }
     if (state.hasProperty ("fwAuto")) fm9::FirmwareHost::hwAutoMargin().store ((bool) state.getProperty ("fwAuto"));
     if (state.hasProperty ("fwBuffer")) fm9::FirmwareHost::hwMargin().store (juce::jlimit (512, 8192, (int) state.getProperty ("fwBuffer")));
     {
@@ -1022,7 +1116,7 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
         if (ok) setFxOrder (o);
     }
     if (state.hasProperty ("ctlProfile")) ctlProfile.store ((int) state.getProperty ("ctlProfile"));
-    fwOutCh.store (juce::jlimit (0, 16, (int) state.getProperty ("fwOutCh", 0)));
+    fwOutCh.store (juce::jlimit (0, 17, (int) state.getProperty ("fwOutCh", fwChAuto)));
     applyMidiMapString (state.getProperty ("midiMap").toString());
     pendingDefaultMap = false;                       // le projet a sa propre configuration
     kbShift.store (12 * (int) uiState.getProperty ("octave", 0) + (int) uiState.getProperty ("transpose", 0));

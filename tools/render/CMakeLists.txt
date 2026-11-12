@@ -12,7 +12,7 @@ juce_generate_juce_header(FM9Render)
 file(GLOB MSFA ${W}/msfa/*.cc ${W}/msfa/*.cpp)
 file(GLOB WASM3 ${W}/wasm3/*.c)
 set_source_files_properties(${WASM3} PROPERTIES COMPILE_OPTIONS "-w;-O3")
-target_sources(FM9Render PRIVATE main.cpp ${W}/PluginProcessor.cpp ${W}/PluginEditor.cpp ${W}/FirmwareHost.cpp ${W}/HwFirmware.cpp ${MSFA} ${WASM3})
+target_sources(FM9Render PRIVATE main.cpp ${W}/PluginProcessor.cpp ${W}/PluginEditor.cpp ${W}/FirmwareHost.cpp ${W}/HwFirmware.cpp ${W}/WindowMinSize.cpp ${MSFA} ${WASM3})
 set_source_files_properties(${MSFA} PROPERTIES COMPILE_OPTIONS "-w")
 target_include_directories(FM9Render PRIVATE ${W} ${W}/msfa)
 target_compile_definitions(FM9Render PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_ALSA=0 JUCE_JACK=0

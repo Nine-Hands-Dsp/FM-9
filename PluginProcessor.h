@@ -155,7 +155,13 @@ public:
 
     // profil de controleur (optionnel, jamais par defaut) : 0 = MIDI Learn seulement, 1 = Arturia KeyStep 37
     std::atomic<int> ctlProfile { 0 };
-    std::atomic<int> fwOutCh { 0 };                        // canal MIDI envoye au firmware (0 = tel que recu)
+    std::atomic<int> fwOutCh { 17 };                       // canal MIDI envoye au firmware (0 = tel que recu, 1-16 force, 17 = Auto)
+    static constexpr int fwChAuto = 17;
+    std::atomic<uint32_t> fwChannels { 0 };                // canaux qui font jouer le firmware en cours (calibrage ; 0 inconnu)
+    // reglage automatique en direct (firmware materiel) : horloge a appliquer des que rien ne joue, message pour l'ecran
+    std::atomic<int> wantMhz { 0 };
+    juce::String takeAutoNote() { const juce::SpinLock::ScopedLockType sl (noteLock); auto n = autoNote; autoNote.clear(); return n; }
+    juce::String firmwareStem() const;                     // nom du profil du firmware materiel en cours (vide sinon)
     struct KeyStepMap { int cc; const char* paramId; const char* label; };
     static const KeyStepMap keyStepMap[16];
     static juce::StringArray keyStepBankNames();
@@ -166,8 +172,14 @@ public:
     bool exportNksPreset (int program, const juce::File& file);
     void tickForTest() { timerCallback(); }
 
+    void audioWorkgroupContextChanged (const juce::AudioWorkgroup& wg) override { fm9::FirmwareHost::setAudioWorkgroup (wg); }
+
 private:
     void timerCallback() override;
+    void autoTune (double nowSec);                         // surveillance de l'emulation et reglages automatiques
+    juce::String autoNote; juce::SpinLock noteLock;
+    std::atomic<double> lastNoteSec { 0.0 };
+    int profVersion = -1, slowSecs = 0, lateSecs = 0, starvedSecs = 0; double lastTuneSec = 0.0;
     void loadBanksFromDisk();
     void saveBankToDisk (int bank) const;
     void handleMidi (const juce::MidiMessage& m, int pos, juce::MidiBuffer& toEngine);

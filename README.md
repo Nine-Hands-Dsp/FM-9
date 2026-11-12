@@ -60,6 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
+- **1.3.7** : skin d'usine NINE HANDS | DSP ; KNOB1-4 actifs sur l'écran d'accueil (Cutoff, Resonance, Reverb, Delay), utile avec le MIDI Learn.
 - **1.3.6** : catalogue des firmwares en plus gros caractères ; firmwares matériels sans crépitements : horloge de la puce émulée réglable (240 / 360 / 480 MHz, 360 par défaut), marge d'émulation réglable, calcul de la puce en priorité haute, retombée douce au lieu d'un clic si l'émulation prend du retard.
 - **1.3.5** : point indicateur remis sur les potards ; MIDI Learn de OCT- / OCT+ (bouton ou pad du clavier), clic droit sur le nom d'un potard = son menu de MIDI Learn.
 - **1.3.4** : OCT- / OCT+ et transposition appliqués au clavier maître ; MIDI Learn sur tous les potards (SELECT, PRESETS, ALGORITHM, KNOB1-4 sur toutes les pages) ; configurations MIDI enregistrables (Save / Load MIDI map, configuration par défaut) ; écran interactif à la souris (liste et défilement des presets, réglages en glissant ou à la molette, double-clic = défaut).

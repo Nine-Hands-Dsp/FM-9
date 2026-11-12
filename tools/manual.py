@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.6"
+VERSION = "1.3.7"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -276,8 +276,8 @@ T = dict(
            "Tous les potards peuvent être appris : MASTER (volume) et, pour SELECT, PRESETS, ALGORITHM et KNOB1 à 4, "
            "<b>le potard lui-même (all pages)</b> : votre potard MIDI agit alors comme le potard de la façade, quelle que soit la page affichée. "
            "Pour ALGORITHM et KNOB1 à 4, le menu propose aussi d'apprendre le réglage affiché à ce moment (il reste alors lié à ce réglage). "
-           "Le clic droit marche sur le potard, sur son nom et tout autour. <b>OCT- et OCT+</b> s'apprennent aussi (clic droit sur la touche) : "
-           "un bouton ou un pad de votre clavier qui envoie un CC décale alors l'octave à chaque appui.",
+           "Sur l'écran d'accueil (HOME), KNOB1 à 4 règlent Cutoff, Resonance, Reverb et Delay (l'effet se met en marche). Le clic droit marche sur le potard, sur son nom et tout autour. <b>OCT- et OCT+</b> s'apprennent aussi (clic droit sur la touche) : "
+           "un bouton ou un pad de votre clavier qui envoie un CC décale alors l'octave à chaque appui. Les boutons d'octave de la plupart des claviers (dont l'Arturia KeyStep 37) n'envoient pas de CC : ils décalent directement les notes envoyées, FM-9 joue donc déjà à la bonne hauteur.",
            "<b>Configurations MIDI</b> : clic droit &gt; MIDI &gt; <b>Save MIDI map...</b> enregistre toutes vos assignations ; "
            "<b>Load MIDI map</b> les recharge ; <b>Use current assignments for new FM-9 instances</b> les applique à chaque nouvelle FM-9 "
            "(<b>Forget the default MIDI map</b> l'annule). Les assignations sont aussi gardées avec le projet.",
@@ -323,7 +323,7 @@ T = dict(
         "leurs propres manuels."],
     skin_t="Skins et couleurs",
     skin=["Clic droit &gt; <b>Skin</b> : les six coloris officiels de la FM-1 (section <b>FM-1 colors</b>) : Black, Purple, Orange, Black-Green, "
-          "<b>Cool Gray</b> (coloris par défaut de FM-9) et White-Blue. Ombres, lumière et gravures sont recalculées pour chaque coloris.",
+          "<b>Cool Gray</b> (coloris par défaut de FM-9) et White-Blue, plus le skin d'usine <b>NINE HANDS | DSP</b> (touches rouges). Ombres, lumière et gravures sont recalculées pour chaque coloris.",
           "<b>Edit colours...</b> ouvre le panneau de couleurs là où vous avez cliqué : choisissez l'élément à gauche (<b>Shell</b> : coque, "
           "<b>Pads</b> : plaques en silicone, <b>Keys</b> : touches et boutons, <b>Labels</b> : inscriptions, <b>Lights</b> : lumière des touches et des boutons), puis la couleur "
           "à droite (nuancier, curseurs ou code hexadécimal). La façade change pendant que vous réglez. Tant que vous ne réglez pas Labels, "

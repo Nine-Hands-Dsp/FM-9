@@ -17,6 +17,7 @@ static const FM9Skin skins[] = {             // memes valeurs que tools/make_art
     { "blackgreen", "Black-Green", 0xff464548, 0xff62b2a6, 0xff79d1c4, 0xffe9e7e3 },
     { "coolgray",   "Cool Gray",   0xffe2dad1, 0xff3c4044, 0xff1e1f22, 0xff2b2b2d },
     { "whiteblue",  "White-Blue",  0xffeeebe5, 0xff48637c, 0xff567592, 0xff2b2d33 },
+    { "ninehands",  "NINE HANDS | DSP", 0xffe2dad1, 0xff3c4044, 0xffe0483c, 0xff2b2b2d },   // skin d'usine NINE HANDS | DSP (touches rouges)
 };
 static constexpr int numSkins = (int) (sizeof (skins) / sizeof (skins[0]));
 static constexpr int defaultSkin = 4;              // Cool Gray : la FM-9 d'origine
@@ -427,7 +428,8 @@ FM9Editor::PageInfo FM9Editor::pageInfo() const
     const int pg = mode == mOp ? opPages[op] : pages[mode];
     switch (mode)
     {
-        case mHome: pi.name = "Home"; break;
+        case mHome: pi.name = "Home";                 // KNOB1-4 sur l'accueil : reglages les plus joues
+                    set ({ { "filter_a", "CUTOFF" }, { "filter_b", "RESONANCE" }, { "reverb_mix", "REVERB" }, { "delay_mix", "DELAY" } }); break;
         case mFx:
         {
             const int f = proc.getFxOrder()[(size_t) jlimit (0, 5, fxSlot)];
@@ -601,6 +603,12 @@ void FM9Editor::turnSlot (int k, int steps, bool fine)
         setParam (s.id, steps > 0 ? 1.0f : 0.0f);
         flash (pi.name.fromFirstOccurrenceOf (" ", false, false) + ": " + formatValue (s.id));
         return;
+    }
+    if (mode == mHome)
+    {
+        // l'effet regle depuis l'accueil se met en marche (filtre, reverb, delay)
+        const String sw = s.id.startsWith ("filter_") ? String ("filter_on") : s.id.endsWith ("_mix") ? s.id.upToFirstOccurrenceOf ("_", false, false) + "_on" : String();
+        if (sw.isNotEmpty() && proc.apvts.getParameter (sw) != nullptr && getParam (sw) < 0.5f) setParam (sw, 1.0f);
     }
     stepParam (s.id, steps, fine, s.label);
 }

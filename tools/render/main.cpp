@@ -118,6 +118,11 @@ static void midiTest()
     check (p.kbShift.load() == 24, "OCT+ en MIDI Learn (bouton) : deux appuis = +2 octaves");
     {
         FM9Editor ed (p); ed.setVisible (true);
+        const float cut0 = p.apvts.getParameter ("filter_a")->getValue();
+        p.ctlSteps[3].store (10);
+        juce::MessageManager::getInstance()->runDispatchLoopUntil (300);
+        check (p.apvts.getParameter ("filter_a")->getValue() > cut0 && p.apvts.getParameter ("filter_on")->getValue() > 0.5f,
+               "KNOB1 appris, page d'accueil : regle le Cutoff et met le filtre en marche");
         const float sc = (float) ed.getHeight() / fm9::layout::unitsH;
         for (auto kp : { fm9::layout::knob_knob1, fm9::layout::knob_knob4, fm9::layout::knob_select, fm9::layout::knob_presets })
         {

@@ -10,6 +10,7 @@ while read -r repo br script; do
   git clone -q --depth 1 --recurse-submodules -b "$br" "https://github.com/$repo" "$d" || { echo "$repo: clone fail" >> "$OUT/log.txt"; continue; }
   (
     cd "$d"
+    [ -f tools/get_toolchain.sh ] && timeout 900 bash tools/get_toolchain.sh   # chaine JieLi (Felucca et derives)
     # en-tetes generes d'abord (build.sh gen a la racine), puis la cible web
     if [ -f build.sh ]; then timeout 600 bash build.sh gen || timeout 900 bash build.sh; fi
     [ -f firmware/build.sh ] && (cd firmware && (timeout 600 bash build.sh gen || timeout 900 bash build.sh))
@@ -17,7 +18,8 @@ while read -r repo br script; do
     if [ "$(basename "$script")" = Makefile ]; then timeout 900 make web || timeout 900 make wasm || timeout 900 make; else timeout 900 bash "$(basename "$script")"; fi
   ) > "$OUT/$n.build.log" 2>&1
   rc=$?
+  for p in $(find "$d" -name "*.fwsc" -newer "$d/.git/HEAD" 2>/dev/null | head -2); do cp "$p" "$OUT/$n.$(basename "$p")"; done
   w=$(find "$d" -name "*.wasm" -newer "$d/.git/HEAD" -size +20k 2>/dev/null | head -1)
   [ -z "$w" ] && w=$(find "$d" -name "*.wasm" -size +20k 2>/dev/null | head -1)
   if [ -n "$w" ]; then cp "$w" "$OUT/$n.wasm"; echo "$repo: rc=$rc wasm=$w" >> "$OUT/log.txt"; else echo "$repo: rc=$rc no wasm" >> "$OUT/log.txt"; fi
-done < tools/web_sources.txt
+done < <(grep -v -e trawler -e rocket -e deal tools/web_sources.txt)

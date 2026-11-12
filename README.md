@@ -11,8 +11,6 @@ Synthétiseur FM 6 opérateurs au format VST3 (Windows et macOS), d'après le sy
   <a href="https://github.com/Nine-Hands-Dsp/fm-9/releases/latest"><img alt="Dernière version" src="https://img.shields.io/github/v/release/Nine-Hands-Dsp/fm-9?label=derni%C3%A8re%20version&color=3c4044"></a>
 </p>
 
-![FM-9](design/apercu_home.png)
-
 ## Ce que fait FM-9
 
 - **Moteur FM 6 opérateurs** façon DX7 : 32 algorithmes, feedback, enveloppes 4 vitesses / 4 niveaux par opérateur, enveloppe de hauteur, LFO 6 formes d'onde, échelonnage clavier, sensibilité à la vélocité, mode ratio / fixe. Cœur **msfa** (licence Apache 2.0, voir `msfa/NOTICE.md`).
@@ -27,8 +25,6 @@ Synthétiseur FM 6 opérateurs au format VST3 (Windows et macOS), d'après le sy
 - **Skins** : les 6 coloris officiels de la FM-1 (Black, Purple, Orange, Black-Green, Cool Gray, White-Blue), couleurs de la coque, des pavés, des touches, des inscriptions et des LED réglables à la volée, skins enregistrables et échangeables (`.fm9skin`).
 - **Arturia KeyStep 37** : profil optionnel (clic droit > MIDI > Controller), les 4 banques de potards de la KeyStep pilotent filtre, enveloppe, effets et LFO.
 - **NKS** : export des presets pour Komplete Kontrol et Maschine (bibliothèque utilisateur), avec 6 pages de potards nommées.
-
-![Les 6 coloris de la FM-1](design/FM-9_Skins.jpg)
 
 ## Firmwares de la FM-1
 

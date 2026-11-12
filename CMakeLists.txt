@@ -6,7 +6,7 @@ if(APPLE)
   set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "" FORCE)
 endif()
 
-project(FM9 VERSION 1.3.12)
+project(FM9 VERSION 1.3.13)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -45,7 +45,7 @@ juce_add_plugin(FM9
   FORMATS VST3
   VST3_CATEGORIES Instrument Synth
   PRODUCT_NAME "FM-9"
-  VERSION 1.3.12
+  VERSION 1.3.13
   DESCRIPTION "6-operator FM synthesizer in the spirit of the M-VAVE FM-1 (DX7 SysEx compatible)"
   IS_SYNTH TRUE
   NEEDS_MIDI_INPUT TRUE

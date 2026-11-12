@@ -120,6 +120,10 @@ public:
     void openColourPanel (juce::Point<int> at, int element = 0);
     void setSnapshotColours (const juce::String& spec);
     static juce::File skinFolder();
+    // skin au demarrage (nouvelles instances) : "f:<id>" coloris FM-1, "u:<nom>" skin perso ; reglage global
+    static juce::String startupSkin();
+    static void setStartupSkin (const juce::String& v);
+    void deleteUserSkin (const juce::File& f);
     static juce::Array<juce::File> userSkins();
     juce::String currentSkinJson (const juce::String& name) const;
     bool saveUserSkin (const juce::String& name);

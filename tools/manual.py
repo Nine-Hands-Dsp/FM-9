@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.12"
+VERSION = "1.3.13"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -301,19 +301,23 @@ T = dict(
         "calcul (un quart à la moitié d'un cœur de processeur) et tournent un peu en avance : FM-9 annonce ce décalage à Reaper, qui le compense.",
         "<b>Versions web (.wasm)</b> : l'émulateur web que beaucoup de projets publient sur leur page github.io. Plus légères, elles sont lancées par "
         "le moteur wasm3. <b>Hortator</b> (boîte à rythmes 8 pistes de DEADACTIVE) est fourni dans cette version.",
-        "<b>Catalogue</b> : clic droit &gt; Firmware &gt; <b>Catalog</b> liste tous les firmwares de la FM-1 recensés par la communauté "
-        "(listes de github.com/aroum/fm1-custom-fw et de fm1-emu) : chacun est marqué <b>Compatible</b> ou <b>Not compatible</b> (avec la raison), "
-        "et son type : HARDWARE (paquet .fwsc), WEB (.wasm) ou les deux. <b>Install</b> installe le firmware (paquet matériel et version web quand "
-        "les deux existent), <b>Load</b> le lance, <b>Install all compatible</b> installe d'un coup tous les firmwares libres compatibles. "
-        "<b>Refresh</b> télécharge la dernière liste publiée. <b>Close</b> pendant une installation l'annule, puis ferme la fenêtre. Une version web qui ne démarre pas en 20 secondes n'est pas gardée (le paquet matériel reste installé). Un double-clic sur une ligne ouvre la page du projet. "
+        "<b>Catalogue</b> : clic droit &gt; Firmware &gt; <b>Catalog</b> montre en galerie tous les firmwares de la FM-1 recensés par la communauté "
+        "(listes de github.com/aroum/fm1-custom-fw et de fm1-emu, complétées par FM-9 : fichiers publiés dans les Releases des projets, et versions "
+        "compilées par FM-9 depuis le code source quand le projet n'en publie pas). Chaque fiche montre l'écran du firmware, son nom, une courte "
+        "description et trois boutons : la <b>flèche bleue</b> le télécharge (un anneau montre la progression), la <b>coche verte</b> s'allume une fois "
+        "le firmware téléchargé et le lance d'un clic, la <b>corbeille</b> le supprime (avec confirmation). Quand une version plus récente d'un firmware "
+        "installé est publiée, sa fiche s'entoure d'orange, un bandeau <b>UPDATE</b> s'affiche sur l'écran et la flèche, orange, installe la mise à jour. "
+        "En haut, le champ <b>Search</b> filtre par nom, auteur ou description, et <b>Compatible only</b> masque les firmwares incompatibles (marqués avec leur raison). "
+        "<b>Install all compatible</b> installe d'un coup tous les firmwares libres compatibles, <b>Refresh</b> télécharge la dernière liste publiée. "
+        "<b>Close</b> pendant une installation l'annule, puis ferme la fenêtre. Une version web qui ne démarre pas en 20 secondes n'est pas gardée "
+        "(le paquet matériel reste installé). Un double-clic sur une fiche ouvre la page du projet. "
         "<b>Firmwares matériels et DAW</b> : l'émulation de la puce tourne en avance sur le son. Par défaut (Firmware &gt; Emulation buffer &gt; "
         "<b>Automatic</b>), cette avance est courte quand vous jouez en direct et grandit seule quand Reaper calcule en avance (lecture, "
         "calcul anticipé) ; Reaper compense le décalage. Low latency, Normal et Safe fixent une avance de 35, 70 ou 140 ms. "
         "<b>Chip clock</b> règle l'horloge de la puce émulée (240 MHz comme la FM-1, 360 MHz par défaut, 480 MHz ; plus de calcul). "
-        "<b>Supprimer un firmware</b> : clic droit &gt; Firmware &gt; <b>Delete firmware</b>, ou la poubelle <b>Delete</b> à droite de Load dans le catalogue (une confirmation est demandée). "
+        "<b>Supprimer un firmware</b> : clic droit &gt; Firmware &gt; <b>Delete firmware</b>, ou la corbeille de sa fiche dans le catalogue (une confirmation est demandée). "
         "Tout ce qui a été installé est effacé de l'ordinateur (Windows ou macOS) : paquet, version web, sauvegardes (patterns, réglages) et aperçu ; "
-        "si c'était le firmware en cours, FM-9 revient à son propre synthé. Quand le catalogue propose une version plus récente d'un firmware "
-        "installé, son bouton devient <b>Update</b>. "
+        "si c'était le firmware en cours, FM-9 revient à son propre synthé. "
         "Avec un firmware chargé, les touches des notes reçues de votre clavier maître s'éclairent aussi, même si le firmware ne les allume pas lui-même. "
         "<b>Lumières</b> : avec un firmware, les touches et boutons s'allument comme le firmware le décide, et aussi quand vous jouez : "
         "notes reçues du clavier maître (la touche de même nom, ramenée par octaves sur F3 à G5), touche, bouton ou OCT tenus à la souris. "
@@ -321,9 +325,8 @@ T = dict(
         "Clic droit &gt; Firmware &gt; <b>MIDI channel sent to firmware</b> renvoie tout ce que joue votre clavier maître sur le canal choisi "
         "(<b>As received</b> : canal d'origine, par défaut). Si votre clavier ne fait rien avec un firmware, choisissez Channel 1. "
         "<b>Golana</b> s'installe dans sa version native (celle de sa page « Try it in your browser »), bien plus légère que la puce émulée. "
-"<b>Aperçu</b> : laissez le curseur sur le nom d'un firmware compatible pendant un peu moins d'une seconde : FM-9 le démarre hors écran "
-        "et montre ce qu'affiche son écran (l'aperçu est gardé pour les fois suivantes). Une barre montre la progression : téléchargement, "
-        "puis démarrage du firmware ; pendant une installation, le bouton Install se remplit avec le pourcentage téléchargé.",
+"<b>Écrans</b> : les vignettes de la galerie sont publiées avec le catalogue et gardées sur l'ordinateur ; pour un firmware installé "
+        "sans vignette publiée, FM-9 le démarre hors écran pour en montrer l'écran.",
         "<b>Firmware d'origine</b> : il n'est pas libre, FM-9 ne le fournit pas ; l'entrée FM-1 original firmware du catalogue le télécharge "
         "depuis le serveur de M-VAVE, ou bien installez le FM-1.fwsc téléchargé sur le site de M-VAVE avec Install from file.",
         "<b>Autres installations</b> : <b>Install from GitHub...</b> (adresse du dépôt, de sa page github.io ou de son installeur web : FM-9 y cherche "
@@ -344,7 +347,9 @@ T = dict(
           "lettres allumées des boutons ; à 0 %, la LED reste allumée sans halo. Le Glow est enregistré avec vos skins.",
           "<b>Save skin...</b> (dans le panneau) ou <b>Save skin as preset...</b> enregistre vos couleurs sous un nom : elles apparaissent ensuite "
           "dans la section <b>My skins</b> du menu. Chaque skin est un petit fichier .fm9skin (dossier Nine Hands DSP/FM-9/Skins) que l'on peut "
-          "échanger : <b>Import</b>, <b>Export</b>, <b>Delete skin preset</b>, <b>Open skins folder</b>. Le skin choisi est mémorisé avec le projet."],
+          "échanger : <b>Import</b>, <b>Export</b>, <b>Open skins folder</b>. <b>Delete skin</b> supprime un de vos skins après confirmation "
+          "(les coloris de la FM-1 ne se suppriment pas). <b>Startup skin</b> choisit le skin des nouvelles instances de FM-9 : un coloris de la FM-1 "
+          "ou un de vos skins. Le skin choisi est mémorisé avec le projet."],
     ks_t="Arturia KeyStep 37",
     ks=["Clic droit &gt; MIDI &gt; Controller &gt; <b>Arturia KeyStep 37</b> active le profil de la KeyStep 37 (désactivé par défaut : sans lui, "
         "seul le MIDI Learn assigne des CC). Mettez la KeyStep en mode Control (Shift + Chord) : chaque banque de potards, avec ses CC d'usine, "
@@ -425,7 +430,7 @@ def section():
     rows = [t["fac_hdr"]] + [[str(i + 1).zfill(3), "<b>" + n + "</b>", d] for i, (n, d) in enumerate(FACTORY)]
     f.append(table(rows, [12 * mm, 30 * mm, W - 42 * mm], small=True))
     f.append(P(t["fw_t"], "h1")); f += [P(x) for x in t["fw"][:4]]
-    f.append(img(os.path.join(SHOTS, "apercu_catalogue.png"), W * 0.8)); f.append(P("Le catalogue des firmwares : aperçu de l'écran de Felucca au survol de son nom.", "small"))
+    f.append(img(os.path.join(SHOTS, "apercu_catalogue.png"), W * 0.8)); f.append(P("Le catalogue des firmwares en galerie : Felucca installé avec une mise à jour disponible (bandeau UPDATE).", "small"))
     f += [P(x) for x in t["fw"][4:]]
     f.append(KeepTogether([img(os.path.join(SHOTS, "apercu_materiel.png"), W * 0.72), P("Felucca, firmware matériel (.fwsc), dans l'émulateur de la puce.", "small")]))
     f.append(PageBreak())

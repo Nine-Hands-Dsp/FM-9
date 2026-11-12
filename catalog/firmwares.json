@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/aroum/fm1-custom-fw",
- "generated": "2026-11-12 10:05",
+ "generated": "2026-11-12 14:30",
  "firmwares": [
   {
    "name": "FM-1 original firmware",
@@ -562,11 +562,13 @@
    "desc": "Torso T-1 style generative algorithmic sequencer firmware for the FM-1",
    "repo": "tensor-programming/fm1-t1",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/tensor-programming-fm1-t1.wasm",
+   "abi": "web",
+   "size": 0,
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from tensor-programming/fm1-t1 (branch main, commit bea0fd38fbeb), started in FM-9"
   },
   {
    "name": "Patricktronics",
@@ -576,11 +578,15 @@
    "desc": "Self-evolving ambient looping synthesizer inspired by Robert Fripp and Brian Eno's tape-delay Frippertronics setup",
    "repo": "gaumondp/patricktronics",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/gaumondp-patricktronics.wasm",
+   "abi": "web",
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/gaumondp-patricktronics.fwsc",
+   "pkgVersion": "a6e5e28",
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from gaumondp/patricktronics (branch init, commit a6e5e28472fd), started in FM-9"
   },
   {
    "name": "FMini-1",
@@ -669,11 +675,14 @@
    "desc": "Kid- and beginner-friendly firmware",
    "repo": "kpalaniuk/gnomad-firmware",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/kpalaniuk/gnomad-firmware/releases/download/v1.0.0-r12/gnomad-v1-115e11e.fwsc",
+   "pkgVersion": "1.0.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Araminta",
@@ -683,11 +692,14 @@
    "desc": "Modular-effects groovebox for the FM-1 with reorderable dynamic DSP signal routing",
    "repo": "Wulgaren/Araminta",
    "page": "https://wulgaren.github.io/Araminta/webapp/installer/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://wulgaren.github.io/Araminta/firmware/felucca-v3.9-gfae4b03.fwsc",
+   "pkgVersion": "3.9",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "ESTAMPIE",
@@ -746,11 +758,15 @@
    "desc": "Expressive MPE synthesizer firmware for the M-VAVE FM-1",
    "repo": "tamabotmusic/TamaMPE",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/tamabotmusic-TamaMPE.fwsc",
+   "pkgVersion": "fa2609e",
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from tamabotmusic/TamaMPE (branch feature/web-emulator, commit fa2609e1a203), started in FM-9"
   },
   {
    "name": "Blue Hare",
@@ -760,11 +776,15 @@
    "desc": "Multi-engine synthesis workstation with vintage computer chips, vocal synthesis, and a 14-segment retro display",
    "repo": "TristanoSuriani/fel-tracker",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/TristanoSuriani-fel-tracker.wasm",
+   "abi": "web",
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/TristanoSuriani-fel-tracker.fwsc",
+   "pkgVersion": "35c7a23",
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from TristanoSuriani/fel-tracker (branch blue-hare, commit 35c7a230b542), started in FM-9"
   },
   {
    "name": "CRT-4",
@@ -878,11 +898,15 @@
    "desc": "Felucca modification enabling multi-track drum kits across any channel",
    "repo": "briwil/Felucca",
    "page": "https://briwil.github.io/Felucca/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/briwil-Felucca.wasm",
+   "abi": "web",
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/briwil-Felucca.fwsc",
+   "pkgVersion": "3dca984",
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from briwil/Felucca (branch cesari, commit 3dca9841e437), started in FM-9"
   },
   {
    "name": "ChoralRoot J-6",
@@ -892,11 +916,14 @@
    "desc": "Port of ChoralRoot chord-machine firmware incorporating the Roland Aira Compact J-6 chord set and progression library",
    "repo": "EremanSim/ChoralRootj-6",
    "page": "https://eremansim.github.io/ChoralRootj-6/webapp/installer/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/EremanSim/ChoralRootj-6/releases/download/v0.23-j6/choralroot-0.23-j6.fwsc",
+   "pkgVersion": "0.23",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "more chords!",
@@ -921,11 +948,14 @@
    "desc": "Ports the AMY (Additive Music synthesizer librarY) polyphonic Juno-60 engine to the M-VAVE FM-1",
    "repo": "dpwe/fm1-amy",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/dpwe/fm1-amy/releases/download/v0.1.0/fm1-amy-0.1.0.fwsc",
+   "pkgVersion": "0.1.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "OrganVave-1",
@@ -949,11 +979,14 @@
    "desc": "Suite of 5 generative ambient and hauntological firmwares: Midnight Route, Voicemail, Untrue Step, Half-Light, and Worn Tape",
    "repo": "davidpryan/haunted-fm1",
    "page": "https://davidpryan.github.io/haunted-fm1/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/davidpryan/haunted-fm1/releases/download/v0.1/halflight-0.1.fwsc",
+   "pkgVersion": "0.1",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "FM-PLAITS",
@@ -963,11 +996,14 @@
    "desc": "16 Mutable Instruments Plaits-inspired macro-oscillator models with an algorithmic generative melody sequencer",
    "repo": "Narti-Live/fm1-fm-plaits",
    "page": "https://narti-live.github.io/fm1-fm-plaits/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://narti-live.github.io/fm1-fm-plaits/install/FM-PLAITS.fwsc",
+   "pkgVersion": "",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Tessera (Melodee Tess)",
@@ -992,11 +1028,15 @@
    "desc": "Generative ambient synthesizer firmware focusing on vintage drift, meditation soundscapes, and warmth",
    "repo": "synthi/fm1-1971",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/synthi-fm1-1971.wasm",
+   "abi": "web",
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/synthi-fm1-1971.fwsc",
+   "pkgVersion": "d422a99",
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from synthi/fm1-1971 (branch fw-1971, commit d422a998f2d9), started in FM-9"
   },
   {
    "name": "Haave",
@@ -1035,11 +1075,15 @@
    "desc": "Expressive cat-vocalization synthesizer (meow, purr, hiss) and 4-track feline band based on Felucca",
    "repo": "JB-Interactive/Felucca-Meow",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/JB-Interactive-Felucca-Meow.wasm",
+   "abi": "web",
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/JB-Interactive-Felucca-Meow.fwsc",
+   "pkgVersion": "f21d6d6",
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from JB-Interactive/Felucca-Meow (branch main, commit f21d6d69e88e), started in FM-9"
   },
   {
    "name": "NCC (Novation Circuit Companion)",
@@ -1128,11 +1172,13 @@
    "desc": "Experimental drone instrument with nine original oscillator-pair/cluster modes, phase/ring modulation, filtering, stereo delay/scattering feedback an…",
    "repo": "mykeln/fm1-rift",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/mykeln-fm1-rift.wasm",
+   "abi": "web",
+   "size": 0,
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from mykeln/fm1-rift (branch main, commit 09858020e5f8), started in FM-9"
   },
   {
    "name": "Veffbox",
@@ -1204,11 +1250,14 @@
    "desc": "Rhythm section for cumbia, salsa, merengue and bolero",
    "repo": "TexasRADIO/compas-firmware",
    "page": "https://thebigbeat.app/compas/install/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/TexasRADIO/compas-firmware/releases/download/compas-v1.1/compas-1.1-en.fwsc",
+   "pkgVersion": "1.1",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "SLOOP",
@@ -1481,11 +1530,14 @@
    "desc": "Four-machine acid groovebox inspired by Propellerhead ReBirth RB-338: dual TB-303 style acid basslines alongside TR-808 and TR-909 drum machines (inc…",
    "repo": "AlexanderSeel/TheReFmB1rth",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.18/TheReFmB1rth-experimental.fwsc",
+   "pkgVersion": "0.1.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Kawa Tracker",
@@ -1698,11 +1750,14 @@
    "desc": "Interactive performance firmware designed for the Novation Launchpad Pro MK3, featuring playable synth sounds, interactive LED lightshows, and a brow…",
    "repo": "megagott/launchparty-fm1",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/megagott/launchparty-fm1/releases/download/v0.3.2-public/launchparty-0.3.2-public.fwsc",
+   "pkgVersion": "0.3.2",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "KARMA",
@@ -1794,11 +1849,14 @@
    "desc": "Virtual acoustic and electric guitar performance instrument mapping the FM-1's 27 keys into an interactive fretboard and strumming surface",
    "repo": "xMagElonx/fm1-guitar",
    "page": "https://fm1-tone-engine.app.workbuddy.host/guitar-fw/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/xMagElonx/fm1-guitar/releases/download/b1.6.2/fm1-guitar-b1.6.2.fwsc",
+   "pkgVersion": "1.6.2",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Jambox FM-1",
@@ -2282,11 +2340,14 @@
    "desc": "Dark performance synth and 4-track groovebox with a cybernetic reactive UI",
    "repo": "TerkWerX/FM1-TERKINSTEIN-Firmware",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/TerkWerX/Crepuscular_Homunculus/releases/download/v0.26.19/Crepuscular-Homunculus-0.26.19.fwsc",
+   "pkgVersion": "0.26.19",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Niagara Drift",
@@ -2423,11 +2484,14 @@
    "desc": "Talking speech synthesizer and singing voice firmware for the FM-1: every keypress speaks or sings the next syllable or word of a sentence at that no…",
    "repo": "genkigenki/Speak37",
    "page": "https://genkigenki.github.io/smk37/#fw-speak37",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/genkigenki/Speak37/releases/download/v1.0/speak37-fm1-1.0.fwsc",
+   "pkgVersion": "1.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "FMEL-1 (MEL)",
@@ -2484,11 +2548,14 @@
    "desc": "Acoustic concert grand piano firmware featuring dedicated dual-target builds for both the M-VAVE FM-1 (erik37-fm1.fwsc) and SMK-37 (Pro, Elite, MKE-P…",
    "repo": "genkigenki/erik37",
    "page": "https://genkigenki.github.io/smk37/#fw-erik37",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/genkigenki/erik37/releases/download/v1.2/erik37-fm1.fwsc",
+   "pkgVersion": "1.2",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "LOOM-8",
@@ -2643,11 +2710,14 @@
    "desc": "Dedicated educational 6-operator FM synthesizer built for learning Yamaha DX7 frequency modulation hands-on",
    "repo": "jsmith13/fm_lab",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/jsmith13/fm_lab/releases/download/v1.2.0/fmlab-1.2.0.fwsc",
+   "pkgVersion": "1.2.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Bytemania",
@@ -2770,11 +2840,14 @@
    "desc": "Toddler-friendly toy synthesizer firmware with zero risk of misconfiguration",
    "repo": "WillCMcC/kidboy-firmware",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/WillCMcC/kidboy-firmware/releases/download/v0.1/kidboy-2e400c2.fwsc",
+   "pkgVersion": "0.1",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Carnac OS",
@@ -2867,11 +2940,14 @@
    "desc": "6-operator FM and Virtual Analog 4-track performance firmware with dedicated desktop companion software",
    "repo": "Nacsez/FMER",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/Nacsez/FMER/releases/download/build-736-r2/fmer736-compatible-r2.fwsc",
+   "pkgVersion": "",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Ketch",
@@ -2898,11 +2974,13 @@
    "desc": "Classic vertical demoscene tracker following the LSDJ paradigm (Song, Chain, Phrase, Instrument, Table, Groove)",
    "repo": "y6zkcqnf5r-hue/fm1-trawler",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/y6zkcqnf5r-hue-fm1-trawler.wasm",
+   "abi": "web",
+   "size": 0,
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from y6zkcqnf5r-hue/fm1-trawler (branch main, commit 153f4f4433f1), started in FM-9"
   },
   {
    "name": "FM2000",
@@ -2912,11 +2990,12 @@
    "desc": "PlayStation Music 2000 (MTV Music Generator) inspired song maker and arrangement workstation for the FM-1",
    "repo": "jukejutsu/FM2000",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/jukejutsu/FM2000/main/sim/fm2k.wasm",
+   "abi": "web",
+   "size": 0,
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "MIDIMON",
@@ -2943,11 +3022,14 @@
    "desc": "Master quad MIDI hardware sequencer transforming the FM-1 into four independent sequencers for external gear",
    "repo": "devrvega/SEQ-4",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/devrvega/SEQ-4/releases/download/v0.1.0/seq4-0.1.0.fwsc",
+   "pkgVersion": "0.1.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "WitchBox",
@@ -3142,11 +3224,14 @@
    "desc": "Drone synth: white keys latch scale tones on and off, black keys glide them up or down the scale like a steel guitar, always in key",
    "repo": "ttreu/fm1-glider",
    "page": "https://subcity.at/flash/fm1-glider/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/ttreu/fm1-glider/releases/download/v0.5.0-beta/FM1-GLIDER.fwsc",
+   "pkgVersion": "0.5.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "GLITCH",
@@ -3156,11 +3241,14 @@
    "desc": "Drum machine for glitch and microsound beats; every sound is synthesized",
    "repo": "ttreu/fm1-glitch",
    "page": "https://subcity.at/flash/fm1-glitch-drums/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/ttreu/fm1-glitch/releases/download/v0.3.0-beta/FM1-GLITCH.fwsc",
+   "pkgVersion": "0.3.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "ARPHONY",
@@ -3170,11 +3258,14 @@
    "desc": "Modal arpeggiator: a repeating single-note riff on top, the bass and up to two chord tones below, chords moving slowly through a mode",
    "repo": "ttreu/fm1-arphony",
    "page": "https://subcity.at/flash/fm1-arphony/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/ttreu/fm1-arphony/releases/download/v0.4.0-beta/FM1-ARPHONY.fwsc",
+   "pkgVersion": "0.4.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "CYMA-1",
@@ -3198,11 +3289,14 @@
    "desc": "A tracker for the FM-1 and for the model that writes with you: notes are carved one at a time rather than recorded, and a song is a plain-text .trk f…",
    "repo": "jaeggerr/moondaw-fm1",
    "page": "https://moondaw.com/install/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/jaeggerr/moondaw-fm1/releases/download/v0.3/moondaw-0.3.fwsc",
+   "pkgVersion": "0.3",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "FM1-TRAX",
@@ -3280,11 +3374,14 @@
    "desc": "Japanese singing songwriter synthesizer and groovebox firmware for the M-VAVE FM-1",
    "repo": "MichaelAPerry/MIKU-FM1",
    "page": "https://michaelaperry.github.io/MIKU-FM1/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/MichaelAPerry/MIKU-FM1/releases/download/v0.8/miku-fm-0.8.fwsc",
+   "pkgVersion": "0.8",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Beetroot Tempura",
@@ -3337,11 +3434,14 @@
    "desc": "Web Installer & Emulator",
    "repo": "matttallison/quadro-fm1",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/matttallison/quadro-fm1/releases/download/1.8/quadro-1.8.fwsc",
+   "pkgVersion": "1.8",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "K-WASUB",
@@ -3368,11 +3468,14 @@
    "desc": "Pure DX7 sound module firmware designed for deep MIDI integration, studio sequencing, and live layering/splits",
    "repo": "esbenvb/fm1-dx747",
    "page": "https://esbenvb.github.io/fm1-dx747/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/esbenvb/fm1-dx747/releases/download/v0.1/FM1_DX747.fwsc",
+   "pkgVersion": "0.1",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "RHYTHMER OS",
@@ -3396,11 +3499,14 @@
    "desc": "Web Installer",
    "repo": "keremimo/saadet",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/keremimo/saadet/releases/download/v1.0.5/saadet-1.0.5.fwsc",
+   "pkgVersion": "1.0.5",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "BAILE",
@@ -3575,11 +3681,13 @@
    "desc": "Clip-launching performance firmware turning the FM-1 into an Ableton Live-style clip launcher and matrix sequencer",
    "repo": "cmlarsen/fm1-rocket-os",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/cmlarsen-fm1-rocket-os.wasm",
+   "abi": "web",
+   "size": 0,
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from cmlarsen/fm1-rocket-os (branch integration, commit d269df962a6d), started in FM-9"
   },
   {
    "name": "Optimist",
@@ -3589,11 +3697,14 @@
    "desc": "Modular firmware builder and platform allowing users to custom-assemble FM-1 firmware images tailored to flash and RAM budgets directly from the brow…",
    "repo": "w0ts/optimist",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/w0ts/optimist/releases/download/v0.3/optimist-0.3-drum-machines.fwsc",
+   "pkgVersion": "0.3",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Dinghy",
@@ -3712,11 +3823,14 @@
    "desc": "Talking formant vocal synthesizer with an integrated 303-style acid step sequencer",
    "repo": "ejtb76/FMLarynx",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/ejtb76/FMLarynx/releases/download/v0.1.1/fmlarynx-0.1.1.fwsc",
+   "pkgVersion": "0.1.1",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "EXTRATONE CORE",
@@ -3771,11 +3885,14 @@
    "desc": "Display testing firmware and web companion for transmitting and displaying arbitrary bitmap pictures on the FM-1's color screen over WebMIDI",
    "repo": "charlesvestal/fm1-mocky",
    "page": "https://charlesvestal.github.io/fm1-mocky/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/charlesvestal/fm1-mocky/releases/download/v0.9.2/mocky-0.9.2.fwsc",
+   "pkgVersion": "0.9.2",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "fm1-mdx",
@@ -3831,11 +3948,14 @@
    "desc": "Virtual-pet Tamagotchi-style game and mini-instrument for the FM-1 featuring pixel-art animations",
    "repo": "adamcharleswilsonmusic-code/Trumpagotchi",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/adamcharleswilsonmusic-code/Trumpagotchi/releases/download/v1.0.1/trumpagotchi.fwsc",
+   "pkgVersion": "1.0.1",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Trireme FM-1",
@@ -3845,11 +3965,14 @@
    "desc": "Transforms the FM-1 into a fully programmable USB computer keyboard and macro pad with Vial GUI configuration support",
    "repo": "ignis32/trireme_fm1",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/ignis32/trireme_fm1/releases/download/v0.1.1/trireme-fm1-v0.1.1.fwsc",
+   "pkgVersion": "0.1.1",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "RemoteFM1",
@@ -3890,11 +4013,14 @@
    "desc": "Interactive claymation demo and music player tribute to The Neverhood for the M-VAVE FM-1",
    "repo": "snpwball/fm1-neverhood",
    "page": "https://snpwball.github.io/fm1/neverhood/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://snpwball.github.io/fm1/neverhood/neverhood.fwsc",
+   "pkgVersion": "",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "fm1-radio",
@@ -3919,11 +4045,14 @@
    "desc": "PICO-8 fantasy console emulator firmware for the M-VAVE FM-1",
    "repo": "acidsound/picovave",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/acidsound/picovave/releases/download/12822759/picovave-fm1.fwsc",
+   "pkgVersion": "",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Cat Piano",
@@ -3947,11 +4076,13 @@
    "desc": "16-bit retro arcade game adaptation of Deal or No Deal for the FM-1",
    "repo": "Kiwi3p/fm1-deal-or-no-deal",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
-   "url": "",
-   "abi": "",
-   "size": 0
+   "compatible": true,
+   "reason": "",
+   "url": "https://raw.githubusercontent.com/Nine-Hands-Dsp/FM-9/main/catalog/builds/Kiwi3p-fm1-deal-or-no-deal.wasm",
+   "abi": "web",
+   "size": 0,
+   "license": "GPL-3.0",
+   "verified": "built by FM-9 from Kiwi3p/fm1-deal-or-no-deal (branch main, commit a8ffcf798967), started in FM-9"
   },
   {
    "name": "Doom E1M1",
@@ -3961,11 +4092,14 @@
    "desc": "Port of the first level of Doom (E1M1) running natively on the FM-1 hardware, complete with title screen, sound effects, and music",
    "repo": "seanohollaren/fm1-doom",
    "page": "https://doom.deadlockinteractive.com/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://raw.githubusercontent.com/seanohollaren/fm1-doom/main/site/frontend/public/firmware/doom-b16.fwsc",
+   "pkgVersion": "",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Doom FM-1 / SMK",
@@ -4006,11 +4140,14 @@
    "desc": "Native pixel-art side-scrolling rhythm game: play a fixed-pitch melody on the FM-1 keys while accompaniment plays automatically",
    "repo": "nasonliu/retrodash",
    "page": "",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://github.com/nasonliu/retrodash/releases/download/v0.2.0-beta/retrodash-0.2.0-beta.fwsc",
+   "pkgVersion": "0.2.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "FM-1 Midi-Mania",
@@ -4020,11 +4157,14 @@
    "desc": "Keyboard rhythm game: turn any MIDI file into a song, watch your part's notes fall to the keys on screen and play it while the FM-1 plays the rest of…",
    "repo": "shan-sherif/fm-1-midi-mania",
    "page": "https://shan-sherif.github.io/fm-1-midi-mania/webapp/installer/",
-   "compatible": false,
-   "reason": "no update package (.fwsc) or web build published",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 0,
+   "pkg": "https://shan-sherif.github.io/fm-1-midi-mania/firmware/midi-mania-0.9.0.fwsc",
+   "pkgVersion": "0.9.0",
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
   },
   {
    "name": "Arctic Scream",

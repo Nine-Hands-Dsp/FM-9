@@ -120,18 +120,22 @@ bool WasmFirmware::start (const void* wasm, size_t size, juce::String& error)
         storageMirror.assign (flashSize, 0xff);
         if (restored) std::memcpy (storageMirror.data(), saved.getData(), flashSize);
     }
-    else if (fn ("web_render") != nullptr)
+    else if (fn ("web_render") != nullptr || fn ("fh_render") != nullptr)
     {
+        const juce::String pre = fn ("web_render") != nullptr ? "web_" : "fh_";        // fh_ : meme interface sous un autre prefixe (RIFT)
+        auto w = [&pre] (const char* n) { static thread_local std::string tmp; tmp = (pre + n).toStdString(); return tmp.c_str(); };
         kind = Abi::web;
-        fRender = fn ("web_render"); fOutL = fn ("web_out_l"); fOutR = fn ("web_out_r");
-        fButtons = fn ("web_buttons"); fKeys = fn ("web_keys"); fEnc = fn ("web_enc"); fMaster = fn ("web_master");
-        fLeds = fn ("web_lit_buttons"); fKeyLeds = fn ("web_lit_keys"); fDimKeys = fn ("web_dim_keys"); fMidi = fn ("web_midi");
-        fFb = fn ("web_fb");
-        if (fFb != nullptr) { fBlits = fn ("web_blits"); masterMax = 4096.0f; fbSwapped = true; }
-        else { fFb = fn ("web_screen"); fBlits = fn ("web_screen_draws"); masterMax = 1023.0f; fbSwapped = true; }
-        fNor = fn ("web_nor"); fNorSize = fn ("web_nor_size"); fNorWrites = fn ("web_flash_writes_count");
-        fStore = fn ("web_store"); fStoreLen = fn ("web_store_len"); fStoreSetLen = fn ("web_store_set_len");
-        fStoreWrites = fn ("web_store_writes"); fNobj = fn ("web_nobj"); fStoreMax = fn ("web_store_max");
+        fRender = fn (w ("render")); fOutL = fn (w ("out_l")); fOutR = fn (w ("out_r"));
+        fButtons = fn (w ("buttons")); fKeys = fn (w ("keys")); fEnc = fn (w ("enc")); fMaster = fn (w ("master"));
+        fLeds = fn (w ("lit_buttons")); fKeyLeds = fn (w ("lit_keys")); fDimKeys = fn (w ("dim_keys")); fMidi = fn (w ("midi"));
+        fFb = fn (w ("fb"));
+        if (fFb != nullptr) { fBlits = fn (w ("blits")); masterMax = 4096.0f; fbSwapped = true; }
+        else { fFb = fn (w ("screen")); fBlits = fn (w ("screen_draws")); masterMax = 1023.0f; fbSwapped = true; }
+        fNor = fn (w ("nor")); fNorSize = fn (w ("nor_size")); fNorWrites = fn (w ("flash_writes_count"));
+        if (fNorWrites == nullptr) fNorWrites = fn (w ("flash_writes"));
+        if (fNor == nullptr) { fNor = fn (w ("nv")); fNorSize = fn (w ("nv_size")); fNorWrites = fn (w ("nv_writes")); }   // variante (FM2000)
+        fStore = fn (w ("store")); fStoreLen = fn (w ("store_len")); fStoreSetLen = fn (w ("store_set_len"));
+        fStoreWrites = fn (w ("store_writes")); fNobj = fn (w ("nobj")); fStoreMax = fn (w ("store_max"));
         if (fOutL == nullptr || fOutR == nullptr) { error = "web_out"; return false; }
 
         juce::MemoryBlock saved;
@@ -165,7 +169,9 @@ bool WasmFirmware::start (const void* wasm, size_t size, juce::String& error)
                 }
             }
         }
-        if (! call (fn ("web_boot"))) { error = "web_boot"; return false; }
+        auto* boot = fn (w ("boot"));
+        if (boot == nullptr) boot = fn (w ("init"));                                          // variante (FM2000)
+        if (! call (boot)) { error = "web_boot"; return false; }
     }
     else { error = "not an FM-1 firmware (no sim_render / web_render)"; return false; }
 
@@ -502,7 +508,7 @@ int FirmwareInstaller::abiOf (const void* data, size_t size)
                 const juce::String name (juce::CharPointer_UTF8 ((const char*) d + q), nl);
                 q += nl; q += 1; leb (q);
                 if (name == "sim_render") found = 1;
-                else if (name == "web_render" && found == 0) found = 2;
+                else if ((name == "web_render" || name == "fh_render") && found == 0) found = 2;
             }
             return found;
         }

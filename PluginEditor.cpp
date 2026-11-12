@@ -49,6 +49,33 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     menuLnf.reg = light; menuLnf.med = med; menuLnf.bold = bold;
     faceBase = ImageCache::getFromMemory (BinaryData::face_base_png, BinaryData::face_base_pngSize);
     faceMaps = ImageCache::getFromMemory (BinaryData::face_maps_png, BinaryData::face_maps_pngSize);
+    if (! proc.uiState.hasProperty ("skin"))
+    {
+        // nouvelle instance : skin choisi au demarrage (clic droit > Skin > Startup skin)
+        const auto st = startupSkin();
+        bool done = false;
+        if (st.startsWith ("u:"))
+            if (auto f = skinFolder().getChildFile (st.substring (2) + ".fm9skin"); f.existsAsFile())
+            {
+                const auto v = JSON::parse (f.loadFileAsString());
+                const char* keys[numElements] = { "shell", "pads", "keys", "labels", "leds" };
+                if (v.isObject())
+                {
+                    proc.uiState.setProperty ("skin", "custom", nullptr);
+                    for (int e = 0; e < numElements; ++e)
+                    {
+                        const auto t = v.getProperty (keys[e], {}).toString().trim().removeCharacters ("#");
+                        if (t.length() == 6) proc.uiState.setProperty (elementKey (e), "ff" + t, nullptr);
+                    }
+                    if (proc.uiState.getProperty (elementKey (4)).toString().isEmpty()) proc.uiState.setProperty (elementKey (4), Colour (defaultLed).toString(), nullptr);
+                    if (v.hasProperty ("glow")) proc.uiState.setProperty ("glow", jlimit (0, 100, (int) v.getProperty ("glow", 75)), nullptr);
+                    proc.uiState.setProperty ("skinName", f.getFileNameWithoutExtension(), nullptr);
+                    done = true;
+                }
+            }
+        if (! done && st.startsWith ("f:"))
+            for (int i = 0; i < numSkins; ++i) if (st.substring (2) == skins[i].id) proc.uiState.setProperty ("skin", skins[i].id, nullptr);
+    }
     loadColours();
 
     auto img = [] (const char* d, int s) { return ImageCache::getFromMemory (d, s); };
@@ -260,6 +287,14 @@ Array<File> FM9Editor::userSkins()
     list.sort();
     return list;
 }
+
+static File startupSkinFile() { return FM9Editor::skinFolder().getChildFile ("Startup skin.txt"); }
+String FM9Editor::startupSkin()
+{
+    const auto v = startupSkinFile().loadFileAsString().trim();
+    return v.isNotEmpty() ? v : String ("f:") + skins[defaultSkin].id;
+}
+void FM9Editor::setStartupSkin (const String& v) { skinFolder().createDirectory(); startupSkinFile().replaceWithText (v); }
 
 String FM9Editor::currentSkinJson (const String& name) const
 {
@@ -1889,11 +1924,26 @@ PopupMenu FM9Editor::buildSkinMenu()
     skinMenu.addSeparator();
     skinMenu.addItem (950, "Edit colours...");
     skinMenu.addItem (951, "Save skin as preset...");
+    {
+        // skin des nouvelles instances de FM-9
+        PopupMenu st;
+        const auto cur = startupSkin();
+        st.addSectionHeader ("FM-1 colors");
+        for (int i = 0; i < numSkins; ++i) st.addItem (2100 + i, skins[i].name, true, cur == String ("f:") + skins[i].id);
+        if (! userList.isEmpty())
+        {
+            st.addSeparator();
+            st.addSectionHeader ("My skins");
+            for (int i = 0; i < userList.size() && i < 90; ++i)
+                st.addItem (2200 + i, userList[i].getFileNameWithoutExtension(), true, cur == "u:" + userList[i].getFileNameWithoutExtension());
+        }
+        skinMenu.addSubMenu ("Startup skin", st);
+    }
     if (! userList.isEmpty())
     {
         PopupMenu del;
         for (int i = 0; i < userList.size() && i < 90; ++i) del.addItem (2000 + i, userList[i].getFileNameWithoutExtension());
-        skinMenu.addSubMenu ("Delete skin preset", del);
+        skinMenu.addSubMenu ("Delete skin", del);
     }
     skinMenu.addItem (952, "Import skin (.fm9skin)...");
     skinMenu.addItem (953, "Export skin (.fm9skin)...");
@@ -2177,21 +2227,12 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
             else if (r == 950) ed.openColourPanel (ed.lastMenuPos);
             else if (r == 951) ed.askSaveSkin();
             else if (r >= 1900 && r < 1990) { const auto l = userSkins(); if (r - 1900 < l.size() && ! ed.loadUserSkin (l[r - 1900])) ed.popup ("Skin", "Unreadable file"); }
-            else if (r >= 2000 && r < 2090)
+            else if (r >= 2000 && r < 2090) { const auto l = userSkins(); if (r - 2000 < l.size()) ed.deleteUserSkin (l[r - 2000]); }
+            else if (r >= 2100 && r < 2100 + numSkins) { setStartupSkin (String ("f:") + skins[r - 2100].id); ed.popup ("Startup skin", skins[r - 2100].name); }
+            else if (r >= 2200 && r < 2290)
             {
                 const auto l = userSkins();
-                if (r - 2000 < l.size())
-                {
-                    const auto f = l[r - 2000];
-                    AlertWindow::showOkCancelBox (MessageBoxIconType::QuestionIcon, "Delete skin preset", "Delete \"" + f.getFileNameWithoutExtension() + "\" ?", "Delete", "Cancel", &ed,
-                        ModalCallbackFunction::create ([safe, f] (int ok)
-                        {
-                            if (! ok || safe == nullptr) return;
-                            f.moveToTrash();
-                            if (safe->proc.uiState.getProperty ("skinName").toString() == f.getFileNameWithoutExtension()) safe->proc.uiState.removeProperty ("skinName", nullptr);
-                            safe->popup ("Skin", "Deleted");
-                        }));
-                }
+                if (r - 2200 < l.size()) { setStartupSkin ("u:" + l[r - 2200].getFileNameWithoutExtension()); ed.popup ("Startup skin", l[r - 2200].getFileNameWithoutExtension()); }
             }
             else if (r == 952)
             {
@@ -2451,3 +2492,23 @@ uint32_t FM9Editor::playedFwKeys() const
         }
     return bits;
 }
+
+void FM9Editor::deleteUserSkin (const File& f)
+{
+    // confirmation au style de FM-9 ; seuls les skins perso se suppriment (les coloris de la FM-1 restent)
+    const auto nm = f.getFileNameWithoutExtension();
+    auto* c = new FM9Confirm (med, bold, "Delete " + nm + "?", "This skin preset is removed from this computer. The FM-1 colors stay available.", "Delete");
+    c->onResult = [self = Component::SafePointer<FM9Editor> (this), f, nm] (bool ok)
+    {
+        if (self == nullptr || ! ok) return;
+        f.deleteFile();
+        if (self->proc.uiState.getProperty ("skinName").toString() == nm) self->proc.uiState.removeProperty ("skinName", nullptr);
+        if (startupSkin() == "u:" + nm) startupSkinFile().deleteFile();     // le demarrage revient au coloris d'origine
+        self->popup ("Skin", "Deleted");
+    };
+    confirm.reset (c);
+    addAndMakeVisible (*c);
+    c->setBounds (getLocalBounds());
+    c->toFront (true);
+}
+

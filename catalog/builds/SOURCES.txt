@@ -1,0 +1,11 @@
+MEOW-1 : https://github.com/JB-Interactive/Felucca-Meow (branch main, commit f21d6d69e88e) -> JB-Interactive-Felucca-Meow.fwsc, JB-Interactive-Felucca-Meow.wasm
+Deal or No Deal : https://github.com/Kiwi3p/fm1-deal-or-no-deal (branch main, commit a8ffcf798967) -> Kiwi3p-fm1-deal-or-no-deal.wasm
+Blue Hare : https://github.com/TristanoSuriani/fel-tracker (branch blue-hare, commit 35c7a230b542) -> TristanoSuriani-fel-tracker.fwsc, TristanoSuriani-fel-tracker.wasm
+Cesari : https://github.com/briwil/Felucca (branch cesari, commit 3dca9841e437) -> briwil-Felucca.fwsc, briwil-Felucca.wasm
+fm1-rocket-os : https://github.com/cmlarsen/fm1-rocket-os (branch integration, commit d269df962a6d) -> cmlarsen-fm1-rocket-os.wasm
+Patricktronics : https://github.com/gaumondp/patricktronics (branch init, commit a6e5e28472fd) -> gaumondp-patricktronics.fwsc, gaumondp-patricktronics.wasm
+RIFT : https://github.com/mykeln/fm1-rift (branch main, commit 09858020e5f8) -> mykeln-fm1-rift.wasm
+1971 : https://github.com/synthi/fm1-1971 (branch fw-1971, commit d422a998f2d9) -> synthi-fm1-1971.fwsc, synthi-fm1-1971.wasm
+TamaMPE : https://github.com/tamabotmusic/TamaMPE (branch feature/web-emulator, commit fa2609e1a203) -> tamabotmusic-TamaMPE.fwsc
+FM-1 T1 : https://github.com/tensor-programming/fm1-t1 (branch main, commit bea0fd38fbeb) -> tensor-programming-fm1-t1.wasm
+Trawler : https://github.com/y6zkcqnf5r-hue/fm1-trawler (branch main, commit 153f4f4433f1) -> y6zkcqnf5r-hue-fm1-trawler.wasm

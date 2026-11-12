@@ -1,0 +1,34 @@
+name: Catalog previews
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'catalog/firmwares.json', 'tools/gen_previews.py', '.github/workflows/previews.yml' ]
+  workflow_dispatch:
+
+jobs:
+  previews:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Dependances
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libfreetype-dev libfontconfig1-dev libx11-dev libxext-dev libxrandr-dev libxinerama-dev libxcursor-dev libgl-dev
+          rustup toolchain install stable --profile minimal && rustup default stable
+          git clone -q --depth 1 --branch 8.0.15 https://github.com/juce-framework/JUCE.git "$HOME/juce"
+      - name: Outil de rendu
+        run: |
+          cmake -S tools/render -B build-render -DJUCE_DIR="$HOME/juce" -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-render --parallel
+      - name: Ecrans des firmwares
+        run: python3 tools/gen_previews.py catalog/firmwares.json build-render/FM9Render_artefacts/Release/FM9Render catalog/previews
+      - name: Publier les ecrans
+        run: |
+          git config user.name "FM-9 previews"; git config user.email "previews@users.noreply.github.com"
+          git add catalog/previews
+          git diff --cached --quiet && exit 0
+          git commit -qm "Catalogue : ecrans des firmwares"
+          for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done

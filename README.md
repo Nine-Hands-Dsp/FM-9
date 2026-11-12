@@ -60,6 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
+- **1.3.13** : catalogue en galerie (écran, nom, description ; flèche de téléchargement, coche verte pour lancer, corbeille), mises à jour signalées en orange (bandeau UPDATE), recherche et filtre Compatible only ; 47 firmwares jusqu'ici incompatibles ajoutés (fichiers publiés trouvés, versions compilées depuis les sources, FM2000 et RIFT pris en charge) : 262 firmwares compatibles ; skin au démarrage et suppression des skins perso ; boutons du catalogue plus compacts.
 - **1.3.12** : catalogue : plus de blocage à 100 % (une version web qui ne démarre pas est abandonnée au bout de 20 s, le paquet matériel reste installé) ; Close annule l'installation en cours et ferme la fenêtre.
 - **1.3.11** : menu Firmware > MIDI channel sent to firmware : tout le clavier maître sur le canal choisi (Melodee et les firmwares à une piste par canal).
 - **1.3.10** : poubelle Delete dans le catalogue avec confirmation au style de FM-9 ; en mode firmware, les touches des notes du clavier maître s'éclairent, ainsi que les touches, boutons et OCT tenus à la souris.

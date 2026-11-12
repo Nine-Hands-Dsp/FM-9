@@ -305,6 +305,15 @@ int main (int argc, char** argv)
         std::printf ("fwcheck ok %s screen=%u peak=%.3f speed=%.1fx\n", fw->abi() == fm9::FirmwareHost::Abi::sim ? "sim" : "web", (unsigned) fw->fbSerial.load(), peak, (600.0 * 512.0 / 48.0) / ms);
         return 0;
     }
+    if (args.contains ("--fwshot"))
+    {
+        // ecran d'un firmware (.wasm ou .fwsc) apres demarrage, en PNG
+        juce::MemoryBlock mb; juce::File (args[args.indexOf ("--fwshot") + 1]).loadFileAsData (mb);
+        auto img = fm9::FirmwareHost::renderPreview (mb.getData(), mb.getSize(), 3.0, {});
+        juce::File out (args[args.indexOf ("--fwshot") + 2]); out.deleteFile();
+        if (img.isValid()) { juce::FileOutputStream os (out); juce::PNGImageFormat().writeImageToStream (img, os); }
+        std::printf ("fwshot %s\n", img.isValid() ? "ok" : "fail"); std::fflush (stdout); std::_Exit (0);
+    }
     if (args.contains ("--webtrial"))
     {
         juce::MemoryBlock mb; juce::File (args[args.indexOf ("--webtrial") + 1]).loadFileAsData (mb);
@@ -462,6 +471,7 @@ int main (int argc, char** argv)
         if (args.contains ("--nks")) { std::printf ("nks %d\n", p.exportNksLibrary (juce::File (args[args.indexOf ("--nks") + 1]))); }
         if (args.contains ("--glow")) p.uiState.setProperty ("glow", args[args.indexOf ("--glow") + 1].getIntValue(), nullptr);
         if (args.contains ("--skin")) p.uiState.setProperty ("skin", args[args.indexOf ("--skin") + 1], nullptr);
+        if (args.contains ("--startup")) FM9Editor::setStartupSkin (args[args.indexOf ("--startup") + 1]);   // skin des nouvelles instances
         std::unique_ptr<juce::AudioProcessorEditor> ed (p.createEditor());
         const float scale = arg ("--scale", 1.0f);
         if (auto* fe = dynamic_cast<FM9Editor*> (ed.get())) fe->prepareSnapshot (scale, (int) arg ("--mode", 0), (int) arg ("--page", 0), (int) arg ("--popup", 0));
@@ -471,6 +481,9 @@ int main (int argc, char** argv)
             if (args.contains ("--saveskin")) std::printf ("save %d\n", (int) fe->saveUserSkin (args[args.indexOf ("--saveskin") + 1]));
             if (args.contains ("--loadskin")) std::printf ("load %d\n", (int) fe->loadUserSkin (FM9Editor::skinFolder().getChildFile (args[args.indexOf ("--loadskin") + 1] + ".fm9skin")));
             if (args.contains ("--catalog")) fe->openCatalog();
+            if ((args.contains ("--catsearch") || args.contains ("--catcompat")) && fe->catalog != nullptr)
+                fe->catalog->setFilterForTest (args.contains ("--catsearch") ? args[args.indexOf ("--catsearch") + 1] : String(), args.contains ("--catcompat"));
+            if (args.contains ("--delskin")) fe->deleteUserSkin (FM9Editor::skinFolder().getChildFile (args[args.indexOf ("--delskin") + 1] + ".fm9skin"));
             if (args.contains ("--confirmdel")) fe->deleteFirmware (args[args.indexOf ("--confirmdel") + 1]);
             if (args.contains ("--loading") && fe->catalog != nullptr)
             {

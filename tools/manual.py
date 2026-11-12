@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.5"
+VERSION = "1.3.6"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -306,6 +306,9 @@ T = dict(
         "et son type : HARDWARE (paquet .fwsc), WEB (.wasm) ou les deux. <b>Install</b> installe le firmware (paquet matériel et version web quand "
         "les deux existent), <b>Load</b> le lance, <b>Install all compatible</b> installe d'un coup tous les firmwares libres compatibles. "
         "<b>Refresh</b> télécharge la dernière liste publiée. Un double-clic sur une ligne ouvre la page du projet. "
+        "<b>Si un firmware crépite</b> (firmware lourd comme Golana) : clic droit &gt; Firmware &gt; <b>Chip clock</b> fait tourner la puce émulée "
+        "plus vite (240 MHz comme la FM-1, 360 MHz par défaut, 480 MHz pour les plus lourds ; plus de calcul). <b>Emulation buffer</b> règle "
+        "l'avance de l'émulation : Low latency (35 ms), Normal (70 ms), Safe (140 ms) si votre ordinateur est chargé. Reaper compense ce décalage. "
         "<b>Aperçu</b> : laissez le curseur sur le nom d'un firmware compatible pendant un peu moins d'une seconde : FM-9 le démarre hors écran "
         "et montre ce qu'affiche son écran (l'aperçu est gardé pour les fois suivantes). Une barre montre la progression : téléchargement, "
         "puis démarrage du firmware ; pendant une installation, le bouton Install se remplit avec le pourcentage téléchargé.",

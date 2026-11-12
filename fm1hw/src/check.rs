@@ -5,7 +5,8 @@ fn main() {
     let secs: f64 = std::env::args().nth(2).and_then(|s| s.parse().ok()).unwrap_or(4.0);
     let pkg = std::fs::read(&path).expect("lecture");
     let mut err = [0i8; 256];
-    let m = fm1hw::fm1hw_boot(pkg.as_ptr(), pkg.len(), 240, err.as_mut_ptr(), 256);
+    let mhz: u32 = std::env::args().nth(3).and_then(|s| s.parse().ok()).unwrap_or(240);
+    let m = fm1hw::fm1hw_boot(pkg.as_ptr(), pkg.len(), mhz, err.as_mut_ptr(), 256);
     if m.is_null() { println!("ECHEC demarrage: {}", unsafe { std::ffi::CStr::from_ptr(err.as_ptr()) }.to_string_lossy()); std::process::exit(1); }
     fm1hw::fm1hw_master(m, 900);
     let mut buf = vec![0i16; 65536];

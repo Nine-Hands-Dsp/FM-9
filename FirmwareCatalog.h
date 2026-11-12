@@ -184,15 +184,15 @@ public:
         auto r = getLocalBounds().reduced (18);
         auto head = r.removeFromTop (headerH);
         g.setColour (kText); g.setFont (font (fBold, 20.0f));
-        g.drawText ("FM-1 firmware catalog", head.removeFromTop (28), juce::Justification::centredLeft);
+        g.drawText ("FM-1 firmware catalog", head.removeFromTop (40), juce::Justification::centredLeft);
         int ok = 0; for (auto& e : entries) ok += e.compatible ? 1 : 0;
         g.setColour (kDim); g.setFont (font (fReg, 13.0f));
         g.drawText (juce::String (ok) + " compatible / " + juce::String ((int) entries.size()) + " firmwares  -  lists: aroum/fm1-custom-fw, fm1-emu"
-                    + (date.isNotEmpty() ? "  -  " + date : juce::String()), head.removeFromTop (20), juce::Justification::centredLeft);
+                    + (date.isNotEmpty() ? "  -  " + date : juce::String()), head.removeFromTop (28), juce::Justification::centredLeft);
         // pied : etat + boutons
         auto foot = getLocalBounds().reduced (18).removeFromBottom (footerH).toFloat();
         g.setColour (status.startsWith ("!") ? juce::Colour (0xffff8a80) : kDim); g.setFont (font (fReg, 13.0f));
-        g.drawText (status.trimCharactersAtStart ("!"), foot.withTrimmedRight (420).toNearestInt(), juce::Justification::centredLeft);
+        g.drawText (status.trimCharactersAtStart ("!"), foot.withTrimmedRight (560).toNearestInt(), juce::Justification::centredLeft);
         drawButton (g, btnClose (), "Close", false);
         drawButton (g, btnRefresh (), busy ? "..." : "Refresh", false);
         drawButton (g, btnAll (), "Install all compatible", true);
@@ -215,12 +215,13 @@ public:
     }
 
 private:
-    static juce::Font font (const juce::Typeface::Ptr& t, float h) { return juce::Font (juce::FontOptions (t).withHeight (h)); }
-    static constexpr int headerH = 56, footerH = 40, rowH = 58;
+    static constexpr float textScale = 1.4f;        // textes du catalogue agrandis
+    static juce::Font font (const juce::Typeface::Ptr& t, float h) { return juce::Font (juce::FontOptions (t).withHeight (h * textScale)); }
+    static constexpr int headerH = 80, footerH = 56, rowH = 82, groupH = 42;
     juce::Rectangle<int> footArea() const { return getLocalBounds().reduced (18).removeFromBottom (footerH).withTrimmedTop (8); }
-    juce::Rectangle<int> btnClose() const   { return footArea().removeFromRight (80); }
-    juce::Rectangle<int> btnRefresh() const { auto a = footArea(); a.removeFromRight (90); return a.removeFromRight (90); }
-    juce::Rectangle<int> btnAll() const     { auto a = footArea(); a.removeFromRight (190); return a.removeFromRight (200); }
+    juce::Rectangle<int> btnClose() const   { return footArea().removeFromRight (110); }
+    juce::Rectangle<int> btnRefresh() const { auto a = footArea(); a.removeFromRight (122); return a.removeFromRight (120); }
+    juce::Rectangle<int> btnAll() const     { auto a = footArea(); a.removeFromRight (254); return a.removeFromRight (290); }
 
     void drawButton (juce::Graphics& g, juce::Rectangle<int> r, const juce::String& t, bool primary) const
     {
@@ -251,12 +252,12 @@ private:
             for (int i : idx) if (entries[(size_t) i].group == grp) rows.push_back ({ i, {} });
         }
         int h = 0;
-        for (auto& r : rows) h += r.entry < 0 ? 30 : rowH;
+        for (auto& r : rows) h += r.entry < 0 ? groupH : rowH;
         list.setSize (juce::jmax (100, viewport.getWidth() - 10), h);
         list.repaint();
     }
 
-    juce::Rectangle<int> installRect (juce::Rectangle<int> row) const { return row.removeFromRight (104).withSizeKeepingCentre (96, 28); }
+    juce::Rectangle<int> installRect (juce::Rectangle<int> row) const { return row.removeFromRight (140).withSizeKeepingCentre (128, 38); }
 
     struct List : juce::Component
     {
@@ -271,8 +272,8 @@ private:
                 if (r.entry < 0)
                 {
                     g.setColour (kDim); g.setFont (font (o.fBold, 11.5f).withExtraKerningFactor (0.14f));
-                    g.drawText (r.group.toUpperCase(), juce::Rectangle<int> (6, y + 10, getWidth() - 12, 18), juce::Justification::centredLeft);
-                    y += 30; continue;
+                    g.drawText (r.group.toUpperCase(), juce::Rectangle<int> (6, y + 14, getWidth() - 12, 26), juce::Justification::centredLeft);
+                    y += groupH; continue;
                 }
                 const auto& e = o.entries[(size_t) r.entry];
                 auto row = juce::Rectangle<int> (0, y, getWidth(), rowH - 4);
@@ -280,19 +281,19 @@ private:
                 auto inner = row.reduced (8, 6);
                 auto btn = o.installRect (row);
                 // statut : texte seul, vert compatible / rouge non compatible, et le type dessous
-                auto badge = inner.removeFromRight (240).removeFromLeft (128).toFloat();
+                auto badge = inner.removeFromRight (320).removeFromLeft (172).toFloat();
                 g.setFont (font (o.fMed, 13.5f));
                 g.setColour (e.compatible ? juce::Colour (0xff5be08a) : juce::Colour (0xffff5a52));
-                g.drawText (e.compatible ? "Compatible" : "Not compatible", badge.withHeight (20.0f).withY (badge.getCentreY() - (e.compatible ? 15.0f : 10.0f)).toNearestInt(), juce::Justification::centred);
+                g.drawText (e.compatible ? "Compatible" : "Not compatible", badge.withHeight (28.0f).withY (badge.getCentreY() - (e.compatible ? 21.0f : 14.0f)).toNearestInt(), juce::Justification::centred);
                 if (e.compatible)
                 {
                     const auto kind = e.hardware() && e.web() ? juce::String ("HW + WEB") : e.hardware() ? juce::String ("HARDWARE") : juce::String ("WEB");
                     g.setColour (kDim); g.setFont (font (o.fBold, 10.0f).withExtraKerningFactor (0.1f));
-                    g.drawText (kind, badge.withHeight (14.0f).withY (badge.getCentreY() + 4.0f).toNearestInt(), juce::Justification::centred);
+                    g.drawText (kind, badge.withHeight (20.0f).withY (badge.getCentreY() + 6.0f).toNearestInt(), juce::Justification::centred);
                 }
                 // nom, auteur, description ou raison
                 g.setColour (e.compatible ? kText : kText.withAlpha (0.6f)); g.setFont (font (o.fMed, 15.0f));
-                g.drawText (e.name + (e.author.isNotEmpty() ? "" : ""), inner.removeFromTop (20), juce::Justification::centredLeft);
+                g.drawText (e.name + (e.author.isNotEmpty() ? "" : ""), inner.removeFromTop (30), juce::Justification::centredLeft);
                 g.setColour (kDim); g.setFont (font (o.fReg, 12.5f));
                 juce::String sub = (e.author.isNotEmpty() ? "by " + e.author + "  -  " : juce::String())
                                    + (e.vendor ? juce::String ("M-VAVE's own firmware, downloaded from M-VAVE  -  ") : juce::String()) + (e.compatible ? e.desc : e.reason);
@@ -328,7 +329,7 @@ private:
             int y = 0;
             for (auto& r : owner->rows)
             {
-                const int h = r.entry < 0 ? 30 : rowH;
+                const int h = r.entry < 0 ? groupH : rowH;
                 if (p.y >= y && p.y < y + h) { if (rowOut) *rowOut = { 0, y, getWidth(), rowH - 4 }; return r.entry; }
                 y += h;
             }
@@ -344,7 +345,7 @@ private:
             if (i >= 0)
             {
                 const auto& en = owner->entries[(size_t) i];
-                const auto nameArea = row.reduced (8, 6).removeFromTop (20)
+                const auto nameArea = row.reduced (8, 6).removeFromTop (30)
                                          .withWidth (juce::roundToInt (juce::GlyphArrangement::getStringWidth (font (owner->fMed, 15.0f), en.name)) + 6);
                 if (nameArea.contains (e.getPosition()) && en.compatible) name = i;
             }

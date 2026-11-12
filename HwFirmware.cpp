@@ -7,6 +7,12 @@
 // annoncee a l'hote comme latence, que Reaper compense.
 #include "FirmwareHost.h"
 #include <thread>
+#if JUCE_WINDOWS
+ #include <windows.h>
+ #pragma comment (lib, "winmm.lib")
+#elif JUCE_MAC
+ #include <pthread.h>
+#endif
 
 extern "C"
 {
@@ -30,6 +36,9 @@ extern "C"
 
 namespace fm9
 {
+std::atomic<int>& FirmwareHost::hwMargin() { static std::atomic<int> m { 3072 }; return m; }
+std::atomic<int>& FirmwareHost::hwMhz() { static std::atomic<int> m { 360 }; return m; }
+
 namespace
 {
 constexpr int sectorSize = 4096;
@@ -43,7 +52,7 @@ public:
     {
         storageFile = storage;
         char err[256] = {};
-        machine = fm1hw_boot ((const uint8_t*) data, size, 240, err, (int) sizeof (err));
+        machine = fm1hw_boot ((const uint8_t*) data, size, (uint32_t) FirmwareHost::hwMhz().load(), err, (int) sizeof (err));
         if (machine == nullptr) { error = juce::String (err).isNotEmpty() ? juce::String (err) : juce::String ("the package does not start"); return false; }
         // sauvegardes du firmware (patterns, reglages) : secteurs de flash ecrits lors des sessions precedentes
         juce::MemoryBlock saved;
@@ -96,7 +105,12 @@ public:
         for (int i = 0; i < n; ++i)
         {
             const int64_t i0 = (int64_t) readPos;
-            if (i0 + 3 > avail) { left[i] = right[i] = 0.0f; ++starved; continue; }     // la machine est en retard
+            if (i0 + 3 > avail)
+            {
+                // la machine est en retard : on retombe doucement a zero au lieu d'un trou sec (pas de clic)
+                holdL *= 0.995f; holdR *= 0.995f;
+                left[i] = holdL; right[i] = holdR; ++starved; continue;
+            }
             const float t = (float) (readPos - (double) i0);
             auto h = [t] (const std::vector<float>& b, int64_t k)
             {
@@ -105,8 +119,8 @@ public:
                 const float c1 = 0.5f * (y2 - y0), c2 = y0 - 2.5f * y1 + 2.0f * y2 - 0.5f * y3, c3 = 0.5f * (y3 - y0) + 1.5f * (y1 - y2);
                 return ((c3 * t + c2) * t + c1) * t + y1;
             };
-            left[i] = h (rl, i0 + 1);
-            right[i] = h (rr, i0 + 1);
+            left[i] = holdL = h (rl, i0 + 1);
+            right[i] = holdR = h (rr, i0 + 1);
             readPos += step;
         }
         readFrame.store ((int64_t) readPos, std::memory_order_release);
@@ -184,7 +198,7 @@ private:
     {
         // le bloc de l'hote (en echantillons de la machine) + une marge pour les blocs lents a emuler
         const double r = hostRate.load();
-        return (int) std::ceil (hostBlock.load() * fwRate / (r > 0 ? r : 48000.0)) + 1536;
+        return (int) std::ceil (hostBlock.load() * fwRate / (r > 0 ? r : 48000.0)) + FirmwareHost::hwMargin().load();
     }
 
     void push (const Event& e)
@@ -228,8 +242,20 @@ private:
         if (mb != sectors) { sectors = mb; sectorsDirty = true; }
     }
 
+    static void raisePriority()
+    {
+        // le calcul de la puce passe avant les taches ordinaires (sinon le DAW le retarde et le son craque)
+       #if JUCE_WINDOWS
+        timeBeginPeriod (1);                       // pauses de 1 ms au lieu de 15,6 ms
+        SetThreadPriority (GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+       #elif JUCE_MAC
+        pthread_set_qos_class_self_np (QOS_CLASS_USER_INTERACTIVE, 0);
+       #endif
+    }
+
     void loop()
     {
+        raisePriority();
         std::vector<int16_t> buf (16384);
         std::vector<Event> due;
         std::vector<float> leds (41);
@@ -290,6 +316,9 @@ private:
             }
             if (! ran) std::this_thread::sleep_for (std::chrono::microseconds (500));
         }
+       #if JUCE_WINDOWS
+        timeEndPeriod (1);
+       #endif
     }
 
     void halt()
@@ -343,6 +372,7 @@ private:
     std::atomic<int> hostBlock { 512 };
     std::atomic<uint32_t> lastTakeMs { 0 };
     int64_t starved = 0;
+    float holdL = 0.0f, holdR = 0.0f;
 
     std::array<uint16_t, fbW * fbH> screen {};
     juce::SpinLock screenLock;
@@ -382,7 +412,7 @@ juce::Image FirmwareHost::renderPreview (const void* data, size_t size, double s
     if (isHardwarePackage (data, size))
     {
         char err[128] = {};
-        auto* m = fm1hw_boot ((const uint8_t*) data, size, 240, err, (int) sizeof (err));
+        auto* m = fm1hw_boot ((const uint8_t*) data, size, (uint32_t) FirmwareHost::hwMhz().load(), err, (int) sizeof (err));
         if (m == nullptr) return {};
         fm1hw_master (m, 0);
         const auto until = (uint64_t) (seconds * 1000.0);

@@ -123,6 +123,11 @@ bool FM9Processor::activateFirmware (const juce::String& name, juce::String& err
     return true;
 }
 
+void FM9Processor::updateFirmwareLatency()
+{
+    if (auto* fw = fwOwner.get()) setLatencySamples (fw->latencySamples (sr));
+}
+
 void FM9Processor::activatePrepared (const juce::String& name, std::unique_ptr<fm9::FirmwareHost> next)
 {
     if (next != nullptr) next->prepare (sr, blockSize);
@@ -836,6 +841,8 @@ void FM9Processor::getStateInformation (juce::MemoryBlock& destData)
     state.setProperty ("voiceName", voiceName, nullptr);
     state.setProperty ("seq", seqData.toString(), nullptr);
     state.setProperty ("firmware", firmwareName, nullptr);
+    state.setProperty ("fwMhz", fm9::FirmwareHost::hwMhz().load(), nullptr);
+    state.setProperty ("fwBuffer", fm9::FirmwareHost::hwMargin().load(), nullptr);
     { juce::StringArray pv; for (auto& v : patternVoice) pv.add (juce::String (v.load())); state.setProperty ("patternVoice", pv.joinIntoString (","), nullptr); }
     juce::StringArray order; for (int o : getFxOrder()) order.add (juce::String (o));
     state.setProperty ("fxOrder", order.joinIntoString (","), nullptr);
@@ -857,6 +864,8 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
     currentProgram = juce::jlimit (0, getNumPrograms() - 1, (int) state.getProperty ("program", 0));
     voiceName = state.getProperty ("voiceName", "INIT VOICE").toString();
     seqData.fromString (state.getProperty ("seq").toString());
+    if (state.hasProperty ("fwMhz")) fm9::FirmwareHost::hwMhz().store (juce::jlimit (60, 480, (int) state.getProperty ("fwMhz")));
+    if (state.hasProperty ("fwBuffer")) fm9::FirmwareHost::hwMargin().store (juce::jlimit (512, 8192, (int) state.getProperty ("fwBuffer")));
     {
         const auto fwName = state.getProperty ("firmware").toString();
         pendingFirmware = fwName.isEmpty() ? juce::String ("-") : fwName;    // demarre par le timer (thread de messages)

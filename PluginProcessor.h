@@ -112,6 +112,7 @@ public:
 
     // ---- firmwares de la FM-1 (WebAssembly) : remplacent le synthe FM-9 tant qu'ils sont actifs ----
     static constexpr const char* builtinFirmware = "Hortator";
+    void updateFirmwareLatency();
     bool activateFirmware (const juce::String& name, juce::String& error);   // "" = synthe FM-9
     std::unique_ptr<fm9::FirmwareHost> loadFirmware (const juce::String& name, juce::String& error, std::function<void (float)> progress = {});   // tout thread
     void activatePrepared (const juce::String& name, std::unique_ptr<fm9::FirmwareHost> fw);                                               // thread de messages

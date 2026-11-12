@@ -315,6 +315,8 @@ T = dict(
         "si c'était le firmware en cours, FM-9 revient à son propre synthé. Quand le catalogue propose une version plus récente d'un firmware "
         "installé, son bouton devient <b>Update</b>. "
         "Avec un firmware chargé, les touches des notes reçues de votre clavier maître s'éclairent aussi, même si le firmware ne les allume pas lui-même. "
+        "<b>Lumières</b> : avec un firmware, les touches et boutons s'allument comme le firmware le décide, et aussi quand vous jouez : "
+        "notes reçues du clavier maître (la touche de même nom, ramenée par octaves sur F3 à G5), touche, bouton ou OCT tenus à la souris. "
         "<b>Golana</b> s'installe dans sa version native (celle de sa page « Try it in your browser »), bien plus légère que la puce émulée. "
 "<b>Aperçu</b> : laissez le curseur sur le nom d'un firmware compatible pendant un peu moins d'une seconde : FM-9 le démarre hors écran "
         "et montre ce qu'affiche son écran (l'aperçu est gardé pour les fois suivantes). Une barre montre la progression : téléchargement, "

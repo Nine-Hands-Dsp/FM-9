@@ -4,7 +4,7 @@
 set +e
 OUT="$PWD/web_out"; mkdir -p "$OUT"
 # SDK JieLi AC79 (attendu par build.sh des derives de Felucca dans ~/fw-AC79_AIoT_SDK)
-[ -d "$HOME/fw-AC79_AIoT_SDK" ] || git clone -q --depth 1 https://github.com/Jieli-Tech/fw-AC79_AIoT_SDK "$HOME/fw-AC79_AIoT_SDK" || echo "SDK clone fail" >> "$OUT/log.txt"
+[ -d "$HOME/fw-AC79_AIoT_SDK" ] || git clone -q --depth 1 --branch AC79NN_SDK_V1.2.1_2023-12-13 https://gitee.com/Jieli-Tech/fw-AC79_AIoT_SDK.git "$HOME/fw-AC79_AIoT_SDK" || echo "SDK clone fail" >> "$OUT/log.txt"
 while read -r repo br script; do
   [ -z "$repo" ] && continue
   n=$(echo "$repo" | tr '/' '_')
@@ -24,4 +24,4 @@ while read -r repo br script; do
   w=$(find "$d" -name "*.wasm" -newer "$d/.git/HEAD" -size +20k 2>/dev/null | head -1)
   [ -z "$w" ] && w=$(find "$d" -name "*.wasm" -size +20k 2>/dev/null | head -1)
   if [ -n "$w" ]; then cp "$w" "$OUT/$n.wasm"; echo "$repo: rc=$rc wasm=$w" >> "$OUT/log.txt"; else echo "$repo: rc=$rc no wasm" >> "$OUT/log.txt"; fi
-done < <(grep -v -e trawler -e rocket -e deal tools/web_sources.txt)
+done < <(grep -v -e trawler -e rocket -e deal -e rift tools/web_sources.txt)

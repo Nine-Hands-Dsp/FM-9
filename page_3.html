@@ -1,0 +1,332 @@
+https://thefirmwarehub.com/vibe/?ref=hub
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VIBE FM Mk1 · Make Firmware Not War.</title>
+<meta name="description" content="Open firmware, officially supported – not just tolerated. One device. Endless possibilities. Join the list.">
+<meta name="theme-color" content="#050506">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://thefirmwarehub.com/vibe/">
+<link rel="alternate" hreflang="en" href="https://thefirmwarehub.com/vibe/">
+<link rel="alternate" hreflang="de" href="https://thefirmwarehub.com/vibe/?lang=de">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VIBE FM">
+<meta property="og:title" content="VIBE FM Mk1 · Make Firmware Not War.">
+<meta property="og:description" content="Open firmware, officially supported – not just tolerated. One device. Endless possibilities. Join the list.">
+<meta property="og:url" content="https://thefirmwarehub.com/vibe/">
+<meta property="og:image" content="https://thefirmwarehub.com/vibe/assets/img/og.jpg?v=20261109">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/vibe/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/vibe/assets/fonts/archivo-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/vibe/assets/style.css?v=1794466326">
+</head>
+<body class="home">
+
+<style>
+  /* the devices menu (web/devices.html, put into every page by tools/make_fm1.py): a mega menu under "Devices", open on
+     hover (a mouse) or on a tap / Enter (touch, keyboard) */
+  nav { position: relative; z-index: 40; }
+  nav .dd { align-self: stretch; display: flex; align-items: center; margin: 0 0 0 clamp(14px, 3vw, 44px); }
+  /* the Knowledge Base beside it, a plain link in the same type (on the KB itself: marked) */
+  nav .kbl { align-self: stretch; display: flex; align-items: center; margin: 0 auto 0 clamp(4px, 1.6vw, 22px); padding: 8px 2px;
+             color: var(--fg); font-size: 15px; font-weight: 600; white-space: nowrap; box-shadow: inset 0 -2px 0 transparent; }
+  /* Shop (Amazon.de affiliate links): shown by web/hubapp.js in DE / AT only (/api/cc), beside the Knowledge Base */
+  nav .dd[hidden] { display: none; }
+  /* (data-cc: de = DE / AT: Firmwear + amazon.de; us: Firmwear + amazon.com; eu / ww = everybody else: Firmwear only –
+     the shirt for everyone, Sven 12.11.) */
+  #shopdd:not([data-cc="de"]) .cc-de, #shopdd:not([data-cc="eu"]):not([data-cc="ww"]) .cc-eu, #shopdd:not([data-cc="us"]) .cc-us,
+  #shopdd[data-cc="eu"] .cc-amz, #shopdd[data-cc="ww"] .cc-amz { display: none !important; }
+  nav .dd.shopdd { margin-left: clamp(4px, 1.6vw, 22px); }
+  nav .dd.toolsdd { margin-left: clamp(4px, 1.6vw, 22px); }   /* (as the Tools link was: the start page's search field sits in the middle) */
+  .mega .side .ad { font-size: 12.5px; color: var(--dim); }
+  nav .kbl:hover { text-decoration: none; box-shadow: inset 0 -2px 0 var(--pink); }
+  nav .kbl[aria-current] { box-shadow: inset 0 -2px 0 var(--cyan); }
+  nav .kbl .sm { display: none; }
+  @media (max-width: 560px) { nav .kbl .lg { display: none; } nav .kbl .sm { display: inline; }     /* (a phone: the name on one line) */
+                              nav .wrap { gap: 10px; } nav .dd { margin-left: 4px; } nav .kbl { margin-left: 0; } nav .ddb .ar { margin-left: 4px; } }
+  @media (max-width: 400px) { nav .mark { font-size: 18px; } }
+  @media (max-width: 350px) { nav .mark { font-size: 16px; } nav .dd { margin-left: 2px; } }   /* (an iPhone SE: Devices and KB beside it) */
+  nav .ddb { background: transparent; color: var(--fg); font: inherit; font-size: 15px; font-weight: 600; padding: 8px 2px; border: 0;
+             border-radius: 0; cursor: pointer; box-shadow: inset 0 -2px 0 transparent; }
+  nav .ddb:hover { filter: none; transform: none; }
+  nav .ddb .ar { display: inline-block; color: var(--dim); font-size: 11px; margin-left: 6px; transition: transform .15s; }
+  nav .dd.open .ddb { box-shadow: inset 0 -2px 0 var(--pink); } nav .dd.open .ddb .ar { transform: rotate(180deg); }
+  .mega { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--bg); border-bottom: 1px solid var(--line);
+          box-shadow: 0 30px 60px rgba(0, 0, 0, .55); }
+  nav .dd.open .mega { display: block; }
+  @media (hover: hover) { nav .dd:hover .mega { display: block; } nav .dd:hover .ddb { box-shadow: inset 0 -2px 0 var(--pink); }
+                          nav .dd:hover .ddb .ar { transform: rotate(180deg); } }
+  .mega .in { display: grid; height: auto; grid-template-columns: 250px minmax(0, 1fr); gap: clamp(20px, 3vw, 44px); padding-top: 26px; padding-bottom: 30px; }
+  .mega .side { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; font-size: 14.5px; line-height: 1.55; }
+  .mega .side .k { font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); font-weight: 700; margin: 0 0 10px; }
+  .mega .side a { display: block; color: var(--fg); padding: 4px 0; }
+  .mega .side hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
+  .mega .side p { margin: 0 0 8px; color: var(--text); }
+  .mega .side a.mail { color: var(--pink); }
+  .mega .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 10px 18px; align-content: start; }
+  .mega .tile { display: flex; align-items: center; gap: 16px; padding: 10px 12px; border-radius: 14px; color: var(--fg); }
+  .mega .tile:hover { text-decoration: none; background: var(--panel2); }
+  .mega .tile[aria-current] { box-shadow: inset 0 0 0 1px var(--cyan); }
+  .mega .pic { flex: none; width: 72px; height: 72px; border-radius: 12px; background: #0e0c0d; border: 1px solid var(--line); overflow: hidden;
+               display: grid; place-items: center; }
+  .mega .pic img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; display: block; }
+  .mega .pic.quad { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1px; background: var(--line); }
+  .mega .tile b { display: block; font-size: 15px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; line-height: 1.3; }
+  .mega .tile small { display: block; color: var(--dim); font-size: 13.5px; margin-top: 2px; }
+  .mega .tile.vibe-t .pic img { object-position: 70% 50%; image-rendering: auto; } .mega .tile.vibe-t b { color: #ff6a1a; } .mega .tile.vst-t b { color: #ff60be; }
+  .mega .tile.add .pic { border-style: dashed; background: transparent; color: var(--pink); font-size: 34px; font-weight: 200; }
+  @media (max-width: 760px) { .mega .in { grid-template-columns: 1fr; padding-top: 14px; padding-bottom: 18px; } .mega .side { display: none; }
+                              .mega .pic { width: 56px; height: 56px; } }
+  /* the nav stays on top, the search in its middle (from 1700 px the true middle; a phone: a line of its own). The colours
+     on the nav itself: the same on VIBE's page, which has its own (hubnav/vibe.html) */
+  nav.top { position: sticky; top: 0; background: var(--bg); --bg: #151213; --panel: #221e1f; --panel2: #2e2a2b; --line: #3a3435;
+            --fg: #efe8e1; --dim: #a39a94; --text: #d8d0c9; --cyan: #42f5f5; --pink: #f4c0cb; --beige: #e6d1b9; }
+  nav.top .find { position: relative; flex: 0 1 300px; margin: 0 auto; }
+  nav.top .kbl { margin-right: 0; }                    /* (the search takes the free space on both sides: between the links) */
+  nav .dd.aboutdd { margin-left: clamp(4px, 1.6vw, 22px); }   /* (About beside Tools: the wall, the KB, submitting, the imprint) */
+  nav .dd.aboutdd.cur .ddb { box-shadow: inset 0 -2px 0 var(--cyan); }
+  .mega .tile.crw .pic { background: transparent; border-style: dashed; }
+  .mega .tile.crw svg { width: 34px; height: 34px; fill: none; stroke: var(--cyan); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  @media (max-width: 560px) { nav .aboutdd .ddb .ar { display: none; } nav .dd.aboutdd { margin-left: 0; } }
+  @media (min-width: 1700px) { nav.top .wrap { position: relative; } nav.top .home { margin-left: auto; }
+                               nav.top .find { position: absolute; left: 50%; width: 320px; transform: translateX(-50%); } }
+  @media (max-width: 900px) { nav.top .wrap { flex-wrap: wrap; height: auto; min-height: 60px; row-gap: 0; }
+                              nav.top .find { order: 10; flex-basis: 100%; margin: 0 0 10px; } }
+  nav.top .find input { width: 100%; box-sizing: border-box; color: var(--fg); border: 1px solid rgba(239, 232, 225, .3); border-radius: 999px;
+                        padding: 9px 46px 9px 42px; font: inherit; font-size: 15px; background: var(--panel2); margin: 0; }
+  nav.top .find input:hover { border-color: rgba(239, 232, 225, .5); }
+  nav.top .find input:focus { outline: none; border-color: var(--beige); }
+  nav.top .find input::placeholder { color: var(--text); opacity: .8; }
+  nav.top .find .ico { position: absolute; left: 15px; top: 50%; width: 17px; height: 17px; transform: translateY(-50%); fill: none; stroke: var(--text);
+                       stroke-width: 2.2; stroke-linecap: round; pointer-events: none; }
+  nav.top .find .key { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 12px; line-height: 1.5; color: var(--dim);
+                       border: 1px solid var(--line); border-radius: 5px; padding: 0 7px; pointer-events: none; }
+  nav.top .find input:focus + .key, nav.top .find input:not(:placeholder-shown) + .key { display: none; }
+  @media (hover: none) { nav.top .find .key { display: none; } }
+  /* Shop on a phone (after the rules above): Devices, KB, Shop on the name's line; the affiliate notice stays visible */
+  @media (max-width: 560px) { nav .shopdd .ddb .ar { display: none; } nav .dd.shopdd { margin-left: 0; } }
+  @media (max-width: 420px) { nav .ddb .ar { display: none; } }          /* (a phone with Shop: Devices, KB, Shop on the name's line) */
+  @media (max-width: 760px) { #shopm .side { display: block; padding: 12px 16px; } #shopm .side > :not(.ad) { display: none; } }   /* (the notice stays) */
+  /* a narrow phone: name, Devices, Tools and Shop on one line (a little tighter) */
+  /* (a phone: the name as FH, so Devices, Tools, About and Shop stay on its line) */
+  nav.top .mark .smm { display: none; }
+  @media (max-width: 900px) { nav.top .home { display: none; } }   /* (designburg.net: no room beside Shop) */
+  @media (max-width: 760px) { nav.top .mark .lgm { display: none; } nav.top .mark .smm { display: inline; font-weight: 800; letter-spacing: -.5px; } }
+  @media (max-width: 400px) { nav.top > .wrap { column-gap: 8px; } nav.top .mark { font-size: 17px; } }
+  @media (max-width: 370px) { nav.top > .wrap { column-gap: 6px; } nav.top .mark { font-size: 16px; } nav .dd { margin-left: 2px; } }
+  /* (VIBE's page: the hub's nav on its own, its base too; VIBE's links, fonts and .wrap kept out) */
+  nav.top { z-index: 40; border-bottom: 1px solid var(--line); color: var(--fg);
+            font: 16px/1.65 "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  nav.top *, nav.top *::before, nav.top *::after { box-sizing: border-box; }
+  nav.top a { text-decoration: none; }                  /* (each link has its colour in devices.css) */
+  nav.top .wrap { margin: 0 auto; padding: 0 clamp(16px, 4vw, 72px); width: 100%; }
+  nav.top > .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 60px; column-gap: 16px; }
+  @media (max-width: 760px) { nav.top .wrap { padding: 0 16px; } nav.top .home { display: none; } }   /* (as on the hub's pages) */
+  nav.top .mark { font-size: 21px; font-weight: 300; color: var(--fg); letter-spacing: -.2px; }
+  nav.top .mark b { font-weight: 800; color: var(--cyan); }
+  nav.top .home { font-size: 14px; color: var(--dim); }
+  @media (max-width: 400px) { nav.top .mark { font-size: 18px; } } @media (max-width: 350px) { nav.top .mark { font-size: 16px; } }
+  .lang { top: 76px; } @media (max-width: 900px) { .lang { top: 112px; } }   /* (EN / DE under the nav) */
+</style>
+<nav class="top"><div class="wrap"><a class="mark" href="https://thefirmwarehub.com/"><span class="lgm">The <b>Firmware Hub</b></span><span class="smm" aria-hidden="true">F<b>H</b></span></a>
+  <div class="dd" id="dd">
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="mega">Devices<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="mega"><div class="wrap in">
+      <div class="side">
+        <p class="k">The Firmware Hub</p>
+        <p>Open-source firmware for small music machines, from their makers, installed in the browser.</p>
+        <a href="/">All FM-1 firmwares</a><a href="/kb/">Knowledge Base</a><a href="/creators/">Wall of Creators</a><a href="/submit/">Submit a firmware</a><a href="/vibe/?ref=menu">VIBE FM Mk1</a><a href="/platform/">VIBE FM</a><a href="/lab/">VIBE FM Lab</a>
+        <a id="getapp" href="/#app">App</a>
+        <hr><p>Made firmware for another device?</p>
+        <a class="mail" href="mailto:zven@thefirmwarehub.com?subject=The%20Firmware%20Hub%3A%20my%20device">zven@thefirmwarehub.com</a>
+      </div>
+      <div class="tiles">
+        <a class="tile" href="/" data-dev="fm1"><span class="pic quad"><img loading="lazy" src="/img/w160/zp12.webp?v=1f052566" alt=""><img loading="lazy" src="/img/w160/sloop.webp?v=06c1512a" alt=""><img loading="lazy" src="/img/w160/x0x.webp?v=20a9c76f" alt=""><img loading="lazy" src="/img/w160/winampfm.webp?v=85a944e1" alt=""></span>
+          <span><b>M-VAVE FM-1</b><small><span id="dd-fm1">All</span> firmwares</small></span></a>
+        <a class="tile vst-t" href="/convert/" data-dev="convert"><span class="pic"><img loading="lazy" src="/img/w160/vibe-vst.webp?v=f34396db" alt=""></span>
+          <span><b>VIBE FM VST</b><small>FM-1 firmwares in your DAW · open beta</small></span></a>
+        <a class="tile vst-t" href="/platform/" data-dev="native"><span class="pic"><img loading="lazy" src="/img/w160/vibe-native.webp?v=8faf0951" alt=""></span>
+          <span><b>VIBE FM</b><small>One Vibe, every device · browser, DAW, hardware</small></span></a>
+        <a class="tile vst-t" href="/lab/" data-dev="lab"><span class="pic"><img src="/img/lab-stage-vibedj.jpg?v=20261111" alt=""></span>
+          <span><b>VIBE FM Lab</b><small>Build a Vibe · port your FM-1 firmware · win a VIBE Box</small></span></a>
+        <a class="tile" href="/smk37/" data-dev="smk37"><span class="pic"><img loading="lazy" src="/smk37/img/w160/smk-mix.webp?v=4414a12e" alt=""></span>
+          <span><b>M-VAVE SMK-37 Pro</b><small>25 firmwares · Pro, Elite, MKE-P37</small></span></a>
+        <a class="tile" href="/cycles/" data-dev="cycles"><span class="pic"><img loading="lazy" src="/cycles/img/w160/modded-cycles.webp?v=769574b9" alt=""></span>
+          <span><b>Elektron Model:Cycles</b><small>6 mods · Model:Samples too</small></span></a>
+        <a class="tile" href="/lxr/" data-dev="lxr"><span class="pic"><img loading="lazy" src="/lxr/img/w160/lxr-official.webp?v=df5cd3d6" alt=""></span>
+          <span><b>Erica Synths LXR-02</b><small>Open source since 23 Oct · its firmware and mods</small></span></a>
+        <a class="tile vibe-t" href="/vibe/?ref=menu" data-dev="vibe" aria-current="page"><span class="pic"><img src="/vibe/assets/img/banner-device.jpg?v=20261109b" alt=""></span>
+          <span><b>VIBE FM Mk1</b><small>Hardware with open firmware · join the list</small></span></a>
+        <a class="tile add" href="/submit/"><span class="pic">+</span>
+          <span><b>Your device</b><small>Firmware for another machine? Tell us.</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <div class="dd toolsdd" id="toolsdd">
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="toolsm">Tools<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="toolsm"><div class="wrap in">
+      <div class="side">
+        <p class="k">Tools</p>
+        <p>Everything around the firmwares: emulators, editors, backup and rescue, building your own. Open source, from their makers.</p>
+      </div>
+      <div class="tiles">
+        <a class="tile crw" href="/tools/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span>
+          <span><b>All tools</b><small>Emulators, editors, backup, building your own</small></span></a>
+        <a class="tile crw" href="/tools/rescue/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M6.3 6.3l3.2 3.2M17.7 6.3l-3.2 3.2M6.3 17.7l3.2-3.2M17.7 17.7l-3.2-3.2"/></svg></span>
+          <span><b>FM-1 rescue</b><small>Does not start, update or save? What to do</small></span></a>
+        <a class="tile crw" href="/kb/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg></span>
+          <span><b>Knowledge Base</b><small>How to install, rescue, play</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <div class="dd aboutdd" id="aboutdd">
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="aboutm">Community<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="aboutm"><div class="wrap in">
+      <div class="side">
+        <p class="k">Community</p>
+        <p>The people behind the firmwares, and what the players wish for next. Installing is free and needs no account; a hub
+           account (no password, a link by mail) keeps your favourites, ratings and wishes.</p>
+        <hr><p>A question, a firmware, a device?</p>
+        <a class="mail" href="mailto:zven@thefirmwarehub.com?subject=The%20Firmware%20Hub">zven@thefirmwarehub.com</a>
+      </div>
+      <div class="tiles">
+        <a class="tile crw" href="/creators/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9" r="2.4"/><path d="M16 13.8c2.6 0 4.4 1.6 5 4.4"/></svg></span>
+          <span><b>Wall of Creators</b><small>The people who make the firmwares</small></span></a>
+        <a class="tile crw" href="/kb/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg></span>
+          <span><b>Knowledge Base</b><small>How to install, rescue, play</small></span></a>
+        <a class="tile crw" href="/submit/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span><b>Submit a firmware</b><small>Made one? Put it on the hub</small></span></a>
+        <a class="tile crw" href="/dj/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4.5"/><circle cx="8" cy="12" r="1"/><circle cx="17.5" cy="12" r="3"/><path d="M14 5h7M14 19h7"/></svg></span>
+          <span><b>FM-1 Jukebox</b><small>Your FM-1 tunes on two decks – upload yours</small></span></a>
+        <a class="tile crw" href="/wishes/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg></span>
+          <span><b>Wish list</b><small>A synth, a feature, a device: wish and vote</small></span></a>
+        <a class="tile crw" href="/impressum/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 11v5M12 8h.01"/></svg></span>
+          <span><b>Imprint &amp; privacy</b><small>Who runs the hub</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <div class="dd shopdd" id="shopdd" hidden>
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="shopm">Shop<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="shopm"><div class="wrap in">
+      <div class="side">
+        <p class="k">Shop</p>
+        <p class="cc-de">Firmwear, the hub's community shirt, on Fourthwall, and the machines the firmwares run on, from Amazon.de.</p>
+        <p class="cc-eu">Firmwear: the hub's community shirt, on Fourthwall.</p>
+        <p class="cc-us">Firmwear, the hub's community shirt, on Fourthwall, and the machines the firmwares run on, from Amazon.com.</p>
+        <hr class="cc-amz"><p class="ad cc-de">* Affiliate link (ad, Anzeige): as an Amazon Associate I earn from qualifying purchases; it costs you nothing extra. Als Amazon-Partner verdiene ich an qualifizierten Verkäufen.</p>
+        <p class="ad cc-us">* Affiliate link (ad). As an Amazon Associate I earn from qualifying purchases; it costs you nothing extra.</p>
+      </div>
+      <div class="tiles">
+        <a class="tile cc-merch" href="https://designburg-net-shop.fourthwall.com/products/fm-1-make-firmware-not-war-community-shirt-2026" data-shop="Firmwear|fourthwall" target="_blank" rel="noopener"><span class="pic"><img loading="lazy" src="/img/w160/merch.webp?v=5fe2f657" alt=""></span>
+          <span><b>Firmwear</b></span></a>
+        <a class="tile cc-de" href="https://link.amazon/B08QY1yVZ" data-shop="FM-1|amazon.de" target="_blank" rel="sponsored noopener"><span class="pic quad"><img loading="lazy" src="/img/w160/zp12.webp?v=1f052566" alt=""><img loading="lazy" src="/img/w160/sloop.webp?v=06c1512a" alt=""><img loading="lazy" src="/img/w160/x0x.webp?v=20a9c76f" alt=""><img loading="lazy" src="/img/w160/winampfm.webp?v=85a944e1" alt=""></span>
+          <span><b>Get the M-VAVE FM-1</b><small>on Amazon.de · Ad (Anzeige) *</small></span></a>
+        <a class="tile cc-de" href="https://link.amazon/B0f2qKAUl" data-shop="SMK-37 Pro|amazon.de" target="_blank" rel="sponsored noopener"><span class="pic"><img loading="lazy" src="/smk37/img/w160/smk-mix.webp?v=4414a12e" alt=""></span>
+          <span><b>Get the M-VAVE SMK-37 Pro</b><small>on Amazon.de · Ad (Anzeige) *</small></span></a>
+        <a class="tile cc-us" href="https://amzn.to/4yZizIY" data-shop="FM-1|amazon.com" target="_blank" rel="sponsored noopener"><span class="pic quad"><img loading="lazy" src="/img/w160/zp12.webp?v=1f052566" alt=""><img loading="lazy" src="/img/w160/sloop.webp?v=06c1512a" alt=""><img loading="lazy" src="/img/w160/x0x.webp?v=20a9c76f" alt=""><img loading="lazy" src="/img/w160/winampfm.webp?v=85a944e1" alt=""></span>
+          <span><b>Get the M-VAVE FM-1</b><small>on Amazon.com · Ad *</small></span></a>
+        <a class="tile cc-us" href="https://amzn.to/3TYjR7V" data-shop="SMK-37 Pro|amazon.com" target="_blank" rel="sponsored noopener"><span class="pic"><img loading="lazy" src="/smk37/img/w160/smk-mix.webp?v=4414a12e" alt=""></span>
+          <span><b>Get the M-VAVE SMK-37 Pro</b><small>on Amazon.com · Ad *</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <form class="find" role="search" action="/" method="get"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg><input
+    type="search" name="q" id="q" placeholder="Search firmwares…" aria-label="Search the firmwares" autocomplete="off"
+    spellcheck="false"><span class="key" aria-hidden="true">/</span></form>
+  <script>
+  (() => {                                                 // a tap / Enter opens it, a tap outside or Esc closes it
+    document.querySelectorAll("nav .dd").forEach((dd) => {   // (Devices, and Shop where it is shown)
+      const b = dd.querySelector(".ddb");
+      const set = (o) => { dd.classList.toggle("open", o); b.setAttribute("aria-expanded", String(o)); };
+      dd.close = () => set(false);
+      b.addEventListener("click", (e) => {               // (one open at a time: the other closed)
+        e.stopPropagation(); document.querySelectorAll("nav .dd").forEach((o) => o !== dd && o.close?.()); set(!dd.classList.contains("open"));
+      });
+      document.addEventListener("click", (e) => { if (!dd.contains(e.target)) set(false); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") { set(false); } });
+    });
+    document.addEventListener("keydown", (e) => {          // "/": into the search, on every page
+      const a = document.activeElement;
+      if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(a?.tagName || "") || a?.isContentEditable) return;
+      e.preventDefault(); const q = document.getElementById("q"); q.focus(); q.select();
+    });
+    fetch("/catalog.json?" + new Date().toISOString().slice(0, 10)).then((r) => r.json())     // (the hub's daily key: one cache)
+      .then((c) => { document.getElementById("dd-fm1").textContent = c.firmwares.length; }).catch(() => {});
+  })();
+  </script>
+  <a class="home" href="https://designburg.net/">designburg.net</a></div></nav>
+<script>
+(() => {
+  const EU = "AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE".split(" ");
+  fetch("/api/cc", { cache: "no-store" }).then((r) => r.json()).then((j) => {
+    const cc = j.cc === "DE" || j.cc === "AT" ? "de" : EU.includes(j.cc) ? "eu" : j.cc === "US" ? "us" : "ww", el = document.getElementById("shopdd");
+    if (el) { el.dataset.cc = cc; el.removeAttribute("hidden"); }
+  }).catch(() => { const el = document.getElementById("shopdd"); if (el) { el.dataset.cc = "ww"; el.removeAttribute("hidden"); } });
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest?.("#shopm a[data-shop]");
+    if (a) { const [dev, store] = a.dataset.shop.split("|"); try { (window._paq = window._paq || []).push(["trackEvent", "Shop", dev, store]); } catch {} }
+  });
+})();
+</script>
+<a class="lang" href="/vibe/?lang=de&amp;ref=hub" hreflang="de" lang="de"><span class="on">EN</span> / <span>DE</span></a>
+<main class="hero">
+  <picture class="shot">
+    <source media="(orientation: portrait) and (max-width: 900px)" type="image/webp" srcset="/vibe/assets/img/teaser-tall.webp?v=20261112b">
+    <source media="(orientation: portrait) and (max-width: 900px)" srcset="/vibe/assets/img/teaser-tall.jpg?v=20261112b">
+    <source type="image/webp" srcset="/vibe/assets/img/teaser-wide.webp?v=20261112b">
+    <img src="/vibe/assets/img/teaser-wide.jpg?v=20261112b" alt="" fetchpriority="high" decoding="async">
+  </picture>
+
+  <div class="content">
+    <p class="coming">Coming <b>2027</b></p>
+    <h1 class="wordmark">VIBE <em>FM</em> <span>Mk1</span></h1>    <p class="claim">Make Firmware Not War.</p>
+
+    <div class="text">
+      <p>You&#039;ve flashed your FM-1. You&#039;ve tried Baud Girl, Felucca, SLOOP and more.</p>
+      <p>On most devices, open firmware is tolerated at best. VIBE FM Mk1 officially supports it: built for it from day one, with a community that&#039;s already here.</p>
+            <p class="big">One device. <span>Endless possibilities.</span></p>
+      <p>Synth, sampler, groovebox, vocal or guitar FX: it becomes whatever the firmware makes it. Open, and never bricked.</p>
+      <p class="offer">The first 100 get 10% off.</p>
+      <p>Something is coming. Join the list for first details and a say in the final design.</p>
+    </div>
+
+    <form class="signup" method="post" action="/vibe/#signup" id="signup" novalidate>
+      <input type="hidden" name="action" value="subscribe">
+      <input type="hidden" name="lang" value="en">
+      <input type="hidden" name="source" value="hub">
+      <input type="hidden" name="stamp" value="1794491027.819cb2396d78d52a279c">
+      <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+            <div class="row">
+        <label class="sr" for="email">Your email</label>
+        <input id="email" type="email" name="email" value="" placeholder="you@example.com"
+               autocomplete="email" inputmode="email" required>
+        <button class="btn">Count me in</button>
+      </div>
+      <label class="consent"><input type="checkbox" name="consent" value="1" required>
+        <span>I&#039;d like to receive news about VIBE FM. Unsubscribe anytime.</span></label>
+      <p class="small">Double opt-in, stored on our own server, never shared. <a href="/vibe/legal.php#datenschutz">Privacy</a> · <a href="/vibe/legal.php#impressum">Imprint</a></p>
+      <p class="small terms">10% off the crowdfunding campaign price for the first 100 confirmed sign-ups, one device per address.</p>
+    </form>
+
+    <div class="text why-box">
+        <h2 class="why">Why now?</h2>
+        <ul class="why"><li>Open instruments existed before, but only for programmers.</li><li>Now anyone can vibe code firmware: describe your instrument, AI writes the code.</li><li>The FM-1 scene proves it: more than 20 open firmwares for a device that was never built for it.</li><li>What was missing is hardware made for this. That&#039;s VIBE.</li></ul>
+    </div>
+  </div>
+</main>
+<footer class="foot">
+  <nav>
+    <a href="/vibe/legal.php#impressum">Imprint</a>
+    <a href="/vibe/legal.php#datenschutz">Privacy</a>
+    <a href="https://thefirmwarehub.com/">FM-1 Firmware Hub</a>
+  </nav>
+  <p><a href="https://designburg.net/">A project by Designburg</a></p>
+</footer>
+<script>var _paq=window._paq=window._paq||[];_paq.push(['disableCookies']);_paq.push(['setDoNotTrack',true]);(function(){var u=new URL(location.href);u.searchParams.delete('t');u.searchParams.delete('s');_paq.push(['setCustomUrl',u.href]);})();_paq.push(['trackPageView']);(function(){var u='https://matomo.designburgapps.com/';_paq.push(['setTrackerUrl',u+'matomo.php']);_paq.push(['setSiteId','4']);var d=document,g=d.createElement('script'),s=d.getElementsByTagName('script')[0];g.async=true;g.src=u+'matomo.js';s.parentNode.insertBefore(g,s);})();</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"32ff7eee27e340838df2ea2305958c1a","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

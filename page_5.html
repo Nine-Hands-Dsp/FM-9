@@ -1,0 +1,1105 @@
+https://thefirmwarehub.com/kb/
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-only  (C) 2026 Sven Trogus
+     The FM-1 Firmware Hub's knowledge base (thefirmwarehub.com/kb/): what the hub checks and why, for players and
+     for firmware authors. tools/make_fm1.py writes it as fm1/kb/index.html; the identity table reads ../catalog.json. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Knowledge Base – The FM-1 Firmware Hub</title>
+<meta name="description" content="How the FM-1 Firmware Hub works: firmware packages, identities, the update loader, what is checked before a firmware is listed, your data, going back to the official firmware, and how to get your own firmware listed.">
+<meta name="author" content="zvenson">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thefirmwarehub.com/kb/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="The FM-1 Firmware Hub">
+<meta property="og:url" content="https://thefirmwarehub.com/kb/">
+<meta property="og:title" content="Knowledge Base – The FM-1 Firmware Hub">
+<meta property="og:description" content="Packages, identities, update loaders, checks, backups, and how to get a firmware listed.">
+<meta property="og:image" content="https://thefirmwarehub.com/og.png">
+<meta name="theme-color" content="#151213">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23151213'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='900' font-size='12' text-anchor='middle' fill='%2342f5f5'%3EFM1%3C/text%3E%3C/svg%3E">
+<style>
+  /* the hub's look (web/fm1.html): warm dark, cyan / blue / pink / beige */
+  :root { --bg: #151213; --panel: #221e1f; --panel2: #2e2a2b; --line: #3a3435; --fg: #efe8e1; --dim: #a39a94; --text: #d8d0c9;
+          --cyan: #42f5f5; --blue: #afd9f4; --pink: #f4c0cb; --beige: #e6d1b9; --ok: #5fe3a1; --warn: #f2c46d; }
+  * { box-sizing: border-box; }
+  html { color-scheme: dark; scroll-padding-top: 20px; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16.5px/1.7 "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  a { color: var(--cyan); text-decoration: none; } a:hover { text-decoration: underline; }
+  .wrap { margin: 0 auto; padding: 0 clamp(16px, 4vw, 72px); width: 100%; }
+  nav { border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+  .mark { font-size: 21px; font-weight: 300; color: var(--fg); letter-spacing: -.2px; } .mark:hover { text-decoration: none; }
+  .mark b { font-weight: 800; color: var(--cyan); }
+  nav .home { font-size: 14px; color: var(--dim); }
+  /* VIBE FM teaser (thefirmwarehub.com/vibe/, own PHP page): one slim line above the nav on every page (web/vibe-banner.html; tools/make_fm1.py puts it in), the device and its orange */
+  .vibe { display: block; position: relative; background: #0c0a0a; color: var(--text); font-size: 14px; }
+  .vibe::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+                 background: linear-gradient(90deg, #8FD0FF, #9EF0C4, #FFE27A, #FFAA6E, #D7B6FF); opacity: .7; }
+  .vibe .wrap { display: flex; align-items: center; gap: 12px; height: 42px; }
+  .vibe img { width: 84px; height: 30px; object-fit: cover; object-position: 70% 50%; border-radius: 5px; flex: none; display: block; }
+  .vibe b { color: var(--fg); font-weight: 800; white-space: nowrap; } .vibe b em { font-style: normal; color: #ff6a1a; }
+  .vibe .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .vibe .t i { font-style: normal; font-weight: 800; background: linear-gradient(90deg, #8FD0FF, #9EF0C4 30%, #FFE27A 55%, #FFAA6E 80%, #D7B6FF);
+               -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .vibe .offer { margin-left: auto; white-space: nowrap; color: var(--dim); } .vibe .offer strong { color: #ff6a1a; }
+  .vibe .go { background: #ff6a1a; color: #0e0f11; font-weight: 800; font-size: 13px; padding: 6px 12px; border-radius: 7px; white-space: nowrap; }
+  .vibe:hover { text-decoration: none; } .vibe:hover .go { background: #ff8a4a; }
+  @media (max-width: 1100px) { .vibe .offer { display: none; } .vibe .go { margin-left: auto; } }
+  @media (max-width: 640px) { .vibe .wrap { gap: 9px; height: 40px; } .vibe img { width: 52px; height: 26px; } .vibe .t { display: none; } }
+  /* the devices menu (web/devices.html, put into every page by tools/make_fm1.py): a mega menu under "Devices", open on
+     hover (a mouse) or on a tap / Enter (touch, keyboard) */
+  nav { position: relative; z-index: 40; }
+  nav .dd { align-self: stretch; display: flex; align-items: center; margin: 0 0 0 clamp(14px, 3vw, 44px); }
+  /* the Knowledge Base beside it, a plain link in the same type (on the KB itself: marked) */
+  nav .kbl { align-self: stretch; display: flex; align-items: center; margin: 0 auto 0 clamp(4px, 1.6vw, 22px); padding: 8px 2px;
+             color: var(--fg); font-size: 15px; font-weight: 600; white-space: nowrap; box-shadow: inset 0 -2px 0 transparent; }
+  /* Shop (Amazon.de affiliate links): shown by web/hubapp.js in DE / AT only (/api/cc), beside the Knowledge Base */
+  nav .dd[hidden] { display: none; }
+  /* (data-cc: de = DE / AT: Firmwear + amazon.de; us: Firmwear + amazon.com; eu / ww = everybody else: Firmwear only –
+     the shirt for everyone, Sven 12.11.) */
+  #shopdd:not([data-cc="de"]) .cc-de, #shopdd:not([data-cc="eu"]):not([data-cc="ww"]) .cc-eu, #shopdd:not([data-cc="us"]) .cc-us,
+  #shopdd[data-cc="eu"] .cc-amz, #shopdd[data-cc="ww"] .cc-amz { display: none !important; }
+  nav .dd.shopdd { margin-left: clamp(4px, 1.6vw, 22px); }
+  nav .dd.toolsdd { margin-left: clamp(4px, 1.6vw, 22px); }   /* (as the Tools link was: the start page's search field sits in the middle) */
+  .mega .side .ad { font-size: 12.5px; color: var(--dim); }
+  nav .kbl:hover { text-decoration: none; box-shadow: inset 0 -2px 0 var(--pink); }
+  nav .kbl[aria-current] { box-shadow: inset 0 -2px 0 var(--cyan); }
+  nav .kbl .sm { display: none; }
+  @media (max-width: 560px) { nav .kbl .lg { display: none; } nav .kbl .sm { display: inline; }     /* (a phone: the name on one line) */
+                              nav .wrap { gap: 10px; } nav .dd { margin-left: 4px; } nav .kbl { margin-left: 0; } nav .ddb .ar { margin-left: 4px; } }
+  @media (max-width: 400px) { nav .mark { font-size: 18px; } }
+  @media (max-width: 350px) { nav .mark { font-size: 16px; } nav .dd { margin-left: 2px; } }   /* (an iPhone SE: Devices and KB beside it) */
+  nav .ddb { background: transparent; color: var(--fg); font: inherit; font-size: 15px; font-weight: 600; padding: 8px 2px; border: 0;
+             border-radius: 0; cursor: pointer; box-shadow: inset 0 -2px 0 transparent; }
+  nav .ddb:hover { filter: none; transform: none; }
+  nav .ddb .ar { display: inline-block; color: var(--dim); font-size: 11px; margin-left: 6px; transition: transform .15s; }
+  nav .dd.open .ddb { box-shadow: inset 0 -2px 0 var(--pink); } nav .dd.open .ddb .ar { transform: rotate(180deg); }
+  .mega { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--bg); border-bottom: 1px solid var(--line);
+          box-shadow: 0 30px 60px rgba(0, 0, 0, .55); }
+  nav .dd.open .mega { display: block; }
+  @media (hover: hover) { nav .dd:hover .mega { display: block; } nav .dd:hover .ddb { box-shadow: inset 0 -2px 0 var(--pink); }
+                          nav .dd:hover .ddb .ar { transform: rotate(180deg); } }
+  .mega .in { display: grid; height: auto; grid-template-columns: 250px minmax(0, 1fr); gap: clamp(20px, 3vw, 44px); padding-top: 26px; padding-bottom: 30px; }
+  .mega .side { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; font-size: 14.5px; line-height: 1.55; }
+  .mega .side .k { font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); font-weight: 700; margin: 0 0 10px; }
+  .mega .side a { display: block; color: var(--fg); padding: 4px 0; }
+  .mega .side hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
+  .mega .side p { margin: 0 0 8px; color: var(--text); }
+  .mega .side a.mail { color: var(--pink); }
+  .mega .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 10px 18px; align-content: start; }
+  .mega .tile { display: flex; align-items: center; gap: 16px; padding: 10px 12px; border-radius: 14px; color: var(--fg); }
+  .mega .tile:hover { text-decoration: none; background: var(--panel2); }
+  .mega .tile[aria-current] { box-shadow: inset 0 0 0 1px var(--cyan); }
+  .mega .pic { flex: none; width: 72px; height: 72px; border-radius: 12px; background: #0e0c0d; border: 1px solid var(--line); overflow: hidden;
+               display: grid; place-items: center; }
+  .mega .pic img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; display: block; }
+  .mega .pic.quad { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1px; background: var(--line); }
+  .mega .tile b { display: block; font-size: 15px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; line-height: 1.3; }
+  .mega .tile small { display: block; color: var(--dim); font-size: 13.5px; margin-top: 2px; }
+  .mega .tile.vibe-t .pic img { object-position: 70% 50%; image-rendering: auto; } .mega .tile.vibe-t b { color: #ff6a1a; } .mega .tile.vst-t b { color: #ff60be; }
+  .mega .tile.add .pic { border-style: dashed; background: transparent; color: var(--pink); font-size: 34px; font-weight: 200; }
+  @media (max-width: 760px) { .mega .in { grid-template-columns: 1fr; padding-top: 14px; padding-bottom: 18px; } .mega .side { display: none; }
+                              .mega .pic { width: 56px; height: 56px; } }
+  /* the nav stays on top, the search in its middle (from 1700 px the true middle; a phone: a line of its own). The colours
+     on the nav itself: the same on VIBE's page, which has its own (hubnav/vibe.html) */
+  nav.top { position: sticky; top: 0; background: var(--bg); --bg: #151213; --panel: #221e1f; --panel2: #2e2a2b; --line: #3a3435;
+            --fg: #efe8e1; --dim: #a39a94; --text: #d8d0c9; --cyan: #42f5f5; --pink: #f4c0cb; --beige: #e6d1b9; }
+  nav.top .find { position: relative; flex: 0 1 300px; margin: 0 auto; }
+  nav.top .kbl { margin-right: 0; }                    /* (the search takes the free space on both sides: between the links) */
+  nav .dd.aboutdd { margin-left: clamp(4px, 1.6vw, 22px); }   /* (About beside Tools: the wall, the KB, submitting, the imprint) */
+  nav .dd.aboutdd.cur .ddb { box-shadow: inset 0 -2px 0 var(--cyan); }
+  .mega .tile.crw .pic { background: transparent; border-style: dashed; }
+  .mega .tile.crw svg { width: 34px; height: 34px; fill: none; stroke: var(--cyan); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  @media (max-width: 560px) { nav .aboutdd .ddb .ar { display: none; } nav .dd.aboutdd { margin-left: 0; } }
+  @media (min-width: 1700px) { nav.top .wrap { position: relative; } nav.top .home { margin-left: auto; }
+                               nav.top .find { position: absolute; left: 50%; width: 320px; transform: translateX(-50%); } }
+  @media (max-width: 900px) { nav.top .wrap { flex-wrap: wrap; height: auto; min-height: 60px; row-gap: 0; }
+                              nav.top .find { order: 10; flex-basis: 100%; margin: 0 0 10px; } }
+  nav.top .find input { width: 100%; box-sizing: border-box; color: var(--fg); border: 1px solid rgba(239, 232, 225, .3); border-radius: 999px;
+                        padding: 9px 46px 9px 42px; font: inherit; font-size: 15px; background: var(--panel2); margin: 0; }
+  nav.top .find input:hover { border-color: rgba(239, 232, 225, .5); }
+  nav.top .find input:focus { outline: none; border-color: var(--beige); }
+  nav.top .find input::placeholder { color: var(--text); opacity: .8; }
+  nav.top .find .ico { position: absolute; left: 15px; top: 50%; width: 17px; height: 17px; transform: translateY(-50%); fill: none; stroke: var(--text);
+                       stroke-width: 2.2; stroke-linecap: round; pointer-events: none; }
+  nav.top .find .key { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 12px; line-height: 1.5; color: var(--dim);
+                       border: 1px solid var(--line); border-radius: 5px; padding: 0 7px; pointer-events: none; }
+  nav.top .find input:focus + .key, nav.top .find input:not(:placeholder-shown) + .key { display: none; }
+  @media (hover: none) { nav.top .find .key { display: none; } }
+  /* Shop on a phone (after the rules above): Devices, KB, Shop on the name's line; the affiliate notice stays visible */
+  @media (max-width: 560px) { nav .shopdd .ddb .ar { display: none; } nav .dd.shopdd { margin-left: 0; } }
+  @media (max-width: 420px) { nav .ddb .ar { display: none; } }          /* (a phone with Shop: Devices, KB, Shop on the name's line) */
+  @media (max-width: 760px) { #shopm .side { display: block; padding: 12px 16px; } #shopm .side > :not(.ad) { display: none; } }   /* (the notice stays) */
+  /* a narrow phone: name, Devices, Tools and Shop on one line (a little tighter) */
+  /* (a phone: the name as FH, so Devices, Tools, About and Shop stay on its line) */
+  nav.top .mark .smm { display: none; }
+  @media (max-width: 900px) { nav.top .home { display: none; } }   /* (designburg.net: no room beside Shop) */
+  @media (max-width: 760px) { nav.top .mark .lgm { display: none; } nav.top .mark .smm { display: inline; font-weight: 800; letter-spacing: -.5px; } }
+  @media (max-width: 400px) { nav.top > .wrap { column-gap: 8px; } nav.top .mark { font-size: 17px; } }
+  @media (max-width: 370px) { nav.top > .wrap { column-gap: 6px; } nav.top .mark { font-size: 16px; } nav .dd { margin-left: 2px; } }
+  .strip { display: flex; height: 4px; } .strip i { flex: 1; }
+  .strip i:nth-child(1) { background: var(--cyan); } .strip i:nth-child(2) { background: var(--blue); }
+  .strip i:nth-child(3) { background: var(--pink); } .strip i:nth-child(4) { background: var(--beige); }
+  header { padding: 52px 0 36px;
+           background: radial-gradient(900px 420px at 80% 20%, rgba(66, 245, 245, .10), transparent 70%),
+                       radial-gradient(700px 380px at 5% 100%, rgba(244, 192, 203, .08), transparent 70%); }
+  .eyebrow { font-size: 13px; letter-spacing: 2.4px; text-transform: uppercase; color: var(--beige); margin: 0 0 14px; }
+  h1 { font-size: clamp(38px, 4.6vw, 72px); line-height: 1.05; font-weight: 300; margin: 0 0 18px; letter-spacing: -.5px; }
+  h1 b { font-weight: 800; background: linear-gradient(90deg, var(--cyan), var(--blue) 45%, var(--pink) 75%, var(--beige));
+         -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { font-size: 18.5px; color: var(--text); max-width: 40em; margin: 0; }
+  .layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(28px, 4vw, 72px); padding-top: 24px; padding-bottom: 80px; align-items: start; }
+  .toc { position: sticky; top: 20px; font-size: 14.5px; }
+  .toc p { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--beige); margin: 0 0 10px; }
+  .toc a { display: block; color: var(--dim); padding: 5px 0 5px 12px; border-left: 2px solid var(--line); }
+  .toc a:hover { color: var(--fg); text-decoration: none; border-left-color: var(--cyan); }
+  article { max-width: 820px; }
+  section { padding: 8px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 36px; }
+  section:last-child { border-bottom: 0; }
+  h2 { font-size: 28px; font-weight: 700; margin: 0 0 6px; letter-spacing: -.2px; }
+  h2 + .who { font-size: 12px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--dim); margin: 0 0 18px; }
+  h3 { font-size: 18px; margin: 26px 0 6px; color: var(--fg); }
+  p, li { color: var(--text); } b, strong { color: var(--fg); }
+  ul, ol { padding-left: 22px; } li { margin: 4px 0; }
+  code { font: 600 14px/1.4 ui-monospace, "SF Mono", Menlo, monospace; background: var(--panel2); padding: 2px 6px; border-radius: 5px; color: var(--blue); }
+  .note { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--cyan); border-radius: 12px; padding: 16px 22px; margin: 18px 0; }
+  .note.warn { border-left-color: var(--warn); }
+  .note p { margin: 0; }
+  .flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; counter-reset: s; }
+  .flow div { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-size: 14.5px; color: var(--text); }
+  .flow div::before { counter-increment: s; content: counter(s); display: block; font-weight: 800; color: var(--cyan); font-size: 22px; line-height: 1.2; }
+  .flow b { display: block; }
+  .tablewrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--dim); font-weight: 600; font-size: 12px; letter-spacing: 1.4px; text-transform: uppercase; background: var(--panel); }
+  tr:last-child td { border-bottom: 0; }
+  td.id { font: 600 14px ui-monospace, "SF Mono", Menlo, monospace; color: var(--blue); white-space: nowrap; }
+  .tag { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .tag.own { background: rgba(95, 227, 161, .14); color: var(--ok); }
+  .tag.shared { background: rgba(242, 196, 109, .14); color: var(--warn); }
+  .tag.mv { background: rgba(175, 217, 244, .14); color: var(--blue); }
+  .tabmsg { color: var(--dim); font-size: 14px; }
+  pre { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; overflow-x: auto; margin: 16px 0;
+        font: 13.5px/1.55 ui-monospace, "SF Mono", Menlo, monospace; color: var(--text); }
+  .fhcheck { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .fhcheck input { flex: 1 1 260px; min-width: 0; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; }
+  .fhcheck button { background: var(--cyan); color: #111; border: 0; border-radius: 10px; padding: 10px 18px; font: inherit; font-weight: 700; cursor: pointer; }
+  #fhout .ok { color: var(--ok); } #fhout .bad { color: var(--warn); } #fhout blockquote { margin: 8px 0; padding: 10px 14px; border-left: 3px solid var(--cyan); background: var(--panel); border-radius: 8px; }
+  pre b { color: var(--cyan); font-weight: 600; } pre span { color: var(--dim); }
+  ol.steps { counter-reset: st; list-style: none; padding: 0; margin: 18px 0; }
+  ol.steps > li { counter-increment: st; position: relative; padding: 0 0 16px 46px; }
+  ol.steps > li::before { content: counter(st); position: absolute; left: 0; top: -2px; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--cyan); color: #151213; font-weight: 800; display: grid; place-items: center; }
+  ol.steps > li pre { margin: 10px 0; }
+  #sign { border: 1px solid var(--cyan); border-radius: 14px; padding: 4px 22px 14px; background: color-mix(in srgb, var(--cyan) 5%, transparent); }
+  .kbkey { display: inline-grid; place-items: center; width: 34px; height: 27px; border-radius: 7px; vertical-align: -7px; margin: 0 2px;
+         background: linear-gradient(#2c2728, #1c1819); box-shadow: 0 2px 0 #0a0809, inset 0 0 0 1px var(--line); color: var(--k); border-top: 2px solid var(--k); }
+  .kbkey svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  /* the footer (web/footer.html, the same on every page: tools/make_fm1.py puts it in, the credits from the catalogues) */
+  footer { border-top: 1px solid var(--line); color: var(--dim); font-size: 13.5px; line-height: 1.7; padding: 34px 0 54px; text-align: center; }
+  footer .wrap { max-width: 900px; } footer a { color: var(--text); }
+  @media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } .toc { position: static; display: none; } }   /* (minmax: the table scrolls in its box, the page stays as wide as the phone) */
+  p code, li code { overflow-wrap: anywhere; }
+  @media (max-width: 640px) { .flow { grid-template-columns: 1fr; } h2 { font-size: 24px; } .lead { font-size: 17.5px; } nav .home { display: none; }
+    .eyebrow { letter-spacing: 1.5px; font-size: 12px; } th, td { padding: 8px 10px; } }
+  /* (5.11.2026, Sven) every page's h1 in the pixel face of the converter's title: Press Start 2P (SIL OFL 1.1, /fonts/),
+     hosted here (no Google request); its highlighted words (<b>, <em>) in the title's pink. tools/make_fm1.py pixel_h1() */
+  @font-face { font-family: "Press Start 2P"; src: url("/fonts/PressStart2P-latin.woff2") format("woff2"); font-display: swap; }
+  h1.pxf { font-family: "Press Start 2P", ui-monospace, monospace !important; font-weight: 400 !important; font-size: 24px !important;
+           line-height: 1.5 !important; letter-spacing: 0 !important; text-transform: uppercase; color: var(--fg, #efe8e1) !important;
+           -webkit-font-smoothing: none; font-smooth: never; overflow-wrap: anywhere; min-width: 0; max-width: 100%; }
+  h1.pxf b, h1.pxf em, h1.pxf strong { font-weight: 400 !important; font-style: normal !important; color: #ff60be !important;
+           background: none !important; -webkit-text-fill-color: #ff60be; }
+  @media (min-width: 700px) { h1.pxf { font-size: 32px !important; } }
+  @media (min-width: 1200px) { h1.pxf { font-size: 40px !important; } }
+  .cshead h1.pxf b { color: var(--c) !important; -webkit-text-fill-color: var(--c); }   /* (a cheat sheet: its firmware's colour) */
+  @media print { h1.pxf, h1.pxf b { color: #111 !important; -webkit-text-fill-color: #111; } }
+  h1.pxf .nb { white-space: nowrap; }
+</style>
+<link rel="manifest" href="/app/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/app/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Firmware Hub">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<style>
+/* web/hubapp.css: the app bar at the bottom (web/hubapp.js), on every device page */
+  .appbar { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 90; margin: 0 auto; max-width: 560px;
+            display: flex; align-items: center; gap: 12px; padding: 12px 44px 12px 12px; box-sizing: border-box;
+            background: #221e1f; color: #efe8e1; border: 1px solid #3a3435; border-radius: 16px; box-shadow: 0 10px 40px rgba(0, 0, 0, .55);
+            font: 14.5px/1.45 "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; animation: appbar-in .35s ease-out; }
+  @keyframes appbar-in { from { transform: translateY(24px); opacity: 0; } }
+  .appbar img { flex: none; width: 44px; height: 44px; border-radius: 11px; align-self: flex-start; }
+  .appbar .t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .appbar .t > b { font-size: 15.5px; color: #42f5f5; }
+  .appbar .t small { font-size: 12.5px; line-height: 1.45; color: #a39a94; margin-top: 4px; }
+  .appbar svg { width: 17px; height: 17px; vertical-align: -3px; fill: none; stroke: #42f5f5; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .appbar .go { flex: none; font: inherit; font-weight: 700; padding: 9px 18px; border: 0; border-radius: 999px; background: #42f5f5; color: #151213; cursor: pointer; }
+  .appbar .x { position: absolute; top: 6px; right: 6px; width: 34px; height: 34px; border: 0; padding: 0; background: none; color: #a39a94;
+               font: 24px/1 Arial, sans-serif; cursor: pointer; border-radius: 50%; }
+  .appbar .x:hover { color: #efe8e1; background: #2e2a2b; }
+  .appbar.wide { max-width: 640px; align-items: center; gap: 18px; }
+  .appbar .qr { flex: none; width: 132px; height: 132px; border-radius: 10px; align-self: center; }
+  .appbar .pc { margin-top: 8px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: #d8d0c9; }
+  .appbar .pc .go { padding: 7px 16px; }
+  @media (prefers-reduced-motion: reduce) { .appbar { animation: none; } }
+/* web/deck.css: a card's actions as a tape deck's keys, on every device page (make_fm1 puts it in with the app's style):
+   the FM-1 page's deck() and the SMK-37 page's cards (make_fm1 smk_cards) */
+  /* a card's actions: a tape deck's keys (Play, Edit, Cheat sheet, Build), joined, a symbol each, the name as a tooltip */
+  .fw .deck { display: inline-flex; border-radius: 9px; box-shadow: 0 2px 0 #0a0809, inset 0 0 0 1px var(--line); }
+  .fw .deck .key { position: relative; width: 48px; height: 38px; display: grid; place-items: center; color: var(--fg);
+               background: linear-gradient(#2c2728, #1c1819); box-shadow: inset -1px 0 0 #0e0c0d, inset 0 1px 0 rgba(255, 255, 255, .06); }
+  .fw .deck .key:first-child { border-radius: 9px 0 0 9px; } .fw .deck .key:last-child { border-radius: 0 9px 9px 0; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06); }
+  .fw .deck .key:only-child { border-radius: 9px; }
+  /* each key its colour, the same on every card (a tape deck's coloured caps): the symbol, a thin edge on top, a tint on hover */
+  .fw .deck .k-play { --k: #5fe3a1; } .fw .deck .k-edit { --k: #f4c0cb; } .fw .deck .k-sheet { --k: #a870e8; } .fw .deck .k-build { --k: #afd9f4; } .fw .deck .k-hub { --k: #42f5f5; } .fw .deck .k-pkg { --k: #e6d1b9; } .fw .deck .k-talk { --k: #ff9a5c; } .fw .deck .k-vst { --k: #ff60be; }
+  .fw .deck .k-src { --k: #c3cbd6; } .fw .deck .k-hid { --k: #f2b33d; }   /* (facts, not actions: built from source on GitHub, can act as a USB keyboard / mouse) */
+  .fw .deck .key { color: var(--k, var(--fg)); }
+  .fw .deck .key::before { content: ""; position: absolute; left: 7px; right: 7px; top: 0; height: 3px; border-radius: 0 0 3px 3px; background: var(--k); opacity: .85; }
+  .fw .deck .key:hover { text-decoration: none; color: var(--k); background: linear-gradient(color-mix(in srgb, var(--k) 22%, #2c2728), color-mix(in srgb, var(--k) 10%, #1c1819)); }
+  .fw .deck .key:active { transform: translateY(1px); background: #161314; box-shadow: inset 0 2px 5px rgba(0, 0, 0, .7); }
+  .fw .deck .key svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .fw .deck .key svg path[d^="M8 5v14"] { fill: currentColor; }
+  /* the key's name: one floating tooltip on the page (web/hubapp.js), never clipped by a card; above the key, below when no room */
+  .decktip { position: fixed; z-index: 100; padding: 5px 9px; border-radius: 6px; background: #000; color: #fff; font: 600 12px/1.2 "Inter", Arial, sans-serif;
+             width: max-content; max-width: min(440px, calc(100vw - 16px)); pointer-events: none; opacity: 0; transition: opacity .12s; transform: translateX(-50%); }
+  .decktip.on { opacity: 1; }
+</style>
+<meta property="og:image:secure_url" content="https://thefirmwarehub.com/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://thefirmwarehub.com/og.png">
+</head>
+<body>
+
+<a class="vibe" href="/vibe/?ref=kb"><div class="wrap">
+  <picture><source type="image/webp" srcset="/vibe/assets/img/banner-device.webp?v=20261109b"><img src="/vibe/assets/img/banner-device.jpg?v=20261109b" alt="" width="84" height="30"></picture>
+  <b>VIBE <em>FM</em> Mk1</b> <span class="t">Open firmware, <i>officially supported.</i></span>
+  <span class="offer"><strong>The first 100</strong> get 10% off</span> <span class="go">Join the list &rarr;</span>
+</div></a>
+<nav class="top"><div class="wrap"><a class="mark" href="https://thefirmwarehub.com/"><span class="lgm">The <b>Firmware Hub</b></span><span class="smm" aria-hidden="true">F<b>H</b></span></a>
+  <div class="dd" id="dd">
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="mega">Devices<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="mega"><div class="wrap in">
+      <div class="side">
+        <p class="k">The Firmware Hub</p>
+        <p>Open-source firmware for small music machines, from their makers, installed in the browser.</p>
+        <a href="/">All FM-1 firmwares</a><a href="/kb/">Knowledge Base</a><a href="/creators/">Wall of Creators</a><a href="/submit/">Submit a firmware</a><a href="/vibe/?ref=menu">VIBE FM Mk1</a><a href="/platform/">VIBE FM</a><a href="/lab/">VIBE FM Lab</a>
+        <a id="getapp" href="/#app">App</a>
+        <hr><p>Made firmware for another device?</p>
+        <a class="mail" href="mailto:zven@thefirmwarehub.com?subject=The%20Firmware%20Hub%3A%20my%20device">zven@thefirmwarehub.com</a>
+      </div>
+      <div class="tiles">
+        <a class="tile" href="/" data-dev="fm1" aria-current="page"><span class="pic quad"><img loading="lazy" src="/img/w160/zp12.webp?v=1f052566" alt=""><img loading="lazy" src="/img/w160/sloop.webp?v=06c1512a" alt=""><img loading="lazy" src="/img/w160/x0x.webp?v=20a9c76f" alt=""><img loading="lazy" src="/img/w160/winampfm.webp?v=85a944e1" alt=""></span>
+          <span><b>M-VAVE FM-1</b><small><span id="dd-fm1">All</span> firmwares</small></span></a>
+        <a class="tile vst-t" href="/convert/" data-dev="convert"><span class="pic"><img loading="lazy" src="/img/w160/vibe-vst.webp?v=f34396db" alt=""></span>
+          <span><b>VIBE FM VST</b><small>FM-1 firmwares in your DAW · open beta</small></span></a>
+        <a class="tile vst-t" href="/platform/" data-dev="native"><span class="pic"><img loading="lazy" src="/img/w160/vibe-native.webp?v=8faf0951" alt=""></span>
+          <span><b>VIBE FM</b><small>One Vibe, every device · browser, DAW, hardware</small></span></a>
+        <a class="tile vst-t" href="/lab/" data-dev="lab"><span class="pic"><img src="/img/lab-stage-vibedj.jpg?v=20261111" alt=""></span>
+          <span><b>VIBE FM Lab</b><small>Build a Vibe · port your FM-1 firmware · win a VIBE Box</small></span></a>
+        <a class="tile" href="/smk37/" data-dev="smk37"><span class="pic"><img loading="lazy" src="/smk37/img/w160/smk-mix.webp?v=4414a12e" alt=""></span>
+          <span><b>M-VAVE SMK-37 Pro</b><small>25 firmwares · Pro, Elite, MKE-P37</small></span></a>
+        <a class="tile" href="/cycles/" data-dev="cycles"><span class="pic"><img loading="lazy" src="/cycles/img/w160/modded-cycles.webp?v=769574b9" alt=""></span>
+          <span><b>Elektron Model:Cycles</b><small>6 mods · Model:Samples too</small></span></a>
+        <a class="tile" href="/lxr/" data-dev="lxr"><span class="pic"><img loading="lazy" src="/lxr/img/w160/lxr-official.webp?v=df5cd3d6" alt=""></span>
+          <span><b>Erica Synths LXR-02</b><small>Open source since 23 Oct · its firmware and mods</small></span></a>
+        <a class="tile vibe-t" href="/vibe/?ref=menu" data-dev="vibe"><span class="pic"><img src="/vibe/assets/img/banner-device.jpg?v=20261109b" alt=""></span>
+          <span><b>VIBE FM Mk1</b><small>Hardware with open firmware · join the list</small></span></a>
+        <a class="tile add" href="/submit/"><span class="pic">+</span>
+          <span><b>Your device</b><small>Firmware for another machine? Tell us.</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <div class="dd toolsdd" id="toolsdd">
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="toolsm">Tools<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="toolsm"><div class="wrap in">
+      <div class="side">
+        <p class="k">Tools</p>
+        <p>Everything around the firmwares: emulators, editors, backup and rescue, building your own. Open source, from their makers.</p>
+      </div>
+      <div class="tiles">
+        <a class="tile crw" href="/tools/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span>
+          <span><b>All tools</b><small>Emulators, editors, backup, building your own</small></span></a>
+        <a class="tile crw" href="/tools/rescue/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M6.3 6.3l3.2 3.2M17.7 6.3l-3.2 3.2M6.3 17.7l3.2-3.2M17.7 17.7l-3.2-3.2"/></svg></span>
+          <span><b>FM-1 rescue</b><small>Does not start, update or save? What to do</small></span></a>
+        <a class="tile crw" href="/kb/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg></span>
+          <span><b>Knowledge Base</b><small>How to install, rescue, play</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <div class="dd aboutdd" id="aboutdd">
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="aboutm">Community<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="aboutm"><div class="wrap in">
+      <div class="side">
+        <p class="k">Community</p>
+        <p>The people behind the firmwares, and what the players wish for next. Installing is free and needs no account; a hub
+           account (no password, a link by mail) keeps your favourites, ratings and wishes.</p>
+        <hr><p>A question, a firmware, a device?</p>
+        <a class="mail" href="mailto:zven@thefirmwarehub.com?subject=The%20Firmware%20Hub">zven@thefirmwarehub.com</a>
+      </div>
+      <div class="tiles">
+        <a class="tile crw" href="/creators/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9" r="2.4"/><path d="M16 13.8c2.6 0 4.4 1.6 5 4.4"/></svg></span>
+          <span><b>Wall of Creators</b><small>The people who make the firmwares</small></span></a>
+        <a class="tile crw" href="/kb/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg></span>
+          <span><b>Knowledge Base</b><small>How to install, rescue, play</small></span></a>
+        <a class="tile crw" href="/submit/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span><b>Submit a firmware</b><small>Made one? Put it on the hub</small></span></a>
+        <a class="tile crw" href="/dj/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4.5"/><circle cx="8" cy="12" r="1"/><circle cx="17.5" cy="12" r="3"/><path d="M14 5h7M14 19h7"/></svg></span>
+          <span><b>FM-1 Jukebox</b><small>Your FM-1 tunes on two decks – upload yours</small></span></a>
+        <a class="tile crw" href="/wishes/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg></span>
+          <span><b>Wish list</b><small>A synth, a feature, a device: wish and vote</small></span></a>
+        <a class="tile crw" href="/impressum/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 11v5M12 8h.01"/></svg></span>
+          <span><b>Imprint &amp; privacy</b><small>Who runs the hub</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <div class="dd shopdd" id="shopdd" hidden>
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="shopm">Shop<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="shopm"><div class="wrap in">
+      <div class="side">
+        <p class="k">Shop</p>
+        <p class="cc-de">Firmwear, the hub's community shirt, on Fourthwall, and the machines the firmwares run on, from Amazon.de.</p>
+        <p class="cc-eu">Firmwear: the hub's community shirt, on Fourthwall.</p>
+        <p class="cc-us">Firmwear, the hub's community shirt, on Fourthwall, and the machines the firmwares run on, from Amazon.com.</p>
+        <hr class="cc-amz"><p class="ad cc-de">* Affiliate link (ad, Anzeige): as an Amazon Associate I earn from qualifying purchases; it costs you nothing extra. Als Amazon-Partner verdiene ich an qualifizierten Verkäufen.</p>
+        <p class="ad cc-us">* Affiliate link (ad). As an Amazon Associate I earn from qualifying purchases; it costs you nothing extra.</p>
+      </div>
+      <div class="tiles">
+        <a class="tile cc-merch" href="https://designburg-net-shop.fourthwall.com/products/fm-1-make-firmware-not-war-community-shirt-2026" data-shop="Firmwear|fourthwall" target="_blank" rel="noopener"><span class="pic"><img loading="lazy" src="/img/w160/merch.webp?v=5fe2f657" alt=""></span>
+          <span><b>Firmwear</b></span></a>
+        <a class="tile cc-de" href="https://link.amazon/B08QY1yVZ" data-shop="FM-1|amazon.de" target="_blank" rel="sponsored noopener"><span class="pic quad"><img loading="lazy" src="/img/w160/zp12.webp?v=1f052566" alt=""><img loading="lazy" src="/img/w160/sloop.webp?v=06c1512a" alt=""><img loading="lazy" src="/img/w160/x0x.webp?v=20a9c76f" alt=""><img loading="lazy" src="/img/w160/winampfm.webp?v=85a944e1" alt=""></span>
+          <span><b>Get the M-VAVE FM-1</b><small>on Amazon.de · Ad (Anzeige) *</small></span></a>
+        <a class="tile cc-de" href="https://link.amazon/B0f2qKAUl" data-shop="SMK-37 Pro|amazon.de" target="_blank" rel="sponsored noopener"><span class="pic"><img loading="lazy" src="/smk37/img/w160/smk-mix.webp?v=4414a12e" alt=""></span>
+          <span><b>Get the M-VAVE SMK-37 Pro</b><small>on Amazon.de · Ad (Anzeige) *</small></span></a>
+        <a class="tile cc-us" href="https://amzn.to/4yZizIY" data-shop="FM-1|amazon.com" target="_blank" rel="sponsored noopener"><span class="pic quad"><img loading="lazy" src="/img/w160/zp12.webp?v=1f052566" alt=""><img loading="lazy" src="/img/w160/sloop.webp?v=06c1512a" alt=""><img loading="lazy" src="/img/w160/x0x.webp?v=20a9c76f" alt=""><img loading="lazy" src="/img/w160/winampfm.webp?v=85a944e1" alt=""></span>
+          <span><b>Get the M-VAVE FM-1</b><small>on Amazon.com · Ad *</small></span></a>
+        <a class="tile cc-us" href="https://amzn.to/3TYjR7V" data-shop="SMK-37 Pro|amazon.com" target="_blank" rel="sponsored noopener"><span class="pic"><img loading="lazy" src="/smk37/img/w160/smk-mix.webp?v=4414a12e" alt=""></span>
+          <span><b>Get the M-VAVE SMK-37 Pro</b><small>on Amazon.com · Ad *</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <form class="find" role="search" action="/" method="get"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg><input
+    type="search" name="q" id="q" placeholder="Search firmwares…" aria-label="Search the firmwares" autocomplete="off"
+    spellcheck="false"><span class="key" aria-hidden="true">/</span></form>
+  <script>
+  (() => {                                                 // a tap / Enter opens it, a tap outside or Esc closes it
+    document.querySelectorAll("nav .dd").forEach((dd) => {   // (Devices, and Shop where it is shown)
+      const b = dd.querySelector(".ddb");
+      const set = (o) => { dd.classList.toggle("open", o); b.setAttribute("aria-expanded", String(o)); };
+      dd.close = () => set(false);
+      b.addEventListener("click", (e) => {               // (one open at a time: the other closed)
+        e.stopPropagation(); document.querySelectorAll("nav .dd").forEach((o) => o !== dd && o.close?.()); set(!dd.classList.contains("open"));
+      });
+      document.addEventListener("click", (e) => { if (!dd.contains(e.target)) set(false); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") { set(false); } });
+    });
+    document.addEventListener("keydown", (e) => {          // "/": into the search, on every page
+      const a = document.activeElement;
+      if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(a?.tagName || "") || a?.isContentEditable) return;
+      e.preventDefault(); const q = document.getElementById("q"); q.focus(); q.select();
+    });
+    fetch("/catalog.json?" + new Date().toISOString().slice(0, 10)).then((r) => r.json())     // (the hub's daily key: one cache)
+      .then((c) => { document.getElementById("dd-fm1").textContent = c.firmwares.length; }).catch(() => {});
+  })();
+  </script>
+  <a class="home" href="https://designburg.net/">designburg.net</a></div></nav>
+<div class="strip"><i></i><i></i><i></i><i></i></div>
+
+<header><div class="wrap">
+  <p class="eyebrow">The FM-1 Firmware Hub · Knowledge Base</p>
+  <h1 class="pxf">How the <b>hub</b> works.</h1>
+  <p class="lead">What a firmware package is, how the FM-1 tells which firmware it runs, what the hub checks before it lists
+    one, and what happens to your projects when you switch. For players, and for authors who want their firmware on the hub.</p>
+</div></header>
+
+<div class="wrap layout">
+<nav class="toc" aria-label="Contents"><p>Contents</p>
+  <a href="#sign"><b>How to sign your release</b></a>
+  <a href="#package">The package</a>
+  <a href="#identity">The identity</a>
+  <a href="#loader">The update loader</a>
+  <a href="#install">What Install does</a>
+  <a href="#checks">What the hub checks</a>
+  <a href="#provenance">Built from source</a>
+  <a href="#usb-hid">USB keyboard / mouse</a>
+  <a href="#try">Try it before you install</a>
+  <a href="#data">Your projects and samples</a>
+  <a href="#back">Back to the official firmware</a>
+  <a href="#listed">Getting your firmware listed</a>
+  <a href="#fmhub">Your card's text, from your repository</a>
+  <a href="#catalog">Using the hub's firmware list</a>
+  <a href="#ids">All identities, live</a>
+</nav>
+
+<article>
+<section id="sign">
+  <h2>How to sign your release</h2><p class="who">For authors: five minutes, once</p>
+  <p>Let GitHub build your firmware from your source and sign it. Then everyone can check that the <code>.fwsc</code> they
+    install is exactly what your code builds, and your card on the hub gets the key
+    <span class="kbkey" style="--k: #c3cbd6" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/><path d="M9.5 12.3l1.9 1.9 3.6-3.8"/></svg></span>
+    <b>Built from source on GitHub</b>. You need nothing but your repository: the hub's shared build workflow
+    <a href="https://github.com/zvenson/fm1-build" target="_blank" rel="noopener"><b>zvenson/fm1-build</b></a> does the
+    toolchain, the build, the signature and the release.</p>
+  <ol class="steps">
+    <li><b>Add one file</b> to your repository: <code>.github/workflows/release.yml</code>
+<pre>name: release
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  build:
+    <b>uses: zvenson/fm1-build/.github/workflows/build.yml@v1</b>
+    permissions:
+      contents: write        <span># the release</span>
+      id-token: write        <span># the signing certificate</span>
+      attestations: write    <span># the attestation</span>
+    with:
+      <b>build: ./build.sh --release "${GITHUB_REF_NAME#v}"</b>   <span># your build command</span>
+      <b>packages: build/*.fwsc</b>                                <span># the package(s) it makes</span>
+      # test: sh tests/run_tests.sh                       <span># optional</span></pre>
+      Change only the two lines <code>build</code> and <code>packages</code> to your project's build command and where
+      it puts the <code>.fwsc</code>. The JieLi toolchain is there (<code>$JIELI_TOOLCHAIN</code>), the AC79 SDK too
+      (<code>$AC79_SDK</code>). With a <code>test</code> line, a failing test stops the release.</li>
+    <li><b>Push a version tag</b>: <code>git tag v1.2 &amp;&amp; git push origin v1.2</code></li>
+    <li><b>Watch it run</b> in your repository's <b>Actions</b> tab (about two minutes). Green: your release is there,
+      with the signed <code>.fwsc</code> attached. Do not replace or add the file by hand afterwards.</li>
+    <li><b>On the hub</b>: the next sync (every three hours) takes the release, checks the signature and shows the key on
+      your card, linked to the commit and the build log.</li>
+    <li><b>Check it yourself</b> (or let your users):
+<pre>gh attestation verify myfw-1.2.fwsc --repo you/myfw \
+  --signer-workflow zvenson/fm1-build/.github/workflows/build.yml</pre></li>
+  </ol>
+  <div class="note"><p><b>If it does not work:</b> the build must run on GitHub's Ubuntu runner, so a step that only works on
+    your computer fails there (look at the log in the Actions tab). The three <code>permissions</code> lines are needed.
+    The hub only trusts <code>@v1</code> of the shared workflow, a package built by your own workflow does not get the key.
+    A file uploaded or rebuilt by hand after the run does not either: the hub compares its SHA-256 with the signed one.
+    Questions: an <a href="https://github.com/zvenson/fm1-build/issues" target="_blank" rel="noopener">issue on fm1-build</a>
+    or the FM-1 Discord.</p></div>
+  <p>What the key means, and what it does not: <a href="#provenance">Built from source on GitHub</a>.</p>
+</section>
+
+<section id="package">
+  <h2>The package: a .fwsc file</h2><p class="who">For everyone</p>
+  <p>Every FM-1 firmware comes as one file ending in <code>.fwsc</code>. It is the format of M-VAVE's own updater, and every
+    custom firmware uses it too. Inside are two programs: the <b>update loader</b>, a small helper that writes the firmware,
+    and the <b>firmware</b> itself, the instrument you play.</p>
+  <p>The first bytes of the file also carry the package's <b>identity</b>, a short name such as <code>FM-1_015</code>. The
+    official firmware V15 is <code>FM-1_015</code>. Custom firmwares pick their own.</p>
+</section>
+
+<section id="identity">
+  <h2>The identity: which firmware is this?</h2><p class="who">For everyone, and important for authors</p>
+  <p>A running FM-1 answers over USB with the identity of the firmware it runs. The hub uses that answer for one thing only:
+    after you press <b>Connect FM-1</b>, the card of the firmware on your FM-1 gets the mark <b>on your FM-1</b>.</p>
+  <p>Many firmwares are built on Felucca, SLOOP or X0X, and several of them keep the number of the project they started from.
+    Then two or more firmwares answer with the same identity, and the hub cannot know which of them is on your FM-1.</p>
+  <div class="note"><p><b>A shared identity breaks nothing.</b> Installing, updating and going back work exactly the same.
+    The only difference: the hub does not mark any card as <b>on your FM-1</b> when more than one firmware fits. It says
+    which identity it sees, and you know which one you installed.</p></div>
+  <h3>For authors: please give your firmware its own number</h3>
+  <p>Pick an identity no other firmware uses. The <a href="#ids">table below</a> shows every identity on the hub right now.
+    A number that also encodes your version works well, as Charles Vestal's firmwares do: <code>FM-1_9010003</code> is X0X 1.0.3.
+    Keep the part before the version yours, so that no other project can collide with it. Change it in your build, release, and
+    tell us: your card then gets an exact check and the <b>on your FM-1</b> mark.</p>
+</section>
+
+<section id="loader">
+  <h2>The update loader</h2><p class="who">For everyone</p>
+  <p>The FM-1 cannot overwrite the program it is running. So an update happens in two steps: the running firmware first
+    starts the update loader from the new package, and the loader then writes the new firmware. The loader comes from the
+    <b>new</b> package, so every package brings its own.</p>
+  <h3>Felucca's loader</h3>
+  <p>Almost every custom firmware uses the loader from Felucca by Hügelton Instruments. While it waits in update mode, the
+    loader reports the new package's identity. For identities of the form <code>FM-1_9NN</code>, the hub picks up an
+    interrupted update: plug the cable back in, press Install again, and it continues where it stopped.</p>
+  <h3>M-VAVE's own loader</h3>
+  <p>The official V15 brings M-VAVE's loader. A firmware can also be built on top of the official V15 with only the
+    instrument replaced, as <b>Bubba Machine</b> is. Then it brings M-VAVE's loader too. The hub installs it the same way it
+    installs V15 itself, and it can resume an interrupted update of that firmware as well.</p>
+  <div class="note warn"><p><b>An update stopped halfway?</b> The FM-1 stays in update mode and waits. Plug it in again and
+    press <b>Install</b> on the same card. If the hub says the FM-1 is in another firmware's update mode, finish that update
+    with that firmware's own installer, or use the USB rescue described <a href="#back">below</a>.</p></div>
+</section>
+
+<section id="install">
+  <h2>What happens when you press Install</h2><p class="who">For everyone</p>
+  <div class="flow">
+    <div><b>Checked</b>The page loads the package from the hub and compares it with the catalogue: identity and SHA-256 fingerprint.</div>
+    <div><b>Loader</b>The running firmware reads the package over USB MIDI and starts the new update loader. The FM-1 restarts.</div>
+    <div><b>Written</b>The loader writes the firmware, the FM-1 restarts again and reports its new identity.</div>
+  </div>
+  <p>All of this runs in your browser, over Web MIDI, which only Chrome and Edge have. Nothing is sent to a server. It takes
+    about a minute. Do not unplug while it says <b>Writing</b>.</p>
+</section>
+
+<section id="checks">
+  <h2>What the hub checks, and what it does not</h2><p class="who">For everyone</p>
+  <p>The hub looks at every listed project's GitHub repository several times a day and takes its newest release. Before a
+    package is offered, it must pass these checks:</p>
+  <ul>
+    <li><b>It is an FM-1 package.</b> Its identity starts with <code>FM-1_</code> and matches what the project reports.</li>
+    <li><b>It has its update loader.</b> Felucca's loader, or M-VAVE's own for a firmware built on the official V15.</li>
+    <li><b>It is unchanged.</b> The hub mirrors the file byte for byte and pins its SHA-256 fingerprint. Your browser checks
+      that fingerprint again before it writes anything.</li>
+  </ul>
+  <p>Two more facts are read from every package and shown on its card when they hold: whether GitHub
+    <a href="#provenance">built it from its source</a>, and whether it <a href="#usb-hid">can act as a USB keyboard or
+    mouse</a>. They inform, they do not judge.</p>
+  <p>A release that fails a check is not offered. The last good one stays on the card. If a repository disappears, its card
+    leaves the hub and comes back when the repository does.</p>
+  <div class="note warn"><p><b>What the hub does not check:</b> whether a firmware works well, sounds good or keeps your
+    data. The hub does not test the firmwares of other authors. Questions and bug reports go to each project, linked on its
+    card.</p></div>
+  <h3>Betas</h3>
+  <p>A card says <b>beta</b> when the version is below 1.0 or its name says beta, alpha, rc or test. A beta may change how
+    it saves your work from one release to the next.</p>
+  <h3>Why the hub mirrors the files</h3>
+  <p>A browser is not allowed to download a release file from GitHub directly. So the hub keeps a copy of each package, and a
+    copy of its source code next to it. The firmwares are open source under the GPL-3.0, which allows passing them on
+    unchanged with their source.</p>
+</section>
+
+<section id="provenance">
+  <h2>Built from source on GitHub</h2><p class="who">For everyone, and how authors get it</p>
+  <p>A <code>.fwsc</code> is a compiled file. Anyone can read a project's source code, but nothing in the file itself shows
+    that it was built from that code. Some projects let GitHub build their release instead of a computer at home, and
+    GitHub then signs a statement: <b>this exact file</b> (its SHA-256 fingerprint) <b>was built by this workflow from
+    this commit</b>. That signed statement is an artifact attestation.</p>
+  <p>The hub looks for one for every package it offers and checks it properly: the signature, Sigstore's certificate and
+    public transparency log, that the file is the one the hub serves, that it was built from the project's own repository
+    for a release tag, and that it was built by the hub's <b>shared build workflow</b>. When all of that holds, the card
+    gets the grey key <span class="kbkey" style="--k: #c3cbd6" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/><path d="M9.5 12.3l1.9 1.9 3.6-3.8"/></svg></span>
+    <b>Built from source on GitHub</b>, which opens the exact commit.</p>
+  <p>Why a shared workflow: a project's own workflow can download anything during the build and put it into the file, and
+    GitHub would still sign it. One build workflow for everybody, published and reviewed once, only checks out the
+    tagged source and runs the project's build. So the signature means what it says.</p>
+  <div class="note warn"><p><b>What it does not say:</b> that the firmware is safe or good. It says where the file came from,
+    so that what you read in the source is what you install. Whether the code does what it should is up to those who read
+    it. The hub does not review the firmwares' code.</p></div>
+  <h3>For authors: get the key</h3>
+  <p>Step by step at the top of this page: <a href="#sign"><b>How to sign your release</b></a>. The shared workflow is
+    <a href="https://github.com/zvenson/fm1-build" target="_blank" rel="noopener">zvenson/fm1-build</a>: one short file,
+    every action pinned, open for review. Changes come as new tags, never by moving one.</p>
+  <ul>
+    <li>The hub checks the <b>release asset's SHA-256</b>: the file the workflow attested is the file on the release. A file
+      changed, rebuilt or uploaded by hand afterwards does not get the key.</li>
+    <li>Your build has to run on GitHub's Ubuntu runner with what it can install there (the toolchain from its
+      download, for example).</li>
+    <li>Check it yourself with <code>gh attestation verify myfw-1.2.fwsc --repo you/myfw --signer-workflow zvenson/fm1-build/.github/workflows/build.yml</code>.</li>
+    <li>The hub checks each new package once. Releases without an attestation stay on the hub exactly as before.</li>
+  </ul>
+</section>
+
+<section id="usb-hid">
+  <h2>“Can act as a USB keyboard / mouse”</h2><p class="who">For everyone</p>
+  <p>Over USB the FM-1 normally shows up as a MIDI device (and with some firmwares as an audio device). A firmware can also
+    tell the computer that it is a <b>keyboard</b> or a <b>mouse</b>: then it can type and move the pointer like one. That
+    is how macro pads and many controllers work, and it is a fair reason for a firmware to do it.</p>
+  <p>It is also worth knowing, because a device that types can type anything. The hub reads every package it offers,
+    opened as the FM-1's own update reads it, and looks for the USB descriptors of a keyboard or a mouse. When it finds
+    one, the card gets the amber key <span class="kbkey" style="--k: #f2b33d" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h1M9.5 10h1M13 10h1M16.5 10h1M7.5 14h9"/></svg></span>
+    and a line saying so.</p>
+  <div class="note warn"><p>This is a fact about the file, not a verdict. The hub does not know what a firmware types, or when, and
+    does not review its code. No key does not prove a firmware can not do it either: only that the hub found no keyboard or
+    mouse in it.</p></div>
+</section>
+
+<section id="try">
+  <h2>Try it before you install</h2><p class="who">For everyone, and for authors</p>
+  <h3>In the browser</h3>
+  <p>Many firmwares have their own simulator: the firmware's sources built for the browser, with its screen and its sound.
+    On the hub their cards say <b>▶ Play in the browser</b>. Nothing is installed, and nothing touches your FM-1.
+    <a href="/play/obervave/">OberVave's</a>, for one, is its unchanged firmware: the same sound and screens as on the device, with the
+    computer keyboard or a MIDI keyboard.</p>
+  <h3>The real package, on your computer</h3>
+  <p><a href="https://github.com/simonjohansson/fm1-emulator" target="_blank" rel="noopener">fm1-emulator</a> by Simon Johansson emulates the FM-1 itself: its chip
+    (pi32v2) and its board, built on QEMU (GPL-2.0). It runs the <b>same .fwsc</b> you would install, with the screen, the
+    keys, the knobs, the LEDs and the sound, and the firmware's console in your terminal. Download it from its
+    <a href="https://github.com/simonjohansson/fm1-emulator/releases/latest" target="_blank" rel="noopener">releases</a> (macOS on Apple Silicon, Linux on x86-64;
+    Windows not yet), then:</p>
+  <p><code>./emulator felucca-1.5.fwsc</code></p>
+  <p>It takes an uncompressed <code>.fwsc</code> or <code>.ufw</code> package or a raw application <code>.bin</code>. Click
+    the keys and buttons, drag or scroll the knobs; on the keyboard <code>Z</code>…<code>C</code> play notes,
+    <code>X</code> / <code>V</code> change the octave, <code>P</code> / <code>O</code> are ENV / LFO, <code>H</code> goes
+    HOME. A firmware's package is linked on its card (release), and the hub keeps a copy of each next to the page.</p>
+  <div class="note"><p>Confirmed by its author: the official V15 and Felucca. Most firmwares on the hub boot in it; a few
+    still stop at an instruction or a chip part the emulator does not have yet (in our tests AMB-1, TRIBE, Bubba Machine,
+    DUELL and FM-106). Its browser build is experimental and still far slower than real time.</p></div>
+  <p>More emulators, among them <a href="https://joakimeriksson.github.io/fm1-emu/" target="_blank" rel="noopener">fm1-emu</a> by Joakim
+    Eriksson in the browser, editors and backup tools: <a href="/tools/">Tools</a>.</p>
+  <p><b>For authors:</b> boot your release in it before you publish. It catches a package that does not start before
+    anyone's FM-1 does, and it is how the hub's videos are recorded: unchanged packages, real screens, real sound.</p>
+</section>
+
+<section id="data">
+  <h2>Your projects, presets and samples</h2><p class="who">For everyone</p>
+  <p>All firmwares keep what you make in the same flash memory of the FM-1, and each in its own way. After a switch, the new
+    firmware may not read what the old one saved. It may start empty, or it may overwrite parts of it.</p>
+  <ol>
+    <li><b>Back up first.</b> Use the backup of the firmware you are on. Each project's page says how.</li>
+    <li><b>Then switch.</b> Firmwares from the same family, such as Felucca and its forks, often read each other's projects.
+      Others do not.</li>
+    <li><b>Coming back</b> to a firmware does not always bring your old work back. Restore it from your backup.</li>
+  </ol>
+</section>
+
+<section id="back">
+  <h2>Back to the official firmware</h2><p class="who">For everyone</p>
+  <p>Press <b>Back to official V15</b> in the <a href="https://thefirmwarehub.com/#official">Official firmware</a> box on the
+    hub. It installs M-VAVE's own <b>FM-1 V15</b>, the recovery image M-VAVE publishes in
+    <a href="https://github.com/m-vave/fm1_open" target="_blank" rel="noopener">m-vave/fm1_open</a> under the Apache-2.0. The
+    hub serves it unchanged with M-VAVE's licence and notice, and your browser checks every byte (its SHA-256) before it
+    writes. You can also download V15 from <a href="https://www.m-vave.com/download" target="_blank" rel="noopener">m-vave.com/download</a>
+    (PC Firmware, FM-1) and choose the file in the same box: only that exact file is accepted.</p>
+  <h3>The USB rescue</h3>
+  <p class="note"><b>Step by step, by what you see:</b> <a href="/tools/rescue/">FM-1 rescue</a>. Charge the FM-1
+    fully first, and if a step does not help, stop and write to us before you try the next tool.</p>
+  <p><b>Saves gone after power-off, or every update fails?</b> A newer FM-1 with the flash chip <code>0xB36014</code> and a
+    firmware that knows only the first units' <code>0x856014</code>: it does not write the flash. The rescue page lists the
+    firmwares that know both and shows how to put one on, from <a href="/tools/rescue/#chip">Windows, Mac or Linux</a>.</p>
+  <p>If the FM-1 does not start any more, hold <b>OCT−</b> while you switch it on. It then waits for an update over USB.
+    Connect it and install any firmware, or V15, from the hub.</p>
+  <p>If no installer finds it and the computer only sees a USB disk <b>"WL82 UBOOT1.00"</b>, the chip's bootloader in ROM still
+    answers, and no update can erase it. <a href="https://github.com/jvitkauskas/m-flasher" target="_blank" rel="noopener">M-Flasher</a>
+    (Windows, macOS, Linux, MIT), <a href="https://github.com/Quixotic7/MvaveFM1Unbricker" target="_blank" rel="noopener">MvaveFM1Unbricker</a>
+    by Quixotic7 (Windows and Linux, MIT) and the hub's <a href="https://thefirmwarehub.com/#rescue">Rescue</a> (Linux) put a
+    firmware back through it; M-Flasher and the Unbricker keep a full backup of the flash first. An FM-1 that never shows that disk can come back
+    with the <a href="https://github.com/kurogedelic/FM-1-transporter" target="_blank" rel="noopener">FM-1 Transporter</a>,
+    a small RP2040 board on the USB lines (<a href="https://github.com/Quixotic7/MvaveFM1Unbricker/blob/main/TRANSPORTER-GUIDE.md" target="_blank" rel="noopener">step by step</a>).</p>
+</section>
+
+<section id="listed">
+  <h2>Getting your firmware listed</h2><p class="who">For authors</p>
+  <p>The hub lists a firmware when all of this is true:</p>
+  <ul>
+    <li><b>It makes music.</b> Synths, grooveboxes, drum machines, samplers, chord instruments, controllers. Games and tools
+      without sound are not listed.</li>
+    <li><b>It is open source</b>, with its source code public in the repository and a license that allows passing it on,
+      such as the GPL-3.0.</li>
+    <li><b>It has a .fwsc on a GitHub release.</b> The hub checks the releases on its own several times a day, so every new
+      release appears without anyone doing anything. A project without releases can name its package in a web installer
+      instead. If your release has more than one .fwsc, tell us which one is the firmware.</li>
+    <li><b>The package has an update loader</b> and an identity starting with <code>FM-1_</code>. See the
+      <a href="#identity">identity</a> section for why your own number helps.</li>
+  </ul>
+  <p>Optional, and recommended: let GitHub build the release and attest it, so the card can show
+    <a href="#provenance">Built from source on GitHub</a>. <a href="#sign">How to sign your release</a>: five minutes, once.
+    You can write your card's text yourself, too: <a href="#fmhub">fmhub.json</a>.</p>
+  <h3>Before you send it: test it as a player will use it</h3>
+  <div class="note warn"><p><b>This is the most important part.</b> The hub runs no tests of its own: you are the only one
+    who tests your firmware. Players press Install trusting that it works. A firmware that installs but does not start the
+    next update leaves them with an FM-1 they cannot change any more, and most of them will not know how to get out.
+    <b>Please do every check below on a real FM-1, with the very file from your release, before you mail us.</b>
+    Untested firmwares are not listed; a listed one that breaks this is taken off until it is fixed.</p></div>
+  <ul>
+    <li><b>Install it</b> from the official V15 and from another custom firmware. Both must end with your firmware running
+      and the hub naming it after Connect.</li>
+    <li><b>Leave it again.</b> With your firmware running, install another one. Your firmware must start the next package's
+      update loader when asked (see <a href="#install">What happens when you press Install</a>). If it does not, players
+      can only get away by holding OCT− at power-on, and most of them will not know that.</li>
+    <li><b>USB.</b> The FM-1 shows up as a MIDI device, answers the identity request with your own <code>FM-1_</code>
+      number, and its port name is one the hub knows (FM-1, or your firmware's name: tell us).</li>
+    <li><b>An interrupted update.</b> Unplug during Writing once, plug in again and press Install: the update should continue
+      (which loaders allow it: <a href="#loader">the update loader</a>).</li>
+    <li><b>Projects and samples.</b> If your firmware cannot read what another one saved, or overwrites it, say so in the
+      README: the hub tells players to back up first, your README tells them why.</li>
+  </ul>
+  <p>Mail <a href="mailto:zven@thefirmwarehub.com?subject=FM-1%20Firmware%20Hub%3A%20my%20firmware&amp;body=Name%3A%0ARepository%3A%0AWhat%20it%20does%3A%0A">zven@thefirmwarehub.com</a>
+    with the name, the repository and a sentence about what it does. A picture of its screen helps: the cards show each
+    project's real screen, taken from its repository.</p>
+  <h3>Not ready yet?</h3>
+  <p>A firmware without a release package can not be listed yet. Attach the .fwsc to a release, and it can go on the hub the
+    same day. Closed-source firmwares are not mirrored. A very popular one may get a link card that sends you to its
+    maker's own installer.</p>
+</section>
+
+<section id="fmhub">
+  <h2>Your card's text, from your repository</h2><p class="who">For authors: required for new firmwares</p>
+  <p>You write your card's text. Put a file named <code>fmhub.json</code> in the root of your repository, on its default branch.
+    <b>New firmwares are only listed with it.</b></p>
+<pre>{
+  "what": "A six-track groovebox: TR drums, a sampler with a mic input, a step sequencer and song mode.",
+  "author": "Your Name",
+  "kinds": ["groove"],
+  "play": "https://you.github.io/myfw/play/",
+  "editor": "https://you.github.io/myfw/editor/",
+  "cheat": "https://you.github.io/myfw/cheatsheet.pdf",
+  "image": "docs/card.png",
+  "color": "#FF7A00"
+}</pre>
+  <ul>
+    <li><b>what</b>: the card's text, in English. Plain words: no HTML, no code, no links or web addresses. Up to 300
+      characters: a longer text is cut at a word. Say what it is and what you can do with it. Write about this version, not your plans.</li>
+    <li><b>author</b>: optional, your name as the card shows it under the title (otherwise the one we wrote down when your
+      firmware came on the hub). Plain text, 2 to 60 characters, no links.</li>
+    <li><b>kinds</b>: one of <code>synth</code>, <code>groove</code> (groovebox), <code>drums</code> (drums and
+      samplers), <code>chords</code>, <code>tracker</code> and <code>other</code> (more than one: the first counts). It is the filter
+      above the cards; pick the one people would look under.</li>
+    <li><b>play</b>: optional, your firmware running in the browser (the card's green ▶ key). An <code>https://</code> address.</li>
+    <li><b>editor</b>: optional, your web editor for its sounds or settings (the card's pink key). An <code>https://</code> address.</li>
+    <li><b>cheat</b>: optional, your cheat sheet (the card's sheet key): an <code>https://</code> address of a web page or a PDF,
+      for example on your GitHub Pages.</li>
+    <li><b>image</b>: optional, your card's picture: the path of a file in your repository, e.g. <code>docs/card.png</code>.
+      <b>Square, 240 × 240 to 1024 × 1024 pixels, PNG, WebP or JPEG, 300 KB at most.</b> Best: a capture of the FM-1's
+      screen at 240 × 240 as PNG (a few KB, pixel-sharp), or a photo as WebP. The hub copies it and serves it itself; replace the
+      file, keep the path, and the card follows within three hours.</li>
+    <li><b>color</b>: optional, your card's colour line (under the picture) as <code>#RRGGBB</code>, e.g. <code>#FF7A00</code>.
+      Bright enough to be seen on the dark page; a very dark one is refused.</li>
+  </ul>
+  <p><b>Changing it: edit the file and push.</b> The hub reads it every three hours and your card shows the new text by itself,
+    no mail. No advertising and nothing hostile against anyone: such a text is refused, and we read every new text that goes
+    on a card. A file that breaks this is taken off the card for good. Under its text every card says where the text comes from, and if your file has a mistake, the card
+    says which. The firmware's name and version always come from your repository and your releases, not from this file.</p>
+  <p>Using an AI assistant? Give it <a href="/fmhub.md">fmhub.md</a>: everything it needs to write this file, the picture and
+    the rest of a listing for you.</p>
+  <h3>Check your file</h3>
+  <form class="fhcheck" id="fhcheck"><input id="fhrepo" placeholder="you/your-firmware or its GitHub address" autocomplete="off" spellcheck="false">
+    <button type="submit">Check</button></form>
+  <div id="fhout" aria-live="polite"></div>
+  <h3>What the hub read last</h3>
+  <p class="meta">Every firmware on the hub with an <code>fmhub.json</code>, as the last run read it.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Firmware</th><th>Its fmhub.json</th></tr></thead>
+    <tbody id="fh-body"><tr><td colspan="2" class="tabmsg">Loading…</td></tr></tbody>
+  </table></div>
+</section>
+
+<section id="catalog">
+  <h2>Using the hub's firmware list</h2><p class="who">For app and tool makers</p>
+  <p>The hub's list of firmwares is open for your app, store, installer or tool: <a href="/catalog.json">catalog.json</a>
+    (name, maker, text, picture, version, release, sha256, identity, flash chip, update loader – only firmwares that passed
+    the hub's checks). Its compilation – the selection, the checks, identities, chips, loaders and versions – is licensed under
+    <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
+  <ol>
+    <li><b>Name the hub, with its address:</b> “Firmware list: <a href="https://thefirmwarehub.com/">The Firmware Hub</a> –
+      thefirmwarehub.com”. Where links work (a web page, an app with a browser) as a working link to
+      <b>https://thefirmwarehub.com</b>; on a device without a browser the address written out – once where people see it,
+      e.g. the list's title or info screen and its About, not all the time. Plus the licence and whether you changed anything.</li>
+    <li><b>The makers' texts and pictures are theirs</b> (from their fmhub.json and their repositories), not the hub's and not
+      under this licence: name each firmware's maker and link its repository.</li>
+    <li><b>Read <code>catalog.json</code> at most once a day</b>, with a User-Agent that says who you are. Don't read the pages,
+      and download the packages from the makers' releases, not from the hub.</li>
+    <li><b>Keep players safe:</b> install only a package whose sha256 matches the list, never one marked <code>"chip": "old"</code>
+      on an FM-1 with the newer flash chip, and drop what drops out of the list.</li>
+  </ol>
+</section>
+
+<section id="ids">
+  <h2>All identities on the hub, live</h2><p class="who">For authors</p>
+  <p>Each firmware as its newest package reports itself. <span class="tag own">own</span> means no other firmware on the hub
+    uses this identity. <span class="tag shared">shared</span> means the hub cannot tell these firmwares apart on a connected
+    FM-1. <span class="tag mv">M-VAVE loader</span> marks a firmware built on the official V15.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Identity</th><th>Firmware</th><th>Version</th><th></th></tr></thead>
+    <tbody id="ids-body"><tr><td colspan="4" class="tabmsg">Loading the catalogue…</td></tr></tbody>
+  </table></div>
+  <p class="tabmsg">The official V15 reports <code>FM-1_015</code>. Please do not use it.</p>
+</section>
+</article>
+</div>
+
+<footer><div class="wrap">
+  <b>Disclaimer.</b> Every firmware here belongs to its authors, each under its own license (GPL-3.0:
+  <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">the license</a>); only zp12, sloopDX, OberVave, Shine On, Dinghy and VIBE FM Link are ours
+  (<a href="https://github.com/zvenson" rel="noopener">zvenson</a>). We do not develop, test or support the others and take no
+  responsibility for them, for what they do on your device or for lost data: questions and bug reports go to each project, linked on
+  its card. The FM-1 firmwares are taken automatically and unchanged from their releases; the FM-1 page only checks that a package is
+  an FM-1 firmware with the update loader before it writes it, and keeps a copy of its source next to it. The SMK-37 firmwares install
+  from their makers' own installers. The pictures on the cards are from each project's repository.
+  FM-1: Hortator, Hortator (Bluetooth) and FMDj by DEADACTIVE; Felucca by Leo Kuroshita (Hügelton Instruments); Felucca [Salt] by Chance Roth (ChanceTheMaker); Jangada by zednaked; GHOULBOX by Jason Persinger; Melodee by keremimo; SLOOP and Clipper by isod89; Bubba Machine by Erbubar23; SLOOP Floyd FM by René Bohne; SLOOP DX7 Banks by majnikool; X0X, FoMni, AMB-1, CTL-1, Polly, LOOM-8 and MONK-1 by Charles Vestal; X0X-RMX by Mr-Roboto (Oliver); ChoralRoot, PurpleMonkey, FIZZ and RemoteFM1 by Quixotic7; WaveLoop FM-1 by ELI7VH; FiMba-1 by jadamsowers; JIANT FM by juanjiant-bit; fm1-chord by math0ne; FuMi-1 by cartesive; MAKU by okumurari; Rainbow Mode by joshbartlettband-web; winampFM Synth, No Man Sky FM and FM1 Quest by Hericdk; MYCELIUM by Mandalars; ETCH and RUPTURE by SikkenWorks; FM-106 by PatttF; TRIBE by apiel; DUELL by OSCILL/R; Skiff by illuminus5; Fart Machine One by adamcharleswilsonmusic-code; ORBIT and MC-1 by dspaudio; Felucca 8 Patterns and Argo by echoe; PIGEON by The Shrimp Blimp; CS-1 by twochannels; HYP-1 by RedtailWorks; Tonitor and Bigorna by Nuno Zimas; bocjuhn by ryuji kanagawa; AISLING by CU_STE; Demake by Sequencist; NOIZ DEMONS by SPIKE the Percussionist; CoralFlower by FicusFicusov; Vector37 by genkigenki; BEETLE, BEETLE BLUE and B1 by Joppe Sikken (SikkenWorks); MIN-1 by Reytian; Pocket GammaWave by ShadowTune (GammaWave Audio); Tuna, Flyfish, Makohai, Daurade, Sill and Sardine by delirioux; Frodhes by Leonardo Mirabal; FOMAJAM by konsumer; KAWA and K-WASUB by Omnipotard (Guizmoh); GR!MM by GRiMMBIENT; Cut-A-Dor, Mutable Dreams and Bunker Evolved by Kid Bunka; FM1-GM and FM1-TRAX by jartificer; 386DX by seajaysec; OPN-1 and SID-1 by putchdev; Mini-Tone by Stéphane Schmitz; MORPHEUS and HERA by Ben Badio; FMini-1 by Ruppert; DUB-1 by sbegueria; Ketch by risseraka; FMEL-1 by Antonio Altea; ZEN-1 by aceyprime; Golana by Gadlele; Golana DZ Edition, analogBEAST and keySTEP ONE by dzwerg; MODELAR by Hirakos; Niagara Drift by Evan Yerburgh; Unholy Union by actuallysparky; Evander's Music Box by Michail Tsakiroglou; Chipbox, Smileyface and Drumlab by pbarilla; Bytemania by lloyd (llozd); FRASIL by Styves Goupil; Tessera by Theo Dainis (Rastapopolix); Del Rio by Jess Del Rio; Carnac OS by OrbVorgis; DRIFT by FBNFRTG; SIDOU by Denis Sablić; MONO2K by Iñigo Hernandez; Caravel by BonszaiMusic; MIDIMON by ignis32; ESTAMPIE by Drew Robinson; Matryoshka by glvno; Loom FM-1 by Co-oscillator; TastyWaves by marksweiss; Arctic Scream by p0larpatch; S1Vave by Andrew GG; GATOR by ivanvoid; Monohull by Mark White; PERF-1 by deamonSLINKY; J6 by JackieAlacrity2373; GuitChordi by Stoogs; Ravel by De-Pattern; Berlinan by Jiří Píša; MNM-1 and Veffbox by Veff; MOPE-1 by slothpallas; Kitten Synths and Kitten Rack by Black Kitten Devices; Nauclerus by Mr. Roboto; PT/FM by hitosu; SPAMPY by Spampy-Droid; SPELLBOX by Philippe Jaccoud; Dungeon Tracker by Bourbon Weather; NACHTFAHRT by Cranky Man; LUXR by HOLODECK AUDIOTOOLS; VESPER by Fat Cat Studios; Penumbra and Ombak by Lunar Eclipse Forge; Jam Playground by Bob Perry; XMOD by Kot Morderca; SiDJ by thomasj (tubesockor); hawk-chua by plieuwski; BB1 by Ole Big Beat / TexasRADIO; KARMA by Ariel Muchnik; LSDJ Burrito by Dreamy_bacon; fm1-dock, Scintilla and FM-1 SID by Joakim Eriksson; DARK-1 by Polystellarflow; Wanderer by Nicholas James / Low Vision Music; PULHRA by 646timur-cell; Amenity by Presethead; Arcturus S6 by Zeptosecond DSP; Blop by Obsimo; CLATTER Pocket by allmyfriendsaresynths; CHOPPAH by Laurens Profittlich; B3 ORGAN by R-Jeb; GIO-1 by Guinan; Elixir by Dan Majka; FM1 DRUM OS by skufee; QUADRO by Matt Allison; DX747 by Esben von Buchwald; Skiff Atlatl by LIkst4; COQUÍ by saulofilho; ARTIHIVE by KHAV; CULTBOX by Pete Sasqwax / BEAT CULT; Piterfly by Piotr Woźniak; ATEK303 by Animatek; FM1 Audio Router by MAX RAVE; M-Vance by BK40; Patchwerk by Matt Kuebrich; Compás by Big Beat Studio; Rhythmer by Jazzy Rhythmer; Miku-FM by Michael Perry; ECHOFIELD and JAMTRACK by PhilipsKnobs; XENOLITH by Unit_v743; Hungry Travis, RAMBEAVER and Trumpagotchi by Trust This Mechanism; FM-FAM by davidamomusic; Quartet and SPLITMILK by MammothCheese; M-PYRE by History Of Sky; ASS-ID, sloop-DUB and DUB-BOX by altessproduction; fm1-amy by Dan Ellis; SATIE-1 by OCKM Studio; Guru-600 by Marc Massé; PLAYA by JFS; Kris Jangle by w33tSnx; CORD by Chase DeAnda; Pocket Band by elpabl0; Mighty Arp by Nick Culbertson; fm1-sf2 by mwedmark; DEEP FIELD by Kyle McCann; KRIECHSTROM by Grigorii Bezborodov. SMK-37: Felucca SMK by Chance Roth (ChanceTheMaker); Makkuro37, Vector37, Speak37, Erik37 and the SMK-37 builds of the FM-1 firmwares by genkigenki; Skiff by illuminus5; FOMAJAM by konsumer; Frodhes by Leonardo Mirabal. Baud Girl (FM-1+VA) by Madeline is only linked: not open source, not hosted or mirrored
+  here, it installs from baudgirl.com. FM1 Open is M-VAVE's official open firmware (app GPL-3.0 with an SDK exception, sound engine
+  closed source): only linked, it installs from M-VAVE's Workbench. The update path is Felucca's, as sloopDX carries it. M-VAVE, FM-1 and SMK-37 are trademarks of
+  their owners; not affiliated with M-VAVE. E-mu and SP-1200 are trademarks of their owners. Unofficial firmware, free and without
+  warranty: you install it at your own risk.
+  <br><a href="https://designburg.net/">designburg.net</a> · <a href="/tools/">Tools</a> · <a href="/creators/">Creators</a> · <a href="/wishes/">Wish list</a> · <a href="/kb/">Knowledge Base</a> · <a href="/impressum/">Impressum</a> · <a href="/impressum/#datenschutz">Datenschutz</a>
+  · <a href="https://www.youtube.com/@sonzven?sub_confirmation=1" target="_blank" rel="noopener">▶ YouTube: @sonzven</a>
+  · <a href="https://paypal.me/zvenson" rel="noopener">☕ Buy me a coffee</a><span id="updated"></span>
+</div></footer>
+
+<script>
+"use strict";
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const day = new Date().toISOString().slice(0, 10);       // (the hub asks for catalog.json?<UTC day>: the same cache)
+fetch(`../catalog.json?${day}`).then((r) => r.json()).then((c) => {
+  const fws = c.firmwares.filter((f) => f.product);
+  const n = {};
+  fws.forEach((f) => { n[f.product] = (n[f.product] || 0) + 1; });
+  fws.sort((a, b) => a.product.localeCompare(b.product, "en", { numeric: true }) || a.name.localeCompare(b.name));
+  document.getElementById("ids-body").innerHTML = fws.map((f) => `<tr><td class="id">${esc(f.product)}</td>` +
+    `<td><a href="../#fw-${esc(f.id)}">${esc(f.name)}</a></td><td>${esc(f.version)}</td>` +
+    `<td>${n[f.product] > 1 ? '<span class="tag shared">shared</span>' : '<span class="tag own">own</span>'}` +
+    `${f.loader === "mvave" ? ' <span class="tag mv">M-VAVE loader</span>' : ""}</td></tr>`).join("");
+  // (the fmhub.json each firmware's last run read: on the card, or why not)
+  const fh = c.firmwares.filter((f) => f.fmhub).sort((a, b) => a.name.localeCompare(b.name));
+  document.getElementById("fh-body").innerHTML = fh.length ? fh.map((f) => `<tr><td><a href="../#fw-${esc(f.id)}">${esc(f.name)}</a></td><td>`
+    + (f.fmhub.error ? `<span class="tag shared">not used</span> ${esc(f.fmhub.error)}` : '<span class="tag own">on the card</span>')
+    + ` · <a href="https://github.com/${esc(f.repo)}/blob/HEAD/fmhub.json" target="_blank" rel="noopener">the file</a></td></tr>`).join("")
+    : '<tr><td colspan="2" class="tabmsg">None yet.</td></tr>';
+}).catch(() => {
+  document.getElementById("ids-body").innerHTML = '<tr><td colspan="4" class="tabmsg">The catalogue could not be loaded. Reload the page.</td></tr>';
+});
+
+// the check: the file as GitHub has it now, by the hub's rules (tools/fm1_sync.py fmhub_read) – only when asked, from GitHub
+const FH_KINDS = ["synth", "groove", "drums", "chords", "tracker", "other"];
+const FH_EN = new Set("the a an and or of to in on for with from by is are it its your you this that as at be can each".split(" "));
+const FH_NOT_EN = new Set(`el la los las un una y o de del con por para es son su sus que como en al lo der die das ein eine und oder mit für ist sind von zu auf dem den des nicht le les une et ou avec pour est sont du au aux sur dans ce cette qui il lo gli uno e o con per è sono di da nel della che o os uma ou com para é são do da dos das em no na que`.split(/\s+/).filter((x) => !FH_EN.has(x)));
+const FH_HOLD = /\b(buy now|discount|coupon|promo ?code|on sale|\d+ ?% off|sponsor(ed)?|affiliate|patreon|ko-?fi|paypal|gumroad|venmo|cash ?app|crypto|bitcoin|nft|casino|betting|onlyfans|nazis?|hitler|sieg heil|white power|kkk|untermensch|ni+gg\w*|fag+ots?|retards?|kikes?|tranny|whores?)\b|[$€£] ?\d/i;
+const FH_NOT_TEXT = /[<>{}`]|https?:\/\/|\bwww\.|\b[\w-]+\.(com|net|org|io|de|app|dev|shop|store|xyz|ly|gg|me)\b|javascript:|=>|\(\)\s*;|\[[^\]]*\]\(/i;
+function fhRead(d) {
+  if (!d || typeof d !== "object" || Array.isArray(d)) throw new Error("not a JSON object");
+  const bad = Object.keys(d).filter((k) => !["what", "author", "kinds", "play", "editor", "cheat", "image", "color", "smk37"].includes(k));
+  if (bad.length) throw new Error("unknown field " + bad.join(", "));
+  const got = {};
+  if ("what" in d) {
+    let w = String(d.what).split(/\s+/).filter(Boolean).join(" ");
+    { const t = w.toLowerCase().match(/[a-zà-ÿ]+/g) || [];
+      if (t.filter((x) => FH_NOT_EN.has(x)).length > t.filter((x) => FH_EN.has(x)).length) throw new Error("what: in English, please"); }
+    if (FH_HOLD.test(w)) throw new Error(`what: no advertising, nothing hostile ("${w.match(FH_HOLD)[0]}")`);
+    if (w.length < 20 || FH_NOT_TEXT.test(w)) throw new Error("what: at least 20 characters of plain words: no HTML, no code, no links or web addresses");
+    if (w.length > 300) { w = w.slice(0, 299); w = w.slice(0, w.lastIndexOf(" ")).replace(/[ ,;:.\-–]+$/, "") + "…"; got.cut = true; }
+    got.what = w;
+  }
+  if ("author" in d) {
+    const a = String(d.author).split(/\s+/).filter(Boolean).join(" ");
+    if (a.length < 2 || a.length > 60 || FH_NOT_TEXT.test(a)) throw new Error("author: your name, 2 to 60 characters of plain text: no HTML, no links or web addresses");
+    if (FH_HOLD.test(a)) throw new Error(`author: no advertising, nothing hostile ("${a.match(FH_HOLD)[0]}")`);
+    got.author = a;
+  }
+  if ("kinds" in d) {
+    const k = (Array.isArray(d.kinds) ? d.kinds : [d.kinds]).filter((x) => FH_KINDS.includes(x));   // (more than one: the first)
+    if (!k.length) throw new Error("kinds: one of " + FH_KINDS.join(", "));
+    got.kind = k[0];
+  }
+  if ("color" in d) {   // (4.11.2026: the card's colour line)
+    const c = String(d.color).trim();
+    if (!/^#[0-9A-Fa-f]{6}$/.test(c)) throw new Error("color: a colour as #RRGGBB, e.g. #FF7A00");
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+    if ((0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 < 0.25) throw new Error("color: too dark for the hub's dark page – a brighter one, please");
+    got.color = c.toUpperCase();
+  }
+  if ("image" in d) {
+    if (!/^(?!\/)(?!.*\.\.)[\w.\/-]{1,200}\.(png|webp|jpe?g)$/i.test(String(d.image))) throw new Error("image: the path of a .png, .webp or .jpg in your repository, e.g. docs/card.png");
+    got.image = String(d.image);
+  }
+  for (const f of ["play", "editor", "cheat"]) if (f in d) {
+    if (!/^https:\/\/[^\s<>"']{4,300}$/.test(String(d[f]))) throw new Error(f + ": an https:// address");
+    got[f] = d[f];
+  }
+  if ("smk37" in d) {   // (9.11.2026: the SMK-37 card – what, image, install, guide; as tools/fm1_sync.py fmhub_read)
+    const k = d.smk37;
+    if (!k || typeof k !== "object" || Array.isArray(k)) throw new Error("smk37: an object with what, image, install, guide");
+    const bk = Object.keys(k).filter((x) => !["what", "image", "install", "guide"].includes(x));
+    if (bk.length) throw new Error("smk37: unknown field " + bk.join(", "));
+    let sub;
+    try { sub = fhRead(Object.fromEntries(Object.entries(k).filter(([x]) => x === "what" || x === "image"))); }
+    catch (e) { throw new Error("smk37 " + e.message); }
+    for (const x of ["install", "guide"]) if (x in k) {
+      if (!/^https:\/\/[^\s<>"']{4,300}$/.test(String(k[x]))) throw new Error("smk37 " + x + ": an https:// address");
+      sub[x] = k[x];
+    }
+    got.smk37 = sub;
+  }
+  return got;
+}
+document.getElementById("fhcheck").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const out = document.getElementById("fhout"), m = document.getElementById("fhrepo").value.trim().replace(/^https?:\/\/github\.com\//, "").match(/^([\w.-]+)\/([\w.-]+?)(?:\.git)?\/?$/);
+  if (!m) { out.innerHTML = '<p class="bad">Write it as <code>you/your-firmware</code>.</p>'; return; }
+  out.innerHTML = "<p>Reading…</p>";
+  try {
+    const r = await fetch(`https://raw.githubusercontent.com/${m[1]}/${m[2]}/HEAD/fmhub.json`, { cache: "no-store" });
+    if (r.status === 404) { out.innerHTML = `<p class="bad">No <code>fmhub.json</code> in the root of ${esc(m[1] + "/" + m[2])}'s default branch yet.</p>`; return; }
+    if (!r.ok) throw new Error("GitHub answered " + r.status);
+    let d; try { d = JSON.parse(await r.text()); } catch (x) { throw new Error("not valid JSON (a missing comma or quote?)"); }
+    const g = fhRead(d);
+    // (its picture, as the hub will check it: there, PNG / WebP / JPEG by its bytes, square, 240 to 1024 pixels, 300 KB at most)
+    let pic = "";
+    if (g.image) {
+      const ir = await fetch(`https://raw.githubusercontent.com/${m[1]}/${m[2]}/HEAD/${g.image.split("/").map(encodeURIComponent).join("/")}`, { cache: "no-store" });
+      if (!ir.ok) throw new Error(`image: ${g.image} not found in your repository`);
+      const b = await ir.blob(), head = new Uint8Array(await b.slice(0, 12).arrayBuffer());
+      const kind = head[0] === 0x89 && head[1] === 0x50 ? "PNG" : head[0] === 0xff && head[1] === 0xd8 ? "JPEG"
+        : String.fromCharCode(...head.slice(8, 12)) === "WEBP" ? "WebP" : "";
+      if (!kind) throw new Error("image: not a PNG, WebP or JPEG file");
+      if (b.size > 300 * 1024) throw new Error(`image: ${Math.round(b.size / 1024)} KB, 300 KB at most`);
+      const bm = await createImageBitmap(b);
+      if (bm.width !== bm.height || bm.width < 240 || bm.width > 1024) throw new Error(`image: ${bm.width} × ${bm.height} pixels – square, 240 × 240 to 1024 × 1024`);
+      pic = `<p><img src="${URL.createObjectURL(b)}" alt="" style="width: 160px; height: 160px; border-radius: 10px; image-rendering: pixelated; vertical-align: top"> `
+        + `${kind}, ${bm.width} × ${bm.height}, ${Math.round(b.size / 1024)} KB: fine.</p>`;
+    }
+    out.innerHTML = '<p class="ok"><b>Fine.</b> Within three hours your card shows:</p>'
+      + (g.what ? `<blockquote>${esc(g.what)}</blockquote>` : "<p>(no text: the hub's own stays)</p>")
+      + (g.cut ? '<p class="bad">Longer than 300 characters: cut at a word, as above.</p>' : "")
+      + `<p>${g.author ? "By: <b>" + esc(g.author) + "</b>. " : ""}${g.kind ? "Kind: <b>" + esc(g.kind) + "</b>. " : ""}${g.play ? "Play: " + esc(g.play) + ". " : ""}${g.editor ? "Editor: " + esc(g.editor) + ". " : ""}${g.cheat ? "Cheat sheet: " + esc(g.cheat) + "." : ""}</p>` + pic;
+  } catch (x) {
+    out.innerHTML = `<p class="bad"><b>Not used yet:</b> ${esc(x.message)}. Fix it and push, then check again.</p>`;
+  }
+});
+</script>
+<script>
+// web/hubapp.js: the hub as an app, on every device page (make_fm1 puts it in at /*APP*/; the manifest, icons: fm1/app/,
+// the worker: fm1/sw.js). Android / Chrome / Edge: "Install" (the browser's own prompt); iPhone / iPad: "Add to Home Screen"
+// by hand, and why installing a firmware does not work there (no Web MIDI in any iOS browser).
+(() => {
+  if (window.top !== window) return;                    // (a page inside the hub's pop-up, e.g. a cheat sheet: no bar, no worker)
+  const ua = navigator.userAgent;
+  const ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);   // (an iPad says "Mac")
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const touch = matchMedia("(pointer: coarse)").matches;
+  const wanted = !standalone && new URLSearchParams(location.search).has("app");   // (the QR code's /?app=1)
+  window.hubApp = {
+    ios, standalone,
+    // (what the Install / Connect buttons say without Web MIDI: on iOS no other browser helps)
+    noMidi: ios ? "Installing doesn't work on iPhone or iPad yet: no browser there has Web MIDI. Use Chrome or Edge on a computer, or Chrome on Android."
+                : "This browser has no Web MIDI: use Chrome or Edge.",
+  };
+
+  // the worker: always the newest page, a copy only offline; asked for a new version each time the app comes back
+  let reg = null;
+  if ("serviceWorker" in navigator && isSecureContext)
+    navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).then((r) => { reg = r; }).catch(() => {});
+
+  // Shop in the menu, for everybody: Firmwear (the hub's community shirt on Fourthwall – Sven 12.11.: for all), and by the
+  // country Cloudflare sees (/api/cc, nothing kept) Amazon affiliate links for DE / AT (amazon.de) and the US (amazon.com)
+  const EU = "AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE".split(" ");
+  fetch("/api/cc", { cache: "no-store" }).then((r) => r.json()).then((j) => {
+    const cc = j.cc === "DE" || j.cc === "AT" ? "de" : EU.includes(j.cc) ? "eu" : j.cc === "US" ? "us" : "ww", el = document.getElementById("shopdd");
+    if (el) { el.dataset.cc = cc; el.removeAttribute("hidden"); }
+  }).catch(() => { const el = document.getElementById("shopdd"); if (el) { el.dataset.cc = "ww"; el.removeAttribute("hidden"); } });
+  // (a click in the shop: a Matomo event "Shop" / the device / the store, beside the outlink Matomo counts anyway)
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest?.("#shopm a[data-shop]");
+    if (a) { const [dev, store] = a.dataset.shop.split("|"); try { (window._paq = window._paq || []).push(["trackEvent", "Shop", dev, store]); } catch {} }
+  });
+
+  // the app left in the background for a while (a phone keeps it for days): the page anew when it comes back,
+  // never while an install writes (fm1.html's `writing`) or a dialog is open
+  let away = 0;
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { away = Date.now(); return; }
+    reg?.update().catch(() => {});
+    const busy = (typeof writing !== "undefined" && writing) || document.querySelector("dialog[open]");
+    if (standalone && away && Date.now() - away > 30 * 60e3 && !busy) location.reload();
+  });
+
+  // the bar at the bottom: on a phone, once (closed: 60 days quiet); "App" in the Devices menu shows it any time
+  const KEY = "fm1hub.appbar";
+  let prompt = null, bar = null;
+  const quiet = () => { try { return Date.now() < +(localStorage.getItem(KEY) || 0); } catch { return false; } };
+  const hush = () => { try { localStorage.setItem(KEY, String(Date.now() + 60 * 864e5)); } catch {} };
+  // the panel: iPhone / iPad the how-to (no prompt there), a phone the browser's Install, a computer the code to scan
+  // with the phone (and Install for this computer where the browser offers it)
+  function show() {
+    if (standalone) return;
+    bar?.remove();
+    bar = document.createElement("div");
+    bar.className = "appbar";
+    bar.setAttribute("role", "dialog");
+    bar.setAttribute("aria-label", "The Firmware Hub as an app");
+    const icon = '<img src="/app/icon-192.png" alt="" width="44" height="44">';
+    const go = prompt ? '<button class="go" type="button">Install</button>' : "";
+    if (ios) {                                           // (only who came by the QR code: no app offered on iOS, Sven 17.10.)
+      bar.innerHTML = `${icon}<div class="t"><b>The app is for Android</b>
+        <span>On iPhone and iPad just use the hub here in the browser: browse, rate, keep favourites.</span>
+        <small>Installing a firmware needs Web MIDI, which no iPhone browser has yet: use Chrome on Android, or Chrome or Edge on a computer.</small></div>`;
+    } else if (touch) {
+      bar.innerHTML = `${icon}<div class="t"><b>The Firmware Hub as an app</b>` + (prompt
+        ? "<span>On your home screen, always the newest firmwares.</span></div>" + go
+        : "<span>In Chrome: the menu <b>⋮</b>, then <b>Install app</b> or <b>Add to Home screen</b>.</span></div>");
+    } else {
+      bar.classList.add("wide");
+      bar.innerHTML = `<img class="qr" src="/app/qr.svg" alt="QR code: thefirmwarehub.com" width="132" height="132"><div class="t">
+        <b>The Firmware Hub on your Android phone</b>
+        <span>Scan the code with your phone’s camera. The hub opens, then:</span>
+        <span>On <b>Android</b>, tap <b>Install</b> in the bar at the bottom (or <b>📱 App</b>).</span>
+        <small>Always the newest firmwares, your favourites and stars on every device. Installing a firmware from the phone: Android with Chrome and a USB-C cable. The app is for Android only: iPhones have no Web MIDI yet.</small>
+        ${prompt ? '<span class="pc">Or as an app on this computer: <button class="go" type="button">Install</button></span>' : ""}</div>`;
+    }
+    bar.querySelector(".go")?.addEventListener("click", async () => {
+      const p = prompt; prompt = null;
+      p.prompt();
+      const { outcome } = await p.userChoice.catch(() => ({}));
+      if (outcome === "accepted") bar.remove(); else hush();
+    });
+    const x = document.createElement("button");
+    x.className = "x"; x.type = "button"; x.setAttribute("aria-label", "Close"); x.textContent = "×";
+    x.onclick = () => { hush(); bar.remove(); };
+    bar.append(x);
+    document.body.append(bar);
+  }
+  addEventListener("beforeinstallprompt", (e) => {      // (Chrome / Edge: installable; their own mini bar replaced by ours)
+    e.preventDefault(); if (ios) return;                // (never an app offer on iOS, whatever the browser says)
+    prompt = e;
+    // (a phone: the bar with Install; one already open without it (the QR code's how-to) gets it now)
+    if (touch && (bar?.isConnected ? !bar.querySelector(".go") : !quiet())) show();
+  });
+  addEventListener("appinstalled", () => { bar?.remove(); prompt = null; });
+  addEventListener("DOMContentLoaded", () => {
+    // the deck keys' names (web/deck.css): one tooltip on the page, placed by the key, so no card clips it
+    const tip = Object.assign(document.createElement("div"), { className: "decktip" }); tip.setAttribute("aria-hidden", "true");
+    document.body.append(tip);
+    const showTip = (k) => {
+      tip.textContent = k.dataset.tip; tip.classList.add("on");
+      const r = k.getBoundingClientRect(), h = tip.offsetHeight, w = tip.offsetWidth;
+      // (its middle over the key, kept inside the window: a key near the edge – the hero row's Web Player – pushed it out, 7.11.)
+      tip.style.left = Math.min(Math.max(r.left + r.width / 2, w / 2 + 8), innerWidth - w / 2 - 8) + "px";
+      tip.style.top = (r.top - h - 8 >= 4 ? r.top - h - 8 : r.bottom + 8) + "px";
+    };
+    const hideTip = () => tip.classList.remove("on");
+    document.addEventListener("pointerover", (e) => { const k = e.target.closest?.(".deck .key[data-tip], .bar .btn[data-tip]"); k ? showTip(k) : hideTip(); });
+    document.addEventListener("focusin", (e) => { const k = e.target.closest?.(".deck .key[data-tip], .bar .btn[data-tip]"); if (k) showTip(k); });
+    document.addEventListener("focusout", hideTip);
+    addEventListener("scroll", hideTip, { passive: true });
+    // the kinds' row on a desktop (one line, see .chips in the page's style): the fade at its edge only while chips are hidden
+    const chips = document.getElementById("chips");
+    if (chips) {
+      const fit = () => chips.classList.toggle("fits", chips.scrollLeft + chips.clientWidth >= chips.scrollWidth - 2);
+      new ResizeObserver(fit).observe(chips);
+      new MutationObserver(fit).observe(chips, { childList: true, subtree: true });
+      chips.addEventListener("scroll", fit, { passive: true });
+    }
+    // visible: "App" in the Devices menu; gone inside the app
+    // (no "App" button beside the page's buttons any more – Sven 25.10.: the Devices menu keeps its link)
+    document.querySelectorAll("#getapp, .getapp").forEach((a) => {
+      if (standalone || ios) return a.remove();          // (inside the app, and on iOS: nothing to install there)
+      a.onclick = (e) => {                               // (on a phone the browser's prompt right away where there is one)
+        e.preventDefault(); document.getElementById("dd")?.classList.remove("open");
+        show(); if (touch) bar?.querySelector(".go")?.click();
+      };
+    });
+    if (location.hash === "#app" || wanted) show();      // (the menu's link from VIBE's page; the QR code: came for the app)
+  });
+})();
+</script>
+
+<!-- Matomo (self-hosted, matomo.designburgapps.com): one site per host (dx7 1, zp12 3, fm1 4, designburgapps.com 5);
+     no cookies, IPs anonymised on the server, Do Not Track respected -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  var _mtmSite = {"zp12.designburgapps.com": "3", "thefirmwarehub.com": "4", "fm1.designburgapps.com": "4", "designburgapps.com": "5",
+                  "www.designburgapps.com": "5"}[location.hostname] || "1";
+  _paq.push(['setDomains', [location.hostname]]);
+  _paq.push(['disableCookies']);
+  _paq.push(['setDoNotTrack', true]);
+  _paq.push(['enableHeartBeatTimer']);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://matomo.designburgapps.com/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', _mtmSite]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"32ff7eee27e340838df2ea2305958c1a","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

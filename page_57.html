@@ -1,0 +1,202 @@
+https://thefirmwarehub.com/vibe/assets/style.css?v=1794466326
+/* VIBE FM Mk1 teaser: dark, low-key, orange accent as on the device (#FF6A1A). Mobile first. */
+@font-face { font-family: 'Archivo'; font-weight: 400; font-display: swap; src: url(fonts/archivo-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 600; font-display: swap; src: url(fonts/archivo-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 800; font-display: swap; src: url(fonts/archivo-latin-800-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JB'; font-weight: 400; font-display: swap; src: url(fonts/jetbrains-mono-latin-400-normal.woff2) format('woff2'); }
+
+:root {
+  --bg: #050506;
+  --bg-2: #0E0F11;
+  --panel: #141518;
+  --line: #2a2b30;
+  --fg: #ECECEE;
+  --dim: #A3A5AC;
+  --mute: #6F717A;
+  --accent: #FF6A1A;
+  --accent-hi: #FF8A4A;
+  --err: #FF8F6B;
+  --gutter: 20px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; }
+a { color: var(--fg); text-underline-offset: 3px; text-decoration-color: rgba(255, 106, 26, .6); }
+a:hover { color: var(--accent-hi); }
+.mono { font-family: 'JB', ui-monospace, monospace; }
+.small { font-size: 13px; color: var(--mute); }
+.small a { color: var(--dim); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* language switch */
+.lang { position: absolute; z-index: 5; top: max(14px, env(safe-area-inset-top)); right: var(--gutter); font: 12px/1 'JB', monospace;
+        letter-spacing: .12em; color: var(--mute); text-decoration: none; padding: 8px 0 8px 8px; }
+.lang .on { color: var(--fg); }
+.lang:hover .on { color: var(--accent); }
+
+/* wordmark as on the top plate: VIBE white, FM orange, Mk1 light */
+.wordmark { margin: 0; font-weight: 800; font-size: clamp(46px, 13vw, 92px); line-height: .95; letter-spacing: -.025em; white-space: nowrap; }
+.wordmark em { font-style: normal; color: var(--accent); }
+.wordmark span { font-weight: 400; }
+/* Coming 2027: big, above the wordmark, the year in the pads' colours */
+.coming { margin: 0 0 18px; font-weight: 800; font-size: clamp(22px, 6vw, 34px); line-height: 1; letter-spacing: .14em; text-transform: uppercase; color: var(--fg); }
+.coming b { font-weight: 800; letter-spacing: .06em; background: linear-gradient(90deg, #8FD0FF 0%, #9EF0C4 28%, #FFE27A 52%, #FFAA6E 74%, #D7B6FF 100%);
+            -webkit-background-clip: text; background-clip: text; color: transparent; }
+.claim { margin: 10px 0 0; font-weight: 600; font-size: 13px; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); }
+
+/* ------------------------------------------------------------ hero (mobile: picture on top, text below) */
+.hero { position: relative; }
+.shot { display: block; position: relative; height: 45svh; min-height: 280px; max-height: 560px; overflow: hidden; }
+.shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block; }
+.shot::after { content: ''; position: absolute; inset: 0;
+               background: linear-gradient(180deg, rgba(5,5,6,.35) 0%, rgba(5,5,6,0) 22%, rgba(5,5,6,0) 52%, var(--bg) 97%); }
+.content { position: relative; padding: 0 var(--gutter) 40px; margin-top: -16svh; max-width: 560px; }
+.step .shot { height: 34svh; }
+.step .content { margin-top: -12svh; }
+
+.text { margin-top: 18px; color: var(--dim); font-size: 15.5px; }
+.text p { margin: 0 0 9px; }
+.text h2.why { color: var(--fg); font-size: 15px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin: 22px 0 8px; }
+.text ul.why { list-style: none; margin: 0 0 6px; padding: 0; }
+.text ul.why li { position: relative; padding-left: 18px; margin: 0 0 6px; }
+.text ul.why li::before { content: ''; position: absolute; left: 0; top: .62em; width: 8px; height: 2px; background: var(--accent); }
+.text ul.why li:last-child { color: var(--fg); font-weight: 700; }
+.text .big { color: var(--fg); font-weight: 800; font-size: clamp(27px, 7.4vw, 40px); line-height: .98; letter-spacing: -.025em; margin: 14px 0 8px; }
+.text .offer { color: var(--accent); font-weight: 800; font-size: 17px; line-height: 1.25; letter-spacing: -.005em; margin: 12px 0 4px; }
+.signup .terms { margin-top: 4px; }
+.text .big span { display: block; font-weight: 800;
+                  background: linear-gradient(90deg, #8FD0FF 0%, #9EF0C4 28%, #FFE27A 52%, #FFAA6E 74%, #D7B6FF 100%);
+                  -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* sign-up */
+.signup { margin-top: 18px; }
+.row { display: flex; gap: 8px; }
+input[type=email], input[type=text], textarea {
+  flex: 1; min-width: 0; width: 100%; font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 13px 14px; }
+input::placeholder, textarea::placeholder { color: var(--mute); }
+input:focus, textarea:focus, button:focus-visible, .chips input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+.btn { display: inline-block; font: 700 16px/1.2 'Archivo', sans-serif; color: #0E0F11; background: var(--accent); border: 0; border-radius: 10px;
+       padding: 14px 18px; cursor: pointer; white-space: nowrap; text-decoration: none; }
+.btn:hover { background: var(--accent-hi); color: #0E0F11; }
+.btn.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); }
+.consent { display: flex; gap: 10px; align-items: flex-start; margin: 12px 0 6px; font-size: 14px; color: var(--dim); cursor: pointer; }
+.consent input { accent-color: var(--accent); width: 18px; height: 18px; margin: 1px 0 0; flex: none; }
+.signup .small { margin: 0; }
+.err { color: var(--err); margin: 0 0 10px; font-size: 14px; }
+@media (max-width: 370px) { .row { flex-direction: column; } }
+
+/* after sign-up */
+.note { margin-top: 20px; }
+.note h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -.01em; }
+.note p { color: var(--dim); margin: 0 0 8px; }
+.note p.yt { margin-top: 22px; font-size: 14px; }
+.yt-play { color: #FF0033; }
+.survey { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+.survey h2 { font-size: 19px; margin: 0 0 2px; }
+.survey .small { margin: 0 0 14px; }
+fieldset { border: 0; padding: 0; margin: 0 0 18px; }
+legend, .q { display: block; font-weight: 600; margin-bottom: 8px; padding: 0; }
+legend small { font-weight: 400; color: var(--mute); }
+.n { display: inline-block; font: 12px/1 'JB', monospace; color: var(--accent); width: 18px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips label { position: relative; cursor: pointer; }
+.chips input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chips span { display: inline-block; padding: 9px 13px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; color: var(--dim);
+              background: var(--panel); transition: border-color .12s, color .12s; }
+.chips input:checked + span { border-color: var(--accent); color: var(--fg); background: rgba(255, 106, 26, .14); }
+.field { display: block; margin: 0 0 16px; }
+textarea { resize: vertical; }
+.actions { display: flex; align-items: center; gap: 18px; margin-top: 6px; }
+.skip { color: var(--mute); font-size: 14px; }
+
+/* footer */
+.foot { padding: 22px var(--gutter) max(26px, env(safe-area-inset-bottom)); border-top: 1px solid #1f2024; font-size: 14px; color: var(--dim);
+        display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.foot p { margin: 0; }
+.foot a { color: var(--dim); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .2); }
+.foot a:hover { color: var(--fg); }
+
+/* ------------------------------------------------------------ desktop: picture full-bleed, text in the dark left */
+@media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+  :root { --gutter: clamp(32px, 6vw, 112px); }
+  .hero { min-height: 100svh; display: flex; align-items: center; }
+  .shot, .step .shot { position: absolute; inset: 0; height: auto; max-height: none; }
+  .shot img { object-position: 50% 50%; }
+  .shot::after { background:
+      linear-gradient(90deg, var(--bg) 0%, rgba(5,5,6,.94) 30%, rgba(5,5,6,.4) 38%, rgba(5,5,6,0) 44%),
+      linear-gradient(0deg, var(--bg) 0%, rgba(5,5,6,0) 22%); }
+  .content, .step .content { margin: 0; padding: 72px var(--gutter); max-width: calc(500px + 2 * var(--gutter)); }
+  .wordmark { font-size: clamp(64px, 6.4vw, 104px); }
+  .claim { font-size: 14px; }
+  .coming { font-size: clamp(30px, 3.2vw, 50px); margin-bottom: 22px; }
+  .text { font-size: 17px; margin-top: 28px; }
+  .text .big { font-size: clamp(40px, 3.6vw, 56px); margin: 24px 0 12px; }
+  .text .offer { font-size: 19px; margin-top: 18px; }
+  .signup { margin-top: 26px; }
+  .foot { position: relative; margin-top: -1px; }
+}
+
+/* ------------------------------------------------------------ legal + admin pages */
+.page { max-width: 760px; margin: 0 auto; padding: 56px var(--gutter) 64px; }
+.page.wide { max-width: 1180px; }
+.page .home { text-decoration: none; }
+.page .home .wordmark { font-size: 28px; }
+.page section { margin-top: 40px; }
+.page h1 { font-size: 32px; margin: 0 0 10px; letter-spacing: -.01em; }
+.page h2 { font: 12px/1.4 'JB', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin: 28px 0 8px; }
+.page p, .page address { color: var(--dim); margin: 0 0 12px; font-style: normal; }
+.page address { color: var(--fg); font-size: 18px; line-height: 1.6; }
+.plain .content { margin-top: 0; padding-top: 72px; }
+
+.admin .top { display: flex; align-items: baseline; gap: 14px; }
+.admin .top .wordmark { font-size: 28px; }
+.admin .top a { margin-left: auto; font-size: 14px; color: var(--mute); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 24px; }
+.stats div { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.stats b { display: block; font-size: 34px; line-height: 1.1; }
+.stats span { color: var(--mute); font-size: 13px; }
+.goal { height: 6px; background: var(--panel); border-radius: 3px; margin: 14px 0 18px; overflow: hidden; }
+.goal i { display: block; height: 100%; background: var(--accent); }
+.admin .actions { gap: 10px; flex-wrap: wrap; }
+.admin .btn { font-size: 14px; padding: 10px 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 32px; }
+.bars { width: 100%; border-collapse: collapse; font-size: 14px; }
+.bars th { text-align: left; font-weight: 400; color: var(--dim); padding: 4px 10px 4px 0; white-space: nowrap; width: 1%; }
+.bars td { padding: 4px 0; }
+.bars i { display: block; height: 10px; background: #3a3b42; border-radius: 2px; min-width: 2px; }
+.bars i b { display: block; height: 100%; background: var(--accent); border-radius: 2px; }
+.bars:not(.days) i { background: var(--accent); }
+.bars .n { text-align: right; width: 1%; padding-left: 10px; white-space: nowrap; font-family: 'JB', monospace; font-size: 12px; color: var(--dim); }
+.list { width: 100%; border-collapse: collapse; font-size: 14px; }
+.list th, .list td { text-align: left; vertical-align: top; padding: 8px 10px 8px 0; border-bottom: 1px solid #1c1d21; }
+.list th { color: var(--mute); font-weight: 400; }
+.list td { color: var(--dim); }
+.list td.mono { white-space: nowrap; font-size: 12px; }
+
+/* admin: the address list */
+.flash { background: rgba(255, 106, 26, .12); border: 1px solid rgba(255, 106, 26, .4); border-radius: 8px; padding: 10px 14px; color: var(--fg); }
+.filter a { margin-right: 14px; color: var(--mute); text-decoration: none; font-size: 14px; }
+.filter a.on { color: var(--fg); border-bottom: 2px solid var(--accent); }
+.subs td { vertical-align: middle; }
+.st { font: 11px/1 'JB', monospace; padding: 4px 7px; border-radius: 4px; white-space: nowrap; }
+.st.confirmed { background: rgba(47, 163, 111, .2); color: #7fe0b0; }
+.st.pending { background: rgba(255, 226, 122, .12); color: #ffe27a; }
+.ops { white-space: nowrap; text-align: right; }
+.ops form { display: inline; }
+.ops button { font: 12px 'Archivo', sans-serif; background: transparent; color: var(--dim); border: 1px solid var(--line); border-radius: 6px; padding: 5px 9px; cursor: pointer; margin-left: 6px; }
+.ops button:hover { color: var(--fg); border-color: var(--dim); }
+.ops button.del:hover { color: var(--err); border-color: var(--err); }
+.subs td.top { color: var(--accent); }
+.ms { display: grid; grid-template-columns: 170px 1fr auto; gap: 14px; align-items: center; font-size: 14px; color: var(--dim); margin: 6px 0; }
+.ms .goal { margin: 0; } .ms b { color: var(--fg); } .ms .mono { font-size: 12px; }
+@media (max-width: 640px) { .ms { grid-template-columns: 1fr; gap: 4px; } }
+
+/* after the sign-up: the spam hint, hard to miss (Gmail files a new sender's mail as spam at first) */
+.spamcheck { margin: 18px 0 4px; padding: 14px 16px; border-radius: 10px; background: rgba(255, 106, 26, .12);
+             border: 1px solid rgba(255, 106, 26, .55); text-align: left; }
+.spamcheck b { display: block; color: #ff8a4a; font-size: 16px; margin-bottom: 4px; }
+.spamcheck span { color: var(--dim); font-size: 14px; line-height: 1.5; }

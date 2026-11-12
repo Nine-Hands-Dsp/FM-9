@@ -1,0 +1,1181 @@
+https://thefirmwarehub.com/wishes/
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-only  (C) 2026 Sven Trogus
+     The wish list (thefirmwarehub.com/wishes/): what the FM-1 (and the SMK-37) should learn next. One line a wish, a 👍 per
+     account (the hub's sign-in by mail and code, web/hubaccount.js; reading too), no comments: hubapi/wishes.php
+     behind /api/wishes. Every wish goes into the page as text only (textContent), and a Content-Security-Policy allows only
+     this page's own scripts (their hashes, filled in by make_fm1) and Matomo's. tools/make_fm1.py writes it as
+     fm1/wishes/index.html with the devices menu and the shared footer. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wish list: what should your beloved firmware learn next? – The Firmware Hub</title>
+<meta name="description" content="The Firmware Hub's wish list: wish for a firmware, a sound or a feature – for the FM-1, the SMK-37, the VIBE FM or any device – in one line, and give the wishes you like a thumbs up.">
+<meta name="author" content="zvenson">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thefirmwarehub.com/wishes/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Firmware Hub">
+<meta property="og:url" content="https://thefirmwarehub.com/wishes/">
+<meta property="og:title" content="Wish list – The Firmware Hub">
+<meta property="og:description" content="What should your beloved firmware learn next? Wish for it in one line, thumb up the others.">
+<meta property="og:image" content="https://thefirmwarehub.com/og.png">
+<meta name="theme-color" content="#151213">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://matomo.designburgapps.com 'sha256-3OJ/umNnSG/qVkkKdPQrUhUjWJDrPbKCGHEeid60Kkw=' 'sha256-LZHQrkKuPVVNnOtUsyNmHHBTVidG6DK9Gwr6fE5OYko=' 'sha256-Ld/EHHtDDM0YlqzD1VaMBqYooKVTZUr94k9X3nresh4=' 'sha256-lTxJldWSM6784IZrNAeaCpGw8XjNQi6VRJD434Fjq2k=' 'sha256-mCJMosO5ADWkKbfnDJQeGZPZJvLP39VERpQul15sW0k='; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://matomo.designburgapps.com; connect-src 'self' https://matomo.designburgapps.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23151213'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='900' font-size='15' text-anchor='middle' fill='%2342f5f5'%3EFH%3C/text%3E%3C/svg%3E">
+<style>
+  /* the hub's look (web/fm1.html): warm dark, cyan / blue / pink / beige; a wish's edge in its device's colour */
+  :root { --bg: #151213; --panel: #221e1f; --panel2: #2e2a2b; --line: #3a3435; --fg: #efe8e1; --dim: #a39a94; --text: #d8d0c9;
+          --cyan: #42f5f5; --blue: #afd9f4; --pink: #f4c0cb; --beige: #e6d1b9; --ok: #5fe3a1; --smk: #ff6b5e; }
+  * { box-sizing: border-box; }
+  html { color-scheme: dark; scroll-padding-top: 90px; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16.5px/1.7 "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  a { color: var(--cyan); text-decoration: none; } a:hover { text-decoration: underline; }
+  .wrap { margin: 0 auto; padding: 0 clamp(16px, 4vw, 72px); width: 100%; }
+  nav { border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+  .mark { font-size: 21px; font-weight: 300; color: var(--fg); letter-spacing: -.2px; } .mark:hover { text-decoration: none; }
+  .mark b { font-weight: 800; color: var(--cyan); }
+  nav .home { font-size: 14px; color: var(--dim); }
+  /* VIBE FM teaser (thefirmwarehub.com/vibe/, own PHP page): one slim line above the nav on every page (web/vibe-banner.html; tools/make_fm1.py puts it in), the device and its orange */
+  .vibe { display: block; position: relative; background: #0c0a0a; color: var(--text); font-size: 14px; }
+  .vibe::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+                 background: linear-gradient(90deg, #8FD0FF, #9EF0C4, #FFE27A, #FFAA6E, #D7B6FF); opacity: .7; }
+  .vibe .wrap { display: flex; align-items: center; gap: 12px; height: 42px; }
+  .vibe img { width: 84px; height: 30px; object-fit: cover; object-position: 70% 50%; border-radius: 5px; flex: none; display: block; }
+  .vibe b { color: var(--fg); font-weight: 800; white-space: nowrap; } .vibe b em { font-style: normal; color: #ff6a1a; }
+  .vibe .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .vibe .t i { font-style: normal; font-weight: 800; background: linear-gradient(90deg, #8FD0FF, #9EF0C4 30%, #FFE27A 55%, #FFAA6E 80%, #D7B6FF);
+               -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .vibe .offer { margin-left: auto; white-space: nowrap; color: var(--dim); } .vibe .offer strong { color: #ff6a1a; }
+  .vibe .go { background: #ff6a1a; color: #0e0f11; font-weight: 800; font-size: 13px; padding: 6px 12px; border-radius: 7px; white-space: nowrap; }
+  .vibe:hover { text-decoration: none; } .vibe:hover .go { background: #ff8a4a; }
+  @media (max-width: 1100px) { .vibe .offer { display: none; } .vibe .go { margin-left: auto; } }
+  @media (max-width: 640px) { .vibe .wrap { gap: 9px; height: 40px; } .vibe img { width: 52px; height: 26px; } .vibe .t { display: none; } }
+  /* the devices menu (web/devices.html, put into every page by tools/make_fm1.py): a mega menu under "Devices", open on
+     hover (a mouse) or on a tap / Enter (touch, keyboard) */
+  nav { position: relative; z-index: 40; }
+  nav .dd { align-self: stretch; display: flex; align-items: center; margin: 0 0 0 clamp(14px, 3vw, 44px); }
+  /* the Knowledge Base beside it, a plain link in the same type (on the KB itself: marked) */
+  nav .kbl { align-self: stretch; display: flex; align-items: center; margin: 0 auto 0 clamp(4px, 1.6vw, 22px); padding: 8px 2px;
+             color: var(--fg); font-size: 15px; font-weight: 600; white-space: nowrap; box-shadow: inset 0 -2px 0 transparent; }
+  /* Shop (Amazon.de affiliate links): shown by web/hubapp.js in DE / AT only (/api/cc), beside the Knowledge Base */
+  nav .dd[hidden] { display: none; }
+  /* (data-cc: de = DE / AT: Firmwear + amazon.de; us: Firmwear + amazon.com; eu / ww = everybody else: Firmwear only –
+     the shirt for everyone, Sven 12.11.) */
+  #shopdd:not([data-cc="de"]) .cc-de, #shopdd:not([data-cc="eu"]):not([data-cc="ww"]) .cc-eu, #shopdd:not([data-cc="us"]) .cc-us,
+  #shopdd[data-cc="eu"] .cc-amz, #shopdd[data-cc="ww"] .cc-amz { display: none !important; }
+  nav .dd.shopdd { margin-left: clamp(4px, 1.6vw, 22px); }
+  nav .dd.toolsdd { margin-left: clamp(4px, 1.6vw, 22px); }   /* (as the Tools link was: the start page's search field sits in the middle) */
+  .mega .side .ad { font-size: 12.5px; color: var(--dim); }
+  nav .kbl:hover { text-decoration: none; box-shadow: inset 0 -2px 0 var(--pink); }
+  nav .kbl[aria-current] { box-shadow: inset 0 -2px 0 var(--cyan); }
+  nav .kbl .sm { display: none; }
+  @media (max-width: 560px) { nav .kbl .lg { display: none; } nav .kbl .sm { display: inline; }     /* (a phone: the name on one line) */
+                              nav .wrap { gap: 10px; } nav .dd { margin-left: 4px; } nav .kbl { margin-left: 0; } nav .ddb .ar { margin-left: 4px; } }
+  @media (max-width: 400px) { nav .mark { font-size: 18px; } }
+  @media (max-width: 350px) { nav .mark { font-size: 16px; } nav .dd { margin-left: 2px; } }   /* (an iPhone SE: Devices and KB beside it) */
+  nav .ddb { background: transparent; color: var(--fg); font: inherit; font-size: 15px; font-weight: 600; padding: 8px 2px; border: 0;
+             border-radius: 0; cursor: pointer; box-shadow: inset 0 -2px 0 transparent; }
+  nav .ddb:hover { filter: none; transform: none; }
+  nav .ddb .ar { display: inline-block; color: var(--dim); font-size: 11px; margin-left: 6px; transition: transform .15s; }
+  nav .dd.open .ddb { box-shadow: inset 0 -2px 0 var(--pink); } nav .dd.open .ddb .ar { transform: rotate(180deg); }
+  .mega { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--bg); border-bottom: 1px solid var(--line);
+          box-shadow: 0 30px 60px rgba(0, 0, 0, .55); }
+  nav .dd.open .mega { display: block; }
+  @media (hover: hover) { nav .dd:hover .mega { display: block; } nav .dd:hover .ddb { box-shadow: inset 0 -2px 0 var(--pink); }
+                          nav .dd:hover .ddb .ar { transform: rotate(180deg); } }
+  .mega .in { display: grid; height: auto; grid-template-columns: 250px minmax(0, 1fr); gap: clamp(20px, 3vw, 44px); padding-top: 26px; padding-bottom: 30px; }
+  .mega .side { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; font-size: 14.5px; line-height: 1.55; }
+  .mega .side .k { font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); font-weight: 700; margin: 0 0 10px; }
+  .mega .side a { display: block; color: var(--fg); padding: 4px 0; }
+  .mega .side hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
+  .mega .side p { margin: 0 0 8px; color: var(--text); }
+  .mega .side a.mail { color: var(--pink); }
+  .mega .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 10px 18px; align-content: start; }
+  .mega .tile { display: flex; align-items: center; gap: 16px; padding: 10px 12px; border-radius: 14px; color: var(--fg); }
+  .mega .tile:hover { text-decoration: none; background: var(--panel2); }
+  .mega .tile[aria-current] { box-shadow: inset 0 0 0 1px var(--cyan); }
+  .mega .pic { flex: none; width: 72px; height: 72px; border-radius: 12px; background: #0e0c0d; border: 1px solid var(--line); overflow: hidden;
+               display: grid; place-items: center; }
+  .mega .pic img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; display: block; }
+  .mega .pic.quad { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1px; background: var(--line); }
+  .mega .tile b { display: block; font-size: 15px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; line-height: 1.3; }
+  .mega .tile small { display: block; color: var(--dim); font-size: 13.5px; margin-top: 2px; }
+  .mega .tile.vibe-t .pic img { object-position: 70% 50%; image-rendering: auto; } .mega .tile.vibe-t b { color: #ff6a1a; } .mega .tile.vst-t b { color: #ff60be; }
+  .mega .tile.add .pic { border-style: dashed; background: transparent; color: var(--pink); font-size: 34px; font-weight: 200; }
+  @media (max-width: 760px) { .mega .in { grid-template-columns: 1fr; padding-top: 14px; padding-bottom: 18px; } .mega .side { display: none; }
+                              .mega .pic { width: 56px; height: 56px; } }
+  /* the nav stays on top, the search in its middle (from 1700 px the true middle; a phone: a line of its own). The colours
+     on the nav itself: the same on VIBE's page, which has its own (hubnav/vibe.html) */
+  nav.top { position: sticky; top: 0; background: var(--bg); --bg: #151213; --panel: #221e1f; --panel2: #2e2a2b; --line: #3a3435;
+            --fg: #efe8e1; --dim: #a39a94; --text: #d8d0c9; --cyan: #42f5f5; --pink: #f4c0cb; --beige: #e6d1b9; }
+  nav.top .find { position: relative; flex: 0 1 300px; margin: 0 auto; }
+  nav.top .kbl { margin-right: 0; }                    /* (the search takes the free space on both sides: between the links) */
+  nav .dd.aboutdd { margin-left: clamp(4px, 1.6vw, 22px); }   /* (About beside Tools: the wall, the KB, submitting, the imprint) */
+  nav .dd.aboutdd.cur .ddb { box-shadow: inset 0 -2px 0 var(--cyan); }
+  .mega .tile.crw .pic { background: transparent; border-style: dashed; }
+  .mega .tile.crw svg { width: 34px; height: 34px; fill: none; stroke: var(--cyan); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  @media (max-width: 560px) { nav .aboutdd .ddb .ar { display: none; } nav .dd.aboutdd { margin-left: 0; } }
+  @media (min-width: 1700px) { nav.top .wrap { position: relative; } nav.top .home { margin-left: auto; }
+                               nav.top .find { position: absolute; left: 50%; width: 320px; transform: translateX(-50%); } }
+  @media (max-width: 900px) { nav.top .wrap { flex-wrap: wrap; height: auto; min-height: 60px; row-gap: 0; }
+                              nav.top .find { order: 10; flex-basis: 100%; margin: 0 0 10px; } }
+  nav.top .find input { width: 100%; box-sizing: border-box; color: var(--fg); border: 1px solid rgba(239, 232, 225, .3); border-radius: 999px;
+                        padding: 9px 46px 9px 42px; font: inherit; font-size: 15px; background: var(--panel2); margin: 0; }
+  nav.top .find input:hover { border-color: rgba(239, 232, 225, .5); }
+  nav.top .find input:focus { outline: none; border-color: var(--beige); }
+  nav.top .find input::placeholder { color: var(--text); opacity: .8; }
+  nav.top .find .ico { position: absolute; left: 15px; top: 50%; width: 17px; height: 17px; transform: translateY(-50%); fill: none; stroke: var(--text);
+                       stroke-width: 2.2; stroke-linecap: round; pointer-events: none; }
+  nav.top .find .key { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 12px; line-height: 1.5; color: var(--dim);
+                       border: 1px solid var(--line); border-radius: 5px; padding: 0 7px; pointer-events: none; }
+  nav.top .find input:focus + .key, nav.top .find input:not(:placeholder-shown) + .key { display: none; }
+  @media (hover: none) { nav.top .find .key { display: none; } }
+  /* Shop on a phone (after the rules above): Devices, KB, Shop on the name's line; the affiliate notice stays visible */
+  @media (max-width: 560px) { nav .shopdd .ddb .ar { display: none; } nav .dd.shopdd { margin-left: 0; } }
+  @media (max-width: 420px) { nav .ddb .ar { display: none; } }          /* (a phone with Shop: Devices, KB, Shop on the name's line) */
+  @media (max-width: 760px) { #shopm .side { display: block; padding: 12px 16px; } #shopm .side > :not(.ad) { display: none; } }   /* (the notice stays) */
+  /* a narrow phone: name, Devices, Tools and Shop on one line (a little tighter) */
+  /* (a phone: the name as FH, so Devices, Tools, About and Shop stay on its line) */
+  nav.top .mark .smm { display: none; }
+  @media (max-width: 900px) { nav.top .home { display: none; } }   /* (designburg.net: no room beside Shop) */
+  @media (max-width: 760px) { nav.top .mark .lgm { display: none; } nav.top .mark .smm { display: inline; font-weight: 800; letter-spacing: -.5px; } }
+  @media (max-width: 400px) { nav.top > .wrap { column-gap: 8px; } nav.top .mark { font-size: 17px; } }
+  @media (max-width: 370px) { nav.top > .wrap { column-gap: 6px; } nav.top .mark { font-size: 16px; } nav .dd { margin-left: 2px; } }
+  /* the footer (web/footer.html, the same on every page: tools/make_fm1.py puts it in, the credits from the catalogues) */
+  footer { border-top: 1px solid var(--line); color: var(--dim); font-size: 13.5px; line-height: 1.7; padding: 34px 0 54px; text-align: center; }
+  footer .wrap { max-width: 900px; } footer a { color: var(--text); }
+/* web/hubaccount.css: the favourites, ratings and the account (web/hubaccount.js), on every device page */
+  /* favourites and ratings (/api/: hubapi/api.php): a heart on each card, five stars beside its maker, the account in the toolbar */
+  :is(.fw, .fwi) .fav { position: absolute; top: 12px; right: 12px; z-index: 2; border: 0; cursor: pointer; font-family: inherit; width: 42px; height: 42px; padding: 0; border-radius: 50%;
+             display: grid; place-items: center; background: rgba(18, 16, 17, .72); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line);
+             font-size: 20px; line-height: 1; backdrop-filter: blur(4px); }
+  :is(.fw, .fwi) .fav:hover { box-shadow: inset 0 0 0 1px var(--c); filter: none; transform: none; }
+  :is(.fw, .fwi) .fav[aria-pressed="true"] { color: #ff3f6e; box-shadow: inset 0 0 0 1px #ff3f6e; }
+  :is(.fw, .fwi) .fav.pop { animation: favpop .45s ease-out; }
+  @keyframes favpop { 40% { transform: scale(1.3); } }
+  :is(.fws, .grid).list > .fw .fav { top: 50%; left: 46px; right: auto; width: 30px; height: 30px; font-size: 14px; transform: translateY(-50%); }
+  :is(.fws, .grid).list > .fw .fav.pop { animation: none; }
+  .rate { display: inline-flex; align-items: center; gap: 1px; white-space: nowrap; vertical-align: 1px; }
+  :is(.fw, .fwi) .rate button { border: 0; min-width: 0; min-height: 0; background: transparent; box-shadow: none; padding: 0 1px; font-size: 17px; line-height: 1; color: rgba(239, 232, 225, .22);
+                 border-radius: 3px; transition: color .1s, transform .1s; }
+  :is(.fw, .fwi) .rate button.on { color: var(--beige); } :is(.fw, .fwi) .rate.mine button.on { color: var(--c); }
+  :is(.fw, .fwi) .rate:hover button { color: rgba(239, 232, 225, .22); }  :is(.fw, .fwi) .rate:hover button.hov { color: var(--c); transform: scale(1.12); }
+  :is(.fw, .fwi) .rate button:hover { filter: none; }
+  .rate .rn { margin-left: 7px; font-size: 13px; color: var(--dim); }  .rate .rn b { color: var(--fg); font-weight: 700; }
+  .by .rate { margin-left: 10px; }
+  .fwi .fav { position: static; flex: none; width: 36px; height: 36px; font-size: 17px; }   /* (the card's info pop-up: heart and stars in a row) */
+  @media (max-width: 560px) { .by .rate { display: flex; margin: 4px 0 0; } .fw .rate button { font-size: 19px; padding: 0 2px; } }
+  #acct { align-self: center; margin-left: clamp(8px, 1.6vw, 22px); flex: none; }    /* (in the top bar, at its right end) */
+  #acct button { position: relative; display: inline-flex; align-items: center; gap: 7px; background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line);
+                 border-radius: 999px; padding: 6px 14px 6px 10px; font-size: 14px; font-weight: 600; white-space: nowrap; }
+  #acct button:hover { box-shadow: inset 0 0 0 1px var(--beige); filter: none; transform: none; }
+  #acct svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  #acct button.in::after { content: ""; position: absolute; left: 22px; top: 5px; width: 8px; height: 8px; border-radius: 50%; background: var(--ok);
+                           box-shadow: 0 0 0 2px var(--bg); }
+  @media (max-width: 900px) { #acct { margin-left: auto; } }
+  @media (max-width: 560px) { #acct { margin-left: 4px; } #acct button { padding: 7px; } #acct button span { display: none; }
+                              #acct button.in::after { left: 21px; top: 4px; } }   /* (a phone: the icon alone) */
+  .chips button[data-k="fav"] { color: #ff6f8f; }  .chips button[data-k="fav"][aria-selected="true"] { background: #ff3f6e; color: #fff; }
+  dialog.dlg { width: min(440px, calc(100vw - 32px)); background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 14px;
+               padding: 28px 26px 24px; }
+  dialog.dlg::backdrop { background: rgba(0, 0, 0, .65); backdrop-filter: blur(2px); }
+  dialog.dlg h3 { margin: 0 0 10px; font-size: 22px; font-weight: 300; color: var(--fg); } dialog.dlg h3 b { font-weight: 800; color: var(--cyan); }
+  dialog.dlg p { margin: 8px 0; font-size: 15px; line-height: 1.5; } dialog.dlg .small { font-size: 13px; color: var(--dim); }
+  dialog.dlg .small a, dialog.dlg .lnk { color: var(--dim); text-decoration: underline; text-decoration-color: var(--line); }
+  dialog.dlg .lnk { background: transparent; box-shadow: none; padding: 0; font: inherit; font-size: 13.5px; cursor: pointer; }
+  dialog.dlg input[type=email], dialog.dlg input#in-note, dialog.dlg input.code { width: 100%; box-sizing: border-box; margin: 12px 0 10px; background: #0e0c0d; color: var(--fg);
+               border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font: inherit; font-size: 16px; }
+  dialog.dlg input.code { font: 700 26px/1.2 ui-monospace, Menlo, monospace; letter-spacing: 8px; text-align: center; }
+  dialog.dlg input:focus { outline: none; border-color: var(--cyan); }
+  dialog.dlg label.vb { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; line-height: 1.45; color: var(--text); margin: 2px 0 6px; cursor: pointer; }
+  dialog.dlg label.vb input { margin-top: 3px; accent-color: #ff6a1a; flex: none; width: 16px; height: 16px; }
+  dialog.dlg label.vb a { color: #ff8a4a; font-weight: 700; }
+  dialog.dlg label.vb.upd input { accent-color: var(--cyan); }
+  dialog.dlg .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  dialog.dlg .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+  dialog.dlg .row .go { background: var(--cyan); color: #121011; }
+  dialog.dlg .row .quiet { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+  dialog.dlg .row .danger { background: transparent; color: #ff6f8f; box-shadow: none; padding-left: 0; padding-right: 0; font-size: 13.5px; margin-left: auto; }
+  dialog.dlg .err { color: #ff6f8f; font-size: 14px; min-height: 1.2em; margin: 4px 0 0; }
+  dialog.dlg .x { position: absolute; top: 10px; right: 10px; margin: 0; }
+  dialog.dlg .x button { background: transparent; box-shadow: none; color: var(--dim); font-size: 22px; padding: 4px 10px; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 90; background: var(--fg); color: #121011; font-weight: 600;
+           padding: 11px 18px; border-radius: 10px; font-size: 14.5px; box-shadow: 0 8px 30px rgba(0, 0, 0, .5); max-width: calc(100vw - 32px); }
+  /* (the sign-in dialog's buttons as on the FM-1 page, whose base button style it relies on) */
+  dialog.dlg button { font-family: inherit; font-weight: 700; font-size: 15px; line-height: 1; padding: 13px 22px; border-radius: 10px; border: 0; cursor: pointer; }
+  dialog.dlg button:hover { filter: brightness(1.1); } dialog.dlg button:disabled { opacity: .4; cursor: default; filter: none; }
+  .strip { display: flex; height: 4px; } .strip i { flex: 1; }
+  .strip i:nth-child(1) { background: var(--cyan); } .strip i:nth-child(2) { background: var(--blue); }
+  .strip i:nth-child(3) { background: var(--pink); } .strip i:nth-child(4) { background: var(--beige); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  :focus-visible { outline: 2px solid var(--beige); outline-offset: 2px; }
+  header { padding: 40px 0 10px;
+           background: radial-gradient(900px 420px at 80% 20%, rgba(66, 245, 245, .10), transparent 70%),
+                       radial-gradient(700px 380px at 5% 100%, rgba(244, 192, 203, .08), transparent 70%); }
+  .hd { max-width: none; }   /* (11.11.: the start page's width – Sven) */
+  .eyebrow { font-size: 13px; letter-spacing: 2.4px; text-transform: uppercase; color: var(--beige); margin: 0 0 14px; }
+  h1 { font-size: clamp(36px, 4.6vw, 66px); line-height: 1.05; font-weight: 300; margin: 0 0 16px; letter-spacing: -.5px; }
+  h1 b { font-weight: 800; background: linear-gradient(90deg, var(--cyan), var(--blue) 45%, var(--pink) 75%, var(--beige));
+         -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { font-size: 17.5px; color: var(--text); max-width: 38em; margin: 0; }
+  main { padding: 18px 0 64px; }
+  .col { max-width: none; }
+  /* the wish to make: one line, the device, the button; what is wished already, while typing */
+  .ask { background: var(--panel); border: 2px dashed rgba(244, 192, 203, .45); border-radius: 20px; padding: 16px 18px 14px; margin: 0 0 30px; }
+  .ask .row { display: flex; gap: 10px; align-items: stretch; }
+  .ask .in { position: relative; flex: 1; min-width: 0; }
+  .ask input[type=text] { width: 100%; font: inherit; font-size: 17px; color: var(--fg); background: var(--panel2); border: 1px solid rgba(239, 232, 225, .3);
+                          border-radius: 12px; padding: 11px 64px 11px 14px; margin: 0; }
+  .ask input[type=text]:focus { outline: none; border-color: var(--beige); }
+  .ask input[type=text]::placeholder { color: var(--text); opacity: .7; }
+  .ask .cnt { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--dim); pointer-events: none; }
+  .ask .cnt.hi { color: var(--pink); }
+  .ask button.go { flex: none; border: 0; border-radius: 12px; background: var(--cyan); color: #121011; font: inherit; font-weight: 800; font-size: 16px;
+                   padding: 0 22px; cursor: pointer; }
+  .ask button.go:hover { filter: brightness(1.08); } .ask button.go:disabled { opacity: .5; cursor: default; }
+  .ask .devs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; border: 0; padding: 0; margin: 10px 0 0; }
+  .ask .devs legend { float: left; font-size: 13.5px; color: var(--dim); margin-right: 4px; padding: 0; }
+  .ask .devs label { position: relative; }
+  .ask .devs input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .ask .devs span { display: inline-block; padding: 4px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); color: var(--text);
+                    font-size: 13.5px; font-weight: 600; }
+  .ask .devs input:checked + span { background: var(--fg); color: #121011; box-shadow: none; }
+  .ask .devs input:focus-visible + span { outline: 2px solid var(--beige); outline-offset: 2px; }
+  .ask .msg { margin: 10px 0 0; font-size: 14.5px; min-height: 0; color: var(--pink); } .ask .msg:empty { display: none; }
+  .ask .msg.good { color: var(--ok); }
+  .ask .fine { margin: 10px 0 0; font-size: 12.5px; color: var(--dim); line-height: 1.55; }
+  .sim { margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--panel2); font-size: 14px; } .sim:empty { display: none; }
+  .sim p { margin: 0 0 4px; color: var(--beige); font-weight: 700; font-size: 13px; }
+  .sim ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .sim li { display: flex; align-items: center; gap: 10px; color: var(--text); }
+  .sim li q { flex: 1; min-width: 0; quotes: "“" "”"; }
+  .sim button { flex: none; border: 0; border-radius: 999px; background: transparent; box-shadow: inset 0 0 0 1px var(--cyan); color: var(--cyan);
+                font: inherit; font-size: 13px; font-weight: 700; padding: 2px 10px; cursor: pointer; }
+  .sim button[aria-pressed="true"] { background: var(--cyan); color: #121011; }
+  /* the list: by 👍, then the newest */
+  h2 { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--beige); margin: 0 0 12px; font-weight: 800; }
+  h2 small { color: var(--dim); letter-spacing: 1px; font-weight: 600; margin-left: 6px; }
+  .wl { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .w { --c: var(--beige); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; background: var(--panel);
+       border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 14px; padding: 10px 10px 10px 12px; }
+  .w.fm1 { --c: var(--cyan); } .w.smk { --c: var(--smk); }
+  .w .tx { margin: 0; font-size: 16.5px; line-height: 1.45; color: var(--fg); overflow-wrap: anywhere; }
+  .w .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 3px; font-size: 12.5px; color: var(--dim); }
+  .tag { font-size: 10.5px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; padding: 2px 7px; border-radius: 6px;
+         background: rgba(230, 209, 185, .10); color: var(--beige); }
+  .tag.fm1 { background: rgba(66, 245, 245, .10); color: var(--cyan); } .tag.smk { background: rgba(255, 107, 94, .10); color: var(--smk); }
+  .up { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 54px; height: 54px; border: 0; border-radius: 12px;
+        background: var(--panel2); box-shadow: inset 0 0 0 1px var(--line); color: var(--fg); font: inherit; cursor: pointer; padding: 0 6px; line-height: 1.1; }
+  .up .th { font-size: 18px; filter: grayscale(.6); } .up b { font-size: 15px; font-weight: 800; }
+  .up:hover { box-shadow: inset 0 0 0 1px var(--cyan); }
+  .up[aria-pressed="true"] { background: var(--cyan); color: #121011; box-shadow: none; } .up[aria-pressed="true"] .th { filter: none; }
+  .up.pop { animation: pop .35s ease-out; } @keyframes pop { 40% { transform: scale(1.14); } }
+  .rep { align-self: start; width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: var(--dim); font: inherit; font-size: 15px;
+         cursor: pointer; opacity: .55; white-space: nowrap; }
+  .w:hover .rep, .rep:focus-visible { opacity: 1; }
+  .rep:hover { background: var(--panel2); color: var(--pink); }
+  .rep.ask2 { width: auto; padding: 0 10px; border-radius: 999px; background: var(--pink); color: #121011; opacity: 1; font-size: 13px; font-weight: 800; }
+  .rep:disabled { cursor: default; color: var(--pink); opacity: .8; background: transparent; }
+  .w.flash { animation: flash 1.6s ease-out; } @keyframes flash { 0%, 40% { box-shadow: 0 0 0 3px var(--c); } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .empty { color: var(--dim); background: var(--panel); border: 1px dashed var(--line); border-radius: 14px; padding: 18px; margin: 0; }
+  .more { margin: 10px 0 0; } .more button { border: 0; background: transparent; color: var(--cyan); font: inherit; font-weight: 700; cursor: pointer; padding: 4px 0; }
+  /* done: what came true, and the firmware it came in */
+  .done { margin-top: 38px; }
+  .done h2 { color: var(--ok); }
+  .done .w { --c: var(--ok); grid-template-columns: auto minmax(0, 1fr); background: transparent; }
+  .done .ck { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: rgba(95, 227, 161, .14); color: var(--ok); font-weight: 900; }
+  .done .tx { color: var(--text); }
+  .done .fw { font-weight: 700; }
+  .note { margin: 40px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); font-size: 13px; color: var(--dim); line-height: 1.6; }
+  .note b { color: var(--text); } .note a { color: var(--text); text-decoration: underline; }
+  .gate p { margin: 0 0 12px; color: var(--text); font-size: 15.5px; } .gate p b { color: var(--fg); }
+  .gate .go { border: 0; border-radius: 12px; background: var(--cyan); color: #121011; font: inherit; font-weight: 800; font-size: 16px; padding: 11px 22px; cursor: pointer; }
+  .gate .go:hover { filter: brightness(1.08); }
+  .ask[hidden] { display: none; }
+  .fine .lnk { border: 0; background: none; color: var(--cyan); font: inherit; padding: 0; cursor: pointer; text-decoration: underline; }
+  .w .del { border: 0; background: none; color: var(--pink); font: inherit; font-size: 12.5px; font-weight: 700; padding: 0; cursor: pointer; }
+  .w .del:hover, .w .adm:hover { text-decoration: underline; }
+  /* the admin (WISH_ADMINS in hubapi/wishes.php): 🗑 on every wish, the hidden ones greyed with Restore */
+  .w .adm { border: 0; background: none; color: var(--dim); font: inherit; font-size: 12.5px; font-weight: 700; padding: 0; cursor: pointer; }
+  .w .adm.sure { color: #ff8a8a; } .w .adm.rest { color: var(--ok); }
+  .hidsec { margin-top: 38px; } .hidsec h2 { color: var(--dim); }
+  .hidsec .w { opacity: .62; border-left-color: var(--dim); } .hidsec .w:hover, .hidsec .w:focus-within { opacity: 1; }
+  .hidsec .nrep { color: var(--pink); font-weight: 700; }
+  .w .author { color: var(--warn); }
+  @media (max-width: 560px) {
+    header { padding-top: 28px; }
+    .ask { padding: 14px 12px 12px; border-radius: 16px; }
+    .ask .row { flex-direction: column; }
+    .ask button.go { padding: 11px 0; }
+    .w { gap: 10px; padding: 8px 6px 8px 8px; } .up { min-width: 48px; height: 50px; } .w .tx { font-size: 15.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .up.pop, .w.flash { animation: none; } }
+  /* (5.11.2026, Sven) every page's h1 in the pixel face of the converter's title: Press Start 2P (SIL OFL 1.1, /fonts/),
+     hosted here (no Google request); its highlighted words (<b>, <em>) in the title's pink. tools/make_fm1.py pixel_h1() */
+  @font-face { font-family: "Press Start 2P"; src: url("/fonts/PressStart2P-latin.woff2") format("woff2"); font-display: swap; }
+  h1.pxf { font-family: "Press Start 2P", ui-monospace, monospace !important; font-weight: 400 !important; font-size: 24px !important;
+           line-height: 1.5 !important; letter-spacing: 0 !important; text-transform: uppercase; color: var(--fg, #efe8e1) !important;
+           -webkit-font-smoothing: none; font-smooth: never; overflow-wrap: anywhere; min-width: 0; max-width: 100%; }
+  h1.pxf b, h1.pxf em, h1.pxf strong { font-weight: 400 !important; font-style: normal !important; color: #ff60be !important;
+           background: none !important; -webkit-text-fill-color: #ff60be; }
+  @media (min-width: 700px) { h1.pxf { font-size: 32px !important; } }
+  @media (min-width: 1200px) { h1.pxf { font-size: 40px !important; } }
+  .cshead h1.pxf b { color: var(--c) !important; -webkit-text-fill-color: var(--c); }   /* (a cheat sheet: its firmware's colour) */
+  @media print { h1.pxf, h1.pxf b { color: #111 !important; -webkit-text-fill-color: #111; } }
+  h1.pxf .nb { white-space: nowrap; }
+</style>
+<link rel="manifest" href="/app/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/app/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Firmware Hub">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<style>
+/* web/hubapp.css: the app bar at the bottom (web/hubapp.js), on every device page */
+  .appbar { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 90; margin: 0 auto; max-width: 560px;
+            display: flex; align-items: center; gap: 12px; padding: 12px 44px 12px 12px; box-sizing: border-box;
+            background: #221e1f; color: #efe8e1; border: 1px solid #3a3435; border-radius: 16px; box-shadow: 0 10px 40px rgba(0, 0, 0, .55);
+            font: 14.5px/1.45 "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; animation: appbar-in .35s ease-out; }
+  @keyframes appbar-in { from { transform: translateY(24px); opacity: 0; } }
+  .appbar img { flex: none; width: 44px; height: 44px; border-radius: 11px; align-self: flex-start; }
+  .appbar .t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .appbar .t > b { font-size: 15.5px; color: #42f5f5; }
+  .appbar .t small { font-size: 12.5px; line-height: 1.45; color: #a39a94; margin-top: 4px; }
+  .appbar svg { width: 17px; height: 17px; vertical-align: -3px; fill: none; stroke: #42f5f5; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .appbar .go { flex: none; font: inherit; font-weight: 700; padding: 9px 18px; border: 0; border-radius: 999px; background: #42f5f5; color: #151213; cursor: pointer; }
+  .appbar .x { position: absolute; top: 6px; right: 6px; width: 34px; height: 34px; border: 0; padding: 0; background: none; color: #a39a94;
+               font: 24px/1 Arial, sans-serif; cursor: pointer; border-radius: 50%; }
+  .appbar .x:hover { color: #efe8e1; background: #2e2a2b; }
+  .appbar.wide { max-width: 640px; align-items: center; gap: 18px; }
+  .appbar .qr { flex: none; width: 132px; height: 132px; border-radius: 10px; align-self: center; }
+  .appbar .pc { margin-top: 8px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: #d8d0c9; }
+  .appbar .pc .go { padding: 7px 16px; }
+  @media (prefers-reduced-motion: reduce) { .appbar { animation: none; } }
+/* web/deck.css: a card's actions as a tape deck's keys, on every device page (make_fm1 puts it in with the app's style):
+   the FM-1 page's deck() and the SMK-37 page's cards (make_fm1 smk_cards) */
+  /* a card's actions: a tape deck's keys (Play, Edit, Cheat sheet, Build), joined, a symbol each, the name as a tooltip */
+  .fw .deck { display: inline-flex; border-radius: 9px; box-shadow: 0 2px 0 #0a0809, inset 0 0 0 1px var(--line); }
+  .fw .deck .key { position: relative; width: 48px; height: 38px; display: grid; place-items: center; color: var(--fg);
+               background: linear-gradient(#2c2728, #1c1819); box-shadow: inset -1px 0 0 #0e0c0d, inset 0 1px 0 rgba(255, 255, 255, .06); }
+  .fw .deck .key:first-child { border-radius: 9px 0 0 9px; } .fw .deck .key:last-child { border-radius: 0 9px 9px 0; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06); }
+  .fw .deck .key:only-child { border-radius: 9px; }
+  /* each key its colour, the same on every card (a tape deck's coloured caps): the symbol, a thin edge on top, a tint on hover */
+  .fw .deck .k-play { --k: #5fe3a1; } .fw .deck .k-edit { --k: #f4c0cb; } .fw .deck .k-sheet { --k: #a870e8; } .fw .deck .k-build { --k: #afd9f4; } .fw .deck .k-hub { --k: #42f5f5; } .fw .deck .k-pkg { --k: #e6d1b9; } .fw .deck .k-talk { --k: #ff9a5c; } .fw .deck .k-vst { --k: #ff60be; }
+  .fw .deck .k-src { --k: #c3cbd6; } .fw .deck .k-hid { --k: #f2b33d; }   /* (facts, not actions: built from source on GitHub, can act as a USB keyboard / mouse) */
+  .fw .deck .key { color: var(--k, var(--fg)); }
+  .fw .deck .key::before { content: ""; position: absolute; left: 7px; right: 7px; top: 0; height: 3px; border-radius: 0 0 3px 3px; background: var(--k); opacity: .85; }
+  .fw .deck .key:hover { text-decoration: none; color: var(--k); background: linear-gradient(color-mix(in srgb, var(--k) 22%, #2c2728), color-mix(in srgb, var(--k) 10%, #1c1819)); }
+  .fw .deck .key:active { transform: translateY(1px); background: #161314; box-shadow: inset 0 2px 5px rgba(0, 0, 0, .7); }
+  .fw .deck .key svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .fw .deck .key svg path[d^="M8 5v14"] { fill: currentColor; }
+  /* the key's name: one floating tooltip on the page (web/hubapp.js), never clipped by a card; above the key, below when no room */
+  .decktip { position: fixed; z-index: 100; padding: 5px 9px; border-radius: 6px; background: #000; color: #fff; font: 600 12px/1.2 "Inter", Arial, sans-serif;
+             width: max-content; max-width: min(440px, calc(100vw - 16px)); pointer-events: none; opacity: 0; transition: opacity .12s; transform: translateX(-50%); }
+  .decktip.on { opacity: 1; }
+</style>
+<meta property="og:image:secure_url" content="https://thefirmwarehub.com/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://thefirmwarehub.com/og.png">
+</head>
+<body>
+
+<a class="vibe" href="/vibe/?ref=wishes"><div class="wrap">
+  <picture><source type="image/webp" srcset="/vibe/assets/img/banner-device.webp?v=20261109b"><img src="/vibe/assets/img/banner-device.jpg?v=20261109b" alt="" width="84" height="30"></picture>
+  <b>VIBE <em>FM</em> Mk1</b> <span class="t">Open firmware, <i>officially supported.</i></span>
+  <span class="offer"><strong>The first 100</strong> get 10% off</span> <span class="go">Join the list &rarr;</span>
+</div></a>
+<nav class="top"><div class="wrap"><a class="mark" href="https://thefirmwarehub.com/"><span class="lgm">The <b>Firmware Hub</b></span><span class="smm" aria-hidden="true">F<b>H</b></span></a>
+  <div class="dd" id="dd">
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="mega">Devices<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="mega"><div class="wrap in">
+      <div class="side">
+        <p class="k">The Firmware Hub</p>
+        <p>Open-source firmware for small music machines, from their makers, installed in the browser.</p>
+        <a href="/">All FM-1 firmwares</a><a href="/kb/">Knowledge Base</a><a href="/creators/">Wall of Creators</a><a href="/submit/">Submit a firmware</a><a href="/vibe/?ref=menu">VIBE FM Mk1</a><a href="/platform/">VIBE FM</a><a href="/lab/">VIBE FM Lab</a>
+        <a id="getapp" href="/#app">App</a>
+        <hr><p>Made firmware for another device?</p>
+        <a class="mail" href="mailto:zven@thefirmwarehub.com?subject=The%20Firmware%20Hub%3A%20my%20device">zven@thefirmwarehub.com</a>
+      </div>
+      <div class="tiles">
+        <a class="tile" href="/" data-dev="fm1"><span class="pic quad"><img loading="lazy" src="/img/w160/zp12.webp?v=1f052566" alt=""><img loading="lazy" src="/img/w160/sloop.webp?v=06c1512a" alt=""><img loading="lazy" src="/img/w160/x0x.webp?v=20a9c76f" alt=""><img loading="lazy" src="/img/w160/winampfm.webp?v=85a944e1" alt=""></span>
+          <span><b>M-VAVE FM-1</b><small><span id="dd-fm1">All</span> firmwares</small></span></a>
+        <a class="tile vst-t" href="/convert/" data-dev="convert"><span class="pic"><img loading="lazy" src="/img/w160/vibe-vst.webp?v=f34396db" alt=""></span>
+          <span><b>VIBE FM VST</b><small>FM-1 firmwares in your DAW · open beta</small></span></a>
+        <a class="tile vst-t" href="/platform/" data-dev="native"><span class="pic"><img loading="lazy" src="/img/w160/vibe-native.webp?v=8faf0951" alt=""></span>
+          <span><b>VIBE FM</b><small>One Vibe, every device · browser, DAW, hardware</small></span></a>
+        <a class="tile vst-t" href="/lab/" data-dev="lab"><span class="pic"><img src="/img/lab-stage-vibedj.jpg?v=20261111" alt=""></span>
+          <span><b>VIBE FM Lab</b><small>Build a Vibe · port your FM-1 firmware · win a VIBE Box</small></span></a>
+        <a class="tile" href="/smk37/" data-dev="smk37"><span class="pic"><img loading="lazy" src="/smk37/img/w160/smk-mix.webp?v=4414a12e" alt=""></span>
+          <span><b>M-VAVE SMK-37 Pro</b><small>25 firmwares · Pro, Elite, MKE-P37</small></span></a>
+        <a class="tile" href="/cycles/" data-dev="cycles"><span class="pic"><img loading="lazy" src="/cycles/img/w160/modded-cycles.webp?v=769574b9" alt=""></span>
+          <span><b>Elektron Model:Cycles</b><small>6 mods · Model:Samples too</small></span></a>
+        <a class="tile" href="/lxr/" data-dev="lxr"><span class="pic"><img loading="lazy" src="/lxr/img/w160/lxr-official.webp?v=df5cd3d6" alt=""></span>
+          <span><b>Erica Synths LXR-02</b><small>Open source since 23 Oct · its firmware and mods</small></span></a>
+        <a class="tile vibe-t" href="/vibe/?ref=menu" data-dev="vibe"><span class="pic"><img src="/vibe/assets/img/banner-device.jpg?v=20261109b" alt=""></span>
+          <span><b>VIBE FM Mk1</b><small>Hardware with open firmware · join the list</small></span></a>
+        <a class="tile add" href="/submit/"><span class="pic">+</span>
+          <span><b>Your device</b><small>Firmware for another machine? Tell us.</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <div class="dd toolsdd" id="toolsdd">
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="toolsm">Tools<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="toolsm"><div class="wrap in">
+      <div class="side">
+        <p class="k">Tools</p>
+        <p>Everything around the firmwares: emulators, editors, backup and rescue, building your own. Open source, from their makers.</p>
+      </div>
+      <div class="tiles">
+        <a class="tile crw" href="/tools/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span>
+          <span><b>All tools</b><small>Emulators, editors, backup, building your own</small></span></a>
+        <a class="tile crw" href="/tools/rescue/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M6.3 6.3l3.2 3.2M17.7 6.3l-3.2 3.2M6.3 17.7l3.2-3.2M17.7 17.7l-3.2-3.2"/></svg></span>
+          <span><b>FM-1 rescue</b><small>Does not start, update or save? What to do</small></span></a>
+        <a class="tile crw" href="/kb/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg></span>
+          <span><b>Knowledge Base</b><small>How to install, rescue, play</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <div class="dd aboutdd cur" id="aboutdd">
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="aboutm">Community<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="aboutm"><div class="wrap in">
+      <div class="side">
+        <p class="k">Community</p>
+        <p>The people behind the firmwares, and what the players wish for next. Installing is free and needs no account; a hub
+           account (no password, a link by mail) keeps your favourites, ratings and wishes.</p>
+        <hr><p>A question, a firmware, a device?</p>
+        <a class="mail" href="mailto:zven@thefirmwarehub.com?subject=The%20Firmware%20Hub">zven@thefirmwarehub.com</a>
+      </div>
+      <div class="tiles">
+        <a class="tile crw" href="/creators/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9" r="2.4"/><path d="M16 13.8c2.6 0 4.4 1.6 5 4.4"/></svg></span>
+          <span><b>Wall of Creators</b><small>The people who make the firmwares</small></span></a>
+        <a class="tile crw" href="/kb/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg></span>
+          <span><b>Knowledge Base</b><small>How to install, rescue, play</small></span></a>
+        <a class="tile crw" href="/submit/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span><b>Submit a firmware</b><small>Made one? Put it on the hub</small></span></a>
+        <a class="tile crw" href="/dj/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4.5"/><circle cx="8" cy="12" r="1"/><circle cx="17.5" cy="12" r="3"/><path d="M14 5h7M14 19h7"/></svg></span>
+          <span><b>FM-1 Jukebox</b><small>Your FM-1 tunes on two decks – upload yours</small></span></a>
+        <a class="tile crw" href="/wishes/" aria-current="page"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg></span>
+          <span><b>Wish list</b><small>A synth, a feature, a device: wish and vote</small></span></a>
+        <a class="tile crw" href="/impressum/"><span class="pic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 11v5M12 8h.01"/></svg></span>
+          <span><b>Imprint &amp; privacy</b><small>Who runs the hub</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <div class="dd shopdd" id="shopdd" hidden>
+    <button class="ddb" type="button" aria-expanded="false" aria-controls="shopm">Shop<span class="ar" aria-hidden="true">▼</span></button>
+    <div class="mega" id="shopm"><div class="wrap in">
+      <div class="side">
+        <p class="k">Shop</p>
+        <p class="cc-de">Firmwear, the hub's community shirt, on Fourthwall, and the machines the firmwares run on, from Amazon.de.</p>
+        <p class="cc-eu">Firmwear: the hub's community shirt, on Fourthwall.</p>
+        <p class="cc-us">Firmwear, the hub's community shirt, on Fourthwall, and the machines the firmwares run on, from Amazon.com.</p>
+        <hr class="cc-amz"><p class="ad cc-de">* Affiliate link (ad, Anzeige): as an Amazon Associate I earn from qualifying purchases; it costs you nothing extra. Als Amazon-Partner verdiene ich an qualifizierten Verkäufen.</p>
+        <p class="ad cc-us">* Affiliate link (ad). As an Amazon Associate I earn from qualifying purchases; it costs you nothing extra.</p>
+      </div>
+      <div class="tiles">
+        <a class="tile cc-merch" href="https://designburg-net-shop.fourthwall.com/products/fm-1-make-firmware-not-war-community-shirt-2026" data-shop="Firmwear|fourthwall" target="_blank" rel="noopener"><span class="pic"><img loading="lazy" src="/img/w160/merch.webp?v=5fe2f657" alt=""></span>
+          <span><b>Firmwear</b></span></a>
+        <a class="tile cc-de" href="https://link.amazon/B08QY1yVZ" data-shop="FM-1|amazon.de" target="_blank" rel="sponsored noopener"><span class="pic quad"><img loading="lazy" src="/img/w160/zp12.webp?v=1f052566" alt=""><img loading="lazy" src="/img/w160/sloop.webp?v=06c1512a" alt=""><img loading="lazy" src="/img/w160/x0x.webp?v=20a9c76f" alt=""><img loading="lazy" src="/img/w160/winampfm.webp?v=85a944e1" alt=""></span>
+          <span><b>Get the M-VAVE FM-1</b><small>on Amazon.de · Ad (Anzeige) *</small></span></a>
+        <a class="tile cc-de" href="https://link.amazon/B0f2qKAUl" data-shop="SMK-37 Pro|amazon.de" target="_blank" rel="sponsored noopener"><span class="pic"><img loading="lazy" src="/smk37/img/w160/smk-mix.webp?v=4414a12e" alt=""></span>
+          <span><b>Get the M-VAVE SMK-37 Pro</b><small>on Amazon.de · Ad (Anzeige) *</small></span></a>
+        <a class="tile cc-us" href="https://amzn.to/4yZizIY" data-shop="FM-1|amazon.com" target="_blank" rel="sponsored noopener"><span class="pic quad"><img loading="lazy" src="/img/w160/zp12.webp?v=1f052566" alt=""><img loading="lazy" src="/img/w160/sloop.webp?v=06c1512a" alt=""><img loading="lazy" src="/img/w160/x0x.webp?v=20a9c76f" alt=""><img loading="lazy" src="/img/w160/winampfm.webp?v=85a944e1" alt=""></span>
+          <span><b>Get the M-VAVE FM-1</b><small>on Amazon.com · Ad *</small></span></a>
+        <a class="tile cc-us" href="https://amzn.to/3TYjR7V" data-shop="SMK-37 Pro|amazon.com" target="_blank" rel="sponsored noopener"><span class="pic"><img loading="lazy" src="/smk37/img/w160/smk-mix.webp?v=4414a12e" alt=""></span>
+          <span><b>Get the M-VAVE SMK-37 Pro</b><small>on Amazon.com · Ad *</small></span></a>
+      </div>
+    </div></div>
+  </div>
+  <form class="find" role="search" action="/" method="get"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg><input
+    type="search" name="q" id="q" placeholder="Search firmwares…" aria-label="Search the firmwares" autocomplete="off"
+    spellcheck="false"><span class="key" aria-hidden="true">/</span></form>
+  <script>
+  (() => {                                                 // a tap / Enter opens it, a tap outside or Esc closes it
+    document.querySelectorAll("nav .dd").forEach((dd) => {   // (Devices, and Shop where it is shown)
+      const b = dd.querySelector(".ddb");
+      const set = (o) => { dd.classList.toggle("open", o); b.setAttribute("aria-expanded", String(o)); };
+      dd.close = () => set(false);
+      b.addEventListener("click", (e) => {               // (one open at a time: the other closed)
+        e.stopPropagation(); document.querySelectorAll("nav .dd").forEach((o) => o !== dd && o.close?.()); set(!dd.classList.contains("open"));
+      });
+      document.addEventListener("click", (e) => { if (!dd.contains(e.target)) set(false); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") { set(false); } });
+    });
+    document.addEventListener("keydown", (e) => {          // "/": into the search, on every page
+      const a = document.activeElement;
+      if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(a?.tagName || "") || a?.isContentEditable) return;
+      e.preventDefault(); const q = document.getElementById("q"); q.focus(); q.select();
+    });
+    fetch("/catalog.json?" + new Date().toISOString().slice(0, 10)).then((r) => r.json())     // (the hub's daily key: one cache)
+      .then((c) => { document.getElementById("dd-fm1").textContent = c.firmwares.length; }).catch(() => {});
+  })();
+  </script>
+  <a class="home" href="https://designburg.net/">designburg.net</a></div></nav>
+<div class="strip"><i></i><i></i><i></i><i></i></div>
+
+<header><div class="wrap"><div class="hd">
+  <p class="eyebrow">The Firmware Hub · Wish list</p>
+  <h1 class="pxf">What should your <b>beloved firmware</b> learn next?</h1>
+  <p class="lead">A synth you miss, a sound, a feature, a whole new firmware: wish for it in one line, and give the wishes you
+    like a 👍. The makers on the hub look here for ideas. To read, wish and vote, sign in with your hub account
+    (a code by mail, no password).</p>
+</div></div></header>
+
+<main><div class="wrap"><div class="col">
+<div class="ask gate" id="gate" hidden>
+  <p><b>Sign in to see the wishes, wish and vote.</b> One hub account for everything (your favourites and ratings too): no password, we mail you a
+    6-digit code. One 👍 per account, so every wish counts fairly.</p>
+  <button class="go" type="button" id="gatebtn">Sign in to see the wishes</button>
+</div>
+<p class="ask gate" id="bannote" hidden>Your account can no longer wish, vote or report here. A question? <a href="mailto:zven@thefirmwarehub.com?subject=The%20Firmware%20Hub%3A%20the%20wish%20list">zven@thefirmwarehub.com</a></p>
+<form class="ask" id="ask" autocomplete="off" novalidate hidden>
+  <div class="row">
+    <div class="in"><label class="sr" for="wt">Your wish, in one line</label>
+      <input type="text" id="wt" maxlength="100" placeholder="One line: a synth, a sound, a feature…" aria-describedby="wfine" enterkeyhint="send">
+      <span class="cnt" id="wcnt" aria-hidden="true">0/100</span></div>
+    <button class="go" id="wgo" type="submit">Wish it</button>
+  </div>
+  <fieldset class="devs"><legend>For</legend>
+    <label><input type="radio" name="dev" value="FM-1" checked><span>FM-1</span></label>
+    <label><input type="radio" name="dev" value="SMK-37"><span>SMK-37</span></label>
+    <label><input type="radio" name="dev" value=""><span>Any</span></label>
+  </fieldset>
+  <div class="sim" id="sim" aria-live="polite"></div>
+  <p class="msg" id="wmsg" role="status"></p>
+  <p class="fine" id="wfine">Shown at once, to everyone signed in. Plain text on one line (8 to 100 characters), no links or addresses, keep it
+    friendly: a few words are filtered, and wishes reported by several members are hidden until the hub has a look. Your own wish
+    you can take back on its first day. <span id="who"></span></p>
+</form>
+
+<section aria-labelledby="open-h">
+  <h2 id="open-h">Wished so far <small id="ocnt"></small></h2>
+  <ol class="wl" id="list"><li class="empty">Loading the wishes…</li></ol>
+  <noscript><p class="empty">The wish list needs JavaScript.</p></noscript>
+  <p class="more" id="more" hidden><button type="button">Show all wishes</button></p>
+</section>
+
+<section class="hidsec" aria-labelledby="hid-h" id="hidsec" hidden>
+  <h2 id="hid-h">Hidden by reports <small>only you see these</small></h2>
+  <ol class="wl" id="hidlist"></ol>
+</section>
+
+<section class="done" aria-labelledby="done-h" id="donesec" hidden>
+  <h2 id="done-h">Done ✓</h2>
+  <ol class="wl" id="done"></ol>
+</section>
+
+<p class="note"><b>Privacy, in short:</b> reading, wishing, 👍 and ⚑ need a hub account; the wish list keeps only a
+  coded key of your account with your wishes, 👍 and reports (never your address), and nobody else sees who wished or voted.
+  Delete your account and your 👍 and reports go with it. Against spam the server also counts per connection with a code made from
+  your IP address and a key that changes every day; your IP address itself is never stored. More in the
+  <a href="/impressum/#datenschutz">privacy policy</a>. Something to tell the hub directly?
+  <a href="mailto:zven@thefirmwarehub.com?subject=The%20Firmware%20Hub%3A%20a%20wish">zven@thefirmwarehub.com</a></p>
+</div></div></main>
+
+<footer><div class="wrap">
+  <b>Disclaimer.</b> Every firmware here belongs to its authors, each under its own license (GPL-3.0:
+  <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">the license</a>); only zp12, sloopDX, OberVave, Shine On, Dinghy and VIBE FM Link are ours
+  (<a href="https://github.com/zvenson" rel="noopener">zvenson</a>). We do not develop, test or support the others and take no
+  responsibility for them, for what they do on your device or for lost data: questions and bug reports go to each project, linked on
+  its card. The FM-1 firmwares are taken automatically and unchanged from their releases; the FM-1 page only checks that a package is
+  an FM-1 firmware with the update loader before it writes it, and keeps a copy of its source next to it. The SMK-37 firmwares install
+  from their makers' own installers. The pictures on the cards are from each project's repository.
+  FM-1: Hortator, Hortator (Bluetooth) and FMDj by DEADACTIVE; Felucca by Leo Kuroshita (Hügelton Instruments); Felucca [Salt] by Chance Roth (ChanceTheMaker); Jangada by zednaked; GHOULBOX by Jason Persinger; Melodee by keremimo; SLOOP and Clipper by isod89; Bubba Machine by Erbubar23; SLOOP Floyd FM by René Bohne; SLOOP DX7 Banks by majnikool; X0X, FoMni, AMB-1, CTL-1, Polly, LOOM-8 and MONK-1 by Charles Vestal; X0X-RMX by Mr-Roboto (Oliver); ChoralRoot, PurpleMonkey, FIZZ and RemoteFM1 by Quixotic7; WaveLoop FM-1 by ELI7VH; FiMba-1 by jadamsowers; JIANT FM by juanjiant-bit; fm1-chord by math0ne; FuMi-1 by cartesive; MAKU by okumurari; Rainbow Mode by joshbartlettband-web; winampFM Synth, No Man Sky FM and FM1 Quest by Hericdk; MYCELIUM by Mandalars; ETCH and RUPTURE by SikkenWorks; FM-106 by PatttF; TRIBE by apiel; DUELL by OSCILL/R; Skiff by illuminus5; Fart Machine One by adamcharleswilsonmusic-code; ORBIT and MC-1 by dspaudio; Felucca 8 Patterns and Argo by echoe; PIGEON by The Shrimp Blimp; CS-1 by twochannels; HYP-1 by RedtailWorks; Tonitor and Bigorna by Nuno Zimas; bocjuhn by ryuji kanagawa; AISLING by CU_STE; Demake by Sequencist; NOIZ DEMONS by SPIKE the Percussionist; CoralFlower by FicusFicusov; Vector37 by genkigenki; BEETLE, BEETLE BLUE and B1 by Joppe Sikken (SikkenWorks); MIN-1 by Reytian; Pocket GammaWave by ShadowTune (GammaWave Audio); Tuna, Flyfish, Makohai, Daurade, Sill and Sardine by delirioux; Frodhes by Leonardo Mirabal; FOMAJAM by konsumer; KAWA and K-WASUB by Omnipotard (Guizmoh); GR!MM by GRiMMBIENT; Cut-A-Dor, Mutable Dreams and Bunker Evolved by Kid Bunka; FM1-GM and FM1-TRAX by jartificer; 386DX by seajaysec; OPN-1 and SID-1 by putchdev; Mini-Tone by Stéphane Schmitz; MORPHEUS and HERA by Ben Badio; FMini-1 by Ruppert; DUB-1 by sbegueria; Ketch by risseraka; FMEL-1 by Antonio Altea; ZEN-1 by aceyprime; Golana by Gadlele; Golana DZ Edition, analogBEAST and keySTEP ONE by dzwerg; MODELAR by Hirakos; Niagara Drift by Evan Yerburgh; Unholy Union by actuallysparky; Evander's Music Box by Michail Tsakiroglou; Chipbox, Smileyface and Drumlab by pbarilla; Bytemania by lloyd (llozd); FRASIL by Styves Goupil; Tessera by Theo Dainis (Rastapopolix); Del Rio by Jess Del Rio; Carnac OS by OrbVorgis; DRIFT by FBNFRTG; SIDOU by Denis Sablić; MONO2K by Iñigo Hernandez; Caravel by BonszaiMusic; MIDIMON by ignis32; ESTAMPIE by Drew Robinson; Matryoshka by glvno; Loom FM-1 by Co-oscillator; TastyWaves by marksweiss; Arctic Scream by p0larpatch; S1Vave by Andrew GG; GATOR by ivanvoid; Monohull by Mark White; PERF-1 by deamonSLINKY; J6 by JackieAlacrity2373; GuitChordi by Stoogs; Ravel by De-Pattern; Berlinan by Jiří Píša; MNM-1 and Veffbox by Veff; MOPE-1 by slothpallas; Kitten Synths and Kitten Rack by Black Kitten Devices; Nauclerus by Mr. Roboto; PT/FM by hitosu; SPAMPY by Spampy-Droid; SPELLBOX by Philippe Jaccoud; Dungeon Tracker by Bourbon Weather; NACHTFAHRT by Cranky Man; LUXR by HOLODECK AUDIOTOOLS; VESPER by Fat Cat Studios; Penumbra and Ombak by Lunar Eclipse Forge; Jam Playground by Bob Perry; XMOD by Kot Morderca; SiDJ by thomasj (tubesockor); hawk-chua by plieuwski; BB1 by Ole Big Beat / TexasRADIO; KARMA by Ariel Muchnik; LSDJ Burrito by Dreamy_bacon; fm1-dock, Scintilla and FM-1 SID by Joakim Eriksson; DARK-1 by Polystellarflow; Wanderer by Nicholas James / Low Vision Music; PULHRA by 646timur-cell; Amenity by Presethead; Arcturus S6 by Zeptosecond DSP; Blop by Obsimo; CLATTER Pocket by allmyfriendsaresynths; CHOPPAH by Laurens Profittlich; B3 ORGAN by R-Jeb; GIO-1 by Guinan; Elixir by Dan Majka; FM1 DRUM OS by skufee; QUADRO by Matt Allison; DX747 by Esben von Buchwald; Skiff Atlatl by LIkst4; COQUÍ by saulofilho; ARTIHIVE by KHAV; CULTBOX by Pete Sasqwax / BEAT CULT; Piterfly by Piotr Woźniak; ATEK303 by Animatek; FM1 Audio Router by MAX RAVE; M-Vance by BK40; Patchwerk by Matt Kuebrich; Compás by Big Beat Studio; Rhythmer by Jazzy Rhythmer; Miku-FM by Michael Perry; ECHOFIELD and JAMTRACK by PhilipsKnobs; XENOLITH by Unit_v743; Hungry Travis, RAMBEAVER and Trumpagotchi by Trust This Mechanism; FM-FAM by davidamomusic; Quartet and SPLITMILK by MammothCheese; M-PYRE by History Of Sky; ASS-ID, sloop-DUB and DUB-BOX by altessproduction; fm1-amy by Dan Ellis; SATIE-1 by OCKM Studio; Guru-600 by Marc Massé; PLAYA by JFS; Kris Jangle by w33tSnx; CORD by Chase DeAnda; Pocket Band by elpabl0; Mighty Arp by Nick Culbertson; fm1-sf2 by mwedmark; DEEP FIELD by Kyle McCann; KRIECHSTROM by Grigorii Bezborodov. SMK-37: Felucca SMK by Chance Roth (ChanceTheMaker); Makkuro37, Vector37, Speak37, Erik37 and the SMK-37 builds of the FM-1 firmwares by genkigenki; Skiff by illuminus5; FOMAJAM by konsumer; Frodhes by Leonardo Mirabal. Baud Girl (FM-1+VA) by Madeline is only linked: not open source, not hosted or mirrored
+  here, it installs from baudgirl.com. FM1 Open is M-VAVE's official open firmware (app GPL-3.0 with an SDK exception, sound engine
+  closed source): only linked, it installs from M-VAVE's Workbench. The update path is Felucca's, as sloopDX carries it. M-VAVE, FM-1 and SMK-37 are trademarks of
+  their owners; not affiliated with M-VAVE. E-mu and SP-1200 are trademarks of their owners. Unofficial firmware, free and without
+  warranty: you install it at your own risk.
+  <br><a href="https://designburg.net/">designburg.net</a> · <a href="/tools/">Tools</a> · <a href="/creators/">Creators</a> · <a href="/wishes/">Wish list</a> · <a href="/kb/">Knowledge Base</a> · <a href="/impressum/">Impressum</a> · <a href="/impressum/#datenschutz">Datenschutz</a>
+  · <a href="https://www.youtube.com/@sonzven?sub_confirmation=1" target="_blank" rel="noopener">▶ YouTube: @sonzven</a>
+  · <a href="https://paypal.me/zvenson" rel="noopener">☕ Buy me a coffee</a><span id="updated"></span>
+</div></footer>
+<script>
+// the hub's account (web/hubaccount.js, as on the FM-1 and SMK-37 pages): its sign-in by mail and code, its dialog; this
+// page has no cards, a sign-in or sign-out redraws the wish box and the list (wishAuth, below)
+const HUB = { cards: () => [], name: (id) => id, refresh: () => window.wishAuth?.(), resort: () => {} };
+// FAVOURITES AND RATINGS (/api/, hubapi/api.php), the same on every device page (tools/make_fm1.py puts this file in at
+// /*ACCOUNT*/; its style is web/hubaccount.css). Favourites work without an account: on this browser only (localStorage).
+// Ratings need one: a sign-in by mail, no password (a link, or a 6-digit code typed on any device); signed in, favourites
+// and ratings follow the address to every device, and the browser's favourites move into the account.
+// The page sets HUB before this: cards() its card elements (each with data-hub = its id: "zp12", "smk37:obervave"),
+// name(id), refresh() (the chips and the filter again), resort() (the order again, when it is by rating).
+const FAV_KEY = "fm1hub.favs", PEND_KEY = "fm1hub.pending";
+let me = null, rates = {};                              // me: {email, vibe, notify (null: not asked yet), favs, ratings: {id: 1..5}, notes: {id: line}} or null; rates: {id: [average, count]}
+let localFavs = (() => { try { const l = JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); return Array.isArray(l) ? l : []; } catch (e) { return []; } })();
+const keepLocal = () => { try { localStorage.setItem(FAV_KEY, JSON.stringify(localFavs)); } catch (e) {} };
+const isFav = (id) => (me ? me.favs : localFavs).includes(id);
+const score = (id) => { const r = rates[id]; return r ? (r[0] * r[1] + 3 * 2) / (r[1] + 2) : 0; };   // (a few votes weigh little: 2 of 3 stars in front)
+const hubEsc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const hub$ = (id) => document.getElementById(id);
+async function api(path, data) {
+  const r = await fetch("/api/" + path, data === undefined ? { cache: "no-store", credentials: "same-origin" }
+    : { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Hub": "1" }, body: JSON.stringify(data) });
+  let j = {};
+  try { j = await r.json(); } catch (e) {}
+  if (!r.ok || !j.ok) { const err = new Error(j.error || `The hub's server did not answer (${r.status}).`); err.status = r.status; throw err; }
+  return j;
+}
+const evA = (action, name) => { try { (window._paq = window._paq || []).push(["trackEvent", "Account", action, name || ""]); } catch (e) {} };
+function toast(text) {
+  const t = document.createElement("div");
+  t.className = "toast"; t.textContent = text; t.setAttribute("role", "status");
+  document.body.append(t); setTimeout(() => t.remove(), 3200);
+}
+// one card's heart and stars, as they are now (after a render, a click, a sign-in); a card without them gets them here
+function paintCard(el) {
+  const id = el.dataset.hub;
+  if (!id) return;
+  let h = el.querySelector(".fav");
+  if (!h) { h = document.createElement("button"); h.type = "button"; h.className = "fav"; el.prepend(h); }
+  const on = isFav(id);
+  h.setAttribute("aria-pressed", on); h.textContent = on ? "♥" : "♡";
+  h.title = on ? "In your favourites: click to take it out" : "Add to your favourites";
+  h.setAttribute("aria-label", h.title + ": " + HUB.name(id));
+  h.onclick = () => toggleFav(id, h);
+  let r = el.querySelector(".rate");
+  if (!r) { const by = el.querySelector(".by"); if (!by) return; r = document.createElement("span"); r.className = "rate"; by.append(r); }
+  const mine = me && me.ratings[id], avg = rates[id], fill = mine || (avg ? Math.round(avg[0]) : 0);
+  r.classList.toggle("mine", !!mine);
+  r.title = mine ? `Your rating: ${mine} of 5. Click to change, click it again to take it back` : me ? "Rate it: click a star" : "Rate it (sign in by mail, no password)";
+  r.innerHTML = [1, 2, 3, 4, 5].map((n) => `<button type="button" data-n="${n}" class="${n <= fill ? "on" : ""}" aria-label="${n} of 5 stars">★</button>`).join("")
+    + `<span class="rn">${avg ? `<b>${avg[0].toFixed(1)}</b> (${avg[1]})` : "rate it"}</span>`;
+  const bs = [...r.querySelectorAll("button")];
+  bs.forEach((b) => {
+    b.onmouseenter = () => bs.forEach((x) => x.classList.toggle("hov", +x.dataset.n <= +b.dataset.n));
+    b.onclick = () => rate(id, +b.dataset.n === mine ? 0 : +b.dataset.n);
+  });
+  r.onmouseleave = () => bs.forEach((x) => x.classList.remove("hov"));
+}
+const paintAll = () => { HUB.cards().forEach(paintCard); acct(); };
+async function toggleFav(id, h) {
+  const on = !isFav(id);
+  h.classList.remove("pop"); void h.offsetWidth; if (on) h.classList.add("pop");
+  evA(on ? "Fav" : "Unfav", id);
+  if (!me) {
+    localFavs = on ? [...new Set([...localFavs, id])] : localFavs.filter((x) => x !== id);
+    keepLocal(); paintAll(); HUB.refresh();
+    if (on && localFavs.length === 1) toast("Saved on this browser. Sign in to keep your favourites on every device.");
+    return;
+  }
+  me.favs = on ? [...new Set([...me.favs, id])] : me.favs.filter((x) => x !== id);   // (at once; the server's answer follows)
+  paintAll(); HUB.refresh();
+  try { me = (await api("fav", { fw: id, on })).user; } catch (e) { toast(e.message); await loadMe(); }
+  paintAll(); HUB.refresh();
+}
+async function rate(id, stars) {
+  if (!me) {                                            // (after the sign-in this rating is given: kept until then)
+    try { localStorage.setItem(PEND_KEY, JSON.stringify({ fw: id, stars })); } catch (e) {}
+    return dialog("email", `To rate ${HUB.name(id)}, sign in. One account, no password: a link or a code by mail.`);
+  }
+  try {
+    const j = await api("rate", { fw: id, stars });
+    me = j.user; rates = j.ratings; evA(stars ? "Rate" : "Unrate", id + (stars ? " " + stars : ""));
+    if (stars) dialog("note", "", id);                 // (thanks, and a line on what one thinks: optional, only the admin reads it)
+  } catch (e) { toast(e.message); }
+  paintAll(); HUB.resort();
+}
+// after a sign-in: the browser's favourites into the account, a rating given before it
+async function signedIn(user) {
+  me = user;
+  if (localFavs.length) {
+    try { me = (await api("merge", { favs: localFavs })).user; localFavs = []; keepLocal(); } catch (e) {}
+  }
+  let p = null;
+  try { p = JSON.parse(localStorage.getItem(PEND_KEY) || "null"); localStorage.removeItem(PEND_KEY); } catch (e) {}
+  if (p && p.fw && p.stars) await rate(p.fw, p.stars);
+  paintAll(); HUB.refresh();
+  askUpdates();
+}
+// the update mails, asked once (an account from before the question): yes or no, then never again; the switch is in
+// the account. Not over another dialog: then next time
+function askUpdates() {
+  if (!me || me.notify !== null || hub$("acctdlg")?.open) return;
+  dialog("updates");
+}
+async function setUpdates(on) {
+  try { me = (await api("notify", { on })).user; evA(on ? "Updates on" : "Updates off"); } catch (e) { toast(e.message); }
+}
+const JUST_IN = new URLSearchParams(location.search).has("signedin");   // (back from the mail's link: the address clean again)
+if (JUST_IN) { const u = new URLSearchParams(location.search); u.delete("signedin"); history.replaceState(null, "", location.pathname + (u.size ? "?" + u : "") + location.hash); }
+async function loadMe() {
+  try {
+    const j = await api("me");
+    rates = j.ratings || {};
+    if (j.user) { await signedIn(j.user); if (JUST_IN) toast("Signed in as " + j.user.email); }
+    else { me = null; paintAll(); HUB.refresh(); }
+    HUB.resort();
+  } catch (e) { paintAll(); }                           // (no server: the hearts on this browser still work)
+}
+// the account button at the right of the top bar (every page with this script), and its dialog: the address, then the
+// code; signed in: sign out, delete
+const ACCT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c.8-3.9 3.8-6.2 7.5-6.2s6.7 2.3 7.5 6.2"/></svg>';
+function acct() {
+  let a = hub$("acct");
+  if (!a) { const n = document.querySelector("nav .wrap"); if (!n) return; a = document.createElement("div"); a.id = "acct"; n.append(a); }
+  a.innerHTML = me ? `<button type="button" class="in" title="Signed in as ${hubEsc(me.email)}" aria-label="Your account">${ACCT_ICON}<span>Account</span></button>`
+                   : `<button type="button" title="Sign in: favourites, ratings, wishes" aria-label="Sign in">${ACCT_ICON}<span>Sign in</span></button>`;
+  a.querySelector("button").onclick = () => dialog(me ? "account" : "email");
+}
+let mailTo = "";
+function dialog(step, why = "", fw = "") {
+  let d = hub$("acctdlg");
+  if (!d) {
+    document.body.insertAdjacentHTML("beforeend", '<dialog class="dlg" id="acctdlg" aria-label="Your account"><form method="dialog" class="x"><button aria-label="Close">×</button></form><div id="acctbody"></div></dialog>');
+    d = hub$("acctdlg");
+  }
+  const b = hub$("acctbody");
+  const privacy = '<p class="small">Your address is only used to sign you in, for the update mails and the VIBE FM list if you ask for them: no sharing. You can delete the account any time. <a href="/impressum/#datenschutz">Privacy</a></p>';
+  const UPD_LINE = "Mail me when my favourites get a new version (at most one mail a day, unsubscribe in each).";
+  if (step === "email") {
+    b.innerHTML = `<h3>Sign in to the <b>hub</b></h3>
+      <p>${hubEsc(why || "Rate firmwares and keep your favourites on every device.")}</p>
+      <p class="small">No password: we mail you a sign-in link and a 6-digit code. Either one signs you in.</p>
+      <form id="f-mail" novalidate><input type="email" id="in-mail" autocomplete="email" placeholder="you@example.com" required value="${hubEsc(mailTo)}">
+      <label class="hp" aria-hidden="true">Website <input type="text" id="in-web" tabindex="-1" autocomplete="off"></label>
+      <label class="vb upd"><input type="checkbox" id="in-upd"> <span>${UPD_LINE}</span></label>
+      <label class="vb"><input type="checkbox" id="in-vibe"> <span>Also put me on the <a href="/vibe/?ref=hub-account" target="_blank" rel="noopener">VIBE FM</a> list: news about VIBE FM, the synth made for open firmware. Unsubscribe any time.</span></label>
+      <p class="err" id="d-err"></p><div class="row"><button class="go" id="b-send">Send me the mail</button>
+      ${mailTo ? '<button type="button" class="lnk" id="b-have">I have a code</button>' : ""}</div></form>${privacy}`;
+    hub$("f-mail").onsubmit = async (e) => {
+      e.preventDefault();
+      const email = hub$("in-mail").value.trim(), btn = hub$("b-send");
+      if (!/^\S+@\S+\.\S+$/.test(email)) { hub$("d-err").textContent = "Please check the address."; return; }
+      btn.disabled = true; btn.textContent = "Sending…";
+      try { await api("login", { email, website: hub$("in-web").value, vibe: hub$("in-vibe").checked, notify: hub$("in-upd").checked }); mailTo = email; evA("Login mail", hub$("in-vibe").checked ? "vibe" : ""); dialog("code"); }
+      catch (err) { hub$("d-err").textContent = err.message; btn.disabled = false; btn.textContent = "Send me the mail"; }
+    };
+    if (hub$("b-have")) hub$("b-have").onclick = () => dialog("code");
+  } else if (step === "code") {
+    b.innerHTML = `<h3>Check your <b>inbox</b></h3>
+      <p>We sent a mail to <b>${hubEsc(mailTo)}</b>. Click its link, or type its code here (on any device):</p>
+      <form id="f-code"><input class="code" id="in-code" inputmode="numeric" autocomplete="one-time-code" maxlength="7" placeholder="000000" required>
+      <p class="err" id="d-err"></p><div class="row"><button class="go" id="b-code">Sign in</button></div></form>
+      <p class="small">Nothing there after a minute? Look in the spam folder. <button type="button" class="lnk" id="b-again">Another address or a new mail</button></p>`;
+    hub$("f-code").onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = hub$("b-code"); btn.disabled = true;
+      try { const j = await api("code", { email: mailTo, code: hub$("in-code").value }); d.close(); evA("Login code"); await signedIn(j.user); toast("Signed in as " + j.user.email); }
+      catch (err) { hub$("d-err").textContent = err.message; btn.disabled = false; }
+    };
+    hub$("b-again").onclick = () => dialog("email");
+    setTimeout(() => hub$("in-code").focus(), 50);
+  } else if (step === "note") {
+    const old = (me.notes || {})[fw] || "", oldPub = !!(me.pub || {})[fw];
+    b.innerHTML = `<h3>Thanks: <b>${me.ratings[fw]} of 5</b></h3>
+      <p>What do you think of <b>${hubEsc(HUB.name(fw))}</b>? One line, if you like: what you love, what you miss.</p>
+      <form id="f-note"><input type="text" id="in-note" maxlength="200" autocomplete="off" placeholder="One line (optional)" value="${hubEsc(old)}">
+      <label class="vb pub"><input type="checkbox" id="in-pub"${oldPub ? " checked" : ""}> <span>Show my line on its page, for its maker and everyone – without my name or address</span></label>
+      <p class="err" id="d-err"></p><div class="row"><button class="go" id="b-note">Send</button><button type="button" class="lnk" id="b-skip">${old ? "Keep it as it is" : "Skip"}</button></div></form>
+      <p class="small">Without the tick, only the hub reads it. Change it any time by rating again.</p>`;
+    hub$("f-note").onsubmit = async (e) => {
+      e.preventDefault();
+      const note = hub$("in-note").value.trim(), pub = hub$("in-pub").checked, btn = hub$("b-note");
+      if (note === old && pub === oldPub) { d.close(); return; }
+      btn.disabled = true;
+      try { me = (await api("note", { fw, note, pub })).user; d.close(); evA("Note", fw); toast(!note ? "Your line is gone." : pub ? "Thanks – your line is on its page." : "Thanks, the hub has read it."); }
+      catch (err) { hub$("d-err").textContent = err.message; btn.disabled = false; }
+    };
+    hub$("b-skip").onclick = () => d.close();
+  } else if (step === "updates") {
+    b.innerHTML = `<h3>New versions of your <b>favourites</b></h3>
+      <p>Get a mail when a firmware in your favourites has a new version? At most one mail a day, and each one can switch them off.</p>
+      <div class="row"><button class="go" id="b-yes">Yes, mail me</button><button type="button" class="lnk" id="b-no">No, thanks</button></div>
+      <p class="small">We ask only once. You can change it any time in your account.</p>`;
+    let answered = false;
+    hub$("b-yes").onclick = async () => { answered = true; d.close(); await setUpdates(true); toast("You'll get a mail when your favourites update."); };
+    hub$("b-no").onclick = async () => { answered = true; d.close(); await setUpdates(false); };
+    d.addEventListener("close", () => { if (!answered && me && me.notify === null) setUpdates(false); }, { once: true });   // (closed: a no, asked once)
+  } else {
+    b.innerHTML = `<h3>Your <b>account</b></h3>
+      <p>Signed in as <b>${hubEsc(me.email)}</b>.</p>
+      <label class="vb upd"><input type="checkbox" id="in-upd"${me.notify ? " checked" : ""}> <span>${UPD_LINE}</span></label>
+      ${me.vibe ? '<p class="small">On the <a href="/vibe/" target="_blank" rel="noopener">VIBE FM</a> list: each of its mails has an unsubscribe link.</p>' : ""}
+      <p class="small">${me.favs.length} favourite${me.favs.length === 1 ? "" : "s"}, ${Object.keys(me.ratings).length} rating${Object.keys(me.ratings).length === 1 ? "" : "s"} (all devices). On another device, sign in with the same address.</p>
+      <p class="err" id="d-err"></p><div class="row"><button type="button" class="quiet" id="b-out">Sign out</button><button type="button" class="danger" id="b-del">Delete my account</button></div>${privacy}`;
+    hub$("in-upd").onchange = (e) => setUpdates(e.currentTarget.checked);
+    hub$("b-out").onclick = async () => { try { await api("logout", {}); } catch (e) {} me = null; d.close(); paintAll(); HUB.refresh(); toast("Signed out on this device."); };
+    hub$("b-del").onclick = async (e) => {
+      if (e.currentTarget.dataset.sure !== "1") { e.currentTarget.dataset.sure = "1"; e.currentTarget.textContent = "Sure? Click again: all your favourites and ratings go"; return; }
+      try { await api("delete", {}); me = null; d.close(); evA("Delete"); await loadMe(); toast("Your account is deleted."); }
+      catch (err) { hub$("d-err").textContent = err.message; }
+    };
+  }
+  if (!d.open) d.showModal();
+  if (step === "email") setTimeout(() => hub$("in-mail").focus(), 50);
+  if (step === "note") setTimeout(() => hub$("in-note").focus(), 50);
+}
+</script>
+<script>
+(() => {
+  // every wish is put in as text (textContent, attributes by setAttribute): no user text ever goes through innerHTML
+  const $ = (id) => document.getElementById(id);
+  const h = (tag, props = {}, ...kids) => {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(props)) {
+      if (k === "class") el.className = v; else if (k === "text") el.textContent = v; else if (k.startsWith("on")) el[k] = v;
+      else if (v !== false && v != null) el.setAttribute(k, v === true ? "" : String(v));
+    }
+    el.append(...kids.filter((x) => x != null && x !== false));
+    return el;
+  };
+  const ev = (a, n) => { try { (window._paq = window._paq || []).push(["trackEvent", "Wish", a, n || ""]); } catch (e) {} };
+  const SHOW = 30;                                     // (the first 30, then "Show all")
+  let open = [], done = [], hidden = [], admin = false, banned = false, all = false, names = {}, signed = false, after = null;
+  // (the admin's keys: only when the server says admin; it checks again on every press, 403 for anybody else)
+  const author = (w) => admin && "author" in w ? h("span", { class: "author", title: "Who wrote it: only the admin sees this", text: "✉ " + (w.author || "no account") }) : null;
+  const trash = (w) => admin ? h("button", { type: "button", class: "adm", "data-id": w.id, "aria-label": "Delete this wish for good", title: "Delete (admin)", text: "🗑 Delete" }) : null;
+  const take = (j) => { banned = !!j.banned; open = j.wishes; done = j.done; admin = !!j.admin; hidden = j.hidden || []; };
+
+  async function call(path, data) {
+    const r = await fetch("/api/" + path, data === undefined ? { cache: "no-store", credentials: "same-origin" }
+      : { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Hub": "1" }, body: JSON.stringify(data) });
+    let j = {};
+    try { j = await r.json(); } catch (e) {}
+    if (!r.ok || !j.ok) { const err = new Error(j.error || `The hub's server did not answer (${r.status}).`); err.id = j.id; err.status = r.status; throw err; }
+    return j;
+  }
+  // (signed out, or the session gone: the hub's sign-in; what was asked for happens after it)
+  const signIn = (why, then) => { after = then || null; dialog("email", why); };
+  const need = (why, then) => { if (signed && me) return true; signIn(why, then); return false; };
+
+  const ago = (t) => {
+    const d = Math.floor((Date.now() / 1000 - t) / 86400);
+    return d < 1 ? "today" : d < 2 ? "yesterday" : d < 14 ? `${d} days ago` : d < 60 ? `${Math.floor(d / 7)} weeks ago`
+      : new Date(t * 1000).toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+  };
+  const cls = (dev) => dev === "FM-1" ? "fm1" : dev === "SMK-37" ? "smk" : "";
+  const tag = (dev) => h("span", { class: "tag " + cls(dev), text: dev || "any device" });
+  const thumb = (w) => h("button", { type: "button", class: "up", "data-id": w.id, "aria-pressed": String(!!w.v),
+    "aria-label": `${w.v ? "Take back your 👍" : "👍 this wish"} (${w.n})`, title: w.v ? "Your 👍: click to take it back" : "I want this too" },
+    h("span", { class: "th", "aria-hidden": "true", text: "👍" }), h("b", { text: String(w.n) }));
+
+  function row(w) {
+    const meta = h("span", { class: "meta" }, tag(w.dev), h("span", { text: ago(w.at) }),
+      w.own ? h("button", { type: "button", class: "del", "data-id": w.id, text: "Take back" }) : null, author(w), trash(w));
+    return h("li", { class: "w " + cls(w.dev), id: "w-" + w.id }, thumb(w), h("div", {}, h("p", { class: "tx", text: w.t }), meta),
+      h("button", { type: "button", class: "rep", "data-id": w.id, disabled: !!w.rep, title: w.rep ? "Reported, thanks" : "Report: spam or not friendly",
+        "aria-label": w.rep ? "Reported" : "Report this wish", text: "⚑" }));
+  }
+  function draw() {
+    const shown = all ? open : open.slice(0, SHOW);
+    $("ocnt").textContent = open.length ? String(open.length) : "";
+    $("list").replaceChildren(...(shown.length ? shown.map(row)
+      : [h("li", { class: "empty", text: "No wishes yet. Be the first: what should the FM-1 learn next?" })]));
+    $("more").hidden = all || open.length <= SHOW;
+    $("donesec").hidden = !done.length;
+    $("done").replaceChildren(...done.map((w) => {
+      const smk = w.fw.startsWith("smk37:"), id = smk ? w.fw.slice(6) : w.fw;
+      return h("li", { class: "w", id: "w-" + w.id }, h("span", { class: "ck", "aria-hidden": "true", text: "✓" }),
+        h("div", {}, h("p", { class: "tx", text: w.t }), h("span", { class: "meta" }, tag(w.dev),
+          w.fw === "-" ? h("span", {}, `${w.n} 👍 · came true`)   // ("-": done, in no firmware: the hub itself, a device page)
+            : h("span", {}, `${w.n} 👍 · came true in `, h("a", { class: "fw", href: (smk ? "/smk37/#fw-" : "/#fw-") + encodeURIComponent(id), text: names[w.fw] || id })), author(w), trash(w))));
+    }));
+    $("hidsec").hidden = !admin || !hidden.length;
+    $("hidlist").replaceChildren(...(admin ? hidden : []).map((w) => h("li", { class: "w " + cls(w.dev), id: "w-" + w.id },
+      h("span", { class: "ck", "aria-hidden": "true", text: "⚑" }), h("div", {}, h("p", { class: "tx", text: w.t }), h("span", { class: "meta" }, tag(w.dev),
+        h("span", { class: "nrep", text: `hidden: ${w.nrep} report${w.nrep === 1 ? "" : "s"}` }), h("span", { text: `${w.n} 👍 · ${ago(w.at)}` }),
+        h("button", { type: "button", class: "adm rest", "data-id": w.id, text: "Restore" }), author(w), trash(w))))));
+  }
+  function box() {
+    $("gate").hidden = signed; $("ask").hidden = !signed || banned; $("bannote").hidden = !banned;
+    $("who").replaceChildren(...(signed && me ? ["You are signed in · ",
+      h("button", { type: "button", class: "lnk", text: "Account", onclick: () => dialog("account") })] : []));
+  }
+  async function load() {
+    try {
+      const j = await call("wishes"); take(j); signed = j.signedin; draw(); box();
+      if (j.locked) {                                 // (signed out: the list stays closed, only how many there are)
+        $("ocnt").textContent = j.count ? String(j.count) : "";
+        $("list").replaceChildren(h("li", { class: "empty" }, h("button", { type: "button", class: "lnk", text: j.count ? `Sign in to see the ${j.count} wishes` : "Sign in to see the wishes",
+          onclick: () => signIn("Sign in to see the wish list, wish and vote. One account for the whole hub, no password.") }), " · one hub account, no password."));
+      }
+    }
+    catch (e) { $("list").replaceChildren(h("li", { class: "empty", text: "The wish list could not be loaded: " + e.message })); }
+  }
+  // (hubaccount.js after a sign-in or a sign-out: the list again with what is mine, then what was asked for before it)
+  window.wishAuth = async () => {
+    if (!!me === signed) { box(); return; }           // (loadMe at the start: the list knew already, only the box)
+    const was = signed;
+    await load();
+    if (!was && signed) { const f = after; after = null; if (f) f(); else $("wt").focus(); }
+  };
+  function flash(id) {
+    const el = $("w-" + id);
+    if (!el) return;
+    if (open.findIndex((w) => w.id === id) >= SHOW && !all) { all = true; draw(); return flash(id); }
+    el.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
+  }
+  const lost = (e, why, then) => { if (e.status === 401) { signed = false; box(); signIn(why, then); } else toast(e.message); };
+
+  // 👍: at once on the page, the server's count follows; the order stays until the next visit (no jumping under the finger)
+  async function vote(id, fromList) {
+    const w = open.find((x) => x.id === id);
+    if (!w || !need("Sign in to give it a 👍: one per account, no password.", () => { const x = open.find((y) => y.id === id); if (x && !x.v) vote(id, fromList); })) return;
+    const on = !w.v;
+    w.v = on; w.n += on ? 1 : -1; draw(); sims();
+    if (on) document.querySelector(`#w-${id} .up`)?.classList.add("pop");
+    try { const j = await call("wishes/vote", { id, on }); Object.assign(w, { n: j.n, v: j.v, own: j.own }); ev(on ? "Vote" : "Unvote"); }
+    catch (e) { w.v = !on; w.n += on ? -1 : 1; lost(e, "Sign in to give it a 👍."); }
+    draw(); sims();
+    if (fromList) document.querySelector(`#w-${id} .up`)?.focus({ preventScroll: true });
+  }
+  // ⚑: once more to be sure, then counted (one per account); three from different members hide it until the hub looks
+  const asking = new Map();
+  async function report(btn) {
+    const id = btn.dataset.id;
+    if (!need("Sign in to report a wish: one report per account.")) return;
+    if (!asking.has(id)) {
+      btn.classList.add("ask2"); btn.textContent = "⚑ Report?"; btn.setAttribute("aria-label", "Sure? Press again to report this wish");
+      asking.set(id, setTimeout(() => { asking.delete(id); draw(); }, 4000));
+      return;
+    }
+    clearTimeout(asking.get(id)); asking.delete(id);
+    try {
+      const j = await call("wishes/report", { id });
+      ev("Report");
+      const w = open.find((x) => x.id === id); if (w) w.rep = true;
+      if (j.hidden) { open = open.filter((x) => x.id !== id); toast("Thanks. It is hidden until the hub has a look."); }
+      else toast("Thanks for telling us. The hub will have a look.");
+    } catch (e) { lost(e, "Sign in to report a wish."); }
+    draw();
+  }
+  // taking one's own wish back (its first day, or while nobody else gave it a 👍): once more to be sure
+  async function takeBack(btn) {
+    if (btn.dataset.sure !== "1") { btn.dataset.sure = "1"; btn.textContent = "Sure? Click again"; setTimeout(draw, 4000); return; }
+    try { const j = await call("wishes/delete", { id: btn.dataset.id }); take(j); ev("Delete"); toast("Your wish is taken back."); }
+    catch (e) { lost(e, "Sign in to take your wish back."); }
+    draw();
+  }
+  // the admin: delete any wish (once more to be sure), restore a hidden one
+  async function adm(btn) {
+    const rest = btn.classList.contains("rest");
+    if (!rest && btn.dataset.sure !== "1") { btn.dataset.sure = "1"; btn.classList.add("sure"); btn.textContent = "🗑 Sure? Click again"; setTimeout(draw, 4000); return; }
+    try { take(await call(rest ? "wishes/restore" : "wishes/remove", { id: btn.dataset.id })); toast(rest ? "Restored: it is on the list again." : "Deleted."); }
+    catch (e) { lost(e, "Sign in as the hub."); }
+    draw();
+  }
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest(".w .adm");
+    if (a) return adm(a);
+    const up = e.target.closest(".up, .sim button[data-id]"), rep = e.target.closest(".rep"), del = e.target.closest(".w .del");
+    if (up) vote(up.dataset.id, up.classList.contains("up"));
+    else if (rep && !rep.disabled) report(rep);
+    else if (del) takeBack(del);
+  });
+  $("more").querySelector("button").onclick = () => { all = true; draw(); };
+  $("gatebtn").onclick = () => signIn("Sign in to see the wish list, wish and vote. One account for the whole hub, no password.");
+
+  // while typing: wishes already there with words in common ("Already wished: … give it a 👍")
+  const STOP = new Set("the and for with like more can should would could please want from that this into have make need also some any all its new fm1 smk smk37 firmware support add".split(" "));
+  const words = (s) => new Set(s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").split(/[^a-z0-9]+/)
+    .filter((x) => (x.length >= 3 || /\d/.test(x)) && !STOP.has(x)));
+  function sims() {
+    const t = $("wt").value.trim(), mine = words(t);
+    if (t.length < 4 || !mine.size) { $("sim").replaceChildren(); return; }
+    const hits = open.map((w) => {
+      const ws = words(w.t), common = [...mine].filter((x) => ws.has(x) || [...ws].some((y) => x.length >= 4 && y.length >= 4 && (y.startsWith(x) || x.startsWith(y))));
+      return { w, s: common.length ? common.length / Math.min(mine.size, ws.size || 1) : 0, c: common.length };
+    }).filter((x) => x.c && x.s >= .5).sort((a, b) => b.s - a.s || b.w.n - a.w.n).slice(0, 3);
+    $("sim").replaceChildren(...(hits.length ? [h("p", { text: "Already wished? Give it a 👍 instead:" }), h("ul", {}, ...hits.map(({ w }) =>
+      h("li", {}, h("q", { text: w.t }), h("button", { type: "button", "data-id": w.id, "aria-pressed": String(!!w.v), "aria-label": "👍 " + w.t, text: "👍 " + w.n }))))] : []));
+  }
+  const cnt = () => { const n = $("wt").value.length; $("wcnt").textContent = `${n}/100`; $("wcnt").classList.toggle("hi", n > 90); };
+  let simT = 0;
+  $("wt").addEventListener("input", () => { cnt(); $("wmsg").textContent = ""; clearTimeout(simT); simT = setTimeout(sims, 150); });
+
+  $("ask").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const t = $("wt").value.trim().replace(/\s+/g, " "), msg = $("wmsg");
+    msg.className = "msg";
+    if (t.length < 8) { msg.textContent = "A few more words, please (at least 8 characters)."; $("wt").focus(); return; }
+    if (!need("Sign in to make your wish: one account for the whole hub, no password.")) return;
+    $("wgo").disabled = true;
+    try {
+      const j = await call("wishes/add", { t, dev: document.querySelector('input[name="dev"]:checked').value });
+      take(j); draw();
+      $("wt").value = ""; cnt(); $("sim").replaceChildren();
+      msg.className = "msg good"; msg.textContent = "Wished! Your 👍 is on it. Tell your friends to thumb it up.";
+      ev("Post");
+      if (j.id) flash(j.id);
+    } catch (err) {
+      if (err.status === 401) lost(err, "Sign in to make your wish.");
+      else { msg.textContent = err.message; if (err.id) flash(err.id); }
+    }
+    $("wgo").disabled = false;
+  });
+
+  // the firmwares' names for the done ones (the hub's own catalogue)
+  fetch("/catalog.json?" + new Date().toISOString().slice(0, 10)).then((r) => r.json()).then((c) => {
+    (c.firmwares || []).forEach((f) => { names[f.id] = f.name; });
+    if (done.length) draw();
+  }).catch(() => {});
+  load().then(() => loadMe());                         // (the list first; then the account: its email for the box)
+})();
+</script>
+<script>
+// web/hubapp.js: the hub as an app, on every device page (make_fm1 puts it in at /*APP*/; the manifest, icons: fm1/app/,
+// the worker: fm1/sw.js). Android / Chrome / Edge: "Install" (the browser's own prompt); iPhone / iPad: "Add to Home Screen"
+// by hand, and why installing a firmware does not work there (no Web MIDI in any iOS browser).
+(() => {
+  if (window.top !== window) return;                    // (a page inside the hub's pop-up, e.g. a cheat sheet: no bar, no worker)
+  const ua = navigator.userAgent;
+  const ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);   // (an iPad says "Mac")
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const touch = matchMedia("(pointer: coarse)").matches;
+  const wanted = !standalone && new URLSearchParams(location.search).has("app");   // (the QR code's /?app=1)
+  window.hubApp = {
+    ios, standalone,
+    // (what the Install / Connect buttons say without Web MIDI: on iOS no other browser helps)
+    noMidi: ios ? "Installing doesn't work on iPhone or iPad yet: no browser there has Web MIDI. Use Chrome or Edge on a computer, or Chrome on Android."
+                : "This browser has no Web MIDI: use Chrome or Edge.",
+  };
+
+  // the worker: always the newest page, a copy only offline; asked for a new version each time the app comes back
+  let reg = null;
+  if ("serviceWorker" in navigator && isSecureContext)
+    navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).then((r) => { reg = r; }).catch(() => {});
+
+  // Shop in the menu, for everybody: Firmwear (the hub's community shirt on Fourthwall – Sven 12.11.: for all), and by the
+  // country Cloudflare sees (/api/cc, nothing kept) Amazon affiliate links for DE / AT (amazon.de) and the US (amazon.com)
+  const EU = "AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE".split(" ");
+  fetch("/api/cc", { cache: "no-store" }).then((r) => r.json()).then((j) => {
+    const cc = j.cc === "DE" || j.cc === "AT" ? "de" : EU.includes(j.cc) ? "eu" : j.cc === "US" ? "us" : "ww", el = document.getElementById("shopdd");
+    if (el) { el.dataset.cc = cc; el.removeAttribute("hidden"); }
+  }).catch(() => { const el = document.getElementById("shopdd"); if (el) { el.dataset.cc = "ww"; el.removeAttribute("hidden"); } });
+  // (a click in the shop: a Matomo event "Shop" / the device / the store, beside the outlink Matomo counts anyway)
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest?.("#shopm a[data-shop]");
+    if (a) { const [dev, store] = a.dataset.shop.split("|"); try { (window._paq = window._paq || []).push(["trackEvent", "Shop", dev, store]); } catch {} }
+  });
+
+  // the app left in the background for a while (a phone keeps it for days): the page anew when it comes back,
+  // never while an install writes (fm1.html's `writing`) or a dialog is open
+  let away = 0;
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { away = Date.now(); return; }
+    reg?.update().catch(() => {});
+    const busy = (typeof writing !== "undefined" && writing) || document.querySelector("dialog[open]");
+    if (standalone && away && Date.now() - away > 30 * 60e3 && !busy) location.reload();
+  });
+
+  // the bar at the bottom: on a phone, once (closed: 60 days quiet); "App" in the Devices menu shows it any time
+  const KEY = "fm1hub.appbar";
+  let prompt = null, bar = null;
+  const quiet = () => { try { return Date.now() < +(localStorage.getItem(KEY) || 0); } catch { return false; } };
+  const hush = () => { try { localStorage.setItem(KEY, String(Date.now() + 60 * 864e5)); } catch {} };
+  // the panel: iPhone / iPad the how-to (no prompt there), a phone the browser's Install, a computer the code to scan
+  // with the phone (and Install for this computer where the browser offers it)
+  function show() {
+    if (standalone) return;
+    bar?.remove();
+    bar = document.createElement("div");
+    bar.className = "appbar";
+    bar.setAttribute("role", "dialog");
+    bar.setAttribute("aria-label", "The Firmware Hub as an app");
+    const icon = '<img src="/app/icon-192.png" alt="" width="44" height="44">';
+    const go = prompt ? '<button class="go" type="button">Install</button>' : "";
+    if (ios) {                                           // (only who came by the QR code: no app offered on iOS, Sven 17.10.)
+      bar.innerHTML = `${icon}<div class="t"><b>The app is for Android</b>
+        <span>On iPhone and iPad just use the hub here in the browser: browse, rate, keep favourites.</span>
+        <small>Installing a firmware needs Web MIDI, which no iPhone browser has yet: use Chrome on Android, or Chrome or Edge on a computer.</small></div>`;
+    } else if (touch) {
+      bar.innerHTML = `${icon}<div class="t"><b>The Firmware Hub as an app</b>` + (prompt
+        ? "<span>On your home screen, always the newest firmwares.</span></div>" + go
+        : "<span>In Chrome: the menu <b>⋮</b>, then <b>Install app</b> or <b>Add to Home screen</b>.</span></div>");
+    } else {
+      bar.classList.add("wide");
+      bar.innerHTML = `<img class="qr" src="/app/qr.svg" alt="QR code: thefirmwarehub.com" width="132" height="132"><div class="t">
+        <b>The Firmware Hub on your Android phone</b>
+        <span>Scan the code with your phone’s camera. The hub opens, then:</span>
+        <span>On <b>Android</b>, tap <b>Install</b> in the bar at the bottom (or <b>📱 App</b>).</span>
+        <small>Always the newest firmwares, your favourites and stars on every device. Installing a firmware from the phone: Android with Chrome and a USB-C cable. The app is for Android only: iPhones have no Web MIDI yet.</small>
+        ${prompt ? '<span class="pc">Or as an app on this computer: <button class="go" type="button">Install</button></span>' : ""}</div>`;
+    }
+    bar.querySelector(".go")?.addEventListener("click", async () => {
+      const p = prompt; prompt = null;
+      p.prompt();
+      const { outcome } = await p.userChoice.catch(() => ({}));
+      if (outcome === "accepted") bar.remove(); else hush();
+    });
+    const x = document.createElement("button");
+    x.className = "x"; x.type = "button"; x.setAttribute("aria-label", "Close"); x.textContent = "×";
+    x.onclick = () => { hush(); bar.remove(); };
+    bar.append(x);
+    document.body.append(bar);
+  }
+  addEventListener("beforeinstallprompt", (e) => {      // (Chrome / Edge: installable; their own mini bar replaced by ours)
+    e.preventDefault(); if (ios) return;                // (never an app offer on iOS, whatever the browser says)
+    prompt = e;
+    // (a phone: the bar with Install; one already open without it (the QR code's how-to) gets it now)
+    if (touch && (bar?.isConnected ? !bar.querySelector(".go") : !quiet())) show();
+  });
+  addEventListener("appinstalled", () => { bar?.remove(); prompt = null; });
+  addEventListener("DOMContentLoaded", () => {
+    // the deck keys' names (web/deck.css): one tooltip on the page, placed by the key, so no card clips it
+    const tip = Object.assign(document.createElement("div"), { className: "decktip" }); tip.setAttribute("aria-hidden", "true");
+    document.body.append(tip);
+    const showTip = (k) => {
+      tip.textContent = k.dataset.tip; tip.classList.add("on");
+      const r = k.getBoundingClientRect(), h = tip.offsetHeight, w = tip.offsetWidth;
+      // (its middle over the key, kept inside the window: a key near the edge – the hero row's Web Player – pushed it out, 7.11.)
+      tip.style.left = Math.min(Math.max(r.left + r.width / 2, w / 2 + 8), innerWidth - w / 2 - 8) + "px";
+      tip.style.top = (r.top - h - 8 >= 4 ? r.top - h - 8 : r.bottom + 8) + "px";
+    };
+    const hideTip = () => tip.classList.remove("on");
+    document.addEventListener("pointerover", (e) => { const k = e.target.closest?.(".deck .key[data-tip], .bar .btn[data-tip]"); k ? showTip(k) : hideTip(); });
+    document.addEventListener("focusin", (e) => { const k = e.target.closest?.(".deck .key[data-tip], .bar .btn[data-tip]"); if (k) showTip(k); });
+    document.addEventListener("focusout", hideTip);
+    addEventListener("scroll", hideTip, { passive: true });
+    // the kinds' row on a desktop (one line, see .chips in the page's style): the fade at its edge only while chips are hidden
+    const chips = document.getElementById("chips");
+    if (chips) {
+      const fit = () => chips.classList.toggle("fits", chips.scrollLeft + chips.clientWidth >= chips.scrollWidth - 2);
+      new ResizeObserver(fit).observe(chips);
+      new MutationObserver(fit).observe(chips, { childList: true, subtree: true });
+      chips.addEventListener("scroll", fit, { passive: true });
+    }
+    // visible: "App" in the Devices menu; gone inside the app
+    // (no "App" button beside the page's buttons any more – Sven 25.10.: the Devices menu keeps its link)
+    document.querySelectorAll("#getapp, .getapp").forEach((a) => {
+      if (standalone || ios) return a.remove();          // (inside the app, and on iOS: nothing to install there)
+      a.onclick = (e) => {                               // (on a phone the browser's prompt right away where there is one)
+        e.preventDefault(); document.getElementById("dd")?.classList.remove("open");
+        show(); if (touch) bar?.querySelector(".go")?.click();
+      };
+    });
+    if (location.hash === "#app" || wanted) show();      // (the menu's link from VIBE's page; the QR code: came for the app)
+  });
+})();
+</script>
+
+<!-- Matomo (self-hosted, matomo.designburgapps.com): one site per host (dx7 1, zp12 3, fm1 4, designburgapps.com 5);
+     no cookies, IPs anonymised on the server, Do Not Track respected -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  var _mtmSite = {"zp12.designburgapps.com": "3", "thefirmwarehub.com": "4", "fm1.designburgapps.com": "4", "designburgapps.com": "5",
+                  "www.designburgapps.com": "5"}[location.hostname] || "1";
+  _paq.push(['setDomains', [location.hostname]]);
+  _paq.push(['disableCookies']);
+  _paq.push(['setDoNotTrack', true]);
+  _paq.push(['enableHeartBeatTimer']);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://matomo.designburgapps.com/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', _mtmSite]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"32ff7eee27e340838df2ea2305958c1a","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+tensor-programming/fm1-t1 main web/emu/build.sh
+gaumondp/patricktronics init web/emu/build.sh
+tamabotmusic/TamaMPE feature/web-emulator web/emulator/build.sh
+TristanoSuriani/fel-tracker blue-hare web/emu/build.sh
+briwil/Felucca cesari web/emu/build.sh
+synthi/fm1-1971 fw-1971 web/sim/build.sh
+JB-Interactive/Felucca-Meow main web/emu/build.sh
+mykeln/fm1-rift main firmware/platforms/web/build.sh
+y6zkcqnf5r-hue/fm1-trawler main Makefile
+cmlarsen/fm1-rocket-os integration web/emu/build.sh
+Kiwi3p/fm1-deal-or-no-deal main web/emu/build.sh

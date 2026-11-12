@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/aroum/fm1-custom-fw",
- "generated": "2026-11-12 14:30",
+ "generated": "2026-11-12 15:10",
  "firmwares": [
   {
    "name": "FM-1 original firmware",
@@ -102,8 +102,8 @@
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-x0x/gh-pages/emu/x0x.wasm",
    "abi": "web",
    "size": 545853,
-   "pkg": "https://thefirmwarehub.com/fw/x0x-1.2.0.fwsc",
-   "pkgVersion": "1.2.0",
+   "pkg": "https://thefirmwarehub.com/fw/x0x-1.2.2.fwsc",
+   "pkgVersion": "1.2.2",
    "license": "GPL-3.0"
   },
   {
@@ -215,7 +215,7 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/rainbow-1.1.5-rb+68325a60.fwsc",
+   "pkg": "https://thefirmwarehub.com/fw/rainbow-1.1.5-rb+22156c96.fwsc",
    "pkgVersion": "1.1.5-rb",
    "license": "GPL-3.0"
   },
@@ -250,8 +250,8 @@
    "abi": "web",
    "size": 942328,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://thefirmwarehub.com/fw/duell-1.1.fwsc",
-   "pkgVersion": "1.1",
+   "pkg": "https://thefirmwarehub.com/fw/duell-1.2.fwsc",
+   "pkgVersion": "1.2",
    "license": "GPL-3.0"
   },
   {
@@ -285,8 +285,8 @@
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-polly/gh-pages/emu/app.wasm",
    "abi": "web",
    "size": 772247,
-   "pkg": "https://thefirmwarehub.com/fw/polly-0.6.fwsc",
-   "pkgVersion": "0.6",
+   "pkg": "https://thefirmwarehub.com/fw/polly-0.6.3.fwsc",
+   "pkgVersion": "0.6.3",
    "license": "GPL-3.0"
   },
   {
@@ -352,8 +352,8 @@
    "url": "https://raw.githubusercontent.com/illuminus5/skiff/gh-pages/try/felucca.wasm",
    "abi": "web",
    "size": 1083178,
-   "pkg": "https://thefirmwarehub.com/fw/skiff-2.2.fwsc",
-   "pkgVersion": "2.2",
+   "pkg": "https://thefirmwarehub.com/fw/skiff-2.5.1.fwsc",
+   "pkgVersion": "2.5.1",
    "license": "GPL-3.0"
   },
   {
@@ -369,8 +369,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/felucca8-1.6.1_and_sequences_2.fwsc",
-   "pkgVersion": "1.6.1_and_sequences_2",
+   "pkg": "https://thefirmwarehub.com/fw/felucca8-1.8.3.fwsc",
+   "pkgVersion": "1.8.3",
    "license": "GPL-3.0"
   },
   {
@@ -401,8 +401,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/caravel-0.11.0.fwsc",
-   "pkgVersion": "0.11.0",
+   "pkg": "https://thefirmwarehub.com/fw/caravel-0.12.0.fwsc",
+   "pkgVersion": "0.12.0",
    "license": "GPL-3.0"
   },
   {
@@ -453,8 +453,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/tuna-1.2-3f1567b.fwsc",
-   "pkgVersion": "1.2-3f1567b",
+   "pkg": "https://thefirmwarehub.com/fw/tuna-1.2-6f9a6dd.fwsc",
+   "pkgVersion": "1.2-6f9a6dd",
    "license": "GPL-3.0"
   },
   {
@@ -521,8 +521,8 @@
    "url": "https://raw.githubusercontent.com/Rastapopolix/tessera/main/docs/classic/webapp/sim/melodee.wasm",
    "abi": "web",
    "size": 1050713,
-   "pkg": "https://thefirmwarehub.com/fw/tessera-3.2.2.fwsc",
-   "pkgVersion": "3.2.2",
+   "pkg": "https://thefirmwarehub.com/fw/tessera-3.5.fwsc",
+   "pkgVersion": "3.5",
    "license": "GPL-3.0"
   },
   {
@@ -601,8 +601,8 @@
    "url": "https://raw.githubusercontent.com/ruppert/fmini-1/main/docs/emu/felucca.wasm",
    "abi": "web",
    "size": 805287,
-   "pkg": "https://thefirmwarehub.com/fw/fmini-2.2.0.fwsc",
-   "pkgVersion": "2.2.0",
+   "pkg": "https://thefirmwarehub.com/fw/fmini-2.5.12.fwsc",
+   "pkgVersion": "2.5.12",
    "license": "GPL-3.0"
   },
   {
@@ -714,8 +714,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/estampie-0.3.7.fwsc",
-   "pkgVersion": "0.3.7",
+   "pkg": "https://thefirmwarehub.com/fw/estampie-0.3.8.fwsc",
+   "pkgVersion": "0.3.8",
    "license": "GPL-3.0"
   },
   {
@@ -1160,8 +1160,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/bb1-2.1.1.fwsc",
-   "pkgVersion": "2.1.1",
+   "pkg": "https://thefirmwarehub.com/fw/bb1-2.2+2bbe009c.fwsc",
+   "pkgVersion": "2.2",
    "license": "GPL-3.0"
   },
   {
@@ -1193,8 +1193,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/veffbox-0.3.2.fwsc",
-   "pkgVersion": "0.3.2",
+   "pkg": "https://thefirmwarehub.com/fw/veffbox-0.9.0.fwsc",
+   "pkgVersion": "0.9.0",
    "license": "GPL-3.0"
   },
   {
@@ -1338,8 +1338,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/jiant-V10.6c.fwsc",
-   "pkgVersion": "V10.6c",
+   "pkg": "https://thefirmwarehub.com/fw/jiant-V10.7.17.fwsc",
+   "pkgVersion": "V10.7.17",
    "license": "GPL-3.0"
   },
   {
@@ -1599,8 +1599,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/ravel-1.17.1.fwsc",
-   "pkgVersion": "1.17.1",
+   "pkg": "https://thefirmwarehub.com/fw/ravel-1.37.0.fwsc",
+   "pkgVersion": "1.37.0",
    "license": "GPL-3.0"
   },
   {
@@ -1772,8 +1772,8 @@
    "url": "https://raw.githubusercontent.com/eatyourgreensstudio-dotcom/karma-fm1/main/docs/emu/sloop.wasm",
    "abi": "web",
    "size": 777307,
-   "pkg": "https://thefirmwarehub.com/fw/karma-3.0.3.fwsc",
-   "pkgVersion": "3.0.3",
+   "pkg": "https://thefirmwarehub.com/fw/karma-3.1.1.fwsc",
+   "pkgVersion": "3.1.1",
    "license": "GPL-3.0"
   },
   {
@@ -1803,8 +1803,8 @@
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-fomni/gh-pages/emu/omni.wasm",
    "abi": "web",
    "size": 132572,
-   "pkg": "https://thefirmwarehub.com/fw/fomni-0.4.fwsc",
-   "pkgVersion": "0.4",
+   "pkg": "https://thefirmwarehub.com/fw/fomni-0.4.1.fwsc",
+   "pkgVersion": "0.4.1",
    "license": "GPL-3.0"
   },
   {
@@ -1837,8 +1837,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/coralflower-0.6.1.fwsc",
-   "pkgVersion": "0.6.1",
+   "pkg": "https://thefirmwarehub.com/fw/coralflower-0.7.1.fwsc",
+   "pkgVersion": "0.7.1",
    "license": "GPL-3.0"
   },
   {
@@ -1948,8 +1948,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/fimba-0.6.1.fwsc",
-   "pkgVersion": "0.6.1",
+   "pkg": "https://thefirmwarehub.com/fw/fimba-0.7.0.fwsc",
+   "pkgVersion": "0.7.0",
    "license": "GPL-3.0"
   },
   {
@@ -1979,8 +1979,8 @@
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-amb/gh-pages/emu/app.wasm",
    "abi": "web",
    "size": 118552,
-   "pkg": "https://thefirmwarehub.com/fw/amb-1.3.fwsc",
-   "pkgVersion": "1.3",
+   "pkg": "https://thefirmwarehub.com/fw/amb-1.3.2.fwsc",
+   "pkgVersion": "1.3.2",
    "license": "MPL-2.0"
   },
   {
@@ -1996,8 +1996,8 @@
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-ctl/gh-pages/emu/app.wasm",
    "abi": "web",
    "size": 377876,
-   "pkg": "https://thefirmwarehub.com/fw/ctl-1.0.fwsc",
-   "pkgVersion": "1.0",
+   "pkg": "https://thefirmwarehub.com/fw/ctl-1.0.3.fwsc",
+   "pkgVersion": "1.0.3",
    "license": "MPL-2.0"
   },
   {
@@ -2014,8 +2014,8 @@
    "abi": "web",
    "size": 363979,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://thefirmwarehub.com/fw/purplemonkey-0.11.fwsc",
-   "pkgVersion": "0.11",
+   "pkg": "https://thefirmwarehub.com/fw/purplemonkey-0.12.fwsc",
+   "pkgVersion": "0.12",
    "license": "GPL-3.0"
   },
   {
@@ -2059,8 +2059,8 @@
    "url": "https://raw.githubusercontent.com/patttf/fm-106/main/emu/fm106.wasm",
    "abi": "web",
    "size": 203719,
-   "pkg": "https://thefirmwarehub.com/fw/fm106-beta7+52ddf015.fwsc",
-   "pkgVersion": "beta7",
+   "pkg": "https://thefirmwarehub.com/fw/fm106-1.0.fwsc",
+   "pkgVersion": "1.0",
    "license": "GPL-3.0"
   },
   {
@@ -2124,8 +2124,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/obervave-3.3.2.fwsc",
-   "pkgVersion": "3.3.2",
+   "pkg": "https://thefirmwarehub.com/fw/obervave-3.5.fwsc",
+   "pkgVersion": "3.5",
    "license": "GPL-3.0"
   },
   {
@@ -2141,8 +2141,8 @@
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-monk/gh-pages/emu/monk.wasm",
    "abi": "web",
    "size": 260682,
-   "pkg": "https://thefirmwarehub.com/fw/monk-0.9.1.fwsc",
-   "pkgVersion": "0.9.1",
+   "pkg": "https://thefirmwarehub.com/fw/monk-0.10.fwsc",
+   "pkgVersion": "0.10",
    "license": "GPL-3.0"
   },
   {
@@ -2206,8 +2206,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/frodhes-0.9.8.fwsc",
-   "pkgVersion": "0.9.8",
+   "pkg": "https://thefirmwarehub.com/fw/frodhes-0.9.11.fwsc",
+   "pkgVersion": "0.9.11",
    "license": "GPL-3.0"
   },
   {
@@ -2241,8 +2241,8 @@
    "url": "https://raw.githubusercontent.com/RustyPawz/fm1-HYP1/gh-pages/emu/amb.wasm",
    "abi": "web",
    "size": 88402,
-   "pkg": "https://thefirmwarehub.com/fw/hyp1-1.5.54.fwsc",
-   "pkgVersion": "1.5.54",
+   "pkg": "https://thefirmwarehub.com/fw/hyp1-1.5.62.fwsc",
+   "pkgVersion": "1.5.62",
    "license": "GPL-3.0"
   },
   {
@@ -2258,8 +2258,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/tonitor-2026.11.03+5de7538d.fwsc",
-   "pkgVersion": "2026.11.03",
+   "pkg": "https://thefirmwarehub.com/fw/tonitor-2026.11.10.fwsc",
+   "pkgVersion": "2026.11.10",
    "license": "GPL-3.0"
   },
   {
@@ -2275,8 +2275,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/beetle-1.8.2.fwsc",
-   "pkgVersion": "1.8.2",
+   "pkg": "https://thefirmwarehub.com/fw/beetle-1.8.3.fwsc",
+   "pkgVersion": "1.8.3",
    "license": "GPL-3.0"
   },
   {
@@ -2293,8 +2293,8 @@
    "abi": "web",
    "size": 631166,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://thefirmwarehub.com/fw/fomajam-0.1.9.fwsc",
-   "pkgVersion": "0.1.9",
+   "pkg": "https://thefirmwarehub.com/fw/fomajam-0.1.12.fwsc",
+   "pkgVersion": "0.1.12",
    "license": "GPL-3.0"
   },
   {
@@ -2396,8 +2396,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/sidou-1.7.0.fwsc",
-   "pkgVersion": "1.7.0",
+   "pkg": "https://thefirmwarehub.com/fw/sidou-1.9.0.fwsc",
+   "pkgVersion": "1.9.0",
    "license": "GPL-3.0"
   },
   {
@@ -2570,8 +2570,8 @@
    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-loom/gh-pages/emu/app.wasm",
    "abi": "web",
    "size": 1116987,
-   "pkg": "https://thefirmwarehub.com/fw/loom-0.12.1.fwsc",
-   "pkgVersion": "0.12.1",
+   "pkg": "https://thefirmwarehub.com/fw/loom-0.15.fwsc",
+   "pkgVersion": "0.15",
    "license": "MPL-2.0"
   },
   {
@@ -2632,8 +2632,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/shineon-3.0.1.fwsc",
-   "pkgVersion": "3.0.1",
+   "pkg": "https://thefirmwarehub.com/fw/shineon-3.5.fwsc",
+   "pkgVersion": "3.5",
    "license": "GPL-3.0"
   },
   {
@@ -2683,8 +2683,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/mutable-1.4.fwsc",
-   "pkgVersion": "1.4",
+   "pkg": "https://thefirmwarehub.com/fw/mutable-2.0.fwsc",
+   "pkgVersion": "2.0",
    "license": "GPL-3.0"
   },
   {
@@ -2732,8 +2732,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/bytemania-1.2.0.fwsc",
-   "pkgVersion": "1.2.0",
+   "pkg": "https://thefirmwarehub.com/fw/bytemania-1.3.1.fwsc",
+   "pkgVersion": "1.3.1",
    "license": "GPL-3.0"
   },
   {
@@ -2813,8 +2813,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/fm1gm-1.1.1.fwsc",
-   "pkgVersion": "1.1.1",
+   "pkg": "https://thefirmwarehub.com/fw/fm1gm-1.2.0.fwsc",
+   "pkgVersion": "1.2.0",
    "license": "GPL-3.0"
   },
   {
@@ -2911,8 +2911,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/mono2k-1.7.fwsc",
-   "pkgVersion": "1.7",
+   "pkg": "https://thefirmwarehub.com/fw/mono2k-1.9.1.fwsc",
+   "pkgVersion": "1.9.1",
    "license": "GPL-3.0"
   },
   {
@@ -2928,8 +2928,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/bigorna-2026.11.03+87baea1d.fwsc",
-   "pkgVersion": "2026.11.03",
+   "pkg": "https://thefirmwarehub.com/fw/bigorna-2026.11.09+8f531156.fwsc",
+   "pkgVersion": "2026.11.09",
    "license": "GPL-3.0"
   },
   {
@@ -3010,8 +3010,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/midimon-0.4.fwsc",
-   "pkgVersion": "0.4",
+   "pkg": "https://thefirmwarehub.com/fw/midimon-0.5.fwsc",
+   "pkgVersion": "0.5",
    "license": "MPL-2.0"
   },
   {
@@ -3058,8 +3058,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/frasil-3.0.fwsc",
-   "pkgVersion": "3.0",
+   "pkg": "https://thefirmwarehub.com/fw/frasil-3.3.fwsc",
+   "pkgVersion": "3.3",
    "license": "MPL-2.0"
   },
   {
@@ -3178,8 +3178,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/mope1-0.4.0.fwsc",
-   "pkgVersion": "0.4.0",
+   "pkg": "https://thefirmwarehub.com/fw/mope1-0.4.1.fwsc",
+   "pkgVersion": "0.4.1",
    "license": "GPL-3.0-only"
   },
   {
@@ -3195,8 +3195,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/fizz-0.12.0-beta.13.fwsc",
-   "pkgVersion": "0.12.0-beta.13",
+   "pkg": "https://thefirmwarehub.com/fw/fizz-0.12.0-beta.15.fwsc",
+   "pkgVersion": "0.12.0-beta.15",
    "license": "MPL-2.0"
   },
   {
@@ -3212,8 +3212,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/s1vave-1.12.1.fwsc",
-   "pkgVersion": "1.12.1",
+   "pkg": "https://thefirmwarehub.com/fw/s1vave-1.12.3.fwsc",
+   "pkgVersion": "1.12.3",
    "license": "GPL-3.0"
   },
   {
@@ -3312,8 +3312,8 @@
    "abi": "web",
    "size": 547029,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://thefirmwarehub.com/fw/fm1trax-0.9.3.fwsc",
-   "pkgVersion": "0.9.3",
+   "pkg": "https://thefirmwarehub.com/fw/fm1trax-0.9.5.fwsc",
+   "pkgVersion": "0.9.5",
    "license": "GPL-3.0"
   },
   {
@@ -3345,8 +3345,8 @@
    "abi": "web",
    "size": 645939,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://thefirmwarehub.com/fw/choppah-0.96.fwsc",
-   "pkgVersion": "0.96",
+   "pkg": "https://thefirmwarehub.com/fw/choppah-1.2.fwsc",
+   "pkgVersion": "1.2",
    "license": "MPL-2.0"
   },
   {
@@ -3362,8 +3362,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/amenity-1.0.0.fwsc",
-   "pkgVersion": "1.0.0",
+   "pkg": "https://thefirmwarehub.com/fw/amenity-2.0.0.fwsc",
+   "pkgVersion": "2.0.0",
    "license": "GPL-3.0 + SDK exception"
   },
   {
@@ -3456,8 +3456,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/kwasub-1.0.52.fwsc",
-   "pkgVersion": "1.0.52",
+   "pkg": "https://thefirmwarehub.com/fw/kwasub-1.1.02.fwsc",
+   "pkgVersion": "1.1.02",
    "license": "GPL-3.0"
   },
   {
@@ -3582,8 +3582,8 @@
    "url": "https://raw.githubusercontent.com/stephencummins/fm1-aisling/gh-pages/emu/amb.wasm",
    "abi": "web",
    "size": 350593,
-   "pkg": "https://thefirmwarehub.com/fw/aisling-0.5.1.fwsc",
-   "pkgVersion": "0.5.1",
+   "pkg": "https://thefirmwarehub.com/fw/aisling-1.3.1.fwsc",
+   "pkgVersion": "1.3.1",
    "license": "GPL-3.0"
   },
   {
@@ -3655,8 +3655,8 @@
    "url": "https://raw.githubusercontent.com/deamonSLINKY/PERF-1/gh-pages/emu/amb.wasm",
    "abi": "web",
    "size": 706402,
-   "pkg": "https://thefirmwarehub.com/fw/perf1-0.16.2.fwsc",
-   "pkgVersion": "0.16.2",
+   "pkg": "https://thefirmwarehub.com/fw/perf1-0.17.0.fwsc",
+   "pkgVersion": "0.17.0",
    "license": "GPL-3.0"
   },
   {
@@ -3719,8 +3719,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/dinghy-0.4.fwsc",
-   "pkgVersion": "0.4",
+   "pkg": "https://thefirmwarehub.com/fw/dinghy-0.5.fwsc",
+   "pkgVersion": "0.5",
    "license": "GPL-3.0"
   },
   {
@@ -3780,8 +3780,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/matryoshka-1.9.1.fwsc",
-   "pkgVersion": "1.9.1",
+   "pkg": "https://thefirmwarehub.com/fw/matryoshka-1.13.0.fwsc",
+   "pkgVersion": "1.13.0",
    "license": "GPL-3.0"
   },
   {
@@ -3811,8 +3811,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/fm1dock-0.7.1.fwsc",
-   "pkgVersion": "0.7.1",
+   "pkg": "https://thefirmwarehub.com/fw/fm1dock-0.8.1.fwsc",
+   "pkgVersion": "0.8.1",
    "license": "GPL-3.0"
   },
   {
@@ -3986,7 +3986,9 @@
    "reason": "",
    "url": "https://raw.githubusercontent.com/Quixotic7/RemoteFM1/main/web/installer/smk37/emu/app.wasm",
    "abi": "web",
-   "size": 248431
+   "size": 248431,
+   "pkg": "https://thefirmwarehub.com/fw/remotefm1-0.3.6.fwsc",
+   "pkgVersion": "0.3.6"
   },
   {
    "name": "FMDj",
@@ -4179,8 +4181,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/arctic-1.3.1.fwsc",
-   "pkgVersion": "1.3.1",
+   "pkg": "https://thefirmwarehub.com/fw/arctic-1.5.2.fwsc",
+   "pkgVersion": "1.5.2",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4215,8 +4217,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/b3organ-0.2.fwsc",
-   "pkgVersion": "0.2",
+   "pkg": "https://thefirmwarehub.com/fw/b3organ-0.3.fwsc",
+   "pkgVersion": "0.3",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4233,8 +4235,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/beetleblue-1.3.fwsc",
-   "pkgVersion": "1.3",
+   "pkg": "https://thefirmwarehub.com/fw/beetleblue-1.3.1.fwsc",
+   "pkgVersion": "1.3.1",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4287,8 +4289,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/bocjuhn-1.0.0-rc7.fwsc",
-   "pkgVersion": "1.0.0-rc7",
+   "pkg": "https://thefirmwarehub.com/fw/bocjuhn-1.0.0-rc10.fwsc",
+   "pkgVersion": "1.0.0-rc10",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4305,8 +4307,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/chipbox-1.4.0-helpfulharold.fwsc",
-   "pkgVersion": "1.4.0-helpfulharold",
+   "pkg": "https://thefirmwarehub.com/fw/chipbox-1.6.1-bluetoothbanter.fwsc",
+   "pkgVersion": "1.6.1-bluetoothbanter",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4341,8 +4343,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/dark1-1.0.4.fwsc",
-   "pkgVersion": "1.0.4",
+   "pkg": "https://thefirmwarehub.com/fw/dark1-1.0.6.fwsc",
+   "pkgVersion": "1.0.6",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4359,8 +4361,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/daurade-1.0-1862f39.fwsc",
-   "pkgVersion": "1.0-1862f39",
+   "pkg": "https://thefirmwarehub.com/fw/daurade-1.0.1-0bf2076.fwsc",
+   "pkgVersion": "1.0.1-01d6bd0",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4431,8 +4433,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/flyfish-1.1-c15e548.fwsc",
-   "pkgVersion": "1.1-c15e548",
+   "pkg": "https://thefirmwarehub.com/fw/flyfish-1.1.1-9abe2e8.fwsc",
+   "pkgVersion": "1.1.1-fc4974e",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4467,8 +4469,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/hawkchua-1.7.fwsc",
-   "pkgVersion": "1.7",
+   "pkg": "https://thefirmwarehub.com/fw/hawkchua-2.1.3.fwsc",
+   "pkgVersion": "2.1.3",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4557,8 +4559,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/kittenrack-1.3.0.fwsc",
-   "pkgVersion": "1.3.0",
+   "pkg": "https://thefirmwarehub.com/fw/kittenrack-1.4.0.fwsc",
+   "pkgVersion": "1.4.0",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4665,8 +4667,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/nauclerus-0.25.0.fwsc",
-   "pkgVersion": "0.25.0",
+   "pkg": "https://thefirmwarehub.com/fw/nauclerus-1.0.0.fwsc",
+   "pkgVersion": "1.0.0",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4683,8 +4685,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/penumbra-1.2.fwsc",
-   "pkgVersion": "1.2",
+   "pkg": "https://thefirmwarehub.com/fw/penumbra-1.3.fwsc",
+   "pkgVersion": "1.3",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4737,8 +4739,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/rupture-1.84.2.fwsc",
-   "pkgVersion": "1.84.2",
+   "pkg": "https://thefirmwarehub.com/fw/rupture-1.85.2.fwsc",
+   "pkgVersion": "1.85.2",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4755,8 +4757,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/scintilla-0.2.0.fwsc",
-   "pkgVersion": "0.2.0",
+   "pkg": "https://thefirmwarehub.com/fw/scintilla-0.3.1.fwsc",
+   "pkgVersion": "0.3.1",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4791,8 +4793,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/sidj-1.3.0.fwsc",
-   "pkgVersion": "1.3.0",
+   "pkg": "https://thefirmwarehub.com/fw/sidj-1.5.1.fwsc",
+   "pkgVersion": "1.5.1",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4809,8 +4811,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/sill-1.0.2-ea87155.fwsc",
-   "pkgVersion": "1.0.2-ea87155",
+   "pkg": "https://thefirmwarehub.com/fw/sill-1.0.4-beeebd6.fwsc",
+   "pkgVersion": "1.0.4-beeebd6",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4827,8 +4829,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/smileyface-1.0.6.fwsc",
-   "pkgVersion": "1.0.6",
+   "pkg": "https://thefirmwarehub.com/fw/smileyface-1.2.1-bleglee.fwsc",
+   "pkgVersion": "1.2.1-bleglee",
    "license": "GPL-3.0",
    "vendor": false
   },
@@ -4881,8 +4883,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/vesper-2.0.1.fwsc",
-   "pkgVersion": "2.0.1",
+   "pkg": "https://thefirmwarehub.com/fw/vesper-2.0.2.fwsc",
+   "pkgVersion": "2.0.2",
    "license": "see the repository",
    "vendor": false
   },

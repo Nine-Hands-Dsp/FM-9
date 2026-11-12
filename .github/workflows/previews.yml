@@ -5,6 +5,8 @@ on:
     branches: [ main ]
     paths: [ 'catalog/firmwares.json', 'tools/gen_previews.py', '.github/workflows/previews.yml' ]
   workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * *'     # chaque nuit : paquets du hub mis a jour (nouvelles versions = UPDATE dans FM-9)
 
 jobs:
   previews:
@@ -23,12 +25,20 @@ jobs:
         run: |
           cmake -S tools/render -B build-render -DJUCE_DIR="$HOME/juce" -DCMAKE_BUILD_TYPE=Release
           cmake --build build-render --parallel
+      - name: Paquets a jour (thefirmwarehub.com)
+        run: |
+          python3 tools/sync_hub.py catalog/firmwares.json || true
+          python3 - <<'PY'
+          import json, datetime
+          c = json.load(open('catalog/firmwares.json')); c['generated'] = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M')
+          json.dump(c, open('catalog/firmwares.json', 'w'), indent=1, ensure_ascii=False)
+          PY
       - name: Ecrans des firmwares
         run: python3 tools/gen_previews.py catalog/firmwares.json build-render/FM9Render_artefacts/Release/FM9Render catalog/previews
       - name: Publier les ecrans
         run: |
           git config user.name "FM-9 previews"; git config user.email "previews@users.noreply.github.com"
-          git add catalog/previews
+          git add catalog/previews catalog/firmwares.json
           git diff --cached --quiet && exit 0
-          git commit -qm "Catalogue : ecrans des firmwares"
+          git commit -qm "Catalogue : paquets a jour et ecrans des firmwares"
           for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done

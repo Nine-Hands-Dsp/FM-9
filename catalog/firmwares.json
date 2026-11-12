@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/aroum/fm1-custom-fw",
- "generated": "2026-11-12 16:16",
+ "generated": "2026-11-12 17:02",
  "firmwares": [
   {
    "name": "FM-1 original firmware",
@@ -5771,8 +5771,7 @@
    "pkg": "https://thefirmwarehub.com/fw/hortator-bt-1.0.1.fwsc",
    "pkgVersion": "1.0.1",
    "license": "GPL-3.0",
-   "added": "2026-10-28",
-   "unverified": true
+   "added": "2026-10-28"
   }
  ],
  "hwSource": "https://github.com/joakimeriksson/fm1-emu (web/firmwares.json)"

@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/aroum/fm1-custom-fw",
- "generated": "2026-11-12 17:02",
+ "generated": "2026-11-12 20:05",
  "firmwares": [
   {
    "name": "FM-1 original firmware",
@@ -1228,8 +1228,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/veffbox-0.9.0.fwsc",
-   "pkgVersion": "0.9.0",
+   "pkg": "https://thefirmwarehub.com/fw/veffbox-0.10.0.fwsc",
+   "pkgVersion": "0.10.0",
    "license": "GPL-3.0",
    "added": "2026-11-04"
   },
@@ -1649,8 +1649,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/ravel-1.37.0.fwsc",
-   "pkgVersion": "1.37.0",
+   "pkg": "https://thefirmwarehub.com/fw/ravel-1.39.0.fwsc",
+   "pkgVersion": "1.39.0",
    "license": "GPL-3.0",
    "added": "2026-10-27"
   },
@@ -1946,7 +1946,6 @@
    "pkg": "https://baudgirl.com/fm1/firmware/FM-1+VA-102.fwsc",
    "pkgVersion": "102",
    "license": "Free download (not open source)",
-   "unverified": true,
    "added": "2026-11-12"
   },
   {
@@ -3032,8 +3031,8 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/bigorna-2026.11.09+8f531156.fwsc",
-   "pkgVersion": "2026.11.09",
+   "pkg": "https://thefirmwarehub.com/fw/bigorna-2026.11.12.fwsc",
+   "pkgVersion": "2026.11.12",
    "license": "GPL-3.0",
    "added": "2026-11-02"
   },

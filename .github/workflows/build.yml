@@ -2,6 +2,7 @@ name: Build FM-9 VST3
 
 on:
   push:
+    branches-ignore: [ 'survey/**' ]
   workflow_dispatch:
 
 jobs:

@@ -1,0 +1,16 @@
+name: Hub check
+on:
+  push:
+    branches: [ 'survey/hub' ]
+jobs:
+  hub:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - run: python3 tools/hub_check.py
+      - run: |
+          cd hub_out && git init -q -b survey/hubout && git add -A
+          git -c user.name=s -c user.email=s@users.noreply.github.com commit -qm out
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" survey/hubout

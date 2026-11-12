@@ -8,7 +8,14 @@ while read -r repo br script; do
   n=$(echo "$repo" | tr '/' '_')
   d="/tmp/src_$n"; rm -rf "$d"
   git clone -q --depth 1 --recurse-submodules -b "$br" "https://github.com/$repo" "$d" || { echo "$repo: clone fail" >> "$OUT/log.txt"; continue; }
-  (cd "$d/$(dirname "$script")" && timeout 900 bash "$(basename "$script")" > "$OUT/$n.build.log" 2>&1)
+  (
+    cd "$d"
+    # en-tetes generes d'abord (build.sh gen a la racine), puis la cible web
+    if [ -f build.sh ]; then timeout 600 bash build.sh gen || timeout 900 bash build.sh; fi
+    [ -f firmware/build.sh ] && (cd firmware && (timeout 600 bash build.sh gen || timeout 900 bash build.sh))
+    cd "$d/$(dirname "$script")"
+    if [ "$(basename "$script")" = Makefile ]; then timeout 900 make web || timeout 900 make wasm || timeout 900 make; else timeout 900 bash "$(basename "$script")"; fi
+  ) > "$OUT/$n.build.log" 2>&1
   rc=$?
   w=$(find "$d" -name "*.wasm" -newer "$d/.git/HEAD" -size +20k 2>/dev/null | head -1)
   [ -z "$w" ] && w=$(find "$d" -name "*.wasm" -size +20k 2>/dev/null | head -1)

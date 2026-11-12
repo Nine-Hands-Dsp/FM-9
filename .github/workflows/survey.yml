@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: mymindstorm/setup-emsdk@v14
+      - run: pip install pillow numpy
       - name: Build web versions
         run: bash tools/build_web_sources.sh
       - name: Publish on branch survey/web

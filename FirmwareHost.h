@@ -25,7 +25,9 @@ public:
     static constexpr double fwRate = 44100.0;
     // marge d'avance de l'emulation de la puce (echantillons a 44,1 kHz) : plus grande = plus de latence mais aucun craquement
     static std::atomic<int>& hwMargin();
-    static std::atomic<int>& hwMhz();         // horloge emulee de la puce (240 = FM-1 ; plus haut pour les firmwares lourds)
+    static std::atomic<int>& hwMhz();
+    static std::atomic<bool>& hwLatencyChanged();   // la marge a grandi seule : le processeur annonce la nouvelle latence
+    static std::atomic<bool>& hwAutoMargin();       // marge qui grandit selon l'avance du DAW (calcul anticipe de Reaper)         // horloge emulee de la puce (240 = FM-1 ; plus haut pour les firmwares lourds)
 
     // firmware web (.wasm) ; storage = fichier de sauvegarde (flash) du firmware
     static std::unique_ptr<FirmwareHost> create (const void* wasm, size_t size, const juce::File& storage, juce::String& error);

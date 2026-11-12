@@ -1957,9 +1957,12 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
             clk.addItem (850, "240 MHz (like the FM-1)", true, mhz == 240);
             clk.addItem (851, "360 MHz (default)", true, mhz == 360);
             clk.addItem (852, "480 MHz (heavy firmwares, more CPU)", true, mhz == 480);
-            buf.addItem (855, "Low latency (35 ms)", true, mar == 1536);
-            buf.addItem (856, "Normal (70 ms)", true, mar == 3072);
-            buf.addItem (857, "Safe (140 ms)", true, mar == 6144);
+            const bool aut = fm9::FirmwareHost::hwAutoMargin().load();
+            buf.addItem (858, "Automatic (grows if the DAW renders ahead)", true, aut);
+            buf.addSeparator();
+            buf.addItem (855, "Low latency (35 ms)", true, ! aut && mar == 1536);
+            buf.addItem (856, "Normal (70 ms)", true, ! aut && mar == 3072);
+            buf.addItem (857, "Safe (140 ms)", true, ! aut && mar == 6144);
             firmware.addSubMenu ("Chip clock (if a firmware crackles)", clk);
             firmware.addSubMenu ("Emulation buffer", buf);
         }
@@ -2171,8 +2174,16 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
                 if (cur.endsWith (fm9::FirmwareInstaller::hardwareSuffix)) ed.activateFirmware (cur);
                 ed.popup ("Chip clock", String (fm9::FirmwareHost::hwMhz().load()) + " MHz");
             }
+            else if (r == 858)
+            {
+                fm9::FirmwareHost::hwAutoMargin().store (true);
+                fm9::FirmwareHost::hwMargin().store (1536);                   // repart court, grandit seul si besoin
+                pr.updateFirmwareLatency();
+                ed.popup ("Emulation buffer", "Automatic");
+            }
             else if (r >= 855 && r <= 857)
             {
+                fm9::FirmwareHost::hwAutoMargin().store (false);
                 fm9::FirmwareHost::hwMargin().store (r == 855 ? 1536 : r == 856 ? 3072 : 6144);
                 pr.updateFirmwareLatency();
                 ed.popup ("Emulation buffer", r == 855 ? "35 ms" : r == 856 ? "70 ms" : "140 ms");

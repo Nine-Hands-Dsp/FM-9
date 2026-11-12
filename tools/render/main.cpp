@@ -133,6 +133,24 @@ static void midiTest()
     }
 }
 
+static void golanaTest()
+{
+    // la page de Golana contient sa version native : extraite, elle demarre et joue
+    juce::MemoryBlock page;
+    if (! juce::File ("/tmp/golana/try.html").loadFileAsData (page)) return;
+    std::printf ("Golana (page web)\n");
+    check (fm9::FirmwareCatalog::extractWasm (page) && fm9::FirmwareInstaller::abiOf (page.getData(), page.getSize()) != 0, "version web extraite de la page Try it in your browser");
+    auto entries = fm9::FirmwareCatalog::parse (juce::File ("/home/claude/fm-9/catalog/firmwares.json").loadFileAsString());
+    for (auto& e : entries) if (e.name == "Golana")
+    {
+        check (e.preferWeb && e.web(), "catalogue : Golana prefere sa version native");
+        juce::StringArray inst { "Golana (hardware)" };
+        check (! e.isInstalled (inst), "Golana materiel seul : Install propose de prendre la version native");
+        inst.add ("Golana");
+        check (e.loadName (inst) == "Golana", "Load lance la version native");
+    }
+}
+
 static void firmwareTest()
 {
     std::printf ("== firmware Hortator ==\n");
@@ -258,18 +276,57 @@ int main (int argc, char** argv)
         if (fw == nullptr) { std::printf ("fwcheck fail: %s\n", err.toRawUTF8()); return 1; }
         std::vector<float> l (512), r (512);
         float peak = 0.0f;
-        for (int i = 0; i < 200; ++i)
+        const double t0 = juce::Time::getMillisecondCounterHiRes();
+        for (int i = 0; i < 600; ++i)
         {
-            if (i == 20) fw->key (12, true);
-            if (i == 60) fw->key (12, false);
+            if (i == 20 || i == 300) fw->key (12, true);
+            if (i == 60 || i == 360) fw->key (12, false);
+            if (i == 400) fw->handleMidi (juce::MidiMessage::noteOn (1, 60, (juce::uint8) 100));
+            if (i == 480) fw->handleMidi (juce::MidiMessage::noteOff (1, 60));
             fw->render (l.data(), r.data(), 512, 48000.0);
             for (int k = 0; k < 512; ++k) peak = std::max (peak, std::abs (l[(size_t) k]));
         }
-        std::printf ("fwcheck ok %s screen=%u peak=%.3f\n", fw->abi() == fm9::FirmwareHost::Abi::sim ? "sim" : "web", (unsigned) fw->fbSerial.load(), peak);
+        const double ms = juce::Time::getMillisecondCounterHiRes() - t0;
+        std::printf ("fwcheck ok %s screen=%u peak=%.3f speed=%.1fx\n", fw->abi() == fm9::FirmwareHost::Abi::sim ? "sim" : "web", (unsigned) fw->fbSerial.load(), peak, (600.0 * 512.0 / 48.0) / ms);
+        return 0;
+    }
+    if (args.contains ("--hwrt"))
+    {
+        // firmware materiel en temps reel, comme dans un DAW : blocs de 512 a 48 kHz au rythme reel, notes MIDI, sortie en wav
+        juce::MemoryBlock mb; juce::String err;
+        juce::File (args[args.indexOf ("--hwrt") + 1]).loadFileAsData (mb);
+        auto fw = fm9::FirmwareHost::createHardware (mb.getData(), mb.getSize(), juce::File(), err);
+        if (fw == nullptr) { std::printf ("hwrt fail %s\n", err.toRawUTF8()); return 1; }
+        const int bs = 512; const double sr = 48000.0;
+        if (args.contains ("--margin")) fm9::FirmwareHost::hwMargin().store (args[args.indexOf ("--margin") + 1].getIntValue());
+        fw->prepare (sr, bs);
+        juce::AudioBuffer<float> out (2, (int) (sr * 12));
+        std::vector<float> l (bs), r (bs);
+        const double t0 = juce::Time::getMillisecondCounterHiRes();
+        int pos = 0, blk = 0;
+        while (pos + bs <= out.getNumSamples())
+        {
+            // comme Reaper (calcul anticipe) : toutes les ~0,5 s une pause de 90 ms, puis une rafale pour rattraper
+            const bool bursty = args.contains ("--bursty");
+            double due = t0 + blk * bs / sr * 1000.0;
+            if (bursty) { const int ph = blk % 47; due = t0 + (blk - ph) * bs / sr * 1000.0 + (ph < 9 ? 90.0 + ph * 1.0 : ph * bs / sr * 1000.0); }
+            while (juce::Time::getMillisecondCounterHiRes() < due) juce::Thread::sleep (1);
+            const double sec = pos / sr;
+            if (blk % 47 == 0 && sec > 3.0) fw->handleMidi (juce::MidiMessage::noteOn (1, 60 + (blk / 47) % 7, (juce::uint8) 100));
+            if (blk % 47 == 30 && sec > 3.0) fw->handleMidi (juce::MidiMessage::noteOff (1, 60 + (blk / 47) % 7));
+            fw->render (l.data(), r.data(), bs, sr);
+            out.copyFrom (0, pos, l.data(), bs); out.copyFrom (1, pos, r.data(), bs);
+            pos += bs; ++blk;
+        }
+        juce::WavAudioFormat wav;
+        juce::File f (args[args.indexOf ("--hwrt") + 2]); f.deleteFile();
+        std::unique_ptr<juce::AudioFormatWriter> w (wav.createWriterFor (new juce::FileOutputStream (f), sr, 2, 16, {}, 0));
+        w->writeFromAudioSampleBuffer (out, 0, pos);
+        std::printf ("hwrt ok %s\n", fw->status().toRawUTF8());
         return 0;
     }
     if (args.isEmpty() || args.contains ("--test")) { audioTests(); keyStepTest();
-        midiTest(); firmwareTest(); }
+        midiTest(); golanaTest(); firmwareTest(); }
     using juce::StringArray; using juce::String;
     if (args.contains ("--shot"))
     {

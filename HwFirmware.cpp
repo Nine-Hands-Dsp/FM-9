@@ -36,8 +36,10 @@ extern "C"
 
 namespace fm9
 {
-std::atomic<int>& FirmwareHost::hwMargin() { static std::atomic<int> m { 3072 }; return m; }
+std::atomic<int>& FirmwareHost::hwMargin() { static std::atomic<int> m { 1536 }; return m; }   // automatique : part court, grandit si le DAW lit en avance
 std::atomic<int>& FirmwareHost::hwMhz() { static std::atomic<int> m { 360 }; return m; }
+std::atomic<bool>& FirmwareHost::hwLatencyChanged() { static std::atomic<bool> b { false }; return b; }
+std::atomic<bool>& FirmwareHost::hwAutoMargin() { static std::atomic<bool> b { true }; return b; }
 
 namespace
 {
@@ -99,6 +101,19 @@ public:
     {
         if (rate <= 0) rate = 48000.0;
         hostRate.store (rate);
+        {
+            // avance du DAW sur le temps reel (rafales du calcul anticipe) : la marge suit, la latence est re-annoncee
+            const double nowMs = juce::Time::getMillisecondCounterHiRes();
+            if (lastRenderMs > 0.0)
+            {
+                ahead = juce::jmax (0.0, ahead + n - (nowMs - lastRenderMs) * rate / 1000.0);
+                if (nowMs - lastRenderMs > 1500.0) ahead = 0.0;
+                const int need = (int) std::ceil ((ahead * fwRate / rate + 1024.0) / 512.0) * 512;
+                auto& mg = FirmwareHost::hwMargin();
+                if (FirmwareHost::hwAutoMargin().load() && need > mg.load() && need <= 16384) { mg.store (need); FirmwareHost::hwLatencyChanged().store (true); }
+            }
+            lastRenderMs = nowMs;
+        }
         lastTakeMs.store (juce::Time::getMillisecondCounter());
         const double step = fwRate / rate;
         const int64_t avail = writePos.load (std::memory_order_acquire);
@@ -272,7 +287,7 @@ private:
             const int64_t fill = made - readFrame.load (std::memory_order_acquire);
             const int lead = leadFrames();
             const double now = juce::Time::getMillisecondCounterHiRes();
-            const bool hostIdle = now - (double) lastTakeMs.load() > 60.0;
+            const bool hostIdle = now - (double) lastTakeMs.load() > 1500.0;   // vraie pause (transport arrete) : pas les rafales du calcul anticipe de Reaper
             bool ran = false;
             if (fill < lead || (hostIdle && made == 0))
             {
@@ -373,6 +388,7 @@ private:
     std::atomic<uint32_t> lastTakeMs { 0 };
     int64_t starved = 0;
     float holdL = 0.0f, holdR = 0.0f;
+    double lastRenderMs = 0.0, ahead = 0.0;
 
     std::array<uint16_t, fbW * fbH> screen {};
     juce::SpinLock screenLock;

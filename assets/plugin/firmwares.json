@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/aroum/fm1-custom-fw",
- "generated": "2026-11-11",
+ "generated": "2026-11-12",
  "firmwares": [
   {
    "name": "FM-1 original firmware",
@@ -316,12 +316,13 @@
    "page": "https://gadlele.github.io/Golana/",
    "compatible": true,
    "reason": "",
-   "url": "",
-   "abi": "",
+   "url": "https://gadlele.github.io/Golana/try/",
+   "abi": "sim",
    "size": 0,
    "pkg": "https://thefirmwarehub.com/fw/golana-1.3.fwsc",
    "pkgVersion": "1.3",
-   "license": "GPL-3.0"
+   "license": "GPL-3.0",
+   "prefer": "web"
   },
   {
    "name": "FANTASMA / Pelucco",

@@ -3,6 +3,8 @@
 // marque compatible (version web .wasm qui demarre dans FM-9) ou non (avec la raison).
 // Copie integree au plugin, mise a jour depuis le depot de FM-9 (bouton Refresh).
 #pragma once
+#include <cstring>
+#include <cctype>
 #include <JuceHeader.h>
 #include "FirmwareHost.h"
 #include "NineHandsMenu.h"
@@ -15,7 +17,7 @@ namespace fm9
 struct CatalogEntry
 {
     juce::String name, author, group, desc, repo, page, reason, url, abi, pkg, license;
-    bool compatible = false, vendor = false;
+    bool compatible = false, vendor = false, preferWeb = false;   // preferWeb : la version native (web) est plus legere que la puce emulee
     juce::int64 size = 0;
     // nom des fichiers installes : le nom du firmware (les forks partagent souvent le nom du depot)
     juce::String fileName() const
@@ -26,11 +28,13 @@ struct CatalogEntry
     bool web() const { return url.isNotEmpty(); }
     bool isInstalled (const juce::StringArray& inst) const
     {
+        if (preferWeb && web()) return inst.contains (fileName());                 // il faut la version native
         return inst.contains (fileName()) || inst.contains (fileName() + FirmwareInstaller::hardwareSuffix);
     }
     // ce que Load lance : le paquet materiel (le vrai firmware) s'il est installe, sinon la version web
     juce::String loadName (const juce::StringArray& inst) const
     {
+        if (preferWeb && inst.contains (fileName())) return fileName();
         return inst.contains (fileName() + FirmwareInstaller::hardwareSuffix) ? fileName() + FirmwareInstaller::hardwareSuffix : fileName();
     }
 };
@@ -57,6 +61,7 @@ struct FirmwareCatalog
                 e.size = (juce::int64) f.getProperty ("size", 0);
                 e.pkg = f.getProperty ("pkg", {}).toString();       e.license = f.getProperty ("license", {}).toString();
                 e.vendor = (bool) f.getProperty ("vendor", false);
+                e.preferWeb = f.getProperty ("prefer", {}).toString() == "web";
                 if (e.name.isNotEmpty()) out.push_back (e);
             }
         return out;
@@ -99,6 +104,24 @@ struct FirmwareCatalog
     }
 
     // installe le paquet materiel (.fwsc) et la version web (.wasm) quand ils existent ; thread d'arriere-plan
+    // une page web peut contenir la version web en base64 (ex. la page "Try it in your browser" de Golana)
+    static bool extractWasm (juce::MemoryBlock& data)
+    {
+        auto* p = static_cast<const char*> (data.getData());
+        if (data.getSize() >= 4 && p[0] == 0 && p[1] == 'a' && p[2] == 's' && p[3] == 'm') return true;
+        // recherche directe dans les octets (rapide meme sur une page de plusieurs centaines de Ko)
+        const size_t n = data.getSize();
+        size_t at = 0;
+        for (; at + 6 <= n; ++at) if (std::memcmp (p + at, "AGFzbQ", 6) == 0) break;
+        if (at + 6 > n) return false;
+        size_t end = at;
+        while (end < n && (std::isalnum ((unsigned char) p[end]) || p[end] == '+' || p[end] == '/' || p[end] == '=')) ++end;
+        juce::MemoryOutputStream out;
+        if (! juce::Base64::convertFromBase64 (out, juce::String (p + at, end - at))) return false;
+        data = out.getMemoryBlock();
+        return data.getSize() > 8;
+    }
+
     static bool install (const CatalogEntry& e, juce::String& error, std::function<void (float)> progress = {})
     {
         // progression : paquet materiel puis version web (moitie chacun quand les deux existent)
@@ -125,6 +148,7 @@ struct FirmwareCatalog
         {
             juce::MemoryBlock wasm; juce::String err;
             if (! download (e.url, wasm, err, part (e.hardware() ? 1.0f : 0.0f))) errs << "web build: " << err;
+            else if (! extractWasm (wasm)) errs << "web build: no web build found on the page";
             else if (FirmwareInstaller::abiOf (wasm.getData(), wasm.getSize()) == 0) errs << "web build: not an FM-1 web build";
             else if (FirmwareHost::create (wasm.getData(), wasm.getSize(), juce::File(), err) == nullptr) errs << "web build: " << err;
             else if (FirmwareInstaller::folder().getChildFile (e.fileName() + ".wasm").replaceWithData (wasm.getData(), wasm.getSize())) { ++done; if (! e.hardware()) note ("file", e.url); }
@@ -561,7 +585,7 @@ public:
         juce::MemoryBlock data; juce::String err;
         const auto folder = FirmwareInstaller::folder();
         if (folder.getChildFile (e.fileName() + ".fwsc").loadFileAsData (data) || folder.getChildFile (e.fileName() + ".wasm").loadFileAsData (data)) {}
-        else if (e.web()) FirmwareCatalog::download (e.url, data, err, stage (0));          // la version web est plus legere a telecharger
+        else if (e.web()) { FirmwareCatalog::download (e.url, data, err, stage (0)); FirmwareCatalog::extractWasm (data); }   // la version web est plus legere a telecharger
         else if (e.hardware()) FirmwareCatalog::download (e.pkg, data, err, stage (0));
         if (data.getSize() == 0) return {};
         auto img = FirmwareHost::renderPreview (data.getData(), data.getSize(), 3.0, stage (1));

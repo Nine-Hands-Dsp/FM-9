@@ -58,7 +58,7 @@ fn write_err(out: *mut c_char, cap: c_int, msg: &str) {
 pub extern "C" fn fm1hw_boot(pkg: *const u8, len: usize, mhz: u32, err: *mut c_char, err_cap: c_int) -> *mut Machine {
     if pkg.is_null() || len == 0 { write_err(err, err_cap, "empty package"); return std::ptr::null_mut(); }
     let data = unsafe { std::slice::from_raw_parts(pkg, len) };
-    match std::panic::catch_unwind(|| boot(data, mhz.clamp(60, 480) as u64)) {
+    match std::panic::catch_unwind(|| boot(data, mhz.clamp(60, 1200) as u64)) {
         Ok(Ok(m)) => Box::into_raw(Box::new(m)),
         Ok(Err(e)) => { write_err(err, err_cap, &e); std::ptr::null_mut() }
         Err(_) => { write_err(err, err_cap, "the emulator stopped while booting"); std::ptr::null_mut() }

@@ -388,6 +388,8 @@ void FM9Processor::timerCallback()
 {
     const double now = juce::Time::getMillisecondCounterHiRes() * 0.001;
 
+    if (fm9::FirmwareHost::hwLatencyChanged().exchange (false)) updateFirmwareLatency();   // la marge de l'emulation a grandi
+
     // configuration MIDI par defaut (nouvelle instance sans assignation)
     if (pendingDefaultMap) { pendingDefaultMap = false; if (midiMapString().isEmpty() && defaultMidiMapFile().existsAsFile()) loadMidiMap (defaultMidiMapFile()); }
 
@@ -843,6 +845,7 @@ void FM9Processor::getStateInformation (juce::MemoryBlock& destData)
     state.setProperty ("firmware", firmwareName, nullptr);
     state.setProperty ("fwMhz", fm9::FirmwareHost::hwMhz().load(), nullptr);
     state.setProperty ("fwBuffer", fm9::FirmwareHost::hwMargin().load(), nullptr);
+    state.setProperty ("fwAuto", fm9::FirmwareHost::hwAutoMargin().load(), nullptr);
     { juce::StringArray pv; for (auto& v : patternVoice) pv.add (juce::String (v.load())); state.setProperty ("patternVoice", pv.joinIntoString (","), nullptr); }
     juce::StringArray order; for (int o : getFxOrder()) order.add (juce::String (o));
     state.setProperty ("fxOrder", order.joinIntoString (","), nullptr);
@@ -865,6 +868,7 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
     voiceName = state.getProperty ("voiceName", "INIT VOICE").toString();
     seqData.fromString (state.getProperty ("seq").toString());
     if (state.hasProperty ("fwMhz")) fm9::FirmwareHost::hwMhz().store (juce::jlimit (60, 480, (int) state.getProperty ("fwMhz")));
+    if (state.hasProperty ("fwAuto")) fm9::FirmwareHost::hwAutoMargin().store ((bool) state.getProperty ("fwAuto"));
     if (state.hasProperty ("fwBuffer")) fm9::FirmwareHost::hwMargin().store (juce::jlimit (512, 8192, (int) state.getProperty ("fwBuffer")));
     {
         const auto fwName = state.getProperty ("firmware").toString();

@@ -148,6 +148,7 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     kbTrans = (int) proc.uiState.getProperty ("transpose", 0);
     syncShift();
     for (auto& c : proc.ctlSteps) c.store (0);
+    for (auto& c : proc.ctlRel) c.store (0);
     proc.ctlUi.store (true);
     if (getParam ("seqActive") > 0.5f) mode = mSeq;
     startTimerHz (30);
@@ -183,7 +184,7 @@ float FM9Editor::physicalScale() const
 void FM9Editor::resized()
 {
     // anti-gel : jamais de setSize ici
-    if (catalog != nullptr) catalog->setBounds (getLocalBounds());
+    if (catalog != nullptr && ! catalog->isFloating()) catalog->setBounds (getLocalBounds());
     const float s = (float) getHeight() / baseH;
     auto place = [s] (Component& c, Point<float> centre)
     {
@@ -827,6 +828,7 @@ void FM9Editor::mouseDown (const MouseEvent& e)
     if (e.mods.isPopupMenu())
     {
         for (int i = 0; i < 2; ++i) if (L::octKeys[i].contains (u)) { showContextMenu ({}, 7 + i); return; }   // OCT- / OCT+ : MIDI Learn
+        for (int i = 0; i < 12; ++i) if (L::fnKeys[i].contains (u)) { showContextMenu ({}, FM9Processor::firstFn + i); return; }   // FX ... REC : MIDI Learn
         // nom du potard ou contour : meme menu que le potard lui-meme (MIDI Learn)
         const Point<float> kp[8] = { L::knob_master, L::knob_select, L::knob_presets, L::knob_algorithm, L::knob_knob1, L::knob_knob2, L::knob_knob3, L::knob_knob4 };
         for (int i = 0; i < 8; ++i)
@@ -1110,9 +1112,34 @@ void FM9Editor::timerCallback()
     for (int i = 0; i < FM9Processor::numCtl; ++i)
         if (const int st = proc.ctlSteps[(size_t) i].exchange (0); st != 0)
         {
+            if (i >= FM9Processor::firstFn) continue;                     // boutons de fonction : ci-dessous
             if (i >= 7) { if (auto* fw = proc.firmware()) { fw->button (12 + i - 7, true); fw->button (12 + i - 7, false); } else for (int n = 0; n < st; ++n) octStep (i == 7 ? -1 : 1); }
             else if (enc[i] != nullptr && enc[i]->onStep) enc[i]->onStep (st, false);
         }
+    // octave suivie depuis le clavier maitre : la facade se met a jour
+    if (proc.kbFollow.load() && proc.firmware() == nullptr && proc.kbOct.load() != octave)
+    {
+        octave = proc.kbOct.load();
+        popup ("Octave", (octave > 0 ? "+" : "") + String (octave));
+        repaint();
+    }
+    // boutons de fonction (FX ... REC) pilotes en MIDI Learn : appui puis relachement, comme a la souris
+    for (int i = FM9Processor::firstFn; i < FM9Processor::numCtl; ++i)
+    {
+        const int pr = proc.ctlSteps[(size_t) i].exchange (0), rl = proc.ctlRel[(size_t) i].exchange (0);
+        const int b = i - FM9Processor::firstFn;
+        for (int n = 0; n < pr; ++n)
+        {
+            if (auto* fw = proc.firmware()) fw->button (b, true); else { heldSince = now; holdUsed = false; fnPress (b); }
+            midiHeldFn = b; repaint();
+        }
+        for (int n = 0; n < rl; ++n)
+        {
+            if (auto* fw = proc.firmware()) fw->button (b, false); else fnRelease (b, now - heldSince > 600.0);
+            if (midiHeldFn == b) midiHeldFn = -1;
+            repaint();
+        }
+    }
     if (resizeSettle > 0 && --resizeSettle == 0) rebuildCaches();
     else if (faceDirty && resizeSettle == 0) recomposeFace();      // couleur changee a la volee
     else if (resizeSettle == 0 && now - lastScaleCheckMs > 250.0)
@@ -1128,7 +1155,7 @@ void FM9Editor::timerCallback()
     if (auto* fw = proc.firmware())
     {
         if (fw->fbSerial.load() != fwDrawnSerial) { fwDrawnSerial = fw->fbSerial.load(); fw->copyScreen (fwImage); askRepaint (toPx (L::bezel)); }
-        String ps; ps << (int64) fw->litButtons.load() << ',' << (int64) fw->litKeys.load() << ',' << (int64) playedFwKeys() << ',' << (int64) fw->dimKeys.load() << ',' << heldFn << heldOct << fwHeldKey
+        String ps; ps << (int64) fw->litButtons.load() << ',' << (int64) fw->litKeys.load() << ',' << (int64) playedFwKeys() << ',' << (int64) fw->dimKeys.load() << ',' << heldFn << midiHeldFn << heldOct << fwHeldKey
                       << (int) proc.uiState.getProperty ("glow", 75);
         if (ps != drawnPanelSig) { drawnPanelSig = ps; repaint(); }
         return;
@@ -1297,7 +1324,7 @@ void FM9Editor::drawDynamic (Graphics& g)
     if (auto* fw = proc.firmware())
     {
         // lumieres du firmware, plus ce que l'on joue soi-meme : notes du clavier maitre, touche, bouton ou OCT tenus a la souris
-        const uint32_t lb = fw->litButtons.load() | (heldFn >= 0 ? 1u << heldFn : 0u) | (heldOct >= 0 ? 1u << (12 + heldOct) : 0u);
+        const uint32_t lb = fw->litButtons.load() | (heldFn >= 0 ? 1u << heldFn : 0u) | (midiHeldFn >= 0 ? 1u << midiHeldFn : 0u) | (heldOct >= 0 ? 1u << (12 + heldOct) : 0u);
         const uint32_t lk = fw->litKeys.load() | playedFwKeys() | (fwHeldKey >= 0 ? 1u << fwHeldKey : 0u), dk = fw->dimKeys.load();
         for (int i = 0; i < 16; ++i)
         {
@@ -1314,7 +1341,7 @@ void FM9Editor::drawDynamic (Graphics& g)
         for (int i = 0; i < 12; ++i)
         {
             const auto r = L::fnKeys[i];
-            if (heldFn == i) { g.setColour (Colours::black.withAlpha (0.18f)); g.fillRoundedRectangle (r.reduced (3), 14); }
+            if (heldFn == i || midiHeldFn == i) { g.setColour (Colours::black.withAlpha (0.18f)); g.fillRoundedRectangle (r.reduced (3), 14); }
             if (! ((lb >> i) & 1u)) continue;
             if (i == 10)
             {
@@ -1374,7 +1401,7 @@ void FM9Editor::drawDynamic (Graphics& g)
     for (int i = 0; i < 12; ++i)
     {
         const auto r = L::fnKeys[i];
-        if (heldFn == i) { g.setColour (Colours::black.withAlpha (0.18f)); g.fillRoundedRectangle (r.reduced (3), 14); }
+        if (heldFn == i || midiHeldFn == i) { g.setColour (Colours::black.withAlpha (0.18f)); g.fillRoundedRectangle (r.reduced (3), 14); }
         bool lit = fnMode[i] == mode && i != 6;
         Colour col = ledCol;
         if (i == 1) lit = fxGrab;
@@ -2007,9 +2034,11 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
         // la commande elle-meme (marche sur toutes les pages, comme le potard de la FM-1)
         const auto cid = FM9Processor::ctlId (ctl);
         const auto cname = FM9Processor::ctlName (ctl);
-        const int cc = proc.learnedCcFor (cid);
-        menu.addItem (4, "MIDI Learn: " + cname + (ctl >= 7 ? String() : String (" (all pages)")) + (cc >= 0 ? "  (CC " + String (cc) + ")" : String()), true, proc.isLearning() && proc.getLearnTarget() == cid);
-        menu.addItem (5, "Clear MIDI: " + cname, cc >= 0);
+        const auto src = proc.learnedSourceName (cid);
+        menu.addItem (4, "MIDI Learn: " + cname + (ctl >= 7 ? String() : String (" (all pages)")) + (src.isNotEmpty() ? "  (" + src + ")" : String()), true, proc.isLearning() && proc.getLearnTarget() == cid);
+        if (ctl >= FM9Processor::firstButton && proc.isLearning() && proc.getLearnTarget() == cid)
+            menu.addItem (6, "Waiting: press a button, pad or key of your keyboard", false);
+        menu.addItem (5, "Clear MIDI: " + cname, src.isNotEmpty());
         if (learnId.isEmpty() && proc.isLearning()) menu.addItem (3, "Cancel MIDI learn");
         if (learnId.isEmpty()) menu.addSeparator();
     }
@@ -2139,6 +2168,7 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
         ctl.addItem (612, "MIDI Learn always has priority", false);
         midi.addSubMenu ("Controller", ctl);
     }
+    midi.addItem (614, "FM-9 keys follow your keyboard's octave", true, proc.kbFollow.load());
     midi.addSeparator();
     midi.addItem (601, "Right-click a knob to learn it (the knob itself or its parameter)", false);
     midi.addItem (602, "Program Change 0-127 = presets 001-128", false);
@@ -2251,6 +2281,12 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
             }
             else if (r == 954) { skinFolder().createDirectory(); skinFolder().startAsProcess(); }
             else if (r > 500 && r < 600) { pr.uiState.setProperty ("glow", r - 500, nullptr); ed.repaint(); }
+            else if (r == 614)
+            {
+                const bool f = ! pr.kbFollow.load();
+                pr.kbFollow.store (f); pr.uiState.setProperty ("kbFollow", f, nullptr);
+                ed.popup ("Keyboard", f ? "FM-9 follows your octave" : "OCT transposes your keyboard");
+            }
             else if (r == 610 || r == 611) { pr.ctlProfile.store (r - 610); ed.popup ("Controller", r == 611 ? "KeyStep 37" : "MIDI Learn"); }
             else if (r == 620)
             {
@@ -2351,8 +2387,13 @@ void FM9Editor::openCatalog()
         self->firmwareActivated (name);
         MessageManager::callAsync ([self] { if (self != nullptr) self->catalog.reset(); });
     };
-    addAndMakeVisible (*catalog);
-    catalog->setBounds (getLocalBounds());
+    if (isShowing() && getScreenBounds().getWidth() < fm9::FirmwareCatalogView::bigW)
+        catalog->floatOver (*this);              // fenetre agrandie, qui deborde de celle du VST (lisibilite)
+    else
+    {
+        addAndMakeVisible (*catalog);
+        catalog->setBounds (getLocalBounds());
+    }
 }
 
 void FM9Editor::installFromGitHub()
@@ -2463,8 +2504,10 @@ void FM9Editor::deleteFirmware (const String& name)
         self->popup ("Firmware deleted", stem + " (" + String (n) + " files)");
     };
     confirm.reset (c);
-    addAndMakeVisible (*c);
-    c->setBounds (getLocalBounds());
+    // catalogue en fenetre flottante : la confirmation s'affiche dedans
+    Component& host = (catalog != nullptr && catalog->isFloating()) ? static_cast<Component&> (*catalog) : static_cast<Component&> (*this);
+    host.addAndMakeVisible (*c);
+    c->setBounds (host.getLocalBounds());
     c->toFront (true);
 }
 

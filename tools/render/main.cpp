@@ -87,12 +87,25 @@ static void midiTest()
     juce::AudioBuffer<float> buf (2, 512);
     auto block = [&] (juce::MidiMessage m) { juce::MidiBuffer mb; mb.addEvent (m, 0); p.processBlock (buf, mb); juce::MessageManager::getInstance()->runDispatchLoopUntil (150); };
     auto on = [&] (int n) { return ((p.keyBits[n >> 5].load() >> (n & 31)) & 1u) != 0; };
+    // par defaut : les touches de FM-9 suivent l'octave du clavier maitre
+    block (juce::MidiMessage::noteOn (1, 60, (juce::uint8) 100));
+    check (on (60) && p.kbOct.load() == 0, "clavier maitre : la note 60 joue 60, octave de FM-9 inchangee (F3-G5)");
+    block (juce::MidiMessage::noteOff (1, 60));
+    block (juce::MidiMessage::noteOn (1, 84, (juce::uint8) 100));
+    check (on (84) && p.kbOct.load() == 1 && (int) p.uiState.getProperty ("octave", 0) == 1, "note au-dessus de la plage : FM-9 passe a l'octave +1");
+    block (juce::MidiMessage::noteOff (1, 84));
+    block (juce::MidiMessage::noteOn (1, 45, (juce::uint8) 100));
+    check (on (45) && p.kbOct.load() == -1, "note en dessous : FM-9 descend a l'octave -1");
+    block (juce::MidiMessage::noteOff (1, 45));
+    p.kbFollow.store (false); p.kbOct.store (0);
     p.kbShift.store (12);
     block (juce::MidiMessage::noteOn (1, 60, (juce::uint8) 100));
-    check (on (72) && ! on (60), "OCT+ : la note 60 du clavier maitre joue 72");
+    check (on (72) && ! on (60), "option OCT transpose : la note 60 du clavier maitre joue 72");
     p.kbShift.store (0);
     block (juce::MidiMessage::noteOff (1, 60));
     check (! on (72), "relachement correct meme si l'octave a change entre-temps");
+    p.kbFollow.store (true);
+    p.uiState.setProperty ("octave", 0, nullptr); p.kbOct.store (0); p.kbShift.store (0);
     p.applyMidiMapString ("20=ctl:presets;21=ctl:knob1;22=volume");
     check (p.learnedCcFor ("ctl:presets") == 20 && p.learnedCcFor ("ctl:knob1") == 21, "commandes PRESETS et KNOB1 assignables");
     const int prog = p.getCurrentProgram();
@@ -110,6 +123,28 @@ static void midiTest()
     FM9Processor r; r.setStateInformation (st.getData(), (int) st.getSize());
     check (r.learnedCcFor ("ctl:presets") == 20, "assignations des commandes gardees avec le projet");
     f.deleteFile();
+    p.ctlUi.store (false);
+    // boutons de fonction : MIDI Learn sur un CC, une touche, une commande MMC (boutons de transport du clavier)
+    p.ctlUi.store (true);
+    const int fx = FM9Processor::firstFn;           // FX
+    p.startMidiLearn ("ctl:btn_fx"); block (juce::MidiMessage::controllerEvent (1, 64, 127));
+    check (p.learnedCcFor ("ctl:btn_fx") == 64, "MIDI Learn de FX sur un CC");
+    for (auto& c : p.ctlSteps) c.store (0); for (auto& c : p.ctlRel) c.store (0);
+    block (juce::MidiMessage::controllerEvent (1, 64, 0)); block (juce::MidiMessage::controllerEvent (1, 64, 127)); block (juce::MidiMessage::controllerEvent (1, 64, 0));
+    check (p.ctlSteps[(size_t) fx].load() == 1 && p.ctlRel[(size_t) fx].load() >= 1, "CC sur FX : appui et relachement transmis");
+    p.startMidiLearn ("ctl:btn_play"); block (juce::MidiMessage::noteOn (1, 36, (juce::uint8) 100)); block (juce::MidiMessage::noteOff (1, 36));
+    check (p.learnedSourceName ("ctl:btn_play") == "Note C1", "MIDI Learn de PLAY/STOP sur une touche (" + p.learnedSourceName ("ctl:btn_play") + ")");
+    const int play = fx + 10;
+    for (auto& c : p.ctlSteps) c.store (0);
+    block (juce::MidiMessage::noteOn (1, 36, (juce::uint8) 100));
+    check (p.ctlSteps[(size_t) play].load() == 1 && ! on (36), "la touche apprise appuie sur PLAY/STOP sans jouer de note");
+    p.startMidiLearn ("ctl:btn_rec"); const juce::uint8 mmc[] = { 0x7f, 0x7f, 0x06, 0x06 };
+    block (juce::MidiMessage::createSysExMessage (mmc, 4));
+    check (p.learnedSourceName ("ctl:btn_rec") == "MMC Record", "MIDI Learn de REC sur le bouton Record du clavier (MMC)");
+    p.startMidiLearn ("ctl:btn_seq"); block (juce::MidiMessage::midiStart());
+    check (p.learnedSourceName ("ctl:btn_seq") == "Start", "MIDI Learn de SEQ sur Start");
+    FM9Processor q2; q2.applyMidiMapString (p.midiMapString());
+    check (q2.learnedSourceName ("ctl:btn_play") == "Note C1" && q2.learnedSourceName ("ctl:btn_rec") == "MMC Record", "boutons appris gardes dans la configuration MIDI");
     p.ctlUi.store (false);
     p.applyMidiMapString ("30=ctl:octup");
     block (juce::MidiMessage::controllerEvent (1, 30, 127));
@@ -314,6 +349,36 @@ int main (int argc, char** argv)
         if (img.isValid()) { juce::FileOutputStream os (out); juce::PNGImageFormat().writeImageToStream (img, os); }
         std::printf ("fwshot %s\n", img.isValid() ? "ok" : "fail"); std::fflush (stdout); std::_Exit (0);
     }
+    if (args.contains ("--level"))
+    {
+        // niveau de sortie : chaque preset d'usine, une note puis un accord de 3 notes, crete et RMS en dBFS
+        FM9Processor p; p.prepareToPlay (48000, 512);
+        juce::AudioBuffer<float> b (2, 512);
+        const int nprog = juce::jmin (p.getNumPrograms(), args[args.indexOf ("--level") + 1].getIntValue() > 0 ? args[args.indexOf ("--level") + 1].getIntValue() : 32);
+        double sumPk = 0; int quiet = 0;
+        for (int prg = 0; prg < nprog; ++prg)
+        {
+            p.setCurrentProgram (prg);
+            for (int chord = 0; chord < 2; ++chord)
+            {
+                float pk = 0; double ss = 0; long n = 0;
+                for (int i = 0; i < 120; ++i)
+                {
+                    juce::MidiBuffer m;
+                    if (i == 2) { m.addEvent (juce::MidiMessage::noteOn (1, 60, (juce::uint8) 100), 0); if (chord) { m.addEvent (juce::MidiMessage::noteOn (1, 64, (juce::uint8) 100), 0); m.addEvent (juce::MidiMessage::noteOn (1, 67, (juce::uint8) 100), 0); } }
+                    if (i == 80) m.addEvent (juce::MidiMessage::allNotesOff (1), 0);
+                    p.processBlock (b, m);
+                    if (i >= 2 && i < 80) for (int k = 0; k < 512; ++k) { const float v = b.getSample (0, k); pk = juce::jmax (pk, std::abs (v)); ss += v * v; ++n; }
+                }
+                for (int i = 0; i < 60; ++i) { juce::MidiBuffer m; p.processBlock (b, m); }
+                const double pkDb = juce::Decibels::gainToDecibels (pk, -120.0f), rmsDb = juce::Decibels::gainToDecibels ((float) std::sqrt (ss / juce::jmax (1L, n)), -120.0f);
+                if (! chord) { sumPk += pkDb; if (pkDb < -18) ++quiet; }
+                std::printf ("%-4s %-14s %s peak %6.1f dB  rms %6.1f dB\n", FM9Processor::programLabel (prg).toRawUTF8(), p.getProgramName (prg).toRawUTF8(), chord ? "chord" : "note ", pkDb, rmsDb);
+            }
+        }
+        std::printf ("moyenne crete (note) %.1f dB, %d presets sous -18 dB\n", sumPk / nprog, quiet);
+        std::fflush (stdout); std::_Exit (0);
+    }
     if (args.contains ("--webtrial"))
     {
         juce::MemoryBlock mb; juce::File (args[args.indexOf ("--webtrial") + 1]).loadFileAsData (mb);
@@ -404,6 +469,7 @@ int main (int argc, char** argv)
             if (dest == juce::File() || ! p.activateFirmware (name, err)) { std::printf ("hwmidi fail %s\n", err.toRawUTF8()); return 1; }
             const int ch = std::getenv ("HWMIDI_CH") ? std::atoi (std::getenv ("HWMIDI_CH")) : 1;
             p.fwOutCh.store (std::getenv ("HWMIDI_OUT") ? std::atoi (std::getenv ("HWMIDI_OUT")) : 0);
+            if (std::getenv ("HWMIDI_MASTER")) p.fwMasterOverride.store ((float) std::atof (std::getenv ("HWMIDI_MASTER")));
             juce::AudioBuffer<float> b2 (2, 512); float before = 0, after = 0;
             const double t0 = juce::Time::getMillisecondCounterHiRes();
             for (int i = 0; i < 420; ++i)
@@ -481,8 +547,8 @@ int main (int argc, char** argv)
             if (args.contains ("--saveskin")) std::printf ("save %d\n", (int) fe->saveUserSkin (args[args.indexOf ("--saveskin") + 1]));
             if (args.contains ("--loadskin")) std::printf ("load %d\n", (int) fe->loadUserSkin (FM9Editor::skinFolder().getChildFile (args[args.indexOf ("--loadskin") + 1] + ".fm9skin")));
             if (args.contains ("--catalog")) fe->openCatalog();
-            if ((args.contains ("--catsearch") || args.contains ("--catcompat")) && fe->catalog != nullptr)
-                fe->catalog->setFilterForTest (args.contains ("--catsearch") ? args[args.indexOf ("--catsearch") + 1] : String(), args.contains ("--catcompat"));
+            if ((args.contains ("--catsearch") || args.contains ("--catcompat") || args.contains ("--catinst") || args.contains ("--catmode")) && fe->catalog != nullptr)
+                fe->catalog->setFilterForTest (args.contains ("--catsearch") ? args[args.indexOf ("--catsearch") + 1] : String(), args.contains ("--catmode") ? args[args.indexOf ("--catmode") + 1].getIntValue() : args.contains ("--catinst") ? 2 : args.contains ("--catcompat") ? 1 : 0);
             if (args.contains ("--delskin")) fe->deleteUserSkin (FM9Editor::skinFolder().getChildFile (args[args.indexOf ("--delskin") + 1] + ".fm9skin"));
             if (args.contains ("--confirmdel")) fe->deleteFirmware (args[args.indexOf ("--confirmdel") + 1]);
             if (args.contains ("--loading") && fe->catalog != nullptr)
@@ -502,6 +568,16 @@ int main (int argc, char** argv)
             }
         }
         if (auto* fw = p.firmware()) { juce::ignoreUnused (fw); }
+        if (args.contains ("--catbig"))
+            if (auto* fe = dynamic_cast<FM9Editor*> (ed.get()); fe != nullptr && fe->catalog != nullptr)
+            {
+                // fenetre agrandie du catalogue, rendue seule a sa taille
+                fe->catalog->setBounds (0, 0, fm9::FirmwareCatalogView::bigW, fm9::FirmwareCatalogView::bigH);
+                fe->catalog->setFilterForTest (args.contains ("--catsearch") ? args[args.indexOf ("--catsearch") + 1] : String(), args.contains ("--catmode") ? args[args.indexOf ("--catmode") + 1].getIntValue() : 0);
+                auto ci = fe->catalog->createComponentSnapshot (fe->catalog->getLocalBounds(), true, scale);
+                juce::File (args[args.indexOf ("--catbig") + 1]).deleteFile();
+                juce::FileOutputStream os (juce::File (args[args.indexOf ("--catbig") + 1])); juce::PNGImageFormat().writeImageToStream (ci, os);
+            }
         auto img = ed->createComponentSnapshot (ed->getLocalBounds(), true, scale);
         if (args.contains ("--skinmenu"))
             if (auto* fe = dynamic_cast<FM9Editor*> (ed.get()))

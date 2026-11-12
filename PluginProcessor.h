@@ -55,7 +55,10 @@ public:
     void nextProgram (int delta) { setCurrentProgram ((currentProgram + delta + getNumPrograms()) % getNumPrograms()); }
 
     // --- MIDI learn ---
-    void startMidiLearn (const juce::String& paramId) { learnTarget = paramId; learning.store (true); }
+    void startMidiLearn (const juce::String& paramId)
+    {
+        learnTarget = paramId; learnButton.store (paramId.startsWith ("ctl:oct") || paramId.startsWith ("ctl:btn_")); learning.store (true);
+    }
     void cancelMidiLearn() { learning.store (false); learnTarget.clear(); }
     void clearMidiLearn (const juce::String& paramId);
     int learnedCcFor (const juce::String& paramId) const;
@@ -64,8 +67,11 @@ public:
 
     // commandes physiques de la facade, assignables en MIDI Learn quelle que soit la page :
     // 0 SELECT, 1 PRESETS, 2 ALGORITHM, 3-6 KNOB1-4 (cible "ctl:<nom>", un CC absolu donne des pas),
-    // 7-8 OCT- / OCT+ (boutons : un appui quand le CC passe au-dessus de 63)
-    static constexpr int ctlBase = 10000, numCtl = 9;
+    // 7-8 OCT- / OCT+, 9-20 les 12 boutons de fonction (FX ... REC) : un appui quand le CC passe au-dessus de 63,
+    // ou une touche (note), Start / Continue / Stop, une commande MMC du clavier (boutons de transport)
+    static constexpr int ctlBase = 10000, numCtl = 21, firstButton = 7, firstFn = 9;
+    std::array<std::atomic<int>, numCtl> ctlRel {};       // relachements en attente (boutons), consommes par l'interface
+    juce::String learnedSourceName (const juce::String& id) const;   // "CC 20", "Note C3", "Start", "MMC Play"...
     static juce::String ctlId (int i);
     static juce::String ctlName (int i);
     std::array<std::atomic<int>, numCtl> ctlSteps {};     // pas en attente, consommes par l'interface
@@ -81,6 +87,25 @@ public:
 
     // OCT- / OCT+ et transposition : appliques aussi aux notes du clavier maitre (en demi-tons)
     std::atomic<int> kbShift { 0 };
+    // clavier maitre : les touches de FM-9 suivent l'octave du clavier (une note hors de la plage affichee la decale d'une octave)
+    std::atomic<float> fwMasterOverride { -1.0f };
+    // limiteur de sortie : +6 dB sur le synthe, crete limitee a -0.5 dBFS (attaque immediate, retour en 120 ms)
+    struct Limiter
+    {
+        float env = 1.0f, rel = 0.0002f;
+        static constexpr float ceil = 0.944f;
+        void prepare (double sr) { rel = 1.0f - std::exp (-1.0f / (0.12f * (float) sr)); env = 1.0f; }
+        float gain (float a)
+        {
+            const float t = a > ceil ? ceil / a : 1.0f;
+            if (t < env) env = t; else env += (t - env) * rel;
+            return env;
+        }
+    } limiter;
+    static constexpr float synthMakeup = 2.0f;                   // +6 dB          // test : position du MASTER du firmware (-1 = a fond)
+    std::atomic<bool> kbFollow { true };
+    std::atomic<int> kbOct { 0 };                           // octave affichee par FM-9 (comme l'octave de la facade)
+    std::atomic<bool> kbOctChanged { false };
 
     // --- etat lu par l'interface ---
     std::atomic<uint32_t> keyBits[4] {};      // notes en cours (128 bits)
@@ -188,6 +213,14 @@ private:
     std::array<std::atomic<float>, 128> ccValue;
     std::array<std::atomic<bool>, 128> ccPending;
     std::atomic<int> learnCc { -1 };
+    // boutons appris sur autre chose qu'un CC : 128 + note, 256 Start, 257 Continue, 258 Stop, 300 + commande MMC
+    static constexpr int extSources = 512;
+    std::array<std::atomic<int>, extSources> extTarget;
+    std::atomic<int> learnExt { -1 };
+    std::atomic<bool> learnButton { false };
+    std::array<std::atomic<int>, numCtl> btnPress {}, btnRel {};
+    bool routeButtonSource (const juce::MidiMessage& m);        // vrai : message consomme (appris ou en cours d'apprentissage)
+    void dispatchButtons();
     juce::Array<juce::RangedAudioParameter*> allParams;
     struct CcRamp { float from = 0, to = 0, cur = 0; double t0 = 0, dur = 0.03, lastTime = 0; int lo = 127, hi = 0; bool active = false; };
     std::array<CcRamp, 128> ramps;

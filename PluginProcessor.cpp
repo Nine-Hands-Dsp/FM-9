@@ -35,6 +35,7 @@ FM9Processor::FM9Processor()
         if (auto* r = dynamic_cast<juce::RangedAudioParameter*> (prm)) allParams.add (r);
     for (auto& v : patternVoice) v.store (-1);
     for (int c = 0; c < 16; ++c) for (int i = 0; i < 128; ++i) shiftedNote[c][i] = (uint8_t) i;
+    for (auto& t : extTarget) t.store (-1);
     for (int i = 0; i < 128; ++i) { ctlLast[(size_t) i] = -1; ccTarget[(size_t) i].store (-1); ccValue[(size_t) i].store (0); ccPending[(size_t) i].store (false); keyStepTarget[(size_t) i] = -1; }
     for (auto& k : keyStepMap)
         for (int i = 0; i < allParams.size(); ++i)
@@ -155,6 +156,7 @@ void FM9Processor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     sr = sampleRate;
     blockSize = samplesPerBlock;
+    limiter.prepare (sampleRate);
     if (auto* fw = fwOwner.get()) { fw->prepare (sr, samplesPerBlock); setLatencySamples (fw->latencySamples (sr)); }
     engine.prepare (sr);
     fx.prepare (sr, juce::jmax (samplesPerBlock, 4096) + 64);
@@ -303,13 +305,15 @@ void FM9Processor::resetBankToFactory (int bank)
 // ------------------------------------------------------------------------------------------------
 juce::String FM9Processor::ctlId (int i)
 {
-    static const char* n[numCtl] = { "select", "presets", "algorithm", "knob1", "knob2", "knob3", "knob4", "octdown", "octup" };
+    static const char* n[numCtl] = { "select", "presets", "algorithm", "knob1", "knob2", "knob3", "knob4", "octdown", "octup",
+                                     "btn_fx", "btn_sel", "btn_env", "btn_lfo", "btn_edit", "btn_glo", "btn_home", "btn_save", "btn_arp", "btn_seq", "btn_play", "btn_rec" };
     return "ctl:" + juce::String (n[juce::jlimit (0, numCtl - 1, i)]);
 }
 
 juce::String FM9Processor::ctlName (int i)
 {
-    static const char* n[numCtl] = { "SELECT", "PRESETS", "ALGORITHM", "KNOB1", "KNOB2", "KNOB3", "KNOB4", "OCT-", "OCT+" };
+    static const char* n[numCtl] = { "SELECT", "PRESETS", "ALGORITHM", "KNOB1", "KNOB2", "KNOB3", "KNOB4", "OCT-", "OCT+",
+                                     "FX", "SEL", "ENV", "LFO", "EDIT", "GLO", "HOME", "SAVE", "ARP", "SEQ", "PLAY/STOP", "REC" };
     return n[juce::jlimit (0, numCtl - 1, i)];
 }
 
@@ -331,6 +335,82 @@ void FM9Processor::clearMidiLearn (const juce::String& paramId)
 {
     for (int c = 0; c < 128; ++c)
         if (targetIdOf (ccTarget[(size_t) c].load()) == paramId) ccTarget[(size_t) c].store (-1);
+    for (auto& t : extTarget) if (targetIdOf (t.load()) == paramId) t.store (-1);
+}
+
+juce::String FM9Processor::learnedSourceName (const juce::String& id) const
+{
+    if (const int c = learnedCcFor (id); c >= 0) return "CC " + juce::String (c);
+    for (int s = 0; s < extSources; ++s)
+        if (targetIdOf (extTarget[(size_t) s].load()) == id)
+        {
+            if (s >= 128 && s < 256) return "Note " + juce::MidiMessage::getMidiNoteName (s - 128, true, true, 3);
+            if (s == 256) return "Start";
+            if (s == 257) return "Continue";
+            if (s == 258) return "Stop";
+            if (s >= 300 && s < 300 + 128)
+            {
+                const int c = s - 300;
+                return "MMC " + juce::String (c == 1 ? "Stop" : c == 2 ? "Play" : c == 3 ? "Deferred play" : c == 4 ? "Fast forward" : c == 5 ? "Rewind"
+                                              : c == 6 ? "Record" : c == 7 ? "Record exit" : c == 9 ? "Pause" : juce::String (c));
+            }
+        }
+    return {};
+}
+
+// boutons de la facade appris sur une touche, Start / Stop ou une commande MMC (thread audio)
+bool FM9Processor::routeButtonSource (const juce::MidiMessage& m)
+{
+    int src = -1;
+    bool momentary = true, down = true;
+    if (m.isNoteOnOrOff()) { src = 128 + m.getNoteNumber(); momentary = false; down = m.isNoteOn(); }
+    else if (m.isMidiStart()) src = 256;
+    else if (m.isMidiContinue()) src = 257;
+    else if (m.isMidiStop()) src = 258;
+    else if (m.isSysEx())
+    {
+        // MMC : F0 7F <appareil> 06 <commande> F7
+        const auto* d = m.getSysExData();
+        if (m.getSysExDataSize() >= 4 && d[0] == 0x7f && d[2] == 0x06) src = 300 + (d[3] & 0x7f);
+    }
+    if (src < 0) return false;
+    if (learning.load() && learnButton.load())
+    {
+        if (down) learnExt.store (src);
+        return true;
+    }
+    const int t = extTarget[(size_t) src].load();
+    if (t < ctlBase + firstButton || t >= ctlBase + numCtl) return false;
+    const int k = t - ctlBase;
+    if (momentary) { btnPress[(size_t) k].fetch_add (1); btnRel[(size_t) k].fetch_add (1); }
+    else (down ? btnPress : btnRel)[(size_t) k].fetch_add (1);
+    return true;
+}
+
+// appuis et relachements des boutons (thread de messages) : l'interface s'en charge, sinon le firmware ou l'octave
+void FM9Processor::dispatchButtons()
+{
+    for (int k = firstButton; k < numCtl; ++k)
+    {
+        const int pr = btnPress[(size_t) k].exchange (0), rl = btnRel[(size_t) k].exchange (0);
+        if (pr == 0 && rl == 0) continue;
+        if (ctlUi.load()) { ctlSteps[(size_t) k].fetch_add (pr); ctlRel[(size_t) k].fetch_add (rl); continue; }
+        const int idx = k >= firstFn ? k - firstFn : 12 + (k - firstButton);
+        if (auto* fw = firmware())
+        {
+            for (int n = 0; n < pr; ++n) { fw->button (idx, true); if (k < firstFn) fw->button (idx, false); }
+            if (k >= firstFn) for (int n = 0; n < rl; ++n) fw->button (idx, false);
+            continue;
+        }
+        if (k < firstFn)
+            for (int n = 0; n < pr; ++n)
+            {
+                const int oct = juce::jlimit (-3, 3, (int) uiState.getProperty ("octave", 0) + (k == firstButton ? -1 : 1));
+                uiState.setProperty ("octave", oct, nullptr);
+                kbShift.store (12 * oct + (int) uiState.getProperty ("transpose", 0));
+                kbOct.store (oct);
+            }
+    }
 }
 
 int FM9Processor::learnedCcFor (const juce::String& paramId) const
@@ -345,14 +425,24 @@ juce::String FM9Processor::midiMapString() const
     juce::StringArray map;
     for (int c = 0; c < 128; ++c)
         if (const auto id = targetIdOf (ccTarget[(size_t) c].load()); id.isNotEmpty()) map.add (juce::String (c) + "=" + id);
+    for (int s = 0; s < extSources; ++s)
+        if (const auto id = targetIdOf (extTarget[(size_t) s].load()); id.isNotEmpty()) map.add ("x" + juce::String (s) + "=" + id);
     return map.joinIntoString (";");
 }
 
 void FM9Processor::applyMidiMapString (const juce::String& mapText)
 {
     for (int c = 0; c < 128; ++c) { ccTarget[(size_t) c].store (-1); ctlLast[(size_t) c] = -1; ramps[(size_t) c] = {}; }
+    for (auto& t : extTarget) t.store (-1);
     for (auto& e : juce::StringArray::fromTokens (mapText, ";", ""))
     {
+        if (e.startsWith ("x"))
+        {
+            const int s = e.substring (1).upToFirstOccurrenceOf ("=", false, false).getIntValue();
+            const int t = targetIndexOf (e.fromFirstOccurrenceOf ("=", false, false));
+            if (t >= 0 && s >= 0 && s < extSources) extTarget[(size_t) s].store (t);
+            continue;
+        }
         const int c = e.upToFirstOccurrenceOf ("=", false, false).getIntValue();
         const int t = targetIndexOf (e.fromFirstOccurrenceOf ("=", false, false));
         if (t >= 0 && c >= 0 && c < 128) ccTarget[(size_t) c].store (t);
@@ -390,6 +480,11 @@ void FM9Processor::timerCallback()
     const double now = juce::Time::getMillisecondCounterHiRes() * 0.001;
 
     if (fm9::FirmwareHost::hwLatencyChanged().exchange (false)) updateFirmwareLatency();   // la marge de l'emulation a grandi
+    if (kbOctChanged.exchange (false))                       // l'octave a suivi le clavier maitre
+    {
+        uiState.setProperty ("octave", kbOct.load(), nullptr);
+        kbShift.store (12 * kbOct.load() + (int) uiState.getProperty ("transpose", 0));
+    }
 
     // configuration MIDI par defaut (nouvelle instance sans assignation)
     if (pendingDefaultMap) { pendingDefaultMap = false; if (midiMapString().isEmpty() && defaultMidiMapFile().existsAsFile()) loadMidiMap (defaultMidiMapFile()); }
@@ -410,6 +505,17 @@ void FM9Processor::timerCallback()
         learnTarget.clear();
         sendChangeMessageToUi();
     }
+    const int le = learnExt.exchange (-1);
+    if (le >= 0 && learning.load())
+    {
+        const int target = targetIndexOf (learnTarget);
+        if (target >= 0) { clearMidiLearn (learnTarget); extTarget[(size_t) le].store (target); }
+        learning.store (false);
+        learnTarget.clear();
+        sendChangeMessageToUi();
+    }
+
+    dispatchButtons();
 
     // CC appris -> parametres, avec rampe et course apprise
     for (int c = 0; c < 128; ++c)
@@ -426,20 +532,14 @@ void FM9Processor::timerCallback()
             if (! ccPending[(size_t) c].exchange (false)) continue;
             const int v = juce::roundToInt (ccValue[(size_t) c].load());
             int& last = ctlLast[(size_t) c];
-            if (t - ctlBase >= 7)
+            if (t - ctlBase >= firstButton)
             {
-                // OCT- / OCT+ : un appui a chaque passage au-dessus de 63 (bouton ou pad du clavier)
-                const bool press = v >= 64 && last < 64;
+                // boutons (OCT- / OCT+, FX ... REC) : appui quand le CC passe au-dessus de 63, relachement en dessous
+                const int k = t - ctlBase;
+                const bool press = v >= 64 && last < 64, release = v < 64 && last >= 64;
                 last = v;
-                if (! press) continue;
-                const int dir = t - ctlBase == 7 ? -1 : 1;
-                if (ctlUi.load()) ctlSteps[(size_t) (t - ctlBase)].fetch_add (1);
-                else
-                {
-                    const int oct = juce::jlimit (-3, 3, (int) uiState.getProperty ("octave", 0) + dir);
-                    uiState.setProperty ("octave", oct, nullptr);
-                    kbShift.store (12 * oct + (int) uiState.getProperty ("transpose", 0));
-                }
+                if (press) btnPress[(size_t) k].fetch_add (1);
+                if (release && k >= firstFn) btnRel[(size_t) k].fetch_add (1);
                 continue;
             }
             int steps = last < 0 ? 0 : v - last;
@@ -646,6 +746,7 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
         {
             const auto& m = meta.getMessage();
             if (midiCh > 0 && m.getChannel() > 0 && m.getChannel() != midiCh) continue;
+            if (routeButtonSource (m)) continue;                     // touche / Start / MMC apprise sur un bouton
             if (m.isController() && (learning.load() || ccTarget[(size_t) m.getControllerNumber()].load() >= 0))
             {
                 juce::MidiBuffer tmp; handleMidi (m, 0, tmp);       // MIDI Learn (volume...)
@@ -662,10 +763,22 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
             else fw->handleMidi (m);
         }
         midi.clear();
-        if (auto* vol = apvts.getParameter ("volume")) fw->master (vol->getValue());
+        // MASTER de la FM-1 toujours a fond (comme l'appareil monte au maximum) ; le Volume de FM-9 (dB) s'applique ensuite.
+        // Avant : Volume a 0 dB = potard MASTER du firmware a 75 % seulement, d'ou un son trop faible avec les firmwares.
+        fw->master (fwMasterOverride.load() >= 0.0f ? fwMasterOverride.load() : 1.0f);
         float* L = buffer.getWritePointer (0);
         float* R = buffer.getNumChannels() > 1 ? buffer.getWritePointer (1) : mono.data();
         fw->render (L, R, n, sr);
+        {
+            const float g = juce::Decibels::decibelsToGain (p[pVolume]->load());
+            for (int i = 0; i < n; ++i)
+            {
+                float l = L[i] * g, r = R[i] * g;
+                if (! std::isfinite (l) || ! std::isfinite (r)) l = r = 0;
+                const float lg = limiter.gain (juce::jmax (std::abs (l), std::abs (r)));   // limiteur lie gauche / droite
+                L[i] = l * lg; R[i] = r * lg;
+            }
+        }
         float peak = 0;
         for (int i = 0; i < n; ++i) peak = juce::jmax (peak, std::abs (L[i]));
         outLevel.store (juce::jmax (peak, outLevel.load() * 0.9f));
@@ -728,12 +841,23 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
     {
         const auto& m = meta.getMessage();
         if (midiCh > 0 && m.getChannel() > 0 && m.getChannel() != midiCh && ! m.isSysEx()) continue;
+        if (routeButtonSource (m)) continue;                         // touche / Start / MMC apprise sur un bouton
         if (m.isNoteOnOrOff())
         {
             // OCT- / OCT+ et transposition de la facade s'appliquent aussi au clavier maitre
             const int ch = juce::jlimit (1, 16, m.getChannel()) - 1, in = m.getNoteNumber();
             int out;
-            if (m.isNoteOn()) { out = juce::jlimit (0, 127, in + kbShift.load()); shiftedNote[ch][in] = (uint8_t) out; }
+            if (m.isNoteOn() && kbFollow.load())
+            {
+                // la note joue a sa hauteur ; hors des 27 touches affichees (F3 + 12 x octave ... + 26), FM-9 change d'octave
+                const int oct = kbOct.load();
+                int no = oct;
+                while (in < 53 + 12 * no && no > -3) --no;
+                while (in > 53 + 12 * no + 26 && no < 3) ++no;
+                if (no != oct) { kbOct.store (no); kbOctChanged.store (true); }
+                out = in; shiftedNote[ch][in] = (uint8_t) out;
+            }
+            else if (m.isNoteOn()) { out = juce::jlimit (0, 127, in + kbShift.load()); shiftedNote[ch][in] = (uint8_t) out; }
             else out = shiftedNote[ch][in];
             if (out != in)
             {
@@ -830,8 +954,9 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
     float peak = 0;
     for (int i = 0; i < n; ++i)
     {
-        float y = out[i] * g;
+        float y = out[i] * g * synthMakeup;
         if (! std::isfinite (y)) y = 0;
+        y *= limiter.gain (std::abs (y));                       // jamais au-dessus de -0.5 dBFS
         out[i] = y;
         peak = juce::jmax (peak, std::abs (y));
     }
@@ -901,6 +1026,8 @@ void FM9Processor::setStateInformation (const void* data, int sizeInBytes)
     applyMidiMapString (state.getProperty ("midiMap").toString());
     pendingDefaultMap = false;                       // le projet a sa propre configuration
     kbShift.store (12 * (int) uiState.getProperty ("octave", 0) + (int) uiState.getProperty ("transpose", 0));
+    kbOct.store ((int) uiState.getProperty ("octave", 0));
+    kbFollow.store ((bool) uiState.getProperty ("kbFollow", true));
     apvts.replaceState (state);
     sendChangeMessageToUi();
 }

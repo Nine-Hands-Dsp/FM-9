@@ -38,7 +38,10 @@ for e in cat["firmwares"]:
             d = get(url); d = wasm_of(d) if web else d
             if d: data = d; break
         except Exception as x: print("  download", url, x)
-    if not data: fail += 1; print("NO FILE", e["name"]); continue
+    if not data:
+        fail += 1; print("NO FILE", e["name"])
+        if e.pop("unverified", None): e["compatible"] = False; e["reason"] = "package not downloadable"
+        continue
     with tempfile.NamedTemporaryFile(suffix=".bin", delete=False) as t: t.write(data); path = t.name
     try:
         r = subprocess.run([RENDER, "--fwshot", path, dst], capture_output=True, text=True, timeout=120)
@@ -46,5 +49,8 @@ for e in cat["firmwares"]:
     except subprocess.TimeoutExpired: good = False
     os.unlink(path)
     ok += good; fail += not good
+    if e.pop("unverified", None) is not None and not good:
+        e["compatible"] = False; e["reason"] = "does not start in FM-9 (chip emulation)"
     print(("OK  " if good else "FAIL"), e["name"], flush=True)
 print("previews :", ok, "ok,", fail, "echecs")
+json.dump(cat, open(CAT, "w", encoding="utf-8"), indent=1, ensure_ascii=False)

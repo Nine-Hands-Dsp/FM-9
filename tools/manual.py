@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.15"
+VERSION = "1.3.16"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -186,7 +186,7 @@ T = dict(
     scr_cap2="Mode EDIT (OP1, page 2/6), séquenceur en enregistrement.",
     knobs_t="Potards",
     knobs=["Les potards se tournent en glissant verticalement (Maj = réglage fin) ou à la molette. MASTER est un potentiomètre classique "
-           "(double-clic = valeur par défaut). Les sept autres sont des <b>encodeurs sans fin</b> comme sur la FM-1 : chaque cran avance "
+           "(double-clic = valeur par défaut). Un limiteur de sortie garde le son sous -0,5 dBFS : le synthé gagne 6 dB sans saturer en accords. Les sept autres sont des <b>encodeurs sans fin</b> comme sur la FM-1 : chaque cran avance "
            "le réglage d'un pas. Un clic droit sur un potard ouvre son menu (MIDI Learn du réglage qu'il commande, voir MIDI)."],
     fn_t="Touches de fonction",
     fn_rows=[["Touche", "Fonction"],
@@ -208,7 +208,7 @@ T = dict(
         "<b>OCT- / OCT+</b> décalent le clavier d'une octave (de -3 à +3). Leur LED est du côté du décalage : clignotement lent à ±1, rapide à ±2, "
         "fixe à ±3. <b>Tenez OCT- ou OCT+ et glissez vers le haut</b> pour transposer de 0 à -12 ou de 0 à +12 demi-tons "
         "(sur la FM-1 : OCT tenu + ALGORITHM). <b>Maj + clic</b> sur une touche OCT remet octave et transposition à zéro "
-        "(les deux touches ensemble sur la FM-1). Octave et transposition s'appliquent au clavier de la façade et aux notes de votre clavier maître."],
+        "(les deux touches ensemble sur la FM-1). Votre clavier maître joue les notes à leur hauteur et les touches de FM-9 le suivent : quand vous changez d'octave sur votre clavier (ou jouez au-delà des 27 touches affichées), FM-9 passe à l'octave correspondante et les touches s'allument au même endroit. Clic droit &gt; MIDI &gt; <b>FM-9 keys follow your keyboard's octave</b> (coché par défaut) ; décoché, OCT- / OCT+ et la transposition de la façade décalent aussi les notes de votre clavier maître."],
     edit_t="Mode EDIT : édition des opérateurs",
     edit=["En mode EDIT, les touches noires deviennent des sélecteurs (leurs LED clignotent, la sélection est fixe) : <b>OP1 à OP6</b> ouvrent "
           "l'opérateur (un <b>appui long</b> le coupe ou le rétablit : LED rouge), <b>PIT</b> l'enveloppe de hauteur, <b>GLO</b> les paramètres "
@@ -278,6 +278,11 @@ T = dict(
            "Pour ALGORITHM et KNOB1 à 4, le menu propose aussi d'apprendre le réglage affiché à ce moment (il reste alors lié à ce réglage). "
            "Sur l'écran d'accueil (HOME), KNOB1 à 4 règlent Cutoff, Resonance, Reverb et Delay (l'effet se met en marche). Le clic droit marche sur le potard, sur son nom et tout autour. <b>OCT- et OCT+</b> s'apprennent aussi (clic droit sur la touche) : "
            "un bouton ou un pad de votre clavier qui envoie un CC décale alors l'octave à chaque appui. Les boutons d'octave de la plupart des claviers (dont l'Arturia KeyStep 37) n'envoient pas de CC : ils décalent directement les notes envoyées, FM-9 joue donc déjà à la bonne hauteur.",
+           "<b>Boutons de la façade</b> : les douze boutons (FX, SEL, ENV, LFO, EDIT, GLO, HOME, SAVE, ARP, SEQ, PLAY/STOP, REC) et OCT- / OCT+ "
+           "s'apprennent par un clic droit sur le bouton &gt; MIDI Learn, puis en appuyant sur la commande de votre clavier : un bouton ou un pad qui envoie un CC, "
+           "une touche du clavier (elle ne joue plus de note et devient ce bouton), les boutons de transport (Start, Stop, Continue) ou une commande MMC "
+           "(Play, Stop, Record...). Le menu indique ce qui est appris (par exemple « CC 64 », « Note C1 », « MMC Record »). "
+           "L'appui et le relâchement suivent la commande : SAVE tenu enregistre le preset comme à la souris ; avec un firmware, le bouton lui est transmis.",
            "<b>Configurations MIDI</b> : clic droit &gt; MIDI &gt; <b>Save MIDI map...</b> enregistre toutes vos assignations ; "
            "<b>Load MIDI map</b> les recharge ; <b>Use current assignments for new FM-9 instances</b> les applique à chaque nouvelle FM-9 "
            "(<b>Forget the default MIDI map</b> l'annule). Les assignations sont aussi gardées avec le projet.",
@@ -293,7 +298,7 @@ T = dict(
     fac_hdr=["N°", "Nom", "Caractère"],
     fw_t="Firmwares de la FM-1",
     fw=["FM-9 peut faire tourner les <b>firmwares de la FM-1</b> à la place de son synthé : l'écran du firmware s'affiche dans la vitre, "
-        "les touches, potards, touches OCT et LED de la façade sont les siens, et votre clavier maître le joue. MASTER règle son volume. "
+        "les touches, potards, touches OCT et LED de la façade sont les siens, et votre clavier maître le joue. MASTER règle son volume (le potard MASTER du firmware reste à fond, comme sur l'appareil monté au maximum ; le Volume de FM-9 s'applique ensuite). "
         "Deux sortes de firmwares sont acceptées :",
         "<b>Paquets matériels (.fwsc)</b> : le fichier que l'on installe dans une vraie FM-1. FM-9 le fait tourner dans un <b>émulateur de la puce "
         "de la FM-1</b> (le JieLi AC791N et ses deux cœurs, d'après le projet libre fm1-emu de Joakim Eriksson) : c'est exactement le firmware de "
@@ -307,7 +312,12 @@ T = dict(
         "description et trois boutons : la <b>flèche bleue</b> le télécharge (un anneau montre la progression), la <b>coche verte</b> s'allume une fois "
         "le firmware téléchargé, le bouton <b>Load</b> (ou la coche) le lance, la <b>corbeille</b> le supprime (avec confirmation). Quand une version plus récente d'un firmware "
         "installé est publiée, sa fiche s'entoure d'orange, un bandeau <b>UPDATE</b> s'affiche sur l'écran et la flèche, orange, installe la mise à jour. "
-        "En haut, le champ <b>Search</b> filtre par nom, auteur ou description, et <b>Compatible only</b> masque les firmwares incompatibles (marqués avec leur raison). "
+        "En haut, le champ <b>Search</b> filtre par nom, auteur ou description, et le sélecteur <b>All / Compatible / Installed / Favorites / New</b> (avec leurs compteurs) montre "
+        "tous les firmwares, les seuls compatibles (les autres sont marqués avec leur raison), ceux déjà installés, vos favoris, ou les nouveautés. "
+        "La petite <b>étoile</b> en haut à gauche de l'écran d'une fiche ajoute le firmware à vos favoris (gardés pour tous vos projets). "
+        "<b>NEW</b>, en bas à droite de l'écran, signale un firmware ajouté ces 7 derniers jours sur thefirmwarehub.com (le catalogue suit ce site chaque nuit). "
+        "Pour être plus lisible, le catalogue s'ouvre dans sa propre fenêtre (1360 x 840), centrée sur FM-9 et qui déborde de la fenêtre du VST ; "
+        "elle suit FM-9 si vous le déplacez et se ferme avec Close, Load ou la fenêtre de FM-9. "
         "<b>Install all compatible</b> installe d'un coup tous les firmwares libres compatibles, <b>Refresh</b> télécharge la dernière liste publiée. "
         "<b>Close</b> pendant une installation l'annule, puis ferme la fenêtre. Une version web qui ne démarre pas en 20 secondes n'est pas gardée "
         "(le paquet matériel reste installé). Un double-clic sur une fiche ouvre la page du projet. "
@@ -430,7 +440,7 @@ def section():
     rows = [t["fac_hdr"]] + [[str(i + 1).zfill(3), "<b>" + n + "</b>", d] for i, (n, d) in enumerate(FACTORY)]
     f.append(table(rows, [12 * mm, 30 * mm, W - 42 * mm], small=True))
     f.append(P(t["fw_t"], "h1")); f += [P(x) for x in t["fw"][:4]]
-    f.append(img(os.path.join(SHOTS, "apercu_catalogue.png"), W * 0.8)); f.append(P("Le catalogue des firmwares en galerie : Felucca installé avec une mise à jour disponible (bandeau UPDATE).", "small"))
+    f.append(img(os.path.join(SHOTS, "apercu_catalogue.png"), W * 0.8)); f.append(P("Le catalogue des firmwares en galerie : favoris (étoile dorée), Felucca installé avec une mise à jour disponible (bandeau UPDATE).", "small"))
     f += [P(x) for x in t["fw"][4:]]
     f.append(KeepTogether([img(os.path.join(SHOTS, "apercu_materiel.png"), W * 0.72), P("Felucca, firmware matériel (.fwsc), dans l'émulateur de la puce.", "small")]))
     f.append(PageBreak())

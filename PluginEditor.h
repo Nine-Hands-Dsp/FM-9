@@ -81,7 +81,7 @@ private:
     void midiMapAction (int r);
     void octStep (int dir);
     uint32_t playedFwKeys() const;
-    void syncShift() { proc.kbShift.store (12 * octave + kbTrans); }
+    void syncShift() { proc.kbShift.store (12 * octave + kbTrans); proc.kbOct.store (octave); }
     void openSaveDrum();
     void closeDrum (bool accept);
     void renameVoice();
@@ -161,6 +161,7 @@ private:
     bool editMode = false, fxGrab = false;
     int mouseNote = -1;
     int heldFn = -1, heldBlack = -1, heldOct = -1;
+    int midiHeldFn = -1;                                  // bouton tenu depuis le clavier (MIDI Learn)
     double heldSince = 0;
     bool holdUsed = false;                        // la touche tenue a servi (SELECT tourne, sauvegarde faite...)
     float octDragAcc = 0;

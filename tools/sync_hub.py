@@ -18,6 +18,12 @@ by_repo = {(h.get("repo") or "").lower(): h for h in hub["firmwares"] if h.get("
 by_name = {(h.get("name") or "").lower(): h for h in hub["firmwares"] if h.get("pkg")}
 cat = json.load(open(CAT, encoding="utf-8"))
 changed = 0
+# date d'ajout sur le hub (filtre New de FM-9) : pour tous les firmwares listes par le hub
+all_repo = {(h.get("repo") or "").lower(): h for h in hub["firmwares"] if h.get("repo")}
+all_name = {(h.get("name") or "").lower(): h for h in hub["firmwares"]}
+for e in cat["firmwares"]:
+    h = all_repo.get((e.get("repo") or "").lower()) or all_name.get(e["name"].lower())
+    if h and h.get("added") and e.get("added") != h["added"]: e["added"] = h["added"]; changed += 1
 for e in cat["firmwares"]:
     if e.get("vendor"): continue
     on_hub = HUB in (e.get("pkg") or "")
@@ -28,6 +34,26 @@ for e in cat["firmwares"]:
     if e.get("pkg") != url:
         print("%-28s %s -> %s" % (e["name"][:28], (e.get("pkg") or "-").rsplit("/", 1)[-1], h["pkg"].rsplit("/", 1)[-1]))
         e["pkg"] = url; e["pkgVersion"] = h.get("version") or ""; changed += 1
-print(changed, "paquets mis a jour")
+# date d'ajout sur le hub (filtre New du catalogue)
+hub_by_repo = {(h.get("repo") or "").lower(): h for h in hub["firmwares"]}
+hub_by_name = {(h.get("name") or "").lower(): h for h in hub["firmwares"]}
+for e in cat["firmwares"]:
+    h = hub_by_repo.get((e.get("repo") or "").lower()) or hub_by_name.get(e["name"].lower())
+    if h and h.get("added") and e.get("added") != h["added"]: e["added"] = h["added"]; changed += 1
+# firmwares publies sur le hub et absents du catalogue : ajoutes (a verifier au demarrage par gen_previews.py)
+known_r = {(e.get("repo") or "").lower() for e in cat["firmwares"]}
+known_n = {e["name"].lower() for e in cat["firmwares"]}
+added = 0
+for h in hub["firmwares"]:
+    if not h.get("pkg") or (h.get("repo") or "").lower() in known_r or h["name"].lower() in known_n: continue
+    what = (h.get("what") or "").strip()
+    if len(what) > 150: what = what[:149].rstrip() + "…"
+    cat["firmwares"].append({"name": h["name"], "author": h.get("author") or "", "group": "thefirmwarehub.com", "section": "Sound & groovebox",
+                             "desc": what, "repo": h.get("repo") or "", "page": h.get("site") or h.get("play") or "", "compatible": True, "reason": "",
+                             "url": "", "abi": "", "size": h.get("size") or 0, "pkg": HUB + h["pkg"], "pkgVersion": h.get("version") or "",
+                             "license": h.get("lic") or "", "added": h.get("added") or "", "unverified": True})
+    added += 1; changed += 1
+    print("+ %s (%s)" % (h["name"], h.get("added")))
+print(changed, "changements,", added, "firmwares ajoutes")
 if changed:
     json.dump(cat, open(CAT, "w", encoding="utf-8"), indent=1, ensure_ascii=False)

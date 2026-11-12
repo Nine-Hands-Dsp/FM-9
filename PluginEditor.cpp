@@ -1261,7 +1261,9 @@ void FM9Editor::drawDynamic (Graphics& g)
 {
     if (auto* fw = proc.firmware())
     {
-        const uint32_t lb = fw->litButtons.load(), lk = fw->litKeys.load() | playedFwKeys(), dk = fw->dimKeys.load();
+        // lumieres du firmware, plus ce que l'on joue soi-meme : notes du clavier maitre, touche, bouton ou OCT tenus a la souris
+        const uint32_t lb = fw->litButtons.load() | (heldFn >= 0 ? 1u << heldFn : 0u) | (heldOct >= 0 ? 1u << (12 + heldOct) : 0u);
+        const uint32_t lk = fw->litKeys.load() | playedFwKeys() | (fwHeldKey >= 0 ? 1u << fwHeldKey : 0u), dk = fw->dimKeys.load();
         for (int i = 0; i < 16; ++i)
         {
             const int n = whiteOffs[i];

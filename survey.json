@@ -1,0 +1,3715 @@
+[
+ {
+  "name": "REDACTED",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "April OS",
+  "repo": "beashoko/april-os",
+  "page": "https://beashoko.github.io/april-os/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [
+   "https://beashoko.github.io/april-os/AprilOSBETA1.1.fwsc",
+   "https://beashoko.github.io/april-os/FM-1.fwsc"
+  ],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-29T05:14:52Z",
+  "language": "HTML"
+ },
+ {
+  "name": "FM-1 T1",
+  "repo": "tensor-programming/fm1-t1",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "main:web/emu/build.sh (emcc)"
+  ],
+  "found": [],
+  "pushed": "2026-10-14T09:02:19Z",
+  "language": "C"
+ },
+ {
+  "name": "Patricktronics",
+  "repo": "gaumondp/patricktronics",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "init:web/emu/build.sh (emcc)"
+  ],
+  "found": [],
+  "pushed": "2026-10-11T16:55:10Z",
+  "language": "C"
+ },
+ {
+  "name": "Gnomad Synth V1",
+  "repo": "kpalaniuk/gnomad-firmware",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "gnomad-v1-115e11e-source.tar.gz",
+   "gnomad-v1-115e11e.fwsc",
+   "manifest.json",
+   "manifest.json.sig",
+   "SHA256SUMS"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/kpalaniuk/gnomad-firmware/releases/download/v1.0.0-r12/gnomad-v1-115e11e.fwsc",
+    "file": "Gnomad_Synth_V1__rel__gnomad-v1-115e11e.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-20T22:28:08Z",
+  "language": "C"
+ },
+ {
+  "name": "Araminta",
+  "repo": "Wulgaren/Araminta",
+  "page": "https://wulgaren.github.io/Araminta/webapp/installer/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [
+   "https://wulgaren.github.io/Araminta/firmware/felucca-v3.9-gfae4b03.fwsc",
+   "https://wulgaren.github.io/Araminta/webapp/installer/FM-1.fwsc",
+   "https://wulgaren.github.io/Araminta/webapp/installer/公式FM-1.fwsc"
+  ],
+  "web_source": [
+   "chore/review-tidy:web/emu/build.sh (emcc)",
+   "cursor/autosave-always-writes-1976:web/emu/build.sh (emcc)",
+   "cursor/autosave-split-1976:web/emu/build.sh (emcc)",
+   "cursor/cdc-motion155-presets-1976:web/emu/build.sh (emcc)",
+   "cursor/factory-presets-f4-1976:web/emu/build.sh (emcc)",
+   "cursor/flash-layout-banks-1976:web/emu/build.sh (emcc)",
+   "cursor/flash-safety-tests-1976:web/emu/build.sh (emcc)",
+   "cursor/fm6-bank-f4-1976:web/emu/build.sh (emcc)",
+   "cursor/fm6-bank-select-1976:web/emu/build.sh (emcc)",
+   "cursor/fm6-banks-f8-f9-1976:web/emu/build.sh (emcc)",
+   "cursor/installer-araminta-sectors-1976:web/emu/build.sh (emcc)",
+   "cursor/ott-condense-e09e:web/emu/build.sh (emcc)"
+  ],
+  "found": [
+   {
+    "url": "https://wulgaren.github.io/Araminta/firmware/felucca-v3.9-gfae4b03.fwsc",
+    "file": "Araminta__page__felucca-v3.9-gfae4b03.fwsc",
+    "size": 610111,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-12T12:50:00Z",
+  "language": "C"
+ },
+ {
+  "name": "TamaMPE",
+  "repo": "tamabotmusic/TamaMPE",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "feature/fm1-virtual-v1:web/fm1-virtual/build.sh (emcc,emscripten)",
+   "feature/web-emulator:web/emulator/build.sh (emcc)"
+  ],
+  "found": [],
+  "pushed": "2026-10-16T12:25:18Z",
+  "language": null
+ },
+ {
+  "name": "Blue Hare",
+  "repo": "TristanoSuriani/fel-tracker",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "blue-hare:Makefile (emcc)",
+   "blue-hare:web/emu/build.sh (emcc)",
+   "blue-hare:web/studio/build.sh (emcc)",
+   "main:web/emu/build.sh (emcc)"
+  ],
+  "found": [],
+  "pushed": "2026-10-25T09:57:50Z",
+  "language": null
+ },
+ {
+  "name": "Oktowave",
+  "repo": "PierreArnaudGUYOT/FM1-Oktowave-Firmware",
+  "page": "https://pierrearnaudguyot.github.io/FM1-Oktowave-Firmware/",
+  "reason": "repository not reachable",
+  "exists": false,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "Cesari",
+  "repo": "briwil/Felucca",
+  "page": "https://briwil.github.io/Felucca/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "cesari:web/emu/build.sh (emcc)",
+   "engine-909:web/emu/build.sh (emcc)",
+   "main:web/emu/build.sh (emcc)"
+  ],
+  "found": [],
+  "pushed": "2026-10-10T08:17:13Z",
+  "language": "C"
+ },
+ {
+  "name": "ChoralRoot J-6",
+  "repo": "EremanSim/ChoralRootj-6",
+  "page": "https://eremansim.github.io/ChoralRootj-6/webapp/installer/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "choralroot-0.23-j6-app.bin",
+   "choralroot-0.23-j6.fwsc",
+   "LICENSE",
+   "LICENSES.zip",
+   "LICENSING.md",
+   "SHA256SUMS",
+   "choralroot-0.22-j6-app.bin",
+   "choralroot-0.22-j6.fwsc",
+   "LICENSE",
+   "LICENSES.zip",
+   "LICENSING.md",
+   "SHA256SUMS",
+   "choralroot-0.21-j6-app.bin",
+   "choralroot-0.21-j6.fwsc",
+   "LICENSE",
+   "LICENSES.zip",
+   "LICENSING.md",
+   "SHA256SUMS",
+   "choralroot-0.20-j6-app.bin",
+   "choralroot-0.20-j6.fwsc",
+   "LICENSE",
+   "LICENSES.zip",
+   "LICENSING.md",
+   "SHA256SUMS",
+   "choralroot-0.19-j6-app.bin",
+   "choralroot-0.19-j6.fwsc",
+   "LICENSE",
+   "LICENSES.zip",
+   "LICENSING.md",
+   "SHA256SUMS"
+  ],
+  "branch_files": [],
+  "page_links": [
+   "https://eremansim.github.io/ChoralRootj-6/firmware/choralroot-0.23-j6.fwsc",
+   "https://eremansim.github.io/ChoralRootj-6/webapp/installer/FM-1.fwsc"
+  ],
+  "web_source": [
+   "ccr-aa2bbe75-u04tjq:tools/emu/web/build_web.sh (emcc)",
+   "main:tools/emu/web/build_web.sh (emcc)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/EremanSim/ChoralRootj-6/releases/download/v0.23-j6/choralroot-0.23-j6.fwsc",
+    "file": "ChoralRoot_J-6__rel__choralroot-0.23-j6.fwsc",
+    "size": 610313,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/EremanSim/ChoralRootj-6/releases/download/v0.22-j6/choralroot-0.22-j6.fwsc",
+    "file": "ChoralRoot_J-6__rel__choralroot-0.22-j6.fwsc",
+    "size": 610313,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/EremanSim/ChoralRootj-6/releases/download/v0.21-j6/choralroot-0.21-j6.fwsc",
+    "file": "ChoralRoot_J-6__rel__choralroot-0.21-j6.fwsc",
+    "size": 610313,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/EremanSim/ChoralRootj-6/releases/download/v0.20-j6/choralroot-0.20-j6.fwsc",
+    "file": "ChoralRoot_J-6__rel__choralroot-0.20-j6.fwsc",
+    "size": 610313,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/EremanSim/ChoralRootj-6/releases/download/v0.19-j6/choralroot-0.19-j6.fwsc",
+    "file": "ChoralRoot_J-6__rel__choralroot-0.19-j6.fwsc",
+    "size": 610313,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://eremansim.github.io/ChoralRootj-6/firmware/choralroot-0.23-j6.fwsc",
+    "file": "ChoralRoot_J-6__page__choralroot-0.23-j6.fwsc",
+    "size": 610313,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-13T16:08:25Z",
+  "language": "C"
+ },
+ {
+  "name": "fm1-amy / X0X AMY",
+  "repo": "dpwe/fm1-amy",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "fm1-amy-0.1.0.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "main:web/emu/build.sh (emcc)",
+   "main:web/emu/build_amy.sh (emcc,EMSCRIPTEN)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/dpwe/fm1-amy/releases/download/v0.1.0/fm1-amy-0.1.0.fwsc",
+    "file": "fm1-amy_X0X_AMY__rel__fm1-amy-0.1.0.fwsc",
+    "size": 609684,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-10T14:02:56Z",
+  "language": "C"
+ },
+ {
+  "name": "Haunted FM-1",
+  "repo": "davidpryan/haunted-fm1",
+  "page": "https://davidpryan.github.io/haunted-fm1/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "halflight-0.1.fwsc",
+   "midnight-0.1.fwsc",
+   "untrue-0.1.fwsc",
+   "voicemail-0.1.fwsc",
+   "worntape-0.1.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [
+   "https://davidpryan.github.io/haunted-fm1/firmware/halflight-0.1.fwsc",
+   "https://davidpryan.github.io/haunted-fm1/firmware/midnight-0.1.fwsc",
+   "https://davidpryan.github.io/haunted-fm1/firmware/untrue-0.1.fwsc",
+   "https://davidpryan.github.io/haunted-fm1/firmware/voicemail-0.1.fwsc",
+   "https://davidpryan.github.io/haunted-fm1/firmware/worntape-0.1.fwsc",
+   "https://yms-file-store.oss-cn-hongkong.aliyuncs.com/software/firmware/FM-1.fwsc"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/davidpryan/haunted-fm1/releases/download/v0.1/halflight-0.1.fwsc",
+    "file": "Haunted_FM-1__rel__halflight-0.1.fwsc",
+    "size": 610136,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/davidpryan/haunted-fm1/releases/download/v0.1/midnight-0.1.fwsc",
+    "file": "Haunted_FM-1__rel__midnight-0.1.fwsc",
+    "size": 610136,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/davidpryan/haunted-fm1/releases/download/v0.1/untrue-0.1.fwsc",
+    "file": "Haunted_FM-1__rel__untrue-0.1.fwsc",
+    "size": 610136,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/davidpryan/haunted-fm1/releases/download/v0.1/voicemail-0.1.fwsc",
+    "file": "Haunted_FM-1__rel__voicemail-0.1.fwsc",
+    "size": 610136,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/davidpryan/haunted-fm1/releases/download/v0.1/worntape-0.1.fwsc",
+    "file": "Haunted_FM-1__rel__worntape-0.1.fwsc",
+    "size": 610136,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://davidpryan.github.io/haunted-fm1/firmware/halflight-0.1.fwsc",
+    "file": "Haunted_FM-1__page__halflight-0.1.fwsc",
+    "size": 610136,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-21T05:31:04Z",
+  "language": "C"
+ },
+ {
+  "name": "FM-PLAITS",
+  "repo": "Narti-Live/fm1-fm-plaits",
+  "page": "https://narti-live.github.io/fm1-fm-plaits/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [
+   "main:site/install/FM-1_015.fwsc"
+  ],
+  "page_links": [
+   "https://narti-live.github.io/fm1-fm-plaits/install/FM-PLAITS.fwsc"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://raw.githubusercontent.com/Narti-Live/fm1-fm-plaits/main/site/install/FM-1_015.fwsc",
+    "file": "FM-PLAITS__git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://narti-live.github.io/fm1-fm-plaits/install/FM-PLAITS.fwsc",
+    "file": "FM-PLAITS__page__FM-PLAITS.fwsc",
+    "size": 475700,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-19T22:13:47Z",
+  "language": "HTML"
+ },
+ {
+  "name": "1971",
+  "repo": "synthi/fm1-1971",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "fw-1971:web/sim/build.sh (emcc,emscripten)"
+  ],
+  "found": [],
+  "pushed": "2026-10-15T17:36:53Z",
+  "language": "C"
+ },
+ {
+  "name": "MEOW-1",
+  "repo": "JB-Interactive/Felucca-Meow",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "claude/upbeat-pasteur-dkv7zm:web/emu/build.sh (emcc)",
+   "main:web/emu/build.sh (emcc)",
+   "meow:web/emu/build.sh (emcc)"
+  ],
+  "found": [],
+  "pushed": "2026-10-09T13:24:30Z",
+  "language": null
+ },
+ {
+  "name": "RIFT",
+  "repo": "mykeln/fm1-rift",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "main:firmware/build.sh (emcc)",
+   "main:firmware/platforms/web/build.sh (emcc)"
+  ],
+  "found": [],
+  "pushed": "2026-11-04T04:50:49Z",
+  "language": "C"
+ },
+ {
+  "name": "Big Beat Studio BB-BOB",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "FNTSMG-1",
+  "repo": "",
+  "page": "https://fantasmogenesis.art/fm1/",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "Compás 1.0",
+  "repo": "TexasRADIO/compas-firmware",
+  "page": "https://thebigbeat.app/compas/install/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "compas-1.1-en.fwsc",
+   "compas-1.1-es.fwsc",
+   "compas-source-1.1.tar.gz",
+   "SHA256SUMS",
+   "compas-1.0-en.fwsc",
+   "compas-1.0-es.fwsc",
+   "compas-source-1.0.tar.gz",
+   "SHA256SUMS"
+  ],
+  "branch_files": [],
+  "page_links": [
+   "https://thebigbeat.app/compas/install/files/compas-1.1-en.fwsc",
+   "https://thebigbeat.app/compas/install/files/compas-1.1-es.fwsc"
+  ],
+  "web_source": [
+   "loudoun-hq/restore-compas-1-1-source:Makefile (wasm32)",
+   "main:Makefile (wasm32)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/TexasRADIO/compas-firmware/releases/download/compas-v1.1/compas-1.1-en.fwsc",
+    "file": "Comp_s_1.0__rel__compas-1.1-en.fwsc",
+    "size": 610086,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/TexasRADIO/compas-firmware/releases/download/compas-v1.1/compas-1.1-es.fwsc",
+    "file": "Comp_s_1.0__rel__compas-1.1-es.fwsc",
+    "size": 610086,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/TexasRADIO/compas-firmware/releases/download/compas-v1.0/compas-1.0-en.fwsc",
+    "file": "Comp_s_1.0__rel__compas-1.0-en.fwsc",
+    "size": 610086,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/TexasRADIO/compas-firmware/releases/download/compas-v1.0/compas-1.0-es.fwsc",
+    "file": "Comp_s_1.0__rel__compas-1.0-es.fwsc",
+    "size": 610086,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-11T09:54:05Z",
+  "language": "C"
+ },
+ {
+  "name": "SLICE64-FM",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "TheReFmB1rth",
+  "repo": "AlexanderSeel/TheReFmB1rth",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc",
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc",
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc",
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc",
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc",
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc",
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc",
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc",
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc",
+   "manifest.json",
+   "ota.bin",
+   "refm-overlay.txt",
+   "refm-ui-overlay.txt",
+   "SHA256SUMS",
+   "target-memory.json",
+   "TheReFmB1rth-app.bin",
+   "TheReFmB1rth-experimental.fwsc"
+  ],
+  "branch_files": [
+   "firmware-channel:TheReFmB1rth-experimental.fwsc",
+   "wasm-channel:refm.wasm"
+  ],
+  "page_links": [],
+  "web_source": [
+   "main:web/emu/build_wasm.sh (emcc)",
+   "work/audio-clean-beta8:web/emu/build_wasm.sh (emcc)",
+   "work/303-beta7:web/emu/build_wasm.sh (emcc)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.18/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.9/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.8/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.17/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.16/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.15/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.14/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.13/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.12/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/AlexanderSeel/TheReFmB1rth/releases/download/v0.1.0-beta.11/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__rel__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/AlexanderSeel/TheReFmB1rth/firmware-channel/TheReFmB1rth-experimental.fwsc",
+    "file": "TheReFmB1rth__git__TheReFmB1rth-experimental.fwsc",
+    "size": 609849,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/AlexanderSeel/TheReFmB1rth/wasm-channel/refm.wasm",
+    "file": "TheReFmB1rth__git__refm.wasm",
+    "size": 481312,
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-10-16T07:44:58Z",
+  "language": "Python"
+ },
+ {
+  "name": "SPIRALFM1",
+  "repo": "Spiralfractalplugins/spiralfm1",
+  "page": "https://spiralfractalplugins.github.io/spiralfm1/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-21T08:43:39Z",
+  "language": "C"
+ },
+ {
+  "name": "LAUNCHPARTY",
+  "repo": "megagott/launchparty-fm1",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "launchparty-0.3.2-public-source-clean.zip",
+   "launchparty-0.3.2-public.fwsc",
+   "SHA256SUMS-clean.txt",
+   "SHA256SUMS.txt"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/megagott/launchparty-fm1/releases/download/v0.3.2-public/launchparty-0.3.2-public.fwsc",
+    "file": "LAUNCHPARTY__rel__launchparty-0.3.2-public.fwsc",
+    "size": 609999,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-31T13:07:30Z",
+  "language": "C"
+ },
+ {
+  "name": "Garden FM",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "FM-1 Pocket Guitar",
+  "repo": "xMagElonx/fm1-guitar",
+  "page": "https://fm1-tone-engine.app.workbuddy.host/guitar-fw/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "fm1-guitar-b1.6.2.fwsc",
+   "fm1-guitar-b1.6.1.fwsc"
+  ],
+  "branch_files": [
+   "main:sdk/firmware/FM-1_015.fwsc"
+  ],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/xMagElonx/fm1-guitar/releases/download/b1.6.2/fm1-guitar-b1.6.2.fwsc",
+    "file": "FM-1_Pocket_Guitar__rel__fm1-guitar-b1.6.2.fwsc",
+    "size": 483892,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/xMagElonx/fm1-guitar/releases/download/b1.6.1/fm1-guitar-b1.6.1.fwsc",
+    "file": "FM-1_Pocket_Guitar__rel__fm1-guitar-b1.6.1.fwsc",
+    "size": 483892,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/xMagElonx/fm1-guitar/main/sdk/firmware/FM-1_015.fwsc",
+    "file": "FM-1_Pocket_Guitar__git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-17T20:02:48Z",
+  "language": "C"
+ },
+ {
+  "name": "baud girl Custom Firmware Mod",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "Groove OS",
+  "repo": "",
+  "page": "https://www.groove-os.com/emu",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "Lunar Modulator",
+  "repo": "ip2k/lunar-modulator",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [
+   "build/2026-11-01@wasm-5c5237-acceptance:sim/web/www/fm1.wasm",
+   "build/2026-11-01@wasm-5197da:sim/web/www/fm1.wasm",
+   "build/2026-11-01@wasm-bf7a0954:sim/web/www/fm1.wasm",
+   "build/2026-11-01@wasm-final-a68a9e31:sim/web/www/fm1.wasm",
+   "chore/2026-10-01@handoff-refresh:sim/web/www/fm1.wasm",
+   "chore/2026-10-05@dead-code-audit:sim/web/www/fm1.wasm",
+   "chore/2026-10-05@sdk-v1213:sim/web/www/fm1.wasm",
+   "chore/2026-10-06@small-followups:sim/web/www/fm1.wasm",
+   "chore/2026-10-06@ui-polish:sim/web/www/fm1.wasm",
+   "chore/2026-10-07@full-code-audit:sim/web/www/fm1.wasm",
+   "chore/2026-10-07@sdk-runtime-evaluation:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@audit-tool-safety:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@completed-work-integration:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@demo-song-brief:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@device-gate-docs:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@docs-consolidation:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@effect-integration-review:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@effects-expansion-research:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@factual-doc-corrections:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@handover-layout-audit:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@old-doc-pr-reconciliation:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@panel-follow-trace:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@panel-protocol-link:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@prerequisite-verification:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@recovery-status-docs:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@remaining-work-ledger:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@semantic-tools-config:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@stock-spl-handover:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@version-trailer-contract:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@warble-repeat-candidate:sim/web/www/fm1.wasm",
+   "chore/2026-10-09@webkit-audio-evidence-checkpoint:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@chromium-startup-localization:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@demo-music-critic:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@demo-readiness-ledger:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@demo-song-acceptance:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@fm1-live-bringup:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@offline-firmware-integration:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@pr140-ci-diagnostics:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@song-readiness-audit:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@startup-ci-receipt:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@warble-repeat-effects-manual:sim/web/www/fm1.wasm",
+   "chore/2026-10-10@worklet-suspended-startup:sim/web/www/fm1.wasm",
+   "chore/2026-10-11@browser-resource-docs:sim/web/www/fm1.wasm",
+   "chore/2026-10-11@editor-integration-ci:sim/web/www/fm1.wasm",
+   "chore/2026-10-11@editor-polish-docs:sim/web/www/fm1.wasm",
+   "chore/2026-10-11@notification-library-evaluation:sim/web/www/fm1.wasm",
+   "chore/2026-10-11@sequencer-runtime-gates:sim/web/www/fm1.wasm",
+   "chore/2026-10-12@arrangement-browser-review:sim/web/www/fm1.wasm",
+   "chore/2026-10-12@combined-browser-gates:sim/web/www/fm1.wasm",
+   "chore/2026-10-12@editor-ci-contracts:sim/web/www/fm1.wasm"
+  ],
+  "page_links": [],
+  "web_source": [
+   "build/2026-11-01@wasm-5c5237-acceptance:sim/web/build-on-aeon.sh (emscripten)",
+   "build/2026-11-01@wasm-5c5237-acceptance:sim/web/build.sh (emcc,emscripten)",
+   "build/2026-11-01@wasm-5197da:sim/web/build-on-aeon.sh (emscripten)",
+   "build/2026-11-01@wasm-5197da:sim/web/build.sh (emcc,emscripten)",
+   "build/2026-11-01@wasm-bf7a0954:sim/web/build-on-aeon.sh (emscripten)",
+   "build/2026-11-01@wasm-bf7a0954:sim/web/build.sh (emcc,emscripten)",
+   "build/2026-11-01@wasm-final-a68a9e31:sim/web/build-on-aeon.sh (emscripten)",
+   "build/2026-11-01@wasm-final-a68a9e31:sim/web/build.sh (emcc,emscripten)",
+   "chore/2026-10-01@handoff-refresh:sim/web/build-on-aeon.sh (emscripten)",
+   "chore/2026-10-01@handoff-refresh:sim/web/build.sh (emcc,emscripten)",
+   "chore/2026-10-05@dead-code-audit:sim/web/build-on-aeon.sh (emscripten)",
+   "chore/2026-10-05@dead-code-audit:sim/web/build.sh (emcc,emscripten)"
+  ],
+  "found": [
+   {
+    "url": "https://raw.githubusercontent.com/ip2k/lunar-modulator/build/2026-11-01@wasm-5c5237-acceptance/sim/web/www/fm1.wasm",
+    "file": "Lunar_Modulator__git__fm1.wasm",
+    "size": 1640172,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ip2k/lunar-modulator/build/2026-11-01@wasm-5197da/sim/web/www/fm1.wasm",
+    "file": "Lunar_Modulator__git__fm1.wasm",
+    "size": 1649011,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ip2k/lunar-modulator/build/2026-11-01@wasm-bf7a0954/sim/web/www/fm1.wasm",
+    "file": "Lunar_Modulator__git__fm1.wasm",
+    "size": 1649011,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ip2k/lunar-modulator/build/2026-11-01@wasm-final-a68a9e31/sim/web/www/fm1.wasm",
+    "file": "Lunar_Modulator__git__fm1.wasm",
+    "size": 1649011,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ip2k/lunar-modulator/chore/2026-10-01@handoff-refresh/sim/web/www/fm1.wasm",
+    "file": "Lunar_Modulator__git__fm1.wasm",
+    "size": 1546618,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ip2k/lunar-modulator/chore/2026-10-05@dead-code-audit/sim/web/www/fm1.wasm",
+    "file": "Lunar_Modulator__git__fm1.wasm",
+    "size": 955464,
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-11-11T03:32:40Z",
+  "language": "Python"
+ },
+ {
+  "name": "FM-1 B-Boy Edition",
+  "repo": "friendsmakenoise-prog/fm1-pocket-sampler",
+  "page": "",
+  "reason": "repository not reachable",
+  "exists": false,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "fm1-polyseq",
+  "repo": "NOVALENTI/fm1-polyseq",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-29T21:01:10Z",
+  "language": "C"
+ },
+ {
+  "name": "AMBII",
+  "repo": "JalopyMusic/fm1-milkboyg-ambii",
+  "page": "",
+  "reason": "repository not reachable",
+  "exists": false,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "M-VAVE FM1 Open Firmware (m-vave/fm1open)",
+  "repo": "m-vave/fm1_open",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "FM1-Open-V14-Development-Kit.zip",
+   "FM1-Open-V14-Workbench.html",
+   "SHA256SUMS-V14",
+   "FM1-Open-V12-Development-Kit.zip",
+   "FM1-Open-V12-Workbench.html",
+   "SHA256SUMS-V12"
+  ],
+  "branch_files": [
+   "main:sdk/firmware/FM-1_015.fwsc"
+  ],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://raw.githubusercontent.com/m-vave/fm1_open/main/sdk/firmware/FM-1_015.fwsc",
+    "file": "M-VAVE_FM1_Open_Firmware_m-vave_fm1open___git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-21T03:14:01Z",
+  "language": "C"
+ },
+ {
+  "name": "TERKINSTEIN",
+  "repo": "TerkWerX/FM1-TERKINSTEIN-Firmware",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "Crepuscular-Homunculus-0.26.19-source.zip",
+   "Crepuscular-Homunculus-0.26.19.fwsc",
+   "LICENSE",
+   "LICENSING.md",
+   "RELEASE_NOTES.md",
+   "SHA256SUMS.txt",
+   "TERKINSTEIN-0.22.0-dev.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/TerkWerX/Crepuscular_Homunculus/releases/download/v0.26.19/Crepuscular-Homunculus-0.26.19.fwsc",
+    "file": "TERKINSTEIN__rel__Crepuscular-Homunculus-0.26.19.fwsc",
+    "size": 610143,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/TerkWerX/Crepuscular_Homunculus/releases/download/v0.22.0-dev/TERKINSTEIN-0.22.0-dev.fwsc",
+    "file": "TERKINSTEIN__rel__TERKINSTEIN-0.22.0-dev.fwsc",
+    "size": 610110,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-27T05:03:27Z",
+  "language": "C"
+ },
+ {
+  "name": "TripDeck",
+  "repo": "anonymousacademe/FM-1-TripDeck",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-19T14:02:22Z",
+  "language": "C"
+ },
+ {
+  "name": "Speak37",
+  "repo": "genkigenki/Speak37",
+  "page": "https://genkigenki.github.io/smk37/#fw-speak37",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "SHA256SUMS",
+   "speak37-1.0.fwsc",
+   "speak37-elite-1.0.fwsc",
+   "speak37-fm1-1.0.fwsc",
+   "speak37-mke-1.0.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [
+   "https://genkigenki.github.io/smk37/FM-1.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/amb-1.1-elite.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/amb-1.1-mke.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/amb-1.1.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/choralroot-0.24-beta3-elite.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/choralroot-0.24-beta3-mke.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/choralroot-0.24-beta3.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/dub-1.0.0-elite.fwsc"
+  ],
+  "web_source": [
+   "main:web/emu/build.sh (emcc)",
+   "main:web/sim/build.sh (emcc,emscripten)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/genkigenki/Speak37/releases/download/v1.0/speak37-1.0.fwsc",
+    "file": "Speak37__rel__speak37-1.0.fwsc",
+    "size": 651060,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/genkigenki/Speak37/releases/download/v1.0/speak37-elite-1.0.fwsc",
+    "file": "Speak37__rel__speak37-elite-1.0.fwsc",
+    "size": 651064,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/genkigenki/Speak37/releases/download/v1.0/speak37-fm1-1.0.fwsc",
+    "file": "Speak37__rel__speak37-fm1-1.0.fwsc",
+    "size": 610087,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/genkigenki/Speak37/releases/download/v1.0/speak37-mke-1.0.fwsc",
+    "file": "Speak37__rel__speak37-mke-1.0.fwsc",
+    "size": 651056,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://genkigenki.github.io/smk37/firmware/amb-1.1-elite.fwsc",
+    "file": "Speak37__page__amb-1.1-elite.fwsc",
+    "size": 650799,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://genkigenki.github.io/smk37/firmware/amb-1.1-mke.fwsc",
+    "file": "Speak37__page__amb-1.1-mke.fwsc",
+    "size": 650791,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-17T15:21:59Z",
+  "language": "C"
+ },
+ {
+  "name": "MD-One",
+  "repo": "d0pe1/md-one",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-23T06:44:53Z",
+  "language": "C++"
+ },
+ {
+  "name": "Erik37",
+  "repo": "genkigenki/erik37",
+  "page": "https://genkigenki.github.io/smk37/#fw-erik37",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "erik37-elite.fwsc",
+   "erik37-fm1.fwsc",
+   "erik37-mke.fwsc",
+   "erik37.fwsc",
+   "bsp-macos-usb.patch",
+   "erik37-usbtest.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [
+   "https://genkigenki.github.io/smk37/FM-1.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/amb-1.1-elite.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/amb-1.1-mke.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/amb-1.1.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/choralroot-0.24-beta3-elite.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/choralroot-0.24-beta3-mke.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/choralroot-0.24-beta3.fwsc",
+   "https://genkigenki.github.io/smk37/firmware/dub-1.0.0-elite.fwsc"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/genkigenki/erik37/releases/download/v1.2/erik37-elite.fwsc",
+    "file": "Erik37__rel__erik37-elite.fwsc",
+    "size": 651228,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/genkigenki/erik37/releases/download/v1.2/erik37-fm1.fwsc",
+    "file": "Erik37__rel__erik37-fm1.fwsc",
+    "size": 610108,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/genkigenki/erik37/releases/download/v1.2/erik37-mke.fwsc",
+    "file": "Erik37__rel__erik37-mke.fwsc",
+    "size": 651220,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/genkigenki/erik37/releases/download/v1.2/erik37.fwsc",
+    "file": "Erik37__rel__erik37.fwsc",
+    "size": 651224,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/genkigenki/erik37/releases/download/v1.2-usbtest1/erik37-usbtest.fwsc",
+    "file": "Erik37__rel__erik37-usbtest.fwsc",
+    "size": 651224,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://genkigenki.github.io/smk37/firmware/amb-1.1-elite.fwsc",
+    "file": "Erik37__page__amb-1.1-elite.fwsc",
+    "size": 650799,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-22T23:38:20Z",
+  "language": "C"
+ },
+ {
+  "name": "Hersen MPC (庄赫森)",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "GRAN",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "fmlab",
+  "repo": "jsmith13/fm_lab",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "fmlab-1.2.0.fwsc",
+   "fmlab-1.1.0.fwsc",
+   "fmlab-1.0.1.fwsc",
+   "fmlab-1.0.0.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/jsmith13/fm_lab/releases/download/v1.2.0/fmlab-1.2.0.fwsc",
+    "file": "fmlab__rel__fmlab-1.2.0.fwsc",
+    "size": 610110,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/jsmith13/fm_lab/releases/download/v1.1.0/fmlab-1.1.0.fwsc",
+    "file": "fmlab__rel__fmlab-1.1.0.fwsc",
+    "size": 610110,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/jsmith13/fm_lab/releases/download/v1.0.1/fmlab-1.0.1.fwsc",
+    "file": "fmlab__rel__fmlab-1.0.1.fwsc",
+    "size": 610110,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/jsmith13/fm_lab/releases/download/v1.0.0/fmlab-1.0.0.fwsc",
+    "file": "fmlab__rel__fmlab-1.0.0.fwsc",
+    "size": 610110,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-10T06:13:23Z",
+  "language": "C"
+ },
+ {
+  "name": "kidboy",
+  "repo": "WillCMcC/kidboy-firmware",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "kidboy-2e400c2.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "main:web/emu/build.sh (emcc)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/WillCMcC/kidboy-firmware/releases/download/v0.1/kidboy-2e400c2.fwsc",
+    "file": "kidboy__rel__kidboy-2e400c2.fwsc",
+    "size": 610090,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-18T23:12:56Z",
+  "language": "C"
+ },
+ {
+  "name": "FMER",
+  "repo": "Nacsez/FMER",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "FMER-736-Default-Sounds.fmer-catalog.json",
+   "FMER-736-Instrument-Library.zip",
+   "FMER-736-Press-Pack.zip",
+   "FMER-736-Screen-Atlas.zip",
+   "FMER-736-Screen-Sheet.pdf",
+   "FMER-736-Screen-Sheet.png",
+   "FMER-736-Shortcuts.pdf",
+   "FMER-736-Source.zip",
+   "FMER-736-Visual-Guide.pdf",
+   "FMER-Companion-736-Windows-x64.zip",
+   "fmer736-compatible-r2.fwsc",
+   "INSTALLATION.md",
+   "release-manifest.json",
+   "RELEASE_NOTES.md",
+   "SHA256SUMS.txt",
+   "FMER-735-Default-Sounds.fmer-catalog.json",
+   "FMER-735-Screen-Atlas.zip",
+   "FMER-735-Screen-Sheet.pdf",
+   "FMER-735-Screen-Sheet.png",
+   "FMER-735-Source.zip",
+   "FMER-Companion-735-Windows-x64.zip",
+   "fmer735-compatible-r9.fwsc",
+   "INSTALLATION.md",
+   "release-manifest.json",
+   "SHA256SUMS.txt",
+   "FMER-734-Default-Sounds.fmer-catalog.json",
+   "FMER-734-Feature-Overview.pdf",
+   "FMER-734-Press-Pack.zip",
+   "FMER-734-Shortcuts.pdf",
+   "FMER-734-Source.zip",
+   "FMER-734-Visual-Guide.pdf",
+   "FMER-Companion-734-Windows-x64.zip",
+   "fmer734-compatible-r2.fwsc",
+   "INSTALLATION.md",
+   "release-manifest.json",
+   "SHA256SUMS.txt"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/Nacsez/FMER/releases/download/build-736-r2/fmer736-compatible-r2.fwsc",
+    "file": "FMER__rel__fmer736-compatible-r2.fwsc",
+    "size": 613169,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/Nacsez/FMER/releases/download/build-735-r11/fmer735-compatible-r9.fwsc",
+    "file": "FMER__rel__fmer735-compatible-r9.fwsc",
+    "size": 613169,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/Nacsez/FMER/releases/download/build-734-r5/fmer734-compatible-r2.fwsc",
+    "file": "FMER__rel__fmer734-compatible-r2.fwsc",
+    "size": 613169,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-04T13:03:50Z",
+  "language": "Python"
+ },
+ {
+  "name": "Trawler",
+  "repo": "y6zkcqnf5r-hue/fm1-trawler",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": true,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "main:Makefile (emcc,emscripten)"
+  ],
+  "found": [],
+  "pushed": "2026-10-10T07:37:19Z",
+  "language": "C"
+ },
+ {
+  "name": "FM2000",
+  "repo": "jukejutsu/FM2000",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [
+   "main:sim/fm2k.wasm"
+  ],
+  "page_links": [],
+  "web_source": [
+   "main:web/build.sh (wasm32)"
+  ],
+  "found": [
+   {
+    "url": "https://raw.githubusercontent.com/jukejutsu/FM2000/main/sim/fm2k.wasm",
+    "file": "FM2000__git__fm2k.wasm",
+    "size": 247585,
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-10-15T05:28:54Z",
+  "language": "C"
+ },
+ {
+  "name": "SEQ-4",
+  "repo": "devrvega/SEQ-4",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "seq4-0.1.0.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "main:web/emu/build.sh (emcc)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/devrvega/SEQ-4/releases/download/v0.1.0/seq4-0.1.0.fwsc",
+    "file": "SEQ-4__rel__seq4-0.1.0.fwsc",
+    "size": 609672,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-16T14:46:07Z",
+  "language": "C"
+ },
+ {
+  "name": "WitchBox",
+  "repo": "davidpryan/witchbox",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-22T00:06:00Z",
+  "language": "C"
+ },
+ {
+  "name": "DriftSeq",
+  "repo": "johnskiller/driftseq",
+  "page": "https://johnskiller.github.io/driftseq/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [
+   "gh-pages:driftseq.wasm",
+   "gh-pages:ui.wasm",
+   "main:web/driftseq.wasm",
+   "main:web/ui.wasm"
+  ],
+  "page_links": [
+   "https://johnskiller.github.io/driftseq/ui.wasm"
+  ],
+  "web_source": [
+   "main:Makefile (emcc)"
+  ],
+  "found": [
+   {
+    "url": "https://raw.githubusercontent.com/johnskiller/driftseq/gh-pages/driftseq.wasm",
+    "file": "DriftSeq__git__driftseq.wasm",
+    "size": 15373,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/johnskiller/driftseq/gh-pages/ui.wasm",
+    "file": "DriftSeq__git__ui.wasm",
+    "size": 39229,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/johnskiller/driftseq/main/web/driftseq.wasm",
+    "file": "DriftSeq__git__driftseq.wasm",
+    "size": 16038,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/johnskiller/driftseq/main/web/ui.wasm",
+    "file": "DriftSeq__git__ui.wasm",
+    "size": 78707,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://johnskiller.github.io/driftseq/ui.wasm",
+    "file": "DriftSeq__page__ui.wasm",
+    "size": 39229,
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-10-26T07:12:18Z",
+  "language": "C"
+ },
+ {
+  "name": "FM-1 Ctrl",
+  "repo": "johnskiller/fm1-ctrl",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-27T07:23:43Z",
+  "language": "C"
+ },
+ {
+  "name": "GLIDER",
+  "repo": "ttreu/fm1-glider",
+  "page": "https://subcity.at/flash/fm1-glider/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "FM1-GLIDER.fwsc",
+   "FM1-GLIDER.html",
+   "FM1-GLIDER.fwsc",
+   "FM1-GLIDER.html"
+  ],
+  "branch_files": [
+   "main:sdk/firmware/FM-1_015.fwsc"
+  ],
+  "page_links": [
+   "https://subcity.at/flash/fm1-glider/m.wasm"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/ttreu/fm1-glider/releases/download/v0.5.0-beta/FM1-GLIDER.fwsc",
+    "file": "GLIDER__rel__FM1-GLIDER.fwsc",
+    "size": 487988,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/ttreu/fm1-glider/releases/download/v0.4.0-beta/FM1-GLIDER.fwsc",
+    "file": "GLIDER__rel__FM1-GLIDER.fwsc",
+    "size": 487988,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ttreu/fm1-glider/main/sdk/firmware/FM-1_015.fwsc",
+    "file": "GLIDER__git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://subcity.at/flash/fm1-glider/ (base64)",
+    "file": "GLIDER__b64.wasm",
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-11-04T18:28:12Z",
+  "language": "C"
+ },
+ {
+  "name": "GLITCH",
+  "repo": "ttreu/fm1-glitch",
+  "page": "https://subcity.at/flash/fm1-glitch-drums/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "FM1-GLITCH.fwsc",
+   "FM1-GLITCH.html",
+   "FM1-GLITCH.fwsc",
+   "FM1-GLITCH.html",
+   "FM1-GLITCH.fwsc",
+   "FM1-GLITCH.html"
+  ],
+  "branch_files": [
+   "main:sdk/firmware/FM-1_015.fwsc"
+  ],
+  "page_links": [
+   "https://subcity.at/flash/fm1-glitch-drums/m.wasm"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/ttreu/fm1-glitch/releases/download/v0.3.0-beta/FM1-GLITCH.fwsc",
+    "file": "GLITCH__rel__FM1-GLITCH.fwsc",
+    "size": 471604,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/ttreu/fm1-glitch/releases/download/v0.2.0-beta/FM1-GLITCH.fwsc",
+    "file": "GLITCH__rel__FM1-GLITCH.fwsc",
+    "size": 471604,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/ttreu/fm1-glitch/releases/download/v0.1.0-beta/FM1-GLITCH.fwsc",
+    "file": "GLITCH__rel__FM1-GLITCH.fwsc",
+    "size": 471604,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ttreu/fm1-glitch/main/sdk/firmware/FM-1_015.fwsc",
+    "file": "GLITCH__git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://subcity.at/flash/fm1-glitch-drums/ (base64)",
+    "file": "GLITCH__b64.wasm",
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-11-04T18:35:09Z",
+  "language": "C"
+ },
+ {
+  "name": "ARPHONY",
+  "repo": "ttreu/fm1-arphony",
+  "page": "https://subcity.at/flash/fm1-arphony/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "FM1-ARPHONY.fwsc",
+   "FM1-ARPHONY.html",
+   "FM1-ARPHONY.fwsc",
+   "FM1-ARPHONY.html",
+   "FM1-ARPHONY.fwsc",
+   "FM1-ARPHONY.html"
+  ],
+  "branch_files": [
+   "main:sdk/firmware/FM-1_015.fwsc"
+  ],
+  "page_links": [
+   "https://subcity.at/flash/fm1-arphony/m.wasm"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/ttreu/fm1-arphony/releases/download/v0.4.0-beta/FM1-ARPHONY.fwsc",
+    "file": "ARPHONY__rel__FM1-ARPHONY.fwsc",
+    "size": 483892,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/ttreu/fm1-arphony/releases/download/v0.3.0-beta/FM1-ARPHONY.fwsc",
+    "file": "ARPHONY__rel__FM1-ARPHONY.fwsc",
+    "size": 483892,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/ttreu/fm1-arphony/releases/download/v0.2.0-beta/FM1-ARPHONY.fwsc",
+    "file": "ARPHONY__rel__FM1-ARPHONY.fwsc",
+    "size": 479796,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ttreu/fm1-arphony/main/sdk/firmware/FM-1_015.fwsc",
+    "file": "ARPHONY__git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://subcity.at/flash/fm1-arphony/ (base64)",
+    "file": "ARPHONY__b64.wasm",
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-11-04T18:40:35Z",
+  "language": "C"
+ },
+ {
+  "name": "MOONDAW",
+  "repo": "jaeggerr/moondaw-fm1",
+  "page": "https://moondaw.com/install/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "moondaw-0.3.fwsc",
+   "SHA256SUMS",
+   "moondaw-0.2.2.fwsc",
+   "SHA256SUMS",
+   "moondaw-0.2.1.fwsc",
+   "SHA256SUMS",
+   "moondaw-0.2.fwsc",
+   "SHA256SUMS",
+   "moondaw-0.1.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "main:platform/web/build.sh (emcc,wasm32)",
+   "main:web/songedit/build.sh (emcc,wasm32)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/jaeggerr/moondaw-fm1/releases/download/v0.3/moondaw-0.3.fwsc",
+    "file": "MOONDAW__rel__moondaw-0.3.fwsc",
+    "size": 610257,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/jaeggerr/moondaw-fm1/releases/download/v0.2.2/moondaw-0.2.2.fwsc",
+    "file": "MOONDAW__rel__moondaw-0.2.2.fwsc",
+    "size": 610257,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/jaeggerr/moondaw-fm1/releases/download/v0.2.1/moondaw-0.2.1.fwsc",
+    "file": "MOONDAW__rel__moondaw-0.2.1.fwsc",
+    "size": 610257,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/jaeggerr/moondaw-fm1/releases/download/v0.2/moondaw-0.2.fwsc",
+    "file": "MOONDAW__rel__moondaw-0.2.fwsc",
+    "size": 610257,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/jaeggerr/moondaw-fm1/releases/download/v0.1/moondaw-0.1.fwsc",
+    "file": "MOONDAW__rel__moondaw-0.1.fwsc",
+    "size": 610257,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-03T20:56:38Z",
+  "language": "C"
+ },
+ {
+  "name": "Miku-FM",
+  "repo": "MichaelAPerry/MIKU-FM1",
+  "page": "https://michaelaperry.github.io/MIKU-FM1/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "LICENSE",
+   "LICENSE-MSFA-Apache-2.0.txt",
+   "LICENSING.md",
+   "miku-fm-0.8-app.bin",
+   "miku-fm-0.8.fwsc",
+   "SHA256SUMS",
+   "LICENSE",
+   "LICENSE-MSFA-Apache-2.0.txt",
+   "LICENSING.md",
+   "miku-fm-0.7-app.bin",
+   "miku-fm-0.7.fwsc",
+   "SHA256SUMS",
+   "miku-fm-0.6-app.bin",
+   "miku-fm-0.6.fwsc",
+   "SHA256SUMS"
+  ],
+  "branch_files": [],
+  "page_links": [
+   "https://michaelaperry.github.io/MIKU-FM1/firmware/miku-fm-0.8.fwsc"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/MichaelAPerry/MIKU-FM1/releases/download/v0.8/miku-fm-0.8.fwsc",
+    "file": "Miku-FM__rel__miku-fm-0.8.fwsc",
+    "size": 612223,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/MichaelAPerry/MIKU-FM1/releases/download/v0.7/miku-fm-0.7.fwsc",
+    "file": "Miku-FM__rel__miku-fm-0.7.fwsc",
+    "size": 612223,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/MichaelAPerry/MIKU-FM1/releases/download/v0.6/miku-fm-0.6.fwsc",
+    "file": "Miku-FM__rel__miku-fm-0.6.fwsc",
+    "size": 612223,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://michaelaperry.github.io/MIKU-FM1/firmware/miku-fm-0.8.fwsc",
+    "file": "Miku-FM__page__miku-fm-0.8.fwsc",
+    "size": 612223,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-10T12:16:15Z",
+  "language": "C"
+ },
+ {
+  "name": "Beetroot Tempura",
+  "repo": "CallieSchmallie/Beetroot-tempura",
+  "page": "https://callieschmallie.github.io/Beetroot-tempura/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [
+   "main:sdk/firmware/FM-1_015.fwsc"
+  ],
+  "page_links": [
+   "https://callieschmallie.github.io/Beetroot-tempura/EMBEDDED.fwsc"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://raw.githubusercontent.com/CallieSchmallie/Beetroot-tempura/main/sdk/firmware/FM-1_015.fwsc",
+    "file": "Beetroot_Tempura__git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-07T00:43:50Z",
+  "language": "HTML"
+ },
+ {
+  "name": "M-VAVE Pocket AMP Custom Firmware (Onyx)",
+  "repo": "28spawn/m-vave-pocket-amp-onyx",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "NOTICE.md",
+   "Onyx_1.19.bin",
+   "Onyx_1.19.fwsc",
+   "SHA256SUMS",
+   "NOTICE.md",
+   "Onyx_1.18.bin",
+   "Onyx_1.18.fwsc",
+   "SHA256SUMS"
+  ],
+  "branch_files": [
+   "experimental/48k-codec:custom-fw/release/Onyx_1.19/Onyx_1.19.fwsc",
+   "fix/windows-toolchain-finder:custom-fw/release/Onyx_1.19/Onyx_1.19.fwsc",
+   "main:custom-fw/release/Onyx_1.19/Onyx_1.19.fwsc"
+  ],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/28spawn/Pocket-Onyx/releases/download/v1.19/Onyx_1.19.fwsc",
+    "file": "M-VAVE_Pocket_AMP_Custom_Firmware_Onyx___rel__Onyx_1.19.fwsc",
+    "size": 685381,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/28spawn/Pocket-Onyx/releases/download/v1.18/Onyx_1.18.fwsc",
+    "file": "M-VAVE_Pocket_AMP_Custom_Firmware_Onyx___rel__Onyx_1.18.fwsc",
+    "size": 685381,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/28spawn/m-vave-pocket-amp-onyx/experimental/48k-codec/custom-fw/release/Onyx_1.19/Onyx_1.19.fwsc",
+    "file": "M-VAVE_Pocket_AMP_Custom_Firmware_Onyx___git__Onyx_1.19.fwsc",
+    "size": 685381,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/28spawn/m-vave-pocket-amp-onyx/fix/windows-toolchain-finder/custom-fw/release/Onyx_1.19/Onyx_1.19.fwsc",
+    "file": "M-VAVE_Pocket_AMP_Custom_Firmware_Onyx___git__Onyx_1.19.fwsc",
+    "size": 685381,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/28spawn/m-vave-pocket-amp-onyx/main/custom-fw/release/Onyx_1.19/Onyx_1.19.fwsc",
+    "file": "M-VAVE_Pocket_AMP_Custom_Firmware_Onyx___git__Onyx_1.19.fwsc",
+    "size": 685381,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-10T16:58:26Z",
+  "language": "C"
+ },
+ {
+  "name": "QUADRO",
+  "repo": "matttallison/quadro-fm1",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "quadro-1.8-app.bin",
+   "quadro-1.8.fwsc",
+   "SHA256SUMS",
+   "quadro-1.7-app.bin",
+   "quadro-1.7.fwsc",
+   "SHA256SUMS",
+   "quadro-1.0-app.bin",
+   "quadro-1.0.fwsc",
+   "SHA256SUMS"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/matttallison/quadro-fm1/releases/download/1.8/quadro-1.8.fwsc",
+    "file": "QUADRO__rel__quadro-1.8.fwsc",
+    "size": 614938,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/matttallison/quadro-fm1/releases/download/1.7/quadro-1.7.fwsc",
+    "file": "QUADRO__rel__quadro-1.7.fwsc",
+    "size": 611496,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/matttallison/quadro-fm1/releases/download/1.0/quadro-1.0.fwsc",
+    "file": "QUADRO__rel__quadro-1.0.fwsc",
+    "size": 611496,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-06T15:14:49Z",
+  "language": "C"
+ },
+ {
+  "name": "DX747",
+  "repo": "esbenvb/fm1-dx747",
+  "page": "https://esbenvb.github.io/fm1-dx747/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "FM1_DX747.fwsc",
+   "SHA256SUMS"
+  ],
+  "branch_files": [
+   "dx747-on-portable:sdk/firmware/FM-1_015.fwsc",
+   "dx747:sdk/firmware/FM-1_015.fwsc",
+   "smk37:sdk/firmware/FM-1_015.fwsc",
+   "smk37:targets/smk37/sdk/firmware/SMK37-Elite-V16.fwsc",
+   "smk37:targets/smk37/sdk/firmware/SMK37-Pro-V16.fwsc"
+  ],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/esbenvb/fm1-dx747/releases/download/v0.1/FM1_DX747.fwsc",
+    "file": "DX747__rel__FM1_DX747.fwsc",
+    "size": 487988,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/esbenvb/fm1-dx747/dx747-on-portable/sdk/firmware/FM-1_015.fwsc",
+    "file": "DX747__git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/esbenvb/fm1-dx747/dx747/sdk/firmware/FM-1_015.fwsc",
+    "file": "DX747__git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/esbenvb/fm1-dx747/smk37/sdk/firmware/FM-1_015.fwsc",
+    "file": "DX747__git__FM-1_015.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/esbenvb/fm1-dx747/smk37/targets/smk37/sdk/firmware/SMK37-Elite-V16.fwsc",
+    "file": "DX747__git__SMK37-Elite-V16.fwsc",
+    "size": 705236,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/esbenvb/fm1-dx747/smk37/targets/smk37/sdk/firmware/SMK37-Pro-V16.fwsc",
+    "file": "DX747__git__SMK37-Pro-V16.fwsc",
+    "size": 705252,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://esbenvb.github.io/fm1-dx747/ (base64)",
+    "file": "DX747__b64.wasm",
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-11-10T10:27:56Z",
+  "language": "C"
+ },
+ {
+  "name": "RHYTHMER OS",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "Saadet",
+  "repo": "keremimo/saadet",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "BUILD_INFO-mke-p37.json",
+   "BUILD_INFO-smk37-elite.json",
+   "BUILD_INFO-smk37-pro.json",
+   "BUILD_INFO.json",
+   "saadet-1.0.5-site.zip",
+   "saadet-1.0.5-source.zip",
+   "saadet-1.0.5.fwsc",
+   "saadet-mke-p37-1.0.5.fwsc",
+   "saadet-smk37-elite-1.0.5.fwsc",
+   "saadet-smk37-pro-1.0.5.fwsc",
+   "SHA256SUMS",
+   "BUILD_INFO-mke-p37.json",
+   "BUILD_INFO-smk37-elite.json",
+   "BUILD_INFO-smk37-pro.json",
+   "BUILD_INFO.json",
+   "saadet-1.0.4-site.zip",
+   "saadet-1.0.4-source.zip",
+   "saadet-1.0.4.fwsc",
+   "saadet-mke-p37-1.0.4.fwsc",
+   "saadet-smk37-elite-1.0.4.fwsc",
+   "saadet-smk37-pro-1.0.4.fwsc",
+   "SHA256SUMS",
+   "BUILD_INFO-mke-p37.json",
+   "BUILD_INFO-smk37-elite.json",
+   "BUILD_INFO-smk37-pro.json",
+   "BUILD_INFO.json",
+   "saadet-1.0.0-site.zip",
+   "saadet-1.0.0-source.zip",
+   "saadet-1.0.0.fwsc",
+   "saadet-mke-p37-1.0.0.fwsc",
+   "saadet-smk37-elite-1.0.0.fwsc",
+   "saadet-smk37-pro-1.0.0.fwsc",
+   "SHA256SUMS",
+   "BUILD_INFO.json",
+   "LICENSING.md",
+   "RELEASE_INFO.json",
+   "RELEASE_NOTES.md",
+   "saadet-0.1.1-release.zip",
+   "saadet-0.1.1-site.zip",
+   "saadet-0.1.1-source.zip",
+   "saadet-0.1.1.fwsc",
+   "SHA256SUMS",
+   "VERIFICATION.json",
+   "BUILD_INFO.json",
+   "LICENSING.md",
+   "RELEASE_INFO.json",
+   "saadet-0.1.0-release.zip",
+   "saadet-0.1.0-site.zip",
+   "saadet-0.1.0-source.zip",
+   "saadet-0.1.0.fwsc",
+   "SHA256SUMS",
+   "VERIFICATION.json"
+  ],
+  "branch_files": [
+   "gh-pages:firmware/m-bootloader-2.3.fwsc",
+   "gh-pages:firmware/saadet-1.0.5.fwsc",
+   "gh-pages:firmware/saadet-mke-p37-1.0.5.fwsc",
+   "gh-pages:firmware/saadet-smk37-elite-1.0.5.fwsc",
+   "gh-pages:firmware/saadet-smk37-pro-1.0.5.fwsc",
+   "main:platform/m-bootloader/fm1-uboot-2.3.fwsc"
+  ],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/keremimo/saadet/releases/download/v1.0.5/saadet-1.0.5.fwsc",
+    "file": "Saadet__rel__saadet-1.0.5.fwsc",
+    "size": 611490,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/keremimo/saadet/releases/download/v1.0.5/saadet-mke-p37-1.0.5.fwsc",
+    "file": "Saadet__rel__saadet-mke-p37-1.0.5.fwsc",
+    "size": 654350,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/keremimo/saadet/releases/download/v1.0.5/saadet-smk37-elite-1.0.5.fwsc",
+    "file": "Saadet__rel__saadet-smk37-elite-1.0.5.fwsc",
+    "size": 654354,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/keremimo/saadet/releases/download/v1.0.5/saadet-smk37-pro-1.0.5.fwsc",
+    "file": "Saadet__rel__saadet-smk37-pro-1.0.5.fwsc",
+    "size": 654350,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/keremimo/saadet/releases/download/v1.0.4/saadet-1.0.4.fwsc",
+    "file": "Saadet__rel__saadet-1.0.4.fwsc",
+    "size": 611490,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/keremimo/saadet/releases/download/v1.0.4/saadet-mke-p37-1.0.4.fwsc",
+    "file": "Saadet__rel__saadet-mke-p37-1.0.4.fwsc",
+    "size": 654350,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-12T05:17:26Z",
+  "language": "C"
+ },
+ {
+  "name": "ira",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "GRUS",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "Viscera",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "JAZZY",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "ARCADE RAT",
+  "repo": "jonludwig1234/stack-trace-arcade-rat-fm1",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "commercial_master_audio.wav",
+   "demo_bgm_music.wav",
+   "fm1_firmware_showcase_demo.mp4"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-11-11T00:02:55Z",
+  "language": "HTML"
+ },
+ {
+  "name": "fm1-rocket-os",
+  "repo": "cmlarsen/fm1-rocket-os",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "integration:Makefile (emcc)",
+   "integration:web/emu/build.sh (emcc)",
+   "main:Makefile (emcc)",
+   "main:web/emu/build.sh (emcc)"
+  ],
+  "found": [],
+  "pushed": "2026-10-12T11:48:35Z",
+  "language": "C"
+ },
+ {
+  "name": "Optimist",
+  "repo": "w0ts/optimist",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "Apache-2.0.txt",
+   "BSD-1-Clause-FatFs.txt",
+   "BSD-2-Clause-micro-ecc.txt",
+   "BSD-3-Clause-uPD933.txt",
+   "GPL-2.0-reSID.txt",
+   "LICENSE",
+   "LICENSING.md",
+   "MIT-airwindows.txt",
+   "MIT-DaisySP.txt",
+   "MIT-Felucca-Engines.txt",
+   "MIT-Open303.txt",
+   "MIT-Plaits.txt",
+   "MIT-Rings.txt",
+   "MIT-sc808.txt",
+   "MIT-TB3PO.txt",
+   "MPL-2.0.txt",
+   "optimist-0.3-drum-machines-ui.zip",
+   "optimist-0.3-drum-machines.fwsc",
+   "optimist-0.3-mots-config-ui.zip",
+   "optimist-0.3-mots-config.fwsc",
+   "optimist-0.3-synths-2-ui.zip",
+   "optimist-0.3-synths-2.fwsc",
+   "optimist-0.3-synths-ui.zip",
+   "optimist-0.3-synths.fwsc",
+   "SHA256SUMS.txt",
+   "pi32v2-llvm-dropin-4f631b31b-e575321-macos-arm64.tar.xz",
+   "pi32v2-llvm-dropin-4f631b31b-e575321.tar.xz",
+   "Apache-2.0.txt",
+   "BSD-2-Clause-micro-ecc.txt",
+   "BSD-3-Clause-uPD933.txt",
+   "GPL-2.0-reSID.txt",
+   "LICENSE",
+   "LICENSING.md",
+   "MIT-airwindows.txt",
+   "MIT-DaisySP.txt",
+   "MIT-Felucca-Engines.txt",
+   "MIT-Open303.txt",
+   "MIT-Plaits.txt",
+   "MIT-Rings.txt",
+   "MIT-sc808.txt",
+   "MIT-TB3PO.txt",
+   "optimist-0.2-drum-machines-ui.zip",
+   "optimist-0.2-drum-machines.fwsc",
+   "optimist-0.2-synths-2-ui.zip",
+   "optimist-0.2-synths-2.fwsc",
+   "optimist-0.2-synths-ui.zip",
+   "optimist-0.2-synths.fwsc",
+   "optimist-0.2-synths_USBaudio_BTaudio_BTmidi-ui.zip",
+   "optimist-0.2-synths_USBaudio_BTaudio_BTmidi.fwsc",
+   "SHA256SUMS.txt",
+   "Apache-2.0.txt",
+   "BSD-3-Clause-uPD933.txt",
+   "LICENSE",
+   "LICENSING.md",
+   "MIT-airwindows.txt",
+   "MIT-DaisySP.txt",
+   "MIT-Felucca-Engines.txt",
+   "MIT-Open303.txt",
+   "MIT-Rings.txt",
+   "MIT-sc808.txt",
+   "MIT-TB3PO.txt",
+   "optimist-0.1-drum-machine-ui.zip",
+   "optimist-0.1-drum-machine.fwsc",
+   "optimist-0.1-everything-that-fits-ui.zip",
+   "optimist-0.1-everything-that-fits.fwsc",
+   "optimist-0.1-fm-va-studio-ui.zip",
+   "optimist-0.1-fm-va-studio.fwsc",
+   "optimist-0.1-synth-ui.zip",
+   "optimist-0.1-synth.fwsc",
+   "optimist-0.1-user-default-ui.zip",
+   "optimist-0.1-user-default.fwsc",
+   "optimist-0.1-x0x-drums-ui.zip",
+   "optimist-0.1-x0x-drums.fwsc",
+   "SHA256SUMS.txt",
+   "optimist-all-synths-basic-drums-170d2aae2995ea7d-ui.zip",
+   "optimist-all-synths-basic-drums-170d2aae2995ea7d.fwsc",
+   "optimist-all-synths-basic-drums-5453228226808203-ui.zip",
+   "optimist-all-synths-basic-drums-5453228226808203.fwsc",
+   "optimist-all-synths-basic-drums-e4e5a1a03e3db559-ui.zip",
+   "optimist-all-synths-basic-drums-e4e5a1a03e3db559.fwsc",
+   "optimist-anal-fm-org-soli-ppg-303-b45feee22481bf12-ui.zip",
+   "optimist-anal-fm-org-soli-ppg-303-b45feee22481bf12.fwsc",
+   "optimist-anal-fm-piano-grain-soli-ppg-303-728b1481963d1acf-ui.zip",
+   "optimist-anal-fm-piano-grain-soli-ppg-303-728b1481963d1acf.fwsc",
+   "optimist-c1-4ea7779fc1b73ce0-ui.zip",
+   "optimist-c1-4ea7779fc1b73ce0.fwsc",
+   "optimist-custom-1e73f5f7182edd59-ui.zip",
+   "optimist-custom-1e73f5f7182edd59.fwsc",
+   "optimist-custom-1fdbf79ff395158e-ui.zip",
+   "optimist-custom-1fdbf79ff395158e.fwsc",
+   "optimist-custom-2b1cfbe81369ed28-ui.zip",
+   "optimist-custom-2b1cfbe81369ed28.fwsc",
+   "optimist-custom-a217a7e2f8c1ae8a-ui.zip",
+   "optimist-custom-a217a7e2f8c1ae8a.fwsc",
+   "optimist-custom-a7c59e0ab8ae9c60-ui.zip",
+   "optimist-custom-a7c59e0ab8ae9c60.fwsc",
+   "optimist-custom-v1-b0acc46d3fd8897a-ui.zip",
+   "optimist-custom-v1-b0acc46d3fd8897a.fwsc",
+   "optimist-drum-machine-02d4b8ce54e22310-ui.zip",
+   "optimist-drum-machine-02d4b8ce54e22310.fwsc",
+   "optimist-drum-machine-081126-d09fd365cd875861-ui.zip",
+   "optimist-drum-machine-081126-d09fd365cd875861.fwsc",
+   "optimist-drum-machine-081126b-81abf11876ea90fd-ui.zip",
+   "optimist-drum-machine-081126b-81abf11876ea90fd.fwsc",
+   "optimist-drum-machine-081126c-c24b350fa719c4b0-ui.zip",
+   "optimist-drum-machine-081126c-c24b350fa719c4b0.fwsc",
+   "optimist-drum-machine-081126d-331b787b1daf5408-ui.zip",
+   "optimist-drum-machine-081126d-331b787b1daf5408.fwsc",
+   "optimist-drum-machine-1e64682fc83c03f3-ui.zip",
+   "optimist-drum-machine-1e64682fc83c03f3.fwsc",
+   "optimist-ekt-5c36c6e4efa6af8d-ui.zip",
+   "optimist-ekt-5c36c6e4efa6af8d.fwsc",
+   "optimist-everything-fits-e62b40a572116043-ui.zip",
+   "optimist-everything-fits-e62b40a572116043.fwsc",
+   "optimist-everything-fits-jl-76a6f3f8e73ba48b-ui.zip",
+   "optimist-everything-fits-jl-76a6f3f8e73ba48b.fwsc",
+   "optimist-first-stabulist-b1e163804ed76d0d-ui.zip",
+   "optimist-first-stabulist-b1e163804ed76d0d.fwsc",
+   "optimist-fm-va-studio-0cdb15fe9cc44da2-ui.zip",
+   "optimist-fm-va-studio-0cdb15fe9cc44da2.fwsc",
+   "optimist-jkdr-87c17022b07d9bb6-ui.zip",
+   "optimist-jkdr-87c17022b07d9bb6.fwsc",
+   "optimist-jlop2-de8e429ce9e78624-ui.zip",
+   "optimist-jlop2-de8e429ce9e78624.fwsc",
+   "optimist-jlop3-23b53f33ee98a42c-ui.zip",
+   "optimist-jlop3-23b53f33ee98a42c.fwsc",
+   "optimist-jsm1-e6b258ff4c85aa5f-ui.zip",
+   "optimist-jsm1-e6b258ff4c85aa5f.fwsc",
+   "optimist-jsm3-9dea7cddac1460dc-ui.zip",
+   "optimist-jsm3-9dea7cddac1460dc.fwsc",
+   "optimist-jsm3-e02c8e59d08cf8e7-ui.zip",
+   "optimist-jsm3-e02c8e59d08cf8e7.fwsc",
+   "optimist-jsm4-129b59a5f6da59b8-ui.zip",
+   "optimist-jsm4-129b59a5f6da59b8.fwsc",
+   "optimist-jsm6-2c7d9b12561dba0a-ui.zip",
+   "optimist-jsm6-2c7d9b12561dba0a.fwsc",
+   "optimist-jsm6-77e50d000756c772-ui.zip",
+   "optimist-jsm6-77e50d000756c772.fwsc",
+   "optimist-just-synths-14eaa913ebfcfe85-ui.zip",
+   "optimist-just-synths-14eaa913ebfcfe85.fwsc",
+   "optimist-lots-of-synths-not-much-else-ff3c3ff2a5380372-ui.zip",
+   "optimist-lots-of-synths-not-much-else-ff3c3ff2a5380372.fwsc",
+   "optimist-m4m-126609cac56c35bd-ui.zip",
+   "optimist-m4m-126609cac56c35bd.fwsc",
+   "optimist-m4m-259615ee13e76df0-ui.zip",
+   "optimist-m4m-259615ee13e76df0.fwsc",
+   "optimist-m4m-2ecb6ce9fd807f49-ui.zip",
+   "optimist-m4m-2ecb6ce9fd807f49.fwsc",
+   "optimist-m4m-7afd7cd6aebc1ff7-ui.zip",
+   "optimist-m4m-7afd7cd6aebc1ff7.fwsc",
+   "optimist-mots-config-101126drums-edfbf51f3317bbd3-ui.zip",
+   "optimist-mots-config-101126drums-edfbf51f3317bbd3.fwsc",
+   "optimist-mots-config-101126drums2-b5c65bedcddb69a0-ui.zip",
+   "optimist-mots-config-101126drums2-b5c65bedcddb69a0.fwsc",
+   "optimist-mots-config-101126synths-afa65733ce1c3d15-ui.zip",
+   "optimist-mots-config-101126synths-afa65733ce1c3d15.fwsc",
+   "optimist-mots-config-1bddad65522b2ab6-ui.zip",
+   "optimist-mots-config-1bddad65522b2ab6.fwsc",
+   "optimist-mots-config-280fccf53498fe79-sd-card.zip",
+   "optimist-mots-config-280fccf53498fe79-ui.zip",
+   "optimist-mots-config-280fccf53498fe79.fwsc",
+   "optimist-mots-config-3cf0f8be12d676cf-ui.zip",
+   "optimist-mots-config-3cf0f8be12d676cf.fwsc",
+   "optimist-mots-config-7d0bb4a1c3dde6d8-ui.zip",
+   "optimist-mots-config-7d0bb4a1c3dde6d8.fwsc",
+   "optimist-mots-config-bf9ea4fa0bb4cf63-ui.zip",
+   "optimist-mots-config-bf9ea4fa0bb4cf63.fwsc",
+   "optimist-mots-config-drums-960e346f4ecb2054-ui.zip",
+   "optimist-mots-config-drums-960e346f4ecb2054.fwsc",
+   "optimist-mots-config-nodrum-15169fb1ece536a2-ui.zip",
+   "optimist-mots-config-nodrum-15169fb1ece536a2.fwsc",
+   "optimist-mpa-synth-set-1-7cf055b796558da6-ui.zip",
+   "optimist-mpa-synth-set-1-7cf055b796558da6.fwsc",
+   "optimist-mpasynths-usb-bta-2ea4cdb1fea7f46f-ui.zip",
+   "optimist-mpasynths-usb-bta-2ea4cdb1fea7f46f.fwsc",
+   "optimist-nothing-142ebe577a86b1b8-ui.zip",
+   "optimist-nothing-142ebe577a86b1b8.fwsc",
+   "optimist-optimist-synths-e9d08401d813b0f4-ui.zip",
+   "optimist-optimist-synths-e9d08401d813b0f4.fwsc",
+   "optimist-rm84-a8b123b19e59b22e-ui.zip",
+   "optimist-rm84-a8b123b19e59b22e.fwsc",
+   "optimist-rtest-ab9534ba90e599a1-ui.zip",
+   "optimist-rtest-ab9534ba90e599a1.fwsc",
+   "optimist-rtest2-cd268156b38bee50-ui.zip",
+   "optimist-rtest2-cd268156b38bee50.fwsc",
+   "optimist-rtest3-f444a4926cafcb8b-ui.zip",
+   "optimist-rtest3-f444a4926cafcb8b.fwsc",
+   "optimist-rtest4-e37c781e2f5f3357-ui.zip",
+   "optimist-rtest4-e37c781e2f5f3357.fwsc",
+   "optimist-synth-0372432b1545131d-ui.zip",
+   "optimist-synth-0372432b1545131d.fwsc",
+   "optimist-synth-4351466aa961dac8-ui.zip",
+   "optimist-synth-4351466aa961dac8.fwsc",
+   "optimist-synth-711ff55ce4048082-ui.zip",
+   "optimist-synth-711ff55ce4048082.fwsc",
+   "optimist-synth-7e3be9b65c63ecbf-ui.zip",
+   "optimist-synth-7e3be9b65c63ecbf.fwsc",
+   "optimist-synth-e13cecef7ad0c467-ui.zip",
+   "optimist-synth-e13cecef7ad0c467.fwsc",
+   "optimist-synth-efeea70e371da684-ui.zip",
+   "optimist-synth-efeea70e371da684.fwsc",
+   "optimist-synths-3b5acb5c7993edee-ui.zip",
+   "optimist-synths-3b5acb5c7993edee.fwsc",
+   "optimist-synths-983d2bff2e1d4656-ui.zip",
+   "optimist-synths-983d2bff2e1d4656.fwsc",
+   "optimist-synths-basic-drums-bt-6fb119506d6b3f2c-ui.zip",
+   "optimist-synths-basic-drums-bt-6fb119506d6b3f2c.fwsc",
+   "optimist-synths-basic-drums-bt-mfx-b9ba517d8d473004-ui.zip",
+   "optimist-synths-basic-drums-bt-mfx-b9ba517d8d473004.fwsc",
+   "optimist-synths-mostly-091126c-4783dcede2ca9bdd-ui.zip",
+   "optimist-synths-mostly-091126c-4783dcede2ca9bdd.fwsc",
+   "optimist-synths-mostly-091126d-61ddfdaa75f739ec-ui.zip",
+   "optimist-synths-mostly-091126d-61ddfdaa75f739ec.fwsc",
+   "optimist-synths-usb-bta-btm-035bd612a1ef6705-ui.zip",
+   "optimist-synths-usb-bta-btm-035bd612a1ef6705.fwsc",
+   "optimist-synths-usb-bta-btm-041126-aaefd18a0df33146-ui.zip",
+   "optimist-synths-usb-bta-btm-041126-aaefd18a0df33146.fwsc",
+   "optimist-synths-usb-bta-btm-081126-7a924a84fc11f13a-ui.zip",
+   "optimist-synths-usb-bta-btm-081126-7a924a84fc11f13a.fwsc",
+   "optimist-synths-usb-bta-btm-081126b-0800cc7e876fe798-ui.zip",
+   "optimist-synths-usb-bta-btm-081126b-0800cc7e876fe798.fwsc",
+   "optimist-synths-usb-bta-btm-081126c-886b53a6508f6158-ui.zip",
+   "optimist-synths-usb-bta-btm-081126c-886b53a6508f6158.fwsc",
+   "optimist-synths-usb-bta-btm-091126-1c77440a3e65a581-ui.zip",
+   "optimist-synths-usb-bta-btm-091126-1c77440a3e65a581.fwsc",
+   "optimist-synths-usb-bta-btm-091126b-314e3826ac16b064-ui.zip",
+   "optimist-synths-usb-bta-btm-091126b-314e3826ac16b064.fwsc",
+   "optimist-synths-usb-bta-btm-0e4083816d244bb0-ui.zip",
+   "optimist-synths-usb-bta-btm-0e4083816d244bb0.fwsc",
+   "optimist-synths-usb-bta-btm-16244862c06d06f2-ui.zip",
+   "optimist-synths-usb-bta-btm-16244862c06d06f2.fwsc",
+   "optimist-synths-usb-bta-btm-191fdb88da23ddec-ui.zip",
+   "optimist-synths-usb-bta-btm-191fdb88da23ddec.fwsc",
+   "optimist-synths-usb-bta-btm-19bdebe5a7a3811e-ui.zip",
+   "optimist-synths-usb-bta-btm-19bdebe5a7a3811e.fwsc",
+   "optimist-synths-usb-bta-btm-1a17465b6f66264f-ui.zip",
+   "optimist-synths-usb-bta-btm-1a17465b6f66264f.fwsc",
+   "optimist-synths-usb-bta-btm-2211fecd1e2ecdf8-ui.zip",
+   "optimist-synths-usb-bta-btm-2211fecd1e2ecdf8.fwsc",
+   "optimist-synths-usb-bta-btm-2829c7712bca5a5e-ui.zip",
+   "optimist-synths-usb-bta-btm-2829c7712bca5a5e.fwsc",
+   "optimist-synths-usb-bta-btm-28938d714cf55bda-ui.zip",
+   "optimist-synths-usb-bta-btm-28938d714cf55bda.fwsc",
+   "optimist-synths-usb-bta-btm-2f5a8a3adb621049-ui.zip",
+   "optimist-synths-usb-bta-btm-2f5a8a3adb621049.fwsc",
+   "optimist-synths-usb-bta-btm-30b16fabcc6ba3aa-ui.zip",
+   "optimist-synths-usb-bta-btm-30b16fabcc6ba3aa.fwsc",
+   "optimist-synths-usb-bta-btm-311026-8d0f7c1c3858d9c6-ui.zip",
+   "optimist-synths-usb-bta-btm-311026-8d0f7c1c3858d9c6.fwsc",
+   "optimist-synths-usb-bta-btm-311026-ef92b220280647b2-ui.zip",
+   "optimist-synths-usb-bta-btm-311026-ef92b220280647b2.fwsc",
+   "optimist-synths-usb-bta-btm-323579b270839e12-ui.zip",
+   "optimist-synths-usb-bta-btm-323579b270839e12.fwsc",
+   "optimist-synths-usb-bta-btm-3cdb48545d395eaa-ui.zip",
+   "optimist-synths-usb-bta-btm-3cdb48545d395eaa.fwsc",
+   "optimist-synths-usb-bta-btm-41b6b42ec994ed0c-ui.zip",
+   "optimist-synths-usb-bta-btm-41b6b42ec994ed0c.fwsc",
+   "optimist-synths-usb-bta-btm-447e2cfd3a934555-ui.zip",
+   "optimist-synths-usb-bta-btm-447e2cfd3a934555.fwsc",
+   "optimist-synths-usb-bta-btm-48413f9a3a76c52a-ui.zip",
+   "optimist-synths-usb-bta-btm-48413f9a3a76c52a.fwsc",
+   "optimist-synths-usb-bta-btm-492f1d1c88c1bb44-ui.zip",
+   "optimist-synths-usb-bta-btm-492f1d1c88c1bb44.fwsc",
+   "optimist-synths-usb-bta-btm-492f9c011576b92c-ui.zip",
+   "optimist-synths-usb-bta-btm-492f9c011576b92c.fwsc",
+   "optimist-synths-usb-bta-btm-4a1481d90c1eed34-ui.zip",
+   "optimist-synths-usb-bta-btm-4a1481d90c1eed34.fwsc",
+   "optimist-synths-usb-bta-btm-5b04d699844d4451-ui.zip",
+   "optimist-synths-usb-bta-btm-5b04d699844d4451.fwsc",
+   "optimist-synths-usb-bta-btm-5e27eb4c897d383d-ui.zip",
+   "optimist-synths-usb-bta-btm-5e27eb4c897d383d.fwsc",
+   "optimist-synths-usb-bta-btm-5f6fa1bb7b7b822f-ui.zip",
+   "optimist-synths-usb-bta-btm-5f6fa1bb7b7b822f.fwsc",
+   "optimist-synths-usb-bta-btm-60b5e32df285ec5c-ui.zip",
+   "optimist-synths-usb-bta-btm-60b5e32df285ec5c.fwsc",
+   "optimist-synths-usb-bta-btm-674048f509156b26-ui.zip",
+   "optimist-synths-usb-bta-btm-674048f509156b26.fwsc",
+   "optimist-synths-usb-bta-btm-6b12940ee2e3d1ec-ui.zip",
+   "optimist-synths-usb-bta-btm-6b12940ee2e3d1ec.fwsc",
+   "optimist-synths-usb-bta-btm-6b2e38af97908ea2-ui.zip",
+   "optimist-synths-usb-bta-btm-6b2e38af97908ea2.fwsc",
+   "optimist-synths-usb-bta-btm-6b453aafa8a97b9a-ui.zip",
+   "optimist-synths-usb-bta-btm-6b453aafa8a97b9a.fwsc",
+   "optimist-synths-usb-bta-btm-7205c07395f18b26-ui.zip",
+   "optimist-synths-usb-bta-btm-7205c07395f18b26.fwsc",
+   "optimist-synths-usb-bta-btm-73cf7746c2a45f73-ui.zip",
+   "optimist-synths-usb-bta-btm-73cf7746c2a45f73.fwsc",
+   "optimist-synths-usb-bta-btm-7aa3cd37472ee154-ui.zip",
+   "optimist-synths-usb-bta-btm-7aa3cd37472ee154.fwsc",
+   "optimist-synths-usb-bta-btm-7d87f742d11f227f-ui.zip",
+   "optimist-synths-usb-bta-btm-7d87f742d11f227f.fwsc",
+   "optimist-synths-usb-bta-btm-81acc452910f005b-ui.zip",
+   "optimist-synths-usb-bta-btm-81acc452910f005b.fwsc",
+   "optimist-synths-usb-bta-btm-895f5174fb83d549-ui.zip",
+   "optimist-synths-usb-bta-btm-895f5174fb83d549.fwsc",
+   "optimist-synths-usb-bta-btm-8ade7a63f411c2f5-ui.zip",
+   "optimist-synths-usb-bta-btm-8ade7a63f411c2f5.fwsc",
+   "optimist-synths-usb-bta-btm-8c30d901593bb09b-ui.zip",
+   "optimist-synths-usb-bta-btm-8c30d901593bb09b.fwsc",
+   "optimist-synths-usb-bta-btm-929a3126aeb29e03-ui.zip",
+   "optimist-synths-usb-bta-btm-929a3126aeb29e03.fwsc",
+   "optimist-synths-usb-bta-btm-94a81760f86476b7-ui.zip",
+   "optimist-synths-usb-bta-btm-94a81760f86476b7.fwsc",
+   "optimist-synths-usb-bta-btm-95088457f89c92ab-ui.zip",
+   "optimist-synths-usb-bta-btm-95088457f89c92ab.fwsc",
+   "optimist-synths-usb-bta-btm-96e17f62d5f84c75-ui.zip",
+   "optimist-synths-usb-bta-btm-96e17f62d5f84c75.fwsc",
+   "optimist-synths-usb-bta-btm-9795a9d9bd893583-ui.zip",
+   "optimist-synths-usb-bta-btm-9795a9d9bd893583.fwsc",
+   "optimist-synths-usb-bta-btm-97cb7449dd91f8b9-ui.zip",
+   "optimist-synths-usb-bta-btm-97cb7449dd91f8b9.fwsc",
+   "optimist-synths-usb-bta-btm-9d75000267221a7b-ui.zip",
+   "optimist-synths-usb-bta-btm-9d75000267221a7b.fwsc",
+   "optimist-synths-usb-bta-btm-ab569174e075fb02-ui.zip",
+   "optimist-synths-usb-bta-btm-ab569174e075fb02.fwsc",
+   "optimist-synths-usb-bta-btm-ad045d007d756547-ui.zip",
+   "optimist-synths-usb-bta-btm-ad045d007d756547.fwsc",
+   "optimist-synths-usb-bta-btm-b4804b1d324ee4bc-ui.zip",
+   "optimist-synths-usb-bta-btm-b4804b1d324ee4bc.fwsc",
+   "optimist-synths-usb-bta-btm-bef9ed500ba3025f-ui.zip",
+   "optimist-synths-usb-bta-btm-bef9ed500ba3025f.fwsc",
+   "optimist-synths-usb-bta-btm-c487a0f3ed3a1246-ui.zip",
+   "optimist-synths-usb-bta-btm-c487a0f3ed3a1246.fwsc",
+   "optimist-synths-usb-bta-btm-c82050c22b099060-ui.zip",
+   "optimist-synths-usb-bta-btm-c82050c22b099060.fwsc",
+   "optimist-synths-usb-bta-btm-d1907c6ec8caf752-ui.zip",
+   "optimist-synths-usb-bta-btm-d1907c6ec8caf752.fwsc",
+   "optimist-synths-usb-bta-btm-da0faf0e60bf6a96-ui.zip",
+   "optimist-synths-usb-bta-btm-da0faf0e60bf6a96.fwsc",
+   "optimist-synths-usb-bta-btm-ddf689e5e40e6bf5-ui.zip",
+   "optimist-synths-usb-bta-btm-ddf689e5e40e6bf5.fwsc",
+   "optimist-synths-usb-bta-btm-e2659972ff2ced51-ui.zip",
+   "optimist-synths-usb-bta-btm-e2659972ff2ced51.fwsc",
+   "optimist-synths-usb-bta-btm-e3d41da256af7944-ui.zip",
+   "optimist-synths-usb-bta-btm-e3d41da256af7944.fwsc",
+   "optimist-synths-usb-bta-btm-eaeb209d03613d16-ui.zip",
+   "optimist-synths-usb-bta-btm-eaeb209d03613d16.fwsc",
+   "optimist-synths-usb-bta-btm-ee9805d14342832d-ui.zip",
+   "optimist-synths-usb-bta-btm-ee9805d14342832d.fwsc",
+   "optimist-synths-usb-bta-btm-fafc5c06240c1ae7-ui.zip",
+   "optimist-synths-usb-bta-btm-fafc5c06240c1ae7.fwsc",
+   "optimist-synths-usb-bta-btm-fc0c5cd620135d1e-ui.zip",
+   "optimist-synths-usb-bta-btm-fc0c5cd620135d1e.fwsc",
+   "optimist-synths-usb-bta-btm-iphone-57d41c989b9ca5df-ui.zip",
+   "optimist-synths-usb-bta-btm-iphone-57d41c989b9ca5df.fwsc",
+   "optimist-synths-usb-bta-btm-iphone-ae03249a0b8fecfd-ui.zip",
+   "optimist-synths-usb-bta-btm-iphone-ae03249a0b8fecfd.fwsc",
+   "optimist-synths-usb-bta-btm-iphone-c159cd80789a06da-ui.zip",
+   "optimist-synths-usb-bta-btm-iphone-c159cd80789a06da.fwsc",
+   "optimist-synths-usb-bta-btm-yoni-763376538b7aa18d-ui.zip",
+   "optimist-synths-usb-bta-btm-yoni-763376538b7aa18d.fwsc",
+   "optimist-synths-usb-bta-btm061126-0dd4d332aceb9b40-ui.zip",
+   "optimist-synths-usb-bta-btm061126-0dd4d332aceb9b40.fwsc",
+   "optimist-synthsg-19a87731f6143e25-ui.zip",
+   "optimist-synthsg-19a87731f6143e25.fwsc",
+   "optimist-trythis1-831b3f360be59c93-ui.zip",
+   "optimist-trythis1-831b3f360be59c93.fwsc",
+   "optimist-w8l-no-fm-bt-audio-61487149f035b5b6-ui.zip",
+   "optimist-w8l-no-fm-bt-audio-61487149f035b5b6.fwsc",
+   "optimist-w8l-no-fm-bt-audio-optimised-2b065e793997a70b-ui.zip",
+   "optimist-w8l-no-fm-bt-audio-optimised-2b065e793997a70b.fwsc",
+   "optimist-wobbleoptimal4-191a398234a75c79-ui.zip",
+   "optimist-wobbleoptimal4-191a398234a75c79.fwsc"
+  ],
+  "branch_files": [
+   "cloud-builds:optimist-all-synths-basic-drums-170d2aae2995ea7d.fwsc",
+   "cloud-builds:optimist-all-synths-basic-drums-170d2aae2995ea7d.wasm",
+   "cloud-builds:optimist-all-synths-basic-drums-5453228226808203.fwsc",
+   "cloud-builds:optimist-all-synths-basic-drums-5453228226808203.wasm",
+   "cloud-builds:optimist-all-synths-basic-drums-e4e5a1a03e3db559.fwsc",
+   "cloud-builds:optimist-all-synths-basic-drums-e4e5a1a03e3db559.wasm",
+   "cloud-builds:optimist-anal-fm-org-soli-ppg-303-b45feee22481bf12.fwsc",
+   "cloud-builds:optimist-anal-fm-org-soli-ppg-303-b45feee22481bf12.wasm",
+   "cloud-builds:optimist-anal-fm-piano-grain-soli-ppg-303-728b1481963d1acf.fwsc",
+   "cloud-builds:optimist-anal-fm-piano-grain-soli-ppg-303-728b1481963d1acf.wasm",
+   "cloud-builds:optimist-c1-4ea7779fc1b73ce0.fwsc",
+   "cloud-builds:optimist-c1-4ea7779fc1b73ce0.wasm",
+   "cloud-builds:optimist-custom-1e73f5f7182edd59.fwsc",
+   "cloud-builds:optimist-custom-1e73f5f7182edd59.wasm",
+   "cloud-builds:optimist-custom-1fdbf79ff395158e.fwsc",
+   "cloud-builds:optimist-custom-1fdbf79ff395158e.wasm",
+   "cloud-builds:optimist-custom-2b1cfbe81369ed28.fwsc",
+   "cloud-builds:optimist-custom-2b1cfbe81369ed28.wasm",
+   "cloud-builds:optimist-custom-a217a7e2f8c1ae8a.fwsc",
+   "cloud-builds:optimist-custom-a217a7e2f8c1ae8a.wasm",
+   "cloud-builds:optimist-custom-a7c59e0ab8ae9c60.fwsc",
+   "cloud-builds:optimist-custom-a7c59e0ab8ae9c60.wasm",
+   "cloud-builds:optimist-custom-v1-b0acc46d3fd8897a.fwsc",
+   "cloud-builds:optimist-custom-v1-b0acc46d3fd8897a.wasm",
+   "cloud-builds:optimist-drum-machine-02d4b8ce54e22310.fwsc",
+   "cloud-builds:optimist-drum-machine-02d4b8ce54e22310.wasm",
+   "cloud-builds:optimist-drum-machine-081126-d09fd365cd875861.fwsc",
+   "cloud-builds:optimist-drum-machine-081126-d09fd365cd875861.wasm",
+   "cloud-builds:optimist-drum-machine-081126b-81abf11876ea90fd.fwsc",
+   "cloud-builds:optimist-drum-machine-081126b-81abf11876ea90fd.wasm",
+   "cloud-builds:optimist-drum-machine-081126c-c24b350fa719c4b0.fwsc",
+   "cloud-builds:optimist-drum-machine-081126c-c24b350fa719c4b0.wasm",
+   "cloud-builds:optimist-drum-machine-081126d-331b787b1daf5408.fwsc",
+   "cloud-builds:optimist-drum-machine-081126d-331b787b1daf5408.wasm",
+   "cloud-builds:optimist-drum-machine-1e64682fc83c03f3.fwsc",
+   "cloud-builds:optimist-drum-machine-1e64682fc83c03f3.wasm",
+   "cloud-builds:optimist-ekt-5c36c6e4efa6af8d.fwsc",
+   "cloud-builds:optimist-ekt-5c36c6e4efa6af8d.wasm",
+   "cloud-builds:optimist-everything-fits-e62b40a572116043.fwsc",
+   "cloud-builds:optimist-everything-fits-e62b40a572116043.wasm",
+   "cloud-builds:optimist-everything-fits-jl-76a6f3f8e73ba48b.fwsc",
+   "cloud-builds:optimist-everything-fits-jl-76a6f3f8e73ba48b.wasm",
+   "cloud-builds:optimist-first-stabulist-b1e163804ed76d0d.fwsc",
+   "cloud-builds:optimist-first-stabulist-b1e163804ed76d0d.wasm",
+   "cloud-builds:optimist-fm-va-studio-0cdb15fe9cc44da2.fwsc",
+   "cloud-builds:optimist-fm-va-studio-0cdb15fe9cc44da2.wasm",
+   "cloud-builds:optimist-jkdr-87c17022b07d9bb6.fwsc",
+   "cloud-builds:optimist-jkdr-87c17022b07d9bb6.wasm",
+   "cloud-builds:optimist-jlop2-de8e429ce9e78624.fwsc",
+   "cloud-builds:optimist-jlop2-de8e429ce9e78624.wasm",
+   "cloud-builds:optimist-jlop3-23b53f33ee98a42c.fwsc",
+   "cloud-builds:optimist-jlop3-23b53f33ee98a42c.wasm",
+   "cloud-builds:optimist-jsm1-e6b258ff4c85aa5f.fwsc",
+   "cloud-builds:optimist-jsm1-e6b258ff4c85aa5f.wasm",
+   "cloud-builds:optimist-jsm3-9dea7cddac1460dc.fwsc",
+   "cloud-builds:optimist-jsm3-9dea7cddac1460dc.wasm",
+   "cloud-builds:optimist-jsm3-e02c8e59d08cf8e7.fwsc",
+   "cloud-builds:optimist-jsm3-e02c8e59d08cf8e7.wasm",
+   "cloud-builds:optimist-jsm4-129b59a5f6da59b8.fwsc",
+   "cloud-builds:optimist-jsm4-129b59a5f6da59b8.wasm",
+   "cloud-builds:optimist-jsm6-2c7d9b12561dba0a.fwsc",
+   "cloud-builds:optimist-jsm6-2c7d9b12561dba0a.wasm",
+   "cloud-builds:optimist-jsm6-77e50d000756c772.fwsc",
+   "cloud-builds:optimist-jsm6-77e50d000756c772.wasm",
+   "cloud-builds:optimist-just-synths-14eaa913ebfcfe85.fwsc",
+   "cloud-builds:optimist-just-synths-14eaa913ebfcfe85.wasm",
+   "cloud-builds:optimist-lots-of-synths-not-much-else-ff3c3ff2a5380372.fwsc",
+   "cloud-builds:optimist-lots-of-synths-not-much-else-ff3c3ff2a5380372.wasm",
+   "cloud-builds:optimist-m4m-126609cac56c35bd.fwsc",
+   "cloud-builds:optimist-m4m-126609cac56c35bd.wasm",
+   "cloud-builds:optimist-m4m-259615ee13e76df0.fwsc",
+   "cloud-builds:optimist-m4m-259615ee13e76df0.wasm",
+   "cloud-builds:optimist-m4m-2ecb6ce9fd807f49.fwsc",
+   "cloud-builds:optimist-m4m-2ecb6ce9fd807f49.wasm",
+   "cloud-builds:optimist-m4m-7afd7cd6aebc1ff7.fwsc",
+   "cloud-builds:optimist-m4m-7afd7cd6aebc1ff7.wasm",
+   "cloud-builds:optimist-mots-config-101126drums-edfbf51f3317bbd3.fwsc",
+   "cloud-builds:optimist-mots-config-101126drums-edfbf51f3317bbd3.wasm",
+   "cloud-builds:optimist-mots-config-101126drums2-b5c65bedcddb69a0.fwsc",
+   "cloud-builds:optimist-mots-config-101126drums2-b5c65bedcddb69a0.wasm",
+   "cloud-builds:optimist-mots-config-101126synths-afa65733ce1c3d15.fwsc",
+   "cloud-builds:optimist-mots-config-101126synths-afa65733ce1c3d15.wasm",
+   "cloud-builds:optimist-mots-config-1bddad65522b2ab6.fwsc",
+   "cloud-builds:optimist-mots-config-1bddad65522b2ab6.wasm",
+   "cloud-builds:optimist-mots-config-280fccf53498fe79.fwsc",
+   "cloud-builds:optimist-mots-config-280fccf53498fe79.wasm",
+   "cloud-builds:optimist-mots-config-3cf0f8be12d676cf.fwsc",
+   "cloud-builds:optimist-mots-config-3cf0f8be12d676cf.wasm",
+   "cloud-builds:optimist-mots-config-7d0bb4a1c3dde6d8.fwsc",
+   "cloud-builds:optimist-mots-config-7d0bb4a1c3dde6d8.wasm",
+   "cloud-builds:optimist-mots-config-bf9ea4fa0bb4cf63.fwsc",
+   "cloud-builds:optimist-mots-config-bf9ea4fa0bb4cf63.wasm",
+   "cloud-builds:optimist-mots-config-drums-960e346f4ecb2054.fwsc",
+   "cloud-builds:optimist-mots-config-drums-960e346f4ecb2054.wasm",
+   "cloud-builds:optimist-mots-config-nodrum-15169fb1ece536a2.fwsc",
+   "cloud-builds:optimist-mots-config-nodrum-15169fb1ece536a2.wasm",
+   "cloud-builds:optimist-mpa-synth-set-1-7cf055b796558da6.fwsc",
+   "cloud-builds:optimist-mpa-synth-set-1-7cf055b796558da6.wasm",
+   "cloud-builds:optimist-mpasynths-usb-bta-2ea4cdb1fea7f46f.fwsc",
+   "cloud-builds:optimist-mpasynths-usb-bta-2ea4cdb1fea7f46f.wasm",
+   "cloud-builds:optimist-nothing-142ebe577a86b1b8.fwsc",
+   "cloud-builds:optimist-nothing-142ebe577a86b1b8.wasm",
+   "cloud-builds:optimist-optimist-synths-e9d08401d813b0f4.fwsc",
+   "cloud-builds:optimist-optimist-synths-e9d08401d813b0f4.wasm",
+   "cloud-builds:optimist-rm84-a8b123b19e59b22e.fwsc",
+   "cloud-builds:optimist-rm84-a8b123b19e59b22e.wasm",
+   "cloud-builds:optimist-rtest-ab9534ba90e599a1.fwsc",
+   "cloud-builds:optimist-rtest-ab9534ba90e599a1.wasm",
+   "cloud-builds:optimist-rtest2-cd268156b38bee50.fwsc",
+   "cloud-builds:optimist-rtest2-cd268156b38bee50.wasm",
+   "cloud-builds:optimist-rtest3-f444a4926cafcb8b.fwsc",
+   "cloud-builds:optimist-rtest3-f444a4926cafcb8b.wasm",
+   "cloud-builds:optimist-rtest4-e37c781e2f5f3357.fwsc",
+   "cloud-builds:optimist-rtest4-e37c781e2f5f3357.wasm",
+   "cloud-builds:optimist-synth-0372432b1545131d.fwsc",
+   "cloud-builds:optimist-synth-4351466aa961dac8.fwsc",
+   "cloud-builds:optimist-synth-4351466aa961dac8.wasm",
+   "cloud-builds:optimist-synth-711ff55ce4048082.fwsc",
+   "cloud-builds:optimist-synth-711ff55ce4048082.wasm",
+   "cloud-builds:optimist-synth-7e3be9b65c63ecbf.fwsc",
+   "cloud-builds:optimist-synth-7e3be9b65c63ecbf.wasm",
+   "cloud-builds:optimist-synth-e13cecef7ad0c467.fwsc",
+   "cloud-builds:optimist-synth-e13cecef7ad0c467.wasm",
+   "cloud-builds:optimist-synth-efeea70e371da684.fwsc",
+   "cloud-builds:optimist-synth-efeea70e371da684.wasm",
+   "cloud-builds:optimist-synths-3b5acb5c7993edee.fwsc",
+   "cloud-builds:optimist-synths-3b5acb5c7993edee.wasm",
+   "cloud-builds:optimist-synths-983d2bff2e1d4656.fwsc",
+   "cloud-builds:optimist-synths-983d2bff2e1d4656.wasm",
+   "cloud-builds:optimist-synths-basic-drums-bt-6fb119506d6b3f2c.fwsc",
+   "cloud-builds:optimist-synths-basic-drums-bt-6fb119506d6b3f2c.wasm",
+   "cloud-builds:optimist-synths-basic-drums-bt-mfx-b9ba517d8d473004.fwsc",
+   "cloud-builds:optimist-synths-basic-drums-bt-mfx-b9ba517d8d473004.wasm",
+   "cloud-builds:optimist-synths-mostly-091126c-4783dcede2ca9bdd.fwsc",
+   "cloud-builds:optimist-synths-mostly-091126c-4783dcede2ca9bdd.wasm",
+   "cloud-builds:optimist-synths-mostly-091126d-61ddfdaa75f739ec.fwsc",
+   "cloud-builds:optimist-synths-mostly-091126d-61ddfdaa75f739ec.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-035bd612a1ef6705.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-035bd612a1ef6705.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-041126-aaefd18a0df33146.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-041126-aaefd18a0df33146.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-081126-7a924a84fc11f13a.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-081126-7a924a84fc11f13a.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-081126b-0800cc7e876fe798.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-081126b-0800cc7e876fe798.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-081126c-886b53a6508f6158.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-081126c-886b53a6508f6158.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-091126-1c77440a3e65a581.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-091126-1c77440a3e65a581.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-091126b-314e3826ac16b064.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-091126b-314e3826ac16b064.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-0e4083816d244bb0.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-0e4083816d244bb0.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-16244862c06d06f2.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-16244862c06d06f2.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-191fdb88da23ddec.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-191fdb88da23ddec.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-19bdebe5a7a3811e.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-19bdebe5a7a3811e.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-1a17465b6f66264f.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-1a17465b6f66264f.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-2211fecd1e2ecdf8.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-2211fecd1e2ecdf8.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-2829c7712bca5a5e.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-2829c7712bca5a5e.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-28938d714cf55bda.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-28938d714cf55bda.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-2f5a8a3adb621049.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-2f5a8a3adb621049.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-30b16fabcc6ba3aa.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-30b16fabcc6ba3aa.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-311026-8d0f7c1c3858d9c6.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-311026-8d0f7c1c3858d9c6.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-311026-ef92b220280647b2.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-311026-ef92b220280647b2.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-323579b270839e12.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-323579b270839e12.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-3cdb48545d395eaa.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-3cdb48545d395eaa.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-41b6b42ec994ed0c.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-41b6b42ec994ed0c.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-447e2cfd3a934555.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-447e2cfd3a934555.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-48413f9a3a76c52a.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-48413f9a3a76c52a.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-492f1d1c88c1bb44.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-492f1d1c88c1bb44.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-492f9c011576b92c.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-492f9c011576b92c.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-4a1481d90c1eed34.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-4a1481d90c1eed34.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-5b04d699844d4451.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-5b04d699844d4451.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-5e27eb4c897d383d.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-5e27eb4c897d383d.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-5f6fa1bb7b7b822f.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-5f6fa1bb7b7b822f.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-60b5e32df285ec5c.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-60b5e32df285ec5c.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-674048f509156b26.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-674048f509156b26.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-6b12940ee2e3d1ec.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-6b12940ee2e3d1ec.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-6b2e38af97908ea2.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-6b2e38af97908ea2.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-6b453aafa8a97b9a.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-6b453aafa8a97b9a.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-7205c07395f18b26.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-7205c07395f18b26.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-73cf7746c2a45f73.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-73cf7746c2a45f73.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-7aa3cd37472ee154.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-7aa3cd37472ee154.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-7d87f742d11f227f.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-7d87f742d11f227f.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-81acc452910f005b.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-81acc452910f005b.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-895f5174fb83d549.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-895f5174fb83d549.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-8ade7a63f411c2f5.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-8ade7a63f411c2f5.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-8c30d901593bb09b.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-8c30d901593bb09b.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-929a3126aeb29e03.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-929a3126aeb29e03.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-94a81760f86476b7.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-94a81760f86476b7.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-95088457f89c92ab.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-95088457f89c92ab.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-96e17f62d5f84c75.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-96e17f62d5f84c75.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-9795a9d9bd893583.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-9795a9d9bd893583.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-97cb7449dd91f8b9.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-97cb7449dd91f8b9.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-9d75000267221a7b.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-9d75000267221a7b.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-ab569174e075fb02.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-ab569174e075fb02.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-ad045d007d756547.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-ad045d007d756547.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-b4804b1d324ee4bc.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-b4804b1d324ee4bc.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-bef9ed500ba3025f.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-bef9ed500ba3025f.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-c487a0f3ed3a1246.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-c487a0f3ed3a1246.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-c82050c22b099060.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-c82050c22b099060.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-d1907c6ec8caf752.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-d1907c6ec8caf752.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-da0faf0e60bf6a96.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-da0faf0e60bf6a96.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-ddf689e5e40e6bf5.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-ddf689e5e40e6bf5.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-e2659972ff2ced51.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-e2659972ff2ced51.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-e3d41da256af7944.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-e3d41da256af7944.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-eaeb209d03613d16.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-eaeb209d03613d16.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-ee9805d14342832d.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-ee9805d14342832d.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-fafc5c06240c1ae7.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-fafc5c06240c1ae7.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-fc0c5cd620135d1e.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-fc0c5cd620135d1e.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-iphone-57d41c989b9ca5df.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-iphone-57d41c989b9ca5df.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-iphone-ae03249a0b8fecfd.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-iphone-ae03249a0b8fecfd.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-iphone-c159cd80789a06da.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-iphone-c159cd80789a06da.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm-yoni-763376538b7aa18d.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm-yoni-763376538b7aa18d.wasm",
+   "cloud-builds:optimist-synths-usb-bta-btm061126-0dd4d332aceb9b40.fwsc",
+   "cloud-builds:optimist-synths-usb-bta-btm061126-0dd4d332aceb9b40.wasm",
+   "cloud-builds:optimist-synthsg-19a87731f6143e25.fwsc",
+   "cloud-builds:optimist-synthsg-19a87731f6143e25.wasm",
+   "cloud-builds:optimist-trythis1-831b3f360be59c93.fwsc",
+   "cloud-builds:optimist-trythis1-831b3f360be59c93.wasm",
+   "cloud-builds:optimist-w8l-no-fm-bt-audio-61487149f035b5b6.fwsc",
+   "cloud-builds:optimist-w8l-no-fm-bt-audio-61487149f035b5b6.wasm",
+   "cloud-builds:optimist-w8l-no-fm-bt-audio-optimised-2b065e793997a70b.fwsc",
+   "cloud-builds:optimist-w8l-no-fm-bt-audio-optimised-2b065e793997a70b.wasm",
+   "cloud-builds:optimist-wobbleoptimal4-191a398234a75c79.fwsc",
+   "cloud-builds:optimist-wobbleoptimal4-191a398234a75c79.wasm",
+   "link:web/stock/FM-1_015.fwsc",
+   "main:web/fm1base/m-bootloader/fm1-uboot-2.3.fwsc",
+   "main:web/stock/FM-1_015.fwsc",
+   "sdcard:web/stock/FM-1_015.fwsc"
+  ],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/w0ts/optimist/releases/download/v0.3/optimist-0.3-drum-machines.fwsc",
+    "file": "Optimist__rel__optimist-0.3-drum-machines.fwsc",
+    "size": 688698,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/w0ts/optimist/releases/download/v0.3/optimist-0.3-mots-config.fwsc",
+    "file": "Optimist__rel__optimist-0.3-mots-config.fwsc",
+    "size": 856356,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/w0ts/optimist/releases/download/v0.3/optimist-0.3-synths-2.fwsc",
+    "file": "Optimist__rel__optimist-0.3-synths-2.fwsc",
+    "size": 692813,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/w0ts/optimist/releases/download/v0.3/optimist-0.3-synths.fwsc",
+    "file": "Optimist__rel__optimist-0.3-synths.fwsc",
+    "size": 692813,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/w0ts/optimist/releases/download/v0.2/optimist-0.2-drum-machines.fwsc",
+    "file": "Optimist__rel__optimist-0.2-drum-machines.fwsc",
+    "size": 610819,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/w0ts/optimist/releases/download/v0.2/optimist-0.2-synths-2.fwsc",
+    "file": "Optimist__rel__optimist-0.2-synths-2.fwsc",
+    "size": 610819,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-12T10:15:34Z",
+  "language": "C"
+ },
+ {
+  "name": "Modular-1",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "Hexagon Console",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "FORGE ONE & Forge Phoenix",
+  "repo": "",
+  "page": "",
+  "reason": "no public GitHub repository",
+  "exists": null,
+  "archived": null,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": []
+ },
+ {
+  "name": "FMLarynx",
+  "repo": "ejtb76/FMLarynx",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "fmlarynx-0.1.1.fwsc",
+   "SHA256SUMS",
+   "fmlarynx-0.1.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/ejtb76/FMLarynx/releases/download/v0.1.1/fmlarynx-0.1.1.fwsc",
+    "file": "FMLarynx__rel__fmlarynx-0.1.1.fwsc",
+    "size": 610110,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/ejtb76/FMLarynx/releases/download/v0.1/fmlarynx-0.1.fwsc",
+    "file": "FMLarynx__rel__fmlarynx-0.1.fwsc",
+    "size": 610110,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-30T08:27:58Z",
+  "language": "C"
+ },
+ {
+  "name": "EXTRATONE CORE",
+  "repo": "fabiomassimopasquazzi/dinghy",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-19T20:17:46Z",
+  "language": null
+ },
+ {
+  "name": "FM-1 NES",
+  "repo": "Keitark/fm1-nes",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-09T04:10:57Z",
+  "language": "C"
+ },
+ {
+  "name": "Mocky",
+  "repo": "charlesvestal/fm1-mocky",
+  "page": "https://charlesvestal.github.io/fm1-mocky/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "mocky-0.9.2-app.bin",
+   "mocky-0.9.2.fwsc",
+   "SHA256SUMS",
+   "mocky-0.9.1.fwsc",
+   "mocky-0.9.fwsc"
+  ],
+  "branch_files": [
+   "gh-pages:firmware/mocky-0.9.2.fwsc"
+  ],
+  "page_links": [
+   "https://charlesvestal.github.io/fm1-mocky/firmware/mocky-0.9.2.fwsc"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/charlesvestal/fm1-mocky/releases/download/v0.9.2/mocky-0.9.2.fwsc",
+    "file": "Mocky__rel__mocky-0.9.2.fwsc",
+    "size": 609659,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/charlesvestal/fm1-mocky/releases/download/v0.9.1/mocky-0.9.1.fwsc",
+    "file": "Mocky__rel__mocky-0.9.1.fwsc",
+    "size": 609661,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/charlesvestal/fm1-mocky/releases/download/v0.9/mocky-0.9.fwsc",
+    "file": "Mocky__rel__mocky-0.9.fwsc",
+    "size": 609657,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/charlesvestal/fm1-mocky/gh-pages/firmware/mocky-0.9.2.fwsc",
+    "file": "Mocky__git__mocky-0.9.2.fwsc",
+    "size": 609659,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://charlesvestal.github.io/fm1-mocky/firmware/mocky-0.9.2.fwsc",
+    "file": "Mocky__page__mocky-0.9.2.fwsc",
+    "size": 609659,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-08T11:43:51Z",
+  "language": "C"
+ },
+ {
+  "name": "fm1-mdx",
+  "repo": "Keitark/fm1-mdx",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-08T11:00:50Z",
+  "language": "C"
+ },
+ {
+  "name": "Trumpagotchi",
+  "repo": "adamcharleswilsonmusic-code/Trumpagotchi",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "SHA256SUMS",
+   "trumpagotchi-quick-start.pdf",
+   "trumpagotchi-quick-start.png",
+   "trumpagotchi-source.zip",
+   "trumpagotchi.fwsc",
+   "SHA256SUMS.txt",
+   "trumpagotchi-quick-start.pdf",
+   "trumpagotchi-quick-start.png",
+   "trumpagotchi-source.zip",
+   "trumpagotchi.fwsc"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "main:web/emu/build.sh (emcc)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/adamcharleswilsonmusic-code/Trumpagotchi/releases/download/v1.0.1/trumpagotchi.fwsc",
+    "file": "Trumpagotchi__rel__trumpagotchi.fwsc",
+    "size": 609657,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/adamcharleswilsonmusic-code/Trumpagotchi/releases/download/v1.0.0/trumpagotchi.fwsc",
+    "file": "Trumpagotchi__rel__trumpagotchi.fwsc",
+    "size": 609657,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-11T02:49:31Z",
+  "language": "C"
+ },
+ {
+  "name": "Trireme FM-1",
+  "repo": "ignis32/trireme_fm1",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "LICENSE-Apache-2.0-JieLi-SDK.txt",
+   "SHA256SUMS",
+   "trireme-fm1-v0.1.1.fwsc",
+   "trireme-fm1-v0.1.1.fwsc.sha256",
+   "LICENSE-Apache-2.0-JieLi-SDK.txt",
+   "trireme-fm1-v0.1.fwsc",
+   "trireme-fm1-v0.1.fwsc.sha256"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/ignis32/trireme_fm1/releases/download/v0.1.1/trireme-fm1-v0.1.1.fwsc",
+    "file": "Trireme_FM-1__rel__trireme-fm1-v0.1.1.fwsc",
+    "size": 610086,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/ignis32/trireme_fm1/releases/download/v0.1/trireme-fm1-v0.1.fwsc",
+    "file": "Trireme_FM-1__rel__trireme-fm1-v0.1.fwsc",
+    "size": 610086,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-20T12:07:12Z",
+  "language": "C"
+ },
+ {
+  "name": "Neverhood for FM-1",
+  "repo": "snpwball/fm1-neverhood",
+  "page": "https://snpwball.github.io/fm1/neverhood/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [
+   "https://snpwball.github.io/fm1/neverhood/FM-1-V15.fwsc",
+   "https://snpwball.github.io/fm1/neverhood/neverhood.fwsc"
+  ],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://snpwball.github.io/fm1/neverhood/FM-1-V15.fwsc",
+    "file": "Neverhood_for_FM-1__page__FM-1-V15.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://snpwball.github.io/fm1/neverhood/neverhood.fwsc",
+    "file": "Neverhood_for_FM-1__page__neverhood.fwsc",
+    "size": 610136,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-22T08:46:43Z",
+  "language": "Python"
+ },
+ {
+  "name": "picovave",
+  "repo": "acidsound/picovave",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "picovave-fm1.fwsc",
+   "picovave-smk37.fwsc",
+   "picovave.fwsc",
+   "picovave-fm1.fwsc",
+   "picovave-smk37.fwsc",
+   "picovave.fwsc",
+   "picovave-fm1.fwsc",
+   "picovave-smk37.fwsc",
+   "picovave.fwsc",
+   "picovave-fm1.fwsc",
+   "picovave-smk37.fwsc",
+   "picovave.fwsc",
+   "picovave-fm1.fwsc",
+   "picovave-smk37.fwsc",
+   "picovave.fwsc",
+   "picovave-52257541.fwsc",
+   "picovave-fm1.fwsc",
+   "picovave-smk37.fwsc",
+   "picovave.fwsc",
+   "picovave-fm1.fwsc",
+   "picovave-smk37.fwsc",
+   "picovave.fwsc",
+   "picovave-993b2146.fwsc"
+  ],
+  "branch_files": [
+   "gh-pages:luabc.wasm",
+   "gh-pages:picovave-fm1.fwsc",
+   "gh-pages:picovave-smk37.fwsc",
+   "gh-pages:picovave.fwsc",
+   "gh-pages:sim.wasm",
+   "main:web/sim/luabc.wasm"
+  ],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/12822759/picovave-fm1.fwsc",
+    "file": "picovave__rel__picovave-fm1.fwsc",
+    "size": 610213,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/12822759/picovave-smk37.fwsc",
+    "file": "picovave__rel__picovave-smk37.fwsc",
+    "size": 651383,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/12822759/picovave.fwsc",
+    "file": "picovave__rel__picovave.fwsc",
+    "size": 651383,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/da881124/picovave-fm1.fwsc",
+    "file": "picovave__rel__picovave-fm1.fwsc",
+    "size": 610213,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/da881124/picovave-smk37.fwsc",
+    "file": "picovave__rel__picovave-smk37.fwsc",
+    "size": 651383,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/da881124/picovave.fwsc",
+    "file": "picovave__rel__picovave.fwsc",
+    "size": 651383,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/c924d336/picovave-fm1.fwsc",
+    "file": "picovave__rel__picovave-fm1.fwsc",
+    "size": 610213,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/c924d336/picovave-smk37.fwsc",
+    "file": "picovave__rel__picovave-smk37.fwsc",
+    "size": 651383,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/c924d336/picovave.fwsc",
+    "file": "picovave__rel__picovave.fwsc",
+    "size": 651383,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/9b87fd08/picovave-fm1.fwsc",
+    "file": "picovave__rel__picovave-fm1.fwsc",
+    "size": 610213,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/9b87fd08/picovave-smk37.fwsc",
+    "file": "picovave__rel__picovave-smk37.fwsc",
+    "size": 651383,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/9b87fd08/picovave.fwsc",
+    "file": "picovave__rel__picovave.fwsc",
+    "size": 651383,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/8865204b/picovave-fm1.fwsc",
+    "file": "picovave__rel__picovave-fm1.fwsc",
+    "size": 610201,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/8865204b/picovave-smk37.fwsc",
+    "file": "picovave__rel__picovave-smk37.fwsc",
+    "size": 651355,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/8865204b/picovave.fwsc",
+    "file": "picovave__rel__picovave.fwsc",
+    "size": 651355,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/52257541/picovave-52257541.fwsc",
+    "file": "picovave__rel__picovave-52257541.fwsc",
+    "size": 651271,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/b26ac73a/picovave-fm1.fwsc",
+    "file": "picovave__rel__picovave-fm1.fwsc",
+    "size": 610115,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/b26ac73a/picovave-smk37.fwsc",
+    "file": "picovave__rel__picovave-smk37.fwsc",
+    "size": 651271,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/b26ac73a/picovave.fwsc",
+    "file": "picovave__rel__picovave.fwsc",
+    "size": 651271,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/8ef886a8/picovave-fm1.fwsc",
+    "file": "picovave__rel__picovave-fm1.fwsc",
+    "size": 610115,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/8ef886a8/picovave-smk37.fwsc",
+    "file": "picovave__rel__picovave-smk37.fwsc",
+    "size": 651271,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/8ef886a8/picovave.fwsc",
+    "file": "picovave__rel__picovave.fwsc",
+    "size": 651271,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/acidsound/picovave/releases/download/993b2146/picovave-993b2146.fwsc",
+    "file": "picovave__rel__picovave-993b2146.fwsc",
+    "size": 651271,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/acidsound/picovave/gh-pages/luabc.wasm",
+    "file": "picovave__git__luabc.wasm",
+    "size": 129463,
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-10-24T17:48:20Z",
+  "language": "C"
+ },
+ {
+  "name": "Cat Piano",
+  "repo": "thefriendlyhedgehog/FM-Cat1",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [],
+  "pushed": "2026-10-18T13:34:58Z",
+  "language": "C"
+ },
+ {
+  "name": "Deal or No Deal",
+  "repo": "Kiwi3p/fm1-deal-or-no-deal",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [
+   "main:web/emu/build.sh (emcc)"
+  ],
+  "found": [],
+  "pushed": "2026-10-18T17:14:11Z",
+  "language": "C"
+ },
+ {
+  "name": "Doom E1M1",
+  "repo": "seanohollaren/fm1-doom",
+  "page": "https://doom.deadlockinteractive.com/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [],
+  "branch_files": [
+   "main:site/frontend/public/firmware/doom-b16.fwsc",
+   "main:site/frontend/public/whdgen/whd_gen_es.wasm",
+   "work:site/frontend/public/firmware/doom-b5.fwsc",
+   "work:site/frontend/public/whdgen/whd_gen_es.wasm"
+  ],
+  "page_links": [
+   "https://doom.deadlockinteractive.com/firmware/doom-b16.fwsc"
+  ],
+  "web_source": [
+   "main:web/build.sh (emcc)",
+   "main:web/build_whdgen.sh (emcc,emscripten)",
+   "work:web/build.sh (emcc)",
+   "work:web/build_whdgen.sh (emcc,emscripten)"
+  ],
+  "found": [
+   {
+    "url": "https://raw.githubusercontent.com/seanohollaren/fm1-doom/main/site/frontend/public/firmware/doom-b16.fwsc",
+    "file": "Doom_E1M1__git__doom-b16.fwsc",
+    "size": 610086,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/seanohollaren/fm1-doom/main/site/frontend/public/whdgen/whd_gen_es.wasm",
+    "file": "Doom_E1M1__git__whd_gen_es.wasm",
+    "size": 647121,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/seanohollaren/fm1-doom/work/site/frontend/public/firmware/doom-b5.fwsc",
+    "file": "Doom_E1M1__git__doom-b5.fwsc",
+    "size": 610086,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/seanohollaren/fm1-doom/work/site/frontend/public/whdgen/whd_gen_es.wasm",
+    "file": "Doom_E1M1__git__whd_gen_es.wasm",
+    "size": 647121,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://doom.deadlockinteractive.com/firmware/doom-b16.fwsc",
+    "file": "Doom_E1M1__page__doom-b16.fwsc",
+    "size": 610086,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-10-13T14:41:23Z",
+  "language": "Python"
+ },
+ {
+  "name": "Doom FM-1 / SMK",
+  "repo": "ChanceTheMaker/doom-fm1-smk",
+  "page": "https://chancethemaker.github.io/doom-fm1-smk/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "doom-smk-pads-24-source.zip",
+   "doom-smk37-elite-24.bin",
+   "doom-smk37-pro-24.bin",
+   "releases.json",
+   "SHA256SUMS",
+   "doom-fm1-26.bin",
+   "doom-fm1-controls-26-source.zip",
+   "releases.json",
+   "SHA256SUMS"
+  ],
+  "branch_files": [
+   "feat/finish-smk-pads:site/restore-stock/FM-1-v15.fwsc",
+   "feat/finish-smk-pads:site/simulator/doom-engine.wasm",
+   "feat/fm1-gamedude-controls:site/restore-stock/FM-1-v15.fwsc",
+   "feat/fm1-gamedude-controls:site/simulator/doom-engine.wasm",
+   "feat/fm1-hero-controls:site/restore-stock/FM-1-v15.fwsc",
+   "feat/fm1-hero-controls:site/simulator/doom-engine.wasm",
+   "feat/update-progress:site/restore-stock/FM-1-v15.fwsc",
+   "fix/fm1-timer-clean-checkout:site/restore-stock/FM-1-v15.fwsc",
+   "fix/fm1-timer-clean-checkout:site/simulator/doom-engine.wasm",
+   "fix/smk-known-flash:site/restore-stock/FM-1-v15.fwsc",
+   "fix/smk-known-flash:site/simulator/doom-engine.wasm",
+   "fix/windows-native-usb:site/restore-stock/FM-1-v15.fwsc",
+   "fix/windows-native-usb:site/simulator/doom-engine.wasm",
+   "main:site/restore-stock/FM-1-v15.fwsc",
+   "main:site/simulator/doom-engine.wasm",
+   "release/universal-restore-20261021:site/restore-stock/FM-1-v15.fwsc",
+   "release/universal-restore-20261021:site/simulator/doom-engine.wasm"
+  ],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://raw.githubusercontent.com/ChanceTheMaker/doom-fm1-smk/feat/finish-smk-pads/site/restore-stock/FM-1-v15.fwsc",
+    "file": "Doom_FM-1_SMK__git__FM-1-v15.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ChanceTheMaker/doom-fm1-smk/feat/finish-smk-pads/site/simulator/doom-engine.wasm",
+    "file": "Doom_FM-1_SMK__git__doom-engine.wasm",
+    "size": 654466,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ChanceTheMaker/doom-fm1-smk/feat/fm1-gamedude-controls/site/restore-stock/FM-1-v15.fwsc",
+    "file": "Doom_FM-1_SMK__git__FM-1-v15.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ChanceTheMaker/doom-fm1-smk/feat/fm1-gamedude-controls/site/simulator/doom-engine.wasm",
+    "file": "Doom_FM-1_SMK__git__doom-engine.wasm",
+    "size": 654466,
+    "kind": "wasm"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ChanceTheMaker/doom-fm1-smk/feat/fm1-hero-controls/site/restore-stock/FM-1-v15.fwsc",
+    "file": "Doom_FM-1_SMK__git__FM-1-v15.fwsc",
+    "size": 699956,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://raw.githubusercontent.com/ChanceTheMaker/doom-fm1-smk/feat/fm1-hero-controls/site/simulator/doom-engine.wasm",
+    "file": "Doom_FM-1_SMK__git__doom-engine.wasm",
+    "size": 654466,
+    "kind": "wasm"
+   }
+  ],
+  "pushed": "2026-10-22T07:16:41Z",
+  "language": "C"
+ },
+ {
+  "name": "RetroDash",
+  "repo": "nasonliu/retrodash",
+  "page": "",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "ff6-terra-snow-project.zip",
+   "peaceful-days-spc-project.zip",
+   "retrodash-0.2.0-beta.fwsc",
+   "SHA256SUMS",
+   "validation.json",
+   "peaceful-days-spc-project.zip",
+   "retrodash-0.1.0-beta.fwsc",
+   "SHA256SUMS"
+  ],
+  "branch_files": [],
+  "page_links": [],
+  "web_source": [],
+  "found": [
+   {
+    "url": "https://github.com/nasonliu/retrodash/releases/download/v0.2.0-beta/retrodash-0.2.0-beta.fwsc",
+    "file": "RetroDash__rel__retrodash-0.2.0-beta.fwsc",
+    "size": 612230,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/nasonliu/retrodash/releases/download/v0.1.0-beta/retrodash-0.1.0-beta.fwsc",
+    "file": "RetroDash__rel__retrodash-0.1.0-beta.fwsc",
+    "size": 612230,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-09T09:01:57Z",
+  "language": "C"
+ },
+ {
+  "name": "FM-1 Midi-Mania",
+  "repo": "shan-sherif/fm-1-midi-mania",
+  "page": "https://shan-sherif.github.io/fm-1-midi-mania/webapp/installer/",
+  "reason": "no update package (.fwsc) or web build published",
+  "exists": true,
+  "archived": false,
+  "releases": [
+   "midi-mania-0.8.0-app.bin",
+   "midi-mania-0.8.0.fwsc",
+   "SHA256SUMS",
+   "midi-mania-0.3.0-app.bin",
+   "midi-mania-0.3.0.fwsc",
+   "SHA256SUMS",
+   "midi-mania-0.2.0-app.bin",
+   "midi-mania-0.2.0.fwsc",
+   "SHA256SUMS",
+   "midi-mania-0.1.0-app.bin",
+   "midi-mania-0.1.0.fwsc",
+   "SHA256SUMS"
+  ],
+  "branch_files": [],
+  "page_links": [
+   "https://shan-sherif.github.io/fm-1-midi-mania/firmware/midi-mania-0.9.0.fwsc",
+   "https://shan-sherif.github.io/fm-1-midi-mania/webapp/installer/FM-1.fwsc",
+   "https://shan-sherif.github.io/fm-1-midi-mania/webapp/installer/公式FM-1.fwsc"
+  ],
+  "web_source": [
+   "main:build.sh (emcc)",
+   "main:platforms/web/build.sh (emcc)"
+  ],
+  "found": [
+   {
+    "url": "https://github.com/shan-sherif/fm-1-midi-mania/releases/download/v0.8.0/midi-mania-0.8.0.fwsc",
+    "file": "FM-1_Midi-Mania__rel__midi-mania-0.8.0.fwsc",
+    "size": 610286,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/shan-sherif/fm-1-midi-mania/releases/download/v0.3.0/midi-mania-0.3.0.fwsc",
+    "file": "FM-1_Midi-Mania__rel__midi-mania-0.3.0.fwsc",
+    "size": 610286,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/shan-sherif/fm-1-midi-mania/releases/download/v0.2.0/midi-mania-0.2.0.fwsc",
+    "file": "FM-1_Midi-Mania__rel__midi-mania-0.2.0.fwsc",
+    "size": 610274,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://github.com/shan-sherif/fm-1-midi-mania/releases/download/v0.1.0/midi-mania-0.1.0.fwsc",
+    "file": "FM-1_Midi-Mania__rel__midi-mania-0.1.0.fwsc",
+    "size": 610274,
+    "kind": "fwsc"
+   },
+   {
+    "url": "https://shan-sherif.github.io/fm-1-midi-mania/firmware/midi-mania-0.9.0.fwsc",
+    "file": "FM-1_Midi-Mania__page__midi-mania-0.9.0.fwsc",
+    "size": 610619,
+    "kind": "fwsc"
+   }
+  ],
+  "pushed": "2026-11-12T12:51:38Z",
+  "language": "C"
+ }
+]

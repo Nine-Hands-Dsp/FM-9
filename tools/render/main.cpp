@@ -305,6 +305,27 @@ int main (int argc, char** argv)
         std::printf ("fwcheck ok %s screen=%u peak=%.3f speed=%.1fx\n", fw->abi() == fm9::FirmwareHost::Abi::sim ? "sim" : "web", (unsigned) fw->fbSerial.load(), peak, (600.0 * 512.0 / 48.0) / ms);
         return 0;
     }
+    if (args.contains ("--webtrial"))
+    {
+        juce::MemoryBlock mb; juce::File (args[args.indexOf ("--webtrial") + 1]).loadFileAsData (mb);
+        juce::String err; const double t0 = juce::Time::getMillisecondCounterHiRes();
+        const bool ok = fm9::FirmwareCatalog::webBuildStarts (mb, err, nullptr, 3000);
+        std::printf ("webtrial %s '%s' %.1f s\n", ok ? "ok" : "fail", err.toRawUTF8(), (juce::Time::getMillisecondCounterHiRes() - t0) / 1000);
+        std::fflush (stdout); std::_Exit (0);
+    }
+    if (args.contains ("--catinstall"))
+    {
+        juce::String date; const auto name = args[args.indexOf ("--catinstall") + 1];
+        for (auto& e : fm9::FirmwareCatalog::load (date))
+            if (e.name == name)
+            {
+                juce::String err; const double t0 = juce::Time::getMillisecondCounterHiRes(); float last = -1;
+                const bool ok = fm9::FirmwareCatalog::install (e, err, [&] (float f) { if (f - last > 0.1f || f >= 1.0f) { last = f; std::printf ("  %.0f %% (%.1f s)\n", f * 100, (juce::Time::getMillisecondCounterHiRes() - t0) / 1000); std::fflush (stdout); } });
+                std::printf ("catinstall %s : %s %s (%.1f s)\n", name.toRawUTF8(), ok ? "ok" : "fail", err.toRawUTF8(), (juce::Time::getMillisecondCounterHiRes() - t0) / 1000);
+                return 0;
+            }
+        std::printf ("catinstall: not found\n"); return 1;
+    }
     if (args.contains ("--hwrt"))
     {
         // firmware materiel en temps reel, comme dans un DAW : blocs de 512 a 48 kHz au rythme reel, notes MIDI, sortie en wav

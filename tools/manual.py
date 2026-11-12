@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.11"
+VERSION = "1.3.12"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -305,7 +305,7 @@ T = dict(
         "(listes de github.com/aroum/fm1-custom-fw et de fm1-emu) : chacun est marqué <b>Compatible</b> ou <b>Not compatible</b> (avec la raison), "
         "et son type : HARDWARE (paquet .fwsc), WEB (.wasm) ou les deux. <b>Install</b> installe le firmware (paquet matériel et version web quand "
         "les deux existent), <b>Load</b> le lance, <b>Install all compatible</b> installe d'un coup tous les firmwares libres compatibles. "
-        "<b>Refresh</b> télécharge la dernière liste publiée. Un double-clic sur une ligne ouvre la page du projet. "
+        "<b>Refresh</b> télécharge la dernière liste publiée. <b>Close</b> pendant une installation l'annule, puis ferme la fenêtre. Une version web qui ne démarre pas en 20 secondes n'est pas gardée (le paquet matériel reste installé). Un double-clic sur une ligne ouvre la page du projet. "
         "<b>Firmwares matériels et DAW</b> : l'émulation de la puce tourne en avance sur le son. Par défaut (Firmware &gt; Emulation buffer &gt; "
         "<b>Automatic</b>), cette avance est courte quand vous jouez en direct et grandit seule quand Reaper calcule en avance (lecture, "
         "calcul anticipé) ; Reaper compense le décalage. Low latency, Normal et Safe fixent une avance de 35, 70 ou 140 ms. "

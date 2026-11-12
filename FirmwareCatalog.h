@@ -90,7 +90,8 @@ struct FirmwareCatalog
         return builtin;
     }
 
-    static bool download (const juce::String& url, juce::MemoryBlock& out, juce::String& error, std::function<void (float)> progress = {})
+    static bool download (const juce::String& url, juce::MemoryBlock& out, juce::String& error, std::function<void (float)> progress = {},
+                          const std::atomic<bool>* cancel = nullptr)
     {
         juce::URL u (url);
         int status = 0;
@@ -104,6 +105,7 @@ struct FirmwareCatalog
         juce::HeapBlock<char> chunk (65536);
         for (;;)
         {
+            if (cancel != nullptr && cancel->load()) { error = "cancelled"; return false; }
             const int n = in->read (chunk, 65536);
             if (n <= 0) break;
             out.append (chunk, (size_t) n);
@@ -131,7 +133,30 @@ struct FirmwareCatalog
         return data.getSize() > 8;
     }
 
-    static bool install (const CatalogEntry& e, juce::String& error, std::function<void (float)> progress = {})
+    // demarrage d'essai d'une version web, borne dans le temps : une version web qui ne rend pas la main
+    // (boucle dans son init) n'est pas gardee, au lieu de bloquer l'installation et la fenetre
+    static bool webBuildStarts (const juce::MemoryBlock& wasm, juce::String& err, const std::atomic<bool>* cancel, int timeoutMs = 20000)
+    {
+        struct Trial { juce::MemoryBlock data; juce::String msg; std::atomic<int> state { 0 }; };   // 0 en cours, 1 ok, 2 echec
+        auto t = std::make_shared<Trial>(); t->data = wasm;
+        std::thread ([t]
+        {
+            juce::String e;
+            auto h = FirmwareHost::create (t->data.getData(), t->data.getSize(), juce::File(), e);
+            t->msg = e;
+            t->state.store (h != nullptr ? 1 : 2);
+        }).detach();
+        for (int waited = 0; t->state.load() == 0; waited += 50)
+        {
+            if (waited >= timeoutMs) { err = "did not start (skipped)"; return false; }
+            if (cancel != nullptr && cancel->load()) { err = "cancelled"; return false; }
+            juce::Thread::sleep (50);
+        }
+        if (t->state.load() == 2) { err = t->msg; return false; }
+        return true;
+    }
+
+    static bool install (const CatalogEntry& e, juce::String& error, std::function<void (float)> progress = {}, const std::atomic<bool>* cancel = nullptr)
     {
         // progression : paquet materiel puis version web (moitie chacun quand les deux existent)
         const float parts = (e.hardware() ? 1.0f : 0.0f) + (e.web() ? 1.0f : 0.0f);
@@ -149,17 +174,17 @@ struct FirmwareCatalog
         if (e.hardware())
         {
             juce::MemoryBlock fw; juce::String err;
-            if (! download (e.pkg, fw, err, part (0.0f))) errs << "package: " << err << "  ";
+            if (! download (e.pkg, fw, err, part (0.0f), cancel)) errs << "package: " << err << "  ";
             else if (! FirmwareHost::isHardwarePackage (fw.getData(), fw.getSize())) errs << "package: not an FM-1 update package  ";
             else if (FirmwareInstaller::folder().getChildFile (e.fileName() + ".fwsc").replaceWithData (fw.getData(), fw.getSize())) { ++done; note ("package", e.pkg); }
         }
         if (e.web())
         {
             juce::MemoryBlock wasm; juce::String err;
-            if (! download (e.url, wasm, err, part (e.hardware() ? 1.0f : 0.0f))) errs << "web build: " << err;
+            if (! download (e.url, wasm, err, part (e.hardware() ? 1.0f : 0.0f), cancel)) errs << "web build: " << err;
             else if (! extractWasm (wasm)) errs << "web build: no web build found on the page";
             else if (FirmwareInstaller::abiOf (wasm.getData(), wasm.getSize()) == 0) errs << "web build: not an FM-1 web build";
-            else if (FirmwareHost::create (wasm.getData(), wasm.getSize(), juce::File(), err) == nullptr) errs << "web build: " << err;
+            else if (! webBuildStarts (wasm, err, cancel)) errs << "web build: " << err;
             else if (FirmwareInstaller::folder().getChildFile (e.fileName() + ".wasm").replaceWithData (wasm.getData(), wasm.getSize())) { ++done; if (! e.hardware()) note ("file", e.url); }
         }
         if (done == 0) error = errs.trim();
@@ -236,7 +261,13 @@ public:
     void mouseDown (const juce::MouseEvent& e) override
     {
         const auto p = e.getPosition();
-        if (btnClose().contains (p)) { if (onClose) onClose(); return; }
+        if (btnClose().contains (p))
+        {
+            // installation en cours : on annule, la fenetre se ferme des que le travail s'arrete (jamais de blocage)
+            if (busy && worker.joinable() && ! finished.load()) { stop = true; closeWhenDone = true; status = "Cancelling..."; repaint(); return; }
+            if (onClose) onClose();
+            return;
+        }
         if (busy) return;
         if (btnRefresh().contains (p)) refresh();
         else if (btnAll().contains (p))
@@ -488,7 +519,7 @@ private:
                 { const juce::ScopedLock sl (lock); progress = "Installing " + e.name + " (" + juce::String (done.load() + 1) + "/" + juce::String (total) + ")..."; currentName = e.name; }
                 juce::String err;
                 installProg.store (0.0f);
-                if (! FirmwareCatalog::install (e, err, [this] (float f) { installProg.store (f); })) { const juce::ScopedLock sl (lock); failures.add (e.name + ": " + err); }
+                if (! FirmwareCatalog::install (e, err, [this] (float f) { installProg.store (f); }, &stop)) { const juce::ScopedLock sl (lock); failures.add (e.name + ": " + err); }
                 ++done;
             }
             finished = true;
@@ -534,6 +565,7 @@ private:
         {
             if (worker.joinable()) worker.join();
             busy = false; current = -1;
+            if (closeWhenDone) { closeWhenDone = false; stop = false; installed = FirmwareInstaller::installed(); if (onClose) onClose(); return; }
             installed = FirmwareInstaller::installed();
             if (refreshed.load() != 0)
             {
@@ -707,6 +739,7 @@ private:
     juce::CriticalSection lock;
     std::thread worker;
     std::atomic<bool> stop { false }, finished { false };
+    bool closeWhenDone = false;
     int hover = -1, current = -1, total = 0;
     std::atomic<int> done { 0 }, refreshed { 0 };
     std::atomic<float> installProg { 0.0f }, loadProg { 0.0f };

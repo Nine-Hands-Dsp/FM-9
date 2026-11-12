@@ -60,6 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
+- **1.3.15** : catalogue sur fond noir opaque, bouton Load sur chaque fiche ; le menu Firmware ne liste plus les firmwares (ils se lancent et se suppriment depuis le catalogue).
 - **1.3.14** : catalogue : filtre Compatible only sans cadre.
 - **1.3.13** : catalogue en galerie (écran, nom, description ; flèche de téléchargement, coche verte pour lancer, corbeille), mises à jour signalées en orange (bandeau UPDATE), recherche et filtre Compatible only ; 47 firmwares jusqu'ici incompatibles ajoutés (fichiers publiés trouvés, versions compilées depuis les sources, FM2000 et RIFT pris en charge) : 262 firmwares compatibles ; skin au démarrage et suppression des skins perso ; boutons du catalogue plus compacts.
 - **1.3.12** : catalogue : plus de blocage à 100 % (une version web qui ne démarre pas est abandonnée au bout de 20 s, le paquet matériel reste installé) ; Close annule l'installation en cours et ferme la fenêtre.

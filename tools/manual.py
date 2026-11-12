@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.14"
+VERSION = "1.3.15"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -301,11 +301,11 @@ T = dict(
         "calcul (un quart à la moitié d'un cœur de processeur) et tournent un peu en avance : FM-9 annonce ce décalage à Reaper, qui le compense.",
         "<b>Versions web (.wasm)</b> : l'émulateur web que beaucoup de projets publient sur leur page github.io. Plus légères, elles sont lancées par "
         "le moteur wasm3. <b>Hortator</b> (boîte à rythmes 8 pistes de DEADACTIVE) est fourni dans cette version.",
-        "<b>Catalogue</b> : clic droit &gt; Firmware &gt; <b>Catalog</b> montre en galerie tous les firmwares de la FM-1 recensés par la communauté "
+        "<b>Catalogue</b> : clic droit &gt; Firmware &gt; <b>Catalog</b> (c'est là que l'on lance et supprime les firmwares ; le menu Firmware garde <b>FM-9 synthesizer</b> pour revenir au synthé) montre en galerie tous les firmwares de la FM-1 recensés par la communauté "
         "(listes de github.com/aroum/fm1-custom-fw et de fm1-emu, complétées par FM-9 : fichiers publiés dans les Releases des projets, et versions "
         "compilées par FM-9 depuis le code source quand le projet n'en publie pas). Chaque fiche montre l'écran du firmware, son nom, une courte "
         "description et trois boutons : la <b>flèche bleue</b> le télécharge (un anneau montre la progression), la <b>coche verte</b> s'allume une fois "
-        "le firmware téléchargé et le lance d'un clic, la <b>corbeille</b> le supprime (avec confirmation). Quand une version plus récente d'un firmware "
+        "le firmware téléchargé, le bouton <b>Load</b> (ou la coche) le lance, la <b>corbeille</b> le supprime (avec confirmation). Quand une version plus récente d'un firmware "
         "installé est publiée, sa fiche s'entoure d'orange, un bandeau <b>UPDATE</b> s'affiche sur l'écran et la flèche, orange, installe la mise à jour. "
         "En haut, le champ <b>Search</b> filtre par nom, auteur ou description, et <b>Compatible only</b> masque les firmwares incompatibles (marqués avec leur raison). "
         "<b>Install all compatible</b> installe d'un coup tous les firmwares libres compatibles, <b>Refresh</b> télécharge la dernière liste publiée. "
@@ -315,7 +315,7 @@ T = dict(
         "<b>Automatic</b>), cette avance est courte quand vous jouez en direct et grandit seule quand Reaper calcule en avance (lecture, "
         "calcul anticipé) ; Reaper compense le décalage. Low latency, Normal et Safe fixent une avance de 35, 70 ou 140 ms. "
         "<b>Chip clock</b> règle l'horloge de la puce émulée (240 MHz comme la FM-1, 360 MHz par défaut, 480 MHz ; plus de calcul). "
-        "<b>Supprimer un firmware</b> : clic droit &gt; Firmware &gt; <b>Delete firmware</b>, ou la corbeille de sa fiche dans le catalogue (une confirmation est demandée). "
+        "<b>Supprimer un firmware</b> : la corbeille de sa fiche dans le catalogue (une confirmation est demandée). "
         "Tout ce qui a été installé est effacé de l'ordinateur (Windows ou macOS) : paquet, version web, sauvegardes (patterns, réglages) et aperçu ; "
         "si c'était le firmware en cours, FM-9 revient à son propre synthé. "
         "Avec un firmware chargé, les touches des notes reçues de votre clavier maître s'éclairent aussi, même si le firmware ne les allume pas lui-même. "

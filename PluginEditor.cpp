@@ -2050,17 +2050,7 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
     {
         const auto cur = proc.getFirmwareName();
         firmware.addItem (700, "FM-9 synthesizer (built-in)", true, cur.isEmpty());
-        firmware.addSeparator();
-        const auto list = proc.availableFirmwares();
-        for (int i = 0; i < list.size() && i < 90; ++i)
-            firmware.addItem (710 + i, list[i] + (list[i] == FM9Processor::builtinFirmware ? "  (built-in)" : ""), true, cur == list[i]);
-        {
-            // suppression complete d'un firmware installe
-            PopupMenu del;
-            for (int i = 0; i < list.size() && i < 90; ++i)
-                if (list[i] != FM9Processor::builtinFirmware) del.addItem (2600 + i, list[i]);
-            firmware.addSubMenu ("Delete firmware", del, del.getNumItems() > 0);
-        }
+        // les firmwares se lancent et se suppriment depuis le catalogue (bouton Load, corbeille)
         firmware.addSeparator();
         firmware.addItem (804, "Catalog (all FM-1 firmwares)...");
         firmware.addItem (801, "Install from GitHub...");

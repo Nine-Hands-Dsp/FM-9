@@ -256,7 +256,7 @@ public:
     void paint (juce::Graphics& g) override
     {
         using namespace NineHandsMenu;
-        g.fillAll (juce::Colours::black.withAlpha (0.55f));
+        g.fillAll (juce::Colours::black);                 // fond noir opaque : la facade de FM-9 ne se voit plus
         auto box = getLocalBounds().reduced (8).toFloat();
         g.setColour (kBg); g.fillRoundedRectangle (box, 12.0f);
         g.setColour (kBorder); g.drawRoundedRectangle (box, 12.0f, 1.0f);
@@ -400,9 +400,17 @@ private:
     // zones d'une fiche
     static juce::Rectangle<int> screenRect (juce::Rectangle<int> c) { const int s = c.getWidth() - 2 * cardPad; return { c.getX() + cardPad, c.getY() + cardPad, s, s }; }
     static juce::Point<float> btnCentre (juce::Rectangle<int> c, int k) { return { c.getX() + cardPad + 13.0f + k * 32.0f, c.getBottom() - 21.0f }; }
+    // bouton Load : pastille a droite des trois icones
+    static juce::Rectangle<float> loadRect (juce::Rectangle<int> c)
+    {
+        const auto b2 = btnCentre (c, 2);
+        const float x0 = b2.x + 18.0f, x1 = (float) c.getRight() - cardPad - 2.0f;
+        return { x0, b2.y - 12.0f, juce::jmax (30.0f, x1 - x0), 24.0f };
+    }
     static int buttonAt (juce::Rectangle<int> c, juce::Point<int> p)
     {
         for (int k = 0; k < 3; ++k) if (btnCentre (c, k).getDistanceFrom (p.toFloat()) <= 14.0f) return k;
+        if (loadRect (c).contains (p.toFloat())) return 3;
         return -1;
     }
     bool anyInstalled (const CatalogEntry& e) const { return installed.contains (e.fileName()) || installed.contains (e.fileName() + FirmwareInstaller::hardwareSuffix); }
@@ -524,6 +532,17 @@ private:
                 if (loading) drawRing (g, b1, r * 0.82f, o.loadProg.load(), juce::Colour (0xff4ccf78));
                 else drawCheck (g, b1, (hot && hotBtn == 1 && inst) ? r + 1.0f : r, inst);
                 drawTrash (g, b2, r * 0.95f, inst && o.onDelete != nullptr ? ((hot && hotBtn == 2) ? juce::Colour (0xffff7a73) : red) : kFaint);
+                if (! doing && ! loading)
+                {
+                    // Load : lance le firmware installe
+                    const auto lr = loadRect (it.r);
+                    const bool on = inst && ! o.busy;
+                    g.setColour (on ? ((hot && hotBtn == 3) ? kAccent.brighter (0.2f) : kAccent) : kHover.brighter (0.05f));
+                    g.fillRoundedRectangle (lr, 12.0f);
+                    if (! on) { g.setColour (kBorder); g.drawRoundedRectangle (lr.reduced (0.5f), 12.0f, 1.0f); }
+                    g.setColour (on ? juce::Colour (0xff0b1520) : kFaint); g.setFont (font (o.fMed, 8.8f));
+                    g.drawText ("Load", lr, juce::Justification::centred);
+                }
                 if (doing || loading)
                 {
                     const float f = loading ? o.loadProg.load() : o.installProg.load();
@@ -574,7 +593,7 @@ private:
             }
             if (b == 2) { if (inst && owner->onDelete != nullptr) owner->onDelete (e.fileName()); return; }
             if (owner->busy) return;
-            if (b == 1) { if (inst) owner->startLoad (i, e.loadName (owner->installed)); return; }
+            if (b == 1 || b == 3) { if (inst) owner->startLoad (i, e.loadName (owner->installed)); return; }
             if (! inst || e.needsUpdate (owner->installed)) owner->runInstall ({ e });     // fleche : telecharger / mettre a jour
         }
     } list;

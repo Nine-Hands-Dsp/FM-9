@@ -2001,35 +2001,36 @@ PopupMenu FM9Editor::buildSkinMenu()
 }
 
 // apercu : un menu dessine avec le LookAndFeel des menus du plugin (meme rendu que le vrai menu)
-Image FM9Editor::renderMenuPreview (const PopupMenu& m, const String& highlight, float scale, int* highlightY)
+Image FM9Editor::renderMenuPreview (const PopupMenu& m, const String& highlight, float scale, int* highlightY, NineHandsMenu::MenuLnf* lnf)
 {
+    auto& L = lnf != nullptr ? *lnf : menuLnf;
     struct Row { const PopupMenu::Item* it; int h; };
     std::vector<Row> rows;
     int w = 120, h = 0;
-    const int border = menuLnf.getPopupMenuBorderSize();
+    const int border = L.getPopupMenuBorderSize();
     for (PopupMenu::MenuItemIterator i (m); i.next();)
     {
         auto& it = i.getItem();
         int iw = 0, ih = 0;
         if (it.isSectionHeader) { iw = 160; ih = 30; }
-        else menuLnf.getIdealPopupMenuItemSize (it.text, it.isSeparator, 32, iw, ih);
+        else L.getIdealPopupMenuItemSize (it.text, it.isSeparator, 32, iw, ih);
         if (it.subMenu != nullptr) iw += 20;
         w = jmax (w, iw); rows.push_back ({ &it, ih }); h += ih;
     }
     Image img (Image::ARGB, roundToInt ((float) (w + 2 * border) * scale), roundToInt ((float) (h + 2 * border) * scale), true);
     Graphics g (img);
     g.addTransform (AffineTransform::scale (scale));
-    menuLnf.drawPopupMenuBackground (g, w + 2 * border, h + 2 * border);
+    L.drawPopupMenuBackground (g, w + 2 * border, h + 2 * border);
     int y = border;
     for (auto& r : rows)
     {
         const Rectangle<int> a (border, y, w, r.h);
-        if (r.it->isSectionHeader) menuLnf.drawPopupMenuSectionHeader (g, a, r.it->text);
+        if (r.it->isSectionHeader) L.drawPopupMenuSectionHeader (g, a, r.it->text);
         else
         {
             const bool hi = r.it->text == highlight;
             if (hi && highlightY != nullptr) *highlightY = y;
-            menuLnf.drawPopupMenuItem (g, a, r.it->isSeparator, r.it->isEnabled, hi, r.it->isTicked, r.it->subMenu != nullptr, r.it->text, {}, nullptr, nullptr);
+            L.drawPopupMenuItem (g, a, r.it->isSeparator, r.it->isEnabled, hi, r.it->isTicked, r.it->subMenu != nullptr, r.it->text, {}, nullptr, nullptr);
         }
         y += r.h;
     }

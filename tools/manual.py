@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.18"
+VERSION = "1.3.19"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -313,8 +313,10 @@ T = dict(
         "description et trois boutons : la <b>flèche bleue</b> le télécharge (un anneau montre la progression), la <b>coche verte</b> s'allume une fois "
         "le firmware téléchargé, le bouton <b>Load</b> (ou la coche) le lance, la <b>corbeille</b> le supprime (avec confirmation). Quand une version plus récente d'un firmware "
         "installé est publiée, sa fiche s'entoure d'orange, un bandeau <b>UPDATE</b> s'affiche sur l'écran et la flèche, orange, installe la mise à jour. "
-        "En haut, le champ <b>Search</b> filtre par nom, auteur ou description, et le sélecteur <b>All / Compatible / Installed / Favorites / New</b> (avec leurs compteurs) montre "
-        "tous les firmwares, les seuls compatibles (les autres sont marqués avec leur raison), ceux déjà installés, vos favoris, ou les nouveautés. "
+        "En haut à droite, le champ <b>Search</b> filtre par nom, auteur ou description. Dessous, le sélecteur <b>All / Compatible / Installed / Updates / Favorites / New</b> (avec leurs compteurs) montre "
+        "tous les firmwares, les seuls compatibles (les autres sont marqués avec leur raison), ceux déjà installés, ceux dont une nouvelle version attend (compteur orange), vos favoris, ou les nouveautés. "
+        "À droite, <b>Sort</b> classe les fiches par date de modification (<b>Last modified</b> : dernière nouvelle version, sinon date d'ajout ; <b>Oldest first</b> à l'inverse) "
+        "ou par nom (<b>Name A → Z</b>, <b>Name Z → A</b>) ; les compatibles restent en tête et le tri choisi est gardé. "
         "La petite <b>étoile</b> en haut à gauche de l'écran d'une fiche ajoute le firmware à vos favoris (gardés pour tous vos projets). "
         "<b>NEW</b>, en bas à droite de l'écran, signale un firmware ajouté ces 7 derniers jours sur thefirmwarehub.com (le catalogue suit ce site chaque nuit). "
         "Pour être plus lisible, le catalogue s'ouvre dans sa propre fenêtre (1360 x 840), centrée sur FM-9 et qui déborde de la fenêtre du VST ; "

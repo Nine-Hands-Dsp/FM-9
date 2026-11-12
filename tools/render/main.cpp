@@ -697,6 +697,22 @@ int main (int argc, char** argv)
             }
         }
         if (auto* fw = p.firmware()) { juce::ignoreUnused (fw); }
+        if (args.contains ("--addmenu"))
+            if (auto* fe = dynamic_cast<FM9Editor*> (ed.get()); fe != nullptr && fe->catalog != nullptr)
+            {
+                // catalogue agrandi + menu Add... ouvert au-dessus, a la meme echelle
+                fe->catalog->setBounds (0, 0, fm9::FirmwareCatalogView::bigW, fm9::FirmwareCatalogView::bigH);
+                fe->catalog->setFilterForTest ({}, 0);
+                auto ci = fe->catalog->createComponentSnapshot (fe->catalog->getLocalBounds(), true, 1.0f);
+                auto menu = fe->catalog->buildAddMenu();
+                auto mi = fe->renderMenuPreview (menu, "Add a firmware list (link to its JSON)...", 1.0f, nullptr, &fe->catalog->menuLnf);
+                juce::Image out (juce::Image::ARGB, 900, 300, true);
+                juce::Graphics g (out);
+                g.drawImageAt (ci, 0, 0);
+                g.drawImageAt (mi, 420, 70);
+                juce::File o (args[args.indexOf ("--addmenu") + 1]); o.deleteFile(); juce::FileOutputStream os (o); juce::PNGImageFormat().writeImageToStream (out, os);
+                std::printf ("addmenu ok %.3f\n", fe->catalog->menuLnf.textScale);
+            }
         if (args.contains ("--catbig"))
             if (auto* fe = dynamic_cast<FM9Editor*> (ed.get()); fe != nullptr && fe->catalog != nullptr)
             {

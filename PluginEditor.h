@@ -138,7 +138,7 @@ public:
     std::unique_ptr<fm9::FirmwareCatalogView> catalog;
     std::unique_ptr<juce::Component> confirm;              // confirmation au style de FM-9 (suppression d'un firmware)
     juce::PopupMenu buildSkinMenu();
-    juce::Image renderMenuPreview (const juce::PopupMenu& m, const juce::String& highlight, float scale, int* highlightY = nullptr);
+    juce::Image renderMenuPreview (const juce::PopupMenu& m, const juce::String& highlight, float scale, int* highlightY = nullptr, NineHandsMenu::MenuLnf* lnf = nullptr);
     juce::PopupMenu buildMainMenuForPreview();
     juce::PopupMenu buildContextMenu (const juce::String& learnId = {}, int ctl = -1);
 private:

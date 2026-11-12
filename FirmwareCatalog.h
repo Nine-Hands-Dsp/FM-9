@@ -17,7 +17,8 @@ namespace fm9
 {
 struct CatalogEntry
 {
-    juce::String name, author, group, desc, repo, page, reason, url, abi, pkg, license, pkgVersion, added;   // added : date d'ajout sur thefirmwarehub.com
+    juce::String name, author, group, desc, repo, page, reason, url, abi, pkg, license, pkgVersion, added, updated;   // added : date d'ajout sur thefirmwarehub.com ; updated : derniere nouvelle version vue
+    juce::String modified() const { return updated.isNotEmpty() ? updated : added; }   // tri par date de modification
     bool compatible = false, vendor = false, preferWeb = false;   // preferWeb : la version native (web) est plus legere que la puce emulee
     juce::int64 size = 0;
     // nom des fichiers installes : le nom du firmware (les forks partagent souvent le nom du depot)
@@ -73,7 +74,7 @@ struct FirmwareCatalog
                 e.vendor = (bool) f.getProperty ("vendor", false);
                 e.pkgVersion = f.getProperty ("pkgVersion", {}).toString();
                 e.added = f.getProperty ("added", {}).toString();
-                e.added = f.getProperty ("added", {}).toString();
+                e.updated = f.getProperty ("updated", {}).toString();
                 e.preferWeb = f.getProperty ("prefer", {}).toString() == "web";
                 if (e.name.isNotEmpty()) out.push_back (e);
             }
@@ -110,7 +111,7 @@ struct FirmwareCatalog
         o->setProperty ("name", e.name); o->setProperty ("author", e.author); o->setProperty ("group", "Installed from a link");
         o->setProperty ("desc", e.desc); o->setProperty ("repo", e.repo); o->setProperty ("page", e.page);
         o->setProperty ("compatible", true); o->setProperty ("reason", ""); o->setProperty ("url", e.url); o->setProperty ("abi", e.url.isNotEmpty() ? "web" : "");
-        o->setProperty ("pkg", e.pkg); o->setProperty ("pkgVersion", e.pkgVersion); o->setProperty ("license", e.license); o->setProperty ("added", e.added);
+        o->setProperty ("pkg", e.pkg); o->setProperty ("pkgVersion", e.pkgVersion); o->setProperty ("license", e.license); o->setProperty ("added", e.added); o->setProperty ("updated", e.updated);
         arr.add (juce::var (o));
         auto* root = new juce::DynamicObject(); root->setProperty ("generated", "mine"); root->setProperty ("firmwares", arr);
         FirmwareInstaller::folder().createDirectory();
@@ -210,6 +211,7 @@ struct FirmwareCatalog
             e.pkg = pkg.startsWith ("http") ? pkg : base + pkg;
             e.pkgVersion = f.getProperty ("version", {}).toString(); e.license = f.getProperty ("lic", {}).toString();
             e.added = f.getProperty ("added", {}).toString();
+            e.updated = f.getProperty ("updated", f.getProperty ("modified", {})).toString();
             e.group = listLabel (url); e.compatible = true;
             out.push_back (e);
         }
@@ -232,6 +234,7 @@ struct FirmwareCatalog
                 {
                     dup = true;
                     if (e.added.isEmpty()) e.added = x.added;
+                    if (x.updated > e.updated) e.updated = x.updated;
                     break;
                 }
             if (! dup) list.push_back (x);
@@ -415,8 +418,9 @@ public:
     FirmwareCatalogView (juce::Typeface::Ptr reg, juce::Typeface::Ptr med, juce::Typeface::Ptr bold) : fReg (reg), fMed (med), fBold (bold)
     {
         entries = FirmwareCatalog::load (date);
-        menuLnf.reg = reg; menuLnf.med = med; menuLnf.bold = bold; menuLnf.textScale = 0.82f;
+        menuLnf.reg = reg; menuLnf.med = med; menuLnf.bold = bold; menuLnf.textScale = 13.0f / 15.0f;
         installed = FirmwareInstaller::installed();
+        sortMode = juce::jlimit (0, 3, sortFile().loadFileAsString().trim().getIntValue());
         loadFavorites();
         addAndMakeVisible (viewport);
         viewport.setViewedComponent (&list, false);
@@ -498,18 +502,42 @@ public:
             g.setColour (foc ? kAccent : kDim);
             g.drawEllipse (cx - rr, cy - rr, 2 * rr, 2 * rr, 1.8f);
             g.drawLine (cx + rr * 0.72f, cy + rr * 0.72f, cx + rr * 1.55f, cy + rr * 1.55f, 2.2f);
-            // filtre : selecteur segmente All / Compatible / Installed (compteurs)
+            // filtre : selecteur segmente All / Compatible / Installed / Updates / Favorites / New (compteurs)
             const auto segs = segmentRects();
             const auto fr = filterRect().toFloat();
             g.setColour (kHover); g.fillRoundedRectangle (fr, 6.0f);
             g.setColour (kBorder); g.drawRoundedRectangle (fr.reduced (0.5f), 6.0f, 1.0f);
+            const auto sf = font (fMed, 13.0f);
             for (int i = 0; i < numSegs; ++i)
             {
                 const auto sr2 = segs[(size_t) i].toFloat();
-                if (i == filterMode) { g.setColour (kAccent); g.fillRoundedRectangle (sr2.reduced (3.0f), 4.0f); }
-                g.setColour (i == filterMode ? juce::Colour (0xff0b1520) : kText); g.setFont (font (fMed, 13.0f));
-                g.drawText (segmentLabel (i), sr2, juce::Justification::centred);
+                const bool on = i == filterMode;
+                if (on) { g.setColour (kAccent); g.fillRoundedRectangle (sr2.reduced (3.0f), 4.0f); }
+                // nom, puis compteur en gris (orange pour Updates)
+                const auto nm = segmentName (i), cnt = segmentCount (i);
+                const float wn = juce::GlyphArrangement::getStringWidth (sf, nm), wc = cnt.isEmpty() ? 0.0f : juce::GlyphArrangement::getStringWidth (sf, "  " + cnt);
+                float x = sr2.getCentreX() - (wn + wc) * 0.5f;
+                g.setFont (sf);
+                g.setColour (on ? juce::Colour (0xff0b1520) : kText);
+                g.drawText (nm, juce::Rectangle<float> (x, sr2.getY(), wn + 2.0f, sr2.getHeight()), juce::Justification::centredLeft, false);
+                if (cnt.isNotEmpty())
+                {
+                    g.setColour (on ? juce::Colour (0xff0b1520).withAlpha (0.65f) : (i == 3 && cnt != "0" ? juce::Colour (0xffffa726) : kDim));
+                    g.drawText ("  " + cnt, juce::Rectangle<float> (x + wn, sr2.getY(), wc + 2.0f, sr2.getHeight()), juce::Justification::centredLeft, false);
+                }
             }
+            // tri : bouton "Sort  Last modified" (menu au style de FM-9)
+            const auto so = sortRect().toFloat();
+            g.setColour (sortHot ? kHover.brighter (0.08f) : kHover); g.fillRoundedRectangle (so, 6.0f);
+            g.setColour (sortHot ? kAccent.withAlpha (0.6f) : kBorder); g.drawRoundedRectangle (so.reduced (0.5f), 6.0f, 1.0f);
+            const auto lf = font (fReg, 13.0f);
+            const float w1 = juce::GlyphArrangement::getStringWidth (lf, "Sort  "), w2 = juce::GlyphArrangement::getStringWidth (sf, sortName (sortMode));
+            float x = so.getX() + 14.0f;
+            g.setFont (lf); g.setColour (kDim); g.drawText ("Sort  ", juce::Rectangle<float> (x, so.getY(), w1 + 2.0f, so.getHeight()), juce::Justification::centredLeft, false);
+            g.setFont (sf); g.setColour (kText); g.drawText (sortName (sortMode), juce::Rectangle<float> (x + w1, so.getY(), w2 + 2.0f, so.getHeight()), juce::Justification::centredLeft, false);
+            juce::Path ch; const float cx2 = so.getRight() - 18.0f, cy2 = so.getCentreY();
+            ch.startNewSubPath (cx2 - 4.5f, cy2 - 2.0f); ch.lineTo (cx2, cy2 + 2.5f); ch.lineTo (cx2 + 4.5f, cy2 - 2.0f);
+            g.setColour (kDim); g.strokePath (ch, juce::PathStrokeType (1.6f, juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
         }
         // pied : etat + boutons
         auto foot = getLocalBounds().reduced (18).removeFromBottom (footerH).toFloat();
@@ -520,6 +548,13 @@ public:
         drawButton (g, btnAll (), "Install all compatible", true);
         drawButton (g, btnAdd (), "Add...", false);
     }
+
+    void mouseMove (const juce::MouseEvent& e) override
+    {
+        const bool h = sortRect().contains (e.getPosition());
+        if (h != sortHot) { sortHot = h; repaint (sortRect().expanded (2)); }
+    }
+    void mouseExit (const juce::MouseEvent&) override { if (sortHot) { sortHot = false; repaint (sortRect().expanded (2)); } }
 
     void mouseDown (const juce::MouseEvent& e) override
     {
@@ -536,6 +571,7 @@ public:
             for (int i = 0; i < numSegs; ++i)
                 if (segs[(size_t) i].contains (p)) { filterMode = i; layoutList(); viewport.setViewPosition (0, 0); repaint(); return; }
         }
+        if (sortRect().contains (p)) { showSortMenu(); return; }
         if (busy) return;
         if (btnAdd().contains (p)) { showAddMenu(); return; }
         if (btnRefresh().contains (p)) refresh();
@@ -552,17 +588,53 @@ public:
 private:
     static constexpr float textScale = 1.4f;        // textes du catalogue agrandis
     static juce::Font font (const juce::Typeface::Ptr& t, float h) { return juce::Font (juce::FontOptions (t).withHeight (h * textScale)); }
-    static constexpr int headerH = 80, footerH = 56, rowH = 82, groupH = 42;
-    // en-tete, a droite du titre : recherche puis filtre
-    juce::String segmentLabel (int i) const
+    static constexpr int headerH = 126, footerH = 56, rowH = 82, groupH = 42;
+    // en-tete : titre et sous-titre, recherche a droite ; dessous, filtre a gauche et tri a droite
+    juce::String segmentName (int i) const
     {
-        int nc = 0, ni = 0;
-        for (auto& e : entries) { nc += e.compatible ? 1 : 0; ni += anyInstalled (e) ? 1 : 0; }
-        if (i == 3) return "Favorites  " + juce::String (favorites.size());
-        if (i == 4) { int nn = 0; for (auto& e : entries) nn += isNew (e) ? 1 : 0; return "New  " + juce::String (nn); }
-        return i == 0 ? juce::String ("All") : i == 1 ? "Compatible  " + juce::String (nc) : "Installed  " + juce::String (ni);
+        static const char* n[] = { "All", "Compatible", "Installed", "Updates", "Favorites", "New" };
+        return n[juce::jlimit (0, numSegs - 1, i)];
     }
-    static constexpr int numSegs = 5;
+    bool hasUpdate (const CatalogEntry& e) const { return e.compatible && anyInstalled (e) && e.needsUpdate (installed); }
+    juce::String segmentCount (int i) const
+    {
+        if (i == 0) return {};
+        int n = 0;
+        for (auto& e : entries)
+            n += (i == 1 ? e.compatible : i == 2 ? anyInstalled (e) : i == 3 ? hasUpdate (e) : i == 5 ? isNew (e) : false) ? 1 : 0;
+        return juce::String (i == 4 ? favorites.size() : n);
+    }
+    juce::String segmentLabel (int i) const { const auto c = segmentCount (i); return c.isEmpty() ? segmentName (i) : segmentName (i) + "  " + c; }
+    static constexpr int numSegs = 6;
+    // tri : 0 date de modification (recentes d'abord), 1 nom A-Z, 2 nom Z-A, 3 plus anciennes d'abord ; garde d'une ouverture a l'autre
+    int sortMode = 0;
+    bool sortHot = false;
+    static juce::File sortFile() { return FirmwareInstaller::folder().getChildFile ("Catalog sort.txt"); }
+    static juce::String sortName (int m) { static const char* n[] = { "Last modified", "Name A \xe2\x86\x92 Z", "Name Z \xe2\x86\x92 A", "Oldest first" }; return juce::String (juce::CharPointer_UTF8 (n[juce::jlimit (0, 3, m)])); }
+    juce::Rectangle<int> sortRect() const
+    {
+        const int w = 14 + juce::roundToInt (juce::GlyphArrangement::getStringWidth (font (fReg, 13.0f), "Sort  ")
+                                             + juce::GlyphArrangement::getStringWidth (font (fMed, 13.0f), "Name A \xe2\x86\x92 Z")) + 40;
+        return filterRect().withX (getLocalBounds().reduced (18).getRight() - w).withWidth (w);
+    }
+    void showSortMenu()
+    {
+        juce::PopupMenu m;
+        menuLnf.textScale = addMenuTextScale();
+        m.setLookAndFeel (&menuLnf);
+        for (int k : { 0, 1, 2 }) m.addItem (100 + k, sortName (k), true, sortMode == k);
+        m.addSeparator();
+        m.addItem (103, sortName (3), true, sortMode == 3);
+        m.showMenuAsync (juce::PopupMenu::Options().withTargetScreenArea (localAreaToGlobal (sortRect())).withPreferredPopupDirection (juce::PopupMenu::Options::PopupDirection::downwards),
+                         [self = juce::Component::SafePointer<FirmwareCatalogView> (this)] (int r)
+        {
+            if (self == nullptr || r < 100) return;
+            self->sortMode = r - 100;
+            FirmwareInstaller::folder().createDirectory();
+            sortFile().replaceWithText (juce::String (self->sortMode));
+            self->layoutList(); self->viewport.setViewPosition (0, 0); self->repaint();
+        });
+    }
     // New : ajoute sur thefirmwarehub.com ces 7 derniers jours
     bool isNew (const CatalogEntry& e) const { return e.added.isNotEmpty() && e.added >= newSince; }
     juce::String newSince = (juce::Time::getCurrentTime() - juce::RelativeTime::days (7)).formatted ("%Y-%m-%d");
@@ -575,7 +647,7 @@ private:
         if (favorites.contains (e.name)) favorites.removeString (e.name); else favorites.add (e.name);
         FirmwareInstaller::folder().createDirectory();
         favoritesFile().replaceWithText (favorites.joinIntoString ("\n"));
-        if (filterMode == 3) layoutList();
+        if (filterMode == 4) layoutList();
         repaint(); list.repaint();
     }
     std::array<juce::Rectangle<int>, numSegs> segmentRects() const
@@ -594,15 +666,16 @@ private:
     {
         int w = 6;
         for (int i = 0; i < numSegs; ++i) w += juce::roundToInt (juce::GlyphArrangement::getStringWidth (font (fMed, 13.0f), segmentLabel (i))) + 24;
-        return getLocalBounds().reduced (18).removeFromTop (40).removeFromRight (w).withSizeKeepingCentre (w, 34);
+        auto a = getLocalBounds().reduced (18); a.removeFromTop (78);
+        return a.removeFromTop (40).removeFromLeft (w).withSizeKeepingCentre (w, 38);
     }
     juce::Rectangle<int> searchRect() const
     {
         auto a = getLocalBounds().reduced (18).removeFromTop (40);
-        a.removeFromRight (filterRect().getWidth() + 12);
         const int title = juce::roundToInt (juce::GlyphArrangement::getStringWidth (font (fBold, 20.0f), "FM-1 Firmware Catalog")) + 18;
         a.removeFromLeft (title);
-        return a.withSizeKeepingCentre (juce::jmin (a.getWidth(), 340), 34).withX (a.getRight() - juce::jmin (a.getWidth(), 340));
+        const int w = juce::jmin (a.getWidth(), 360);
+        return a.withSizeKeepingCentre (w, 36).withX (a.getRight() - w);
     }
     // boutons du pied, plus compacts (hauteur 36, comme la recherche)
     juce::Rectangle<int> footArea() const { auto a = getLocalBounds().reduced (18).removeFromBottom (footerH).withTrimmedTop (8); return a.withSizeKeepingCentre (a.getWidth(), 34); }   // boutons compacts, texte inchange
@@ -615,9 +688,18 @@ private:
         for (auto& u : FirmwareCatalog::userLists()) l.addIfNotAlreadyThere (FirmwareCatalog::listLabel (u));
         return l.isEmpty() ? juce::String() : ", " + l.joinIntoString (", ");
     }
-    void showAddMenu()
+    // texte du menu Add... a la taille du sous-titre (13 px), zoom de la fenetre compris (le menu s'ouvre a l'echelle du bureau)
+    float addMenuTextScale() const
+    {
+        const float k = juce::Component::getApproximateScaleFactorForComponent (const_cast<FirmwareCatalogView*> (this))
+                        / juce::jmax (0.1f, juce::Desktop::getInstance().getGlobalScaleFactor());
+        return 13.0f * textScale / 15.0f * juce::jlimit (0.5f, 3.0f, k);
+    }
+public:
+    juce::PopupMenu buildAddMenu()
     {
         juce::PopupMenu m, rem;
+        menuLnf.textScale = addMenuTextScale();
         m.setLookAndFeel (&menuLnf);
         m.addSectionHeader ("Install manually");
         m.addItem (1, "Install a firmware file (.fwsc or .wasm)...", onInstallFile != nullptr);
@@ -628,6 +710,13 @@ private:
         const auto lists = FirmwareCatalog::userLists();
         for (int i = 0; i < lists.size(); ++i) rem.addItem (10 + i, lists[i]);
         m.addSubMenu ("Remove a list", rem, ! lists.isEmpty());
+        return m;
+    }
+private:
+    void showAddMenu()
+    {
+        const auto lists = FirmwareCatalog::userLists();
+        auto m = buildAddMenu();
         m.showMenuAsync (juce::PopupMenu::Options().withMousePosition(), [self = juce::Component::SafePointer<FirmwareCatalogView> (this), lists] (int r)
         {
             if (self == nullptr || r == 0) return;
@@ -693,8 +782,9 @@ private:
         {
             if (filterMode == 1 && ! e.compatible) return false;
             if (filterMode == 2 && ! anyInstalled (e)) return false;
-            if (filterMode == 3 && ! favorites.contains (e.name)) return false;
-            if (filterMode == 4 && ! isNew (e)) return false;
+            if (filterMode == 3 && ! hasUpdate (e)) return false;
+            if (filterMode == 4 && ! favorites.contains (e.name)) return false;
+            if (filterMode == 5 && ! isNew (e)) return false;
             if (q.isEmpty()) return true;
             for (auto& w : juce::StringArray::fromTokens (q, " ", ""))       // chaque mot doit apparaitre quelque part
                 if (! (e.name + " " + e.author + " " + e.desc + " " + e.group).toLowerCase().contains (w)) return false;
@@ -708,8 +798,18 @@ private:
         std::vector<int> found;
         for (auto& grp : groups) for (int i : idx) if (entries[(size_t) i].group == grp && entries[(size_t) i].compatible && keep (entries[(size_t) i])) found.push_back (i);
         for (auto& grp : groups) for (int i : idx) if (entries[(size_t) i].group == grp && ! entries[(size_t) i].compatible && keep (entries[(size_t) i])) found.push_back (i);
-        if (filterMode == 4)      // New : les plus recents d'abord
-            std::stable_sort (found.begin(), found.end(), [this] (int a, int b) { return entries[(size_t) a].added > entries[(size_t) b].added; });
+        // tri choisi (compatibles toujours d'abord) ; sans date : a la fin, par nom
+        std::stable_sort (found.begin(), found.end(), [this] (int a, int b)
+        {
+            const auto& x = entries[(size_t) a]; const auto& y = entries[(size_t) b];
+            if (x.compatible != y.compatible) return x.compatible;
+            if (sortMode == 1) return x.name.compareNatural (y.name) < 0;
+            if (sortMode == 2) return x.name.compareNatural (y.name) > 0;
+            const auto dx = x.modified(), dy = y.modified();
+            if (dx.isEmpty() != dy.isEmpty()) return dy.isEmpty();
+            if (dx != dy) return sortMode == 3 ? dx < dy : dx > dy;
+            return x.name.compareNatural (y.name) < 0;
+        });
         shownCount = (int) found.size();
         int y = 0;
         for (size_t k = 0; k < found.size(); ++k)
@@ -1294,7 +1394,7 @@ private:
     std::thread worker;
     std::atomic<bool> stop { false }, finished { false };
     juce::TextEditor search;
-    int filterMode = 0;                // 0 tous, 1 compatibles, 2 installes, 3 favoris, 4 nouveautes, 3 favoris, 4 nouveautes
+    int filterMode = 0;                // 0 tous, 1 compatibles, 2 installes, 3 mises a jour, 4 favoris, 5 nouveautes
     int shownCount = 0;
     bool closeWhenDone = false;
     int hover = -1, current = -1, total = 0;

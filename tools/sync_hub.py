@@ -8,7 +8,8 @@ passe en orange (UPDATE) pour qui avait installe l'ancienne.
 
 Usage : sync_hub.py <catalogue json> [catalog.json du hub, sinon telecharge]
 """
-import json, re, sys, urllib.request
+import json, re, sys, urllib.request, datetime
+TODAY = datetime.date.today().isoformat()
 HUB = "https://thefirmwarehub.com/"
 CAT = sys.argv[1]
 if len(sys.argv) > 2: hub = json.load(open(sys.argv[2]))
@@ -26,6 +27,7 @@ all_name = {(h.get("name") or "").lower(): h for h in hub["firmwares"]}
 for e in cat["firmwares"]:
     h = all_repo.get((e.get("repo") or "").lower()) or all_name.get(e["name"].lower())
     if h and h.get("added") and e.get("added") != h["added"]: e["added"] = h["added"]; changed += 1
+    if h and h.get("updated") and e.get("updated", "") < h["updated"]: e["updated"] = h["updated"]; changed += 1
 for e in cat["firmwares"]:
     if e.get("vendor"): continue
     on_hub = HUB in (e.get("pkg") or "")
@@ -41,6 +43,7 @@ for e in cat["firmwares"]:
     if e.get("pkg") != url:
         print("%-28s %s -> %s" % (e["name"][:28], (e.get("pkg") or "-").rsplit("/", 1)[-1], h["pkg"].rsplit("/", 1)[-1]))
         e["pkg"] = url; e["pkgVersion"] = h.get("version") or ""; changed += 1
+        e["updated"] = h.get("updated") or TODAY        # tri "Last modified" de FM-9
 # date d'ajout sur le hub (filtre New du catalogue)
 hub_by_repo = {(h.get("repo") or "").lower(): h for h in hub["firmwares"]}
 hub_by_name = {(h.get("name") or "").lower(): h for h in hub["firmwares"]}
@@ -59,7 +62,7 @@ for h in hub["firmwares"]:
     cat["firmwares"].append({"name": h["name"], "author": h.get("author") or "", "group": "thefirmwarehub.com", "section": "Sound & groovebox",
                              "desc": what, "repo": h.get("repo") or "", "page": h.get("site") or h.get("play") or "", "compatible": True, "reason": "",
                              "url": "", "abi": "", "size": h.get("size") or 0, "pkg": HUB + h["pkg"], "pkgVersion": h.get("version") or "",
-                             "license": h.get("lic") or "", "added": h.get("added") or "", "unverified": True})
+                             "license": h.get("lic") or "", "added": h.get("added") or "", "updated": h.get("updated") or h.get("added") or TODAY, "unverified": True})
     added += 1; changed += 1
     print("+ %s (%s)" % (h["name"], h.get("added")))
 print(changed, "changements,", added, "firmwares ajoutes")

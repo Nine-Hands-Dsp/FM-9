@@ -283,8 +283,7 @@ public:
             g.drawLine (cx + rr * 0.72f, cy + rr * 0.72f, cx + rr * 1.55f, cy + rr * 1.55f, 2.2f);
             // filtre Compatible only : case a cocher dans une pastille
             auto fr = filterRect().toFloat();
-            g.setColour (compatOnly ? kAccent.withAlpha (0.16f) : kHover); g.fillRoundedRectangle (fr, 7.0f);
-            g.setColour (compatOnly ? kAccent : kBorder); g.drawRoundedRectangle (fr.reduced (0.5f), 7.0f, 1.0f);
+            // case a cocher et texte seuls, sans cadre
             auto box = juce::Rectangle<float> (fr.getX() + 14.0f, fr.getCentreY() - 9.0f, 18.0f, 18.0f);
             if (compatOnly)
             {

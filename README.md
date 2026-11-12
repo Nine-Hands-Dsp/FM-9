@@ -60,7 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
-- **1.3.5** : MIDI Learn de OCT- / OCT+ (bouton ou pad du clavier), clic droit sur le nom d'un potard = son menu de MIDI Learn.
+- **1.3.5** : point indicateur remis sur les potards ; MIDI Learn de OCT- / OCT+ (bouton ou pad du clavier), clic droit sur le nom d'un potard = son menu de MIDI Learn.
 - **1.3.4** : OCT- / OCT+ et transposition appliqués au clavier maître ; MIDI Learn sur tous les potards (SELECT, PRESETS, ALGORITHM, KNOB1-4 sur toutes les pages) ; configurations MIDI enregistrables (Save / Load MIDI map, configuration par défaut) ; écran interactif à la souris (liste et défilement des presets, réglages en glissant ou à la molette, double-clic = défaut).
 - **1.3.3** : potards sans point indicateur.
 - **1.3.2** : plaques grises sans biseau, logement noir autour de chaque touche et bouton, ombres portées identiques pour tous les éléments, occlusion autour de l'écran ; réglage Lights (couleur) et curseur Glow (0 à 100 %) des lumières des touches et des boutons, halo qui suit la forme de la LED et des lettres ; logo FM-9 centré entre KNOB3 et KNOB4.

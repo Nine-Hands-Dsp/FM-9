@@ -115,7 +115,8 @@ private:
     void recomposeFace();
     void applySkin (const juce::String& id, bool rebuild);
 public:
-    void deleteFirmware (const juce::String& name);       // confirmation puis suppression complete
+    void deleteFirmware (const juce::String& name);
+    static void captureScreenFor (const juce::String& installedName);   // ecran d'un firmware installe pour sa fiche       // confirmation puis suppression complete
     void setElementColour (int e, juce::Colour c);
     void openColourPanel (juce::Point<int> at, int element = 0);
     void setSnapshotColours (const juce::String& spec);

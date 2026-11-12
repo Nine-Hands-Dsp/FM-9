@@ -14,7 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS, OUT = sys.argv[1], sys.argv[2]
-VERSION = "1.3.16"
+VERSION = "1.3.17"
 TMP = os.path.join(ROOT, "tools", "manual_assets"); os.makedirs(TMP, exist_ok=True)
 FONTS = os.path.join(ROOT, "assets", "fonts")
 for n, f in (("Pop", "Poppins-Regular"), ("PopL", "Poppins-Light"), ("PopM", "Poppins-Medium"), ("PopB", "Poppins-Bold"),
@@ -322,6 +322,8 @@ T = dict(
         "<b>Add...</b> installe un firmware à la main (un fichier .fwsc ou .wasm, ou un lien GitHub ou The Firmware Hub) et ajoute ou retire des "
         "<b>listes de firmwares</b> : le lien d'une liste JSON (au format de FM-9 ou de thefirmwarehub.com) ; ses firmwares rejoignent le catalogue sans doublons. "
         "La liste de The Firmware Hub est ajoutée d'office. "
+        "Un firmware installé depuis un lien (installeur web github.io, page GitHub) ou un fichier reçoit sa propre fiche dans le catalogue "
+        "(nom, auteur, description et page du projet) ; FM-9 prend l'image de son écran en le démarrant quelques secondes, sinon sa fiche reste noire. "
         "<b>Close</b> pendant une installation l'annule, puis ferme la fenêtre. Une version web qui ne démarre pas en 20 secondes n'est pas gardée "
         "(le paquet matériel reste installé). Un double-clic sur une fiche ouvre la page du projet. "
         "<b>Firmwares matériels et DAW</b> : l'émulation de la puce tourne en avance sur le son. Par défaut (Firmware &gt; Emulation buffer &gt; "

@@ -2398,6 +2398,15 @@ void FM9Editor::openCatalog()
     }
 }
 
+// ecran d'un firmware installe (pour sa fiche du catalogue) : demarre hors ecran ~3 s ; sans ecran possible, la fiche reste noire
+void FM9Editor::captureScreenFor (const String& installedName)
+{
+    String d;
+    const auto stem = installedName.endsWith (fm9::FirmwareInstaller::hardwareSuffix) ? installedName.dropLastCharacters (String (fm9::FirmwareInstaller::hardwareSuffix).length()) : installedName;
+    for (auto& e : fm9::FirmwareCatalog::load (d))
+        if (e.fileName().equalsIgnoreCase (stem)) { fm9::FirmwareCatalogView::makePreview (e); return; }
+}
+
 void FM9Editor::installFromGitHub()
 {
     auto* w = new AlertWindow ("Install a firmware from GitHub or The Firmware Hub",
@@ -2427,21 +2436,19 @@ void FM9Editor::installFromGitHub()
             });
             return;
         }
-        if (! fm9::FirmwareInstaller::parseRepo (text, owner, repo))
-        {
-            AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Not a GitHub repository.", "OK", safe.getComponent());
-            return;
-        }
+        // lien GitHub (installeur web github.io, page du depot) : fiche du catalogue, sinon derniere Release, sinon fichiers du depot
         safe->popup ("Firmware", "Downloading " + repo + "...");
-        Thread::launch ([safe, owner, repo]
+        Thread::launch ([safe, text]
         {
             String err;
-            const auto file = fm9::FirmwareInstaller::install (owner, repo, err);
-            MessageManager::callAsync ([safe, file, err, repo]
+            const auto name = fm9::FirmwareCatalog::installFromLink (text, err);
+            if (name.isNotEmpty()) captureScreenFor (name);            // l'ecran du firmware pour sa fiche
+            MessageManager::callAsync ([safe, name, err]
             {
                 if (safe == nullptr) return;
-                if (file == File()) AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Installation failed:\n" + err, "OK", safe.getComponent());
-                else safe->activateFirmware (file.getFileNameWithoutExtension() + (file.hasFileExtension ("fwsc") ? fm9::FirmwareInstaller::hardwareSuffix : String()));
+                if (name.isEmpty()) { AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", "Installation failed:\n" + err, "OK", safe.getComponent()); return; }
+                if (safe->catalog != nullptr) safe->catalog->reloadEntries();          // la fiche apparait dans le catalogue
+                safe->activateFirmware (name);
             });
         });
     }), true);
@@ -2456,6 +2463,25 @@ void FM9Editor::installFromFile()
         String err;
         const auto dest = fm9::FirmwareInstaller::installPackage (fc.getResult(), err);
         if (dest == File()) { AlertWindow::showMessageBoxAsync (MessageBoxIconType::WarningIcon, "Firmware", err, "OK", safe.getComponent()); return; }
+        {
+            // fiche du catalogue pour ce firmware installe a la main (sauf s'il y est deja)
+            String d; bool known = false;
+            for (auto& e : fm9::FirmwareCatalog::load (d)) known |= e.fileName().equalsIgnoreCase (dest.getFileNameWithoutExtension());
+            if (! known)
+            {
+                fm9::CatalogEntry e; e.name = dest.getFileNameWithoutExtension(); e.compatible = true;
+                e.desc = "Installed from a file (" + fc.getResult().getFileName() + ").";
+                e.added = Time::getCurrentTime().formatted ("%Y-%m-%d");
+                fm9::FirmwareCatalog::addMine (e);
+            }
+            if (safe->catalog != nullptr) safe->catalog->reloadEntries();
+            const auto nm = dest.getFileNameWithoutExtension();
+            Thread::launch ([safe, nm]
+            {
+                captureScreenFor (nm);
+                MessageManager::callAsync ([safe] { if (safe != nullptr && safe->catalog != nullptr) safe->catalog->reloadEntries(); });
+            });
+        }
         safe->activateFirmware (dest.getFileNameWithoutExtension() + (dest.hasFileExtension ("fwsc") ? fm9::FirmwareInstaller::hardwareSuffix : String()));
     });
 }

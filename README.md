@@ -60,6 +60,7 @@ FM-9 est distribué sous **GPL-3.0** (voir `LICENSE`), pour pouvoir accueillir l
 
 ## Historique
 
+- **1.3.17** : installation depuis un lien GitHub (installeur web github.io, page du dépôt) : fiche du catalogue retrouvée, sinon dernière Release et fiche créée (nom, auteur, description, page) ; fiche aussi pour un fichier installé à la main ; image de l'écran du firmware prise à l'installation (écran noir si impossible).
 - **1.3.16** : catalogue unique fusionnant aroum, fm1-emu et The Firmware Hub sans doublons, bouton Add... (installation manuelle, listes de firmwares ajoutées) ; installation depuis thefirmwarehub.com (lien d'une page, lien de jeu ou nom du firmware) ; catalogue dans sa propre fenêtre agrandie (1360 x 840), filtres All / Compatible / Installed / Favorites / New, étoile des favoris et NEW (nouveautés de thefirmwarehub.com, 37 firmwares ajoutés), mise à jour chaque nuit ; MIDI Learn des 12 boutons de la façade (CC, touche, Start/Stop, MMC) ; les touches de FM-9 suivent l'octave du clavier maître ; firmwares plus forts (MASTER du firmware à fond) et limiteur de sortie (+6 dB sur le synthé, crête sous -0,5 dBFS).
 - **1.3.15** : catalogue sur fond noir opaque, bouton Load sur chaque fiche ; le menu Firmware ne liste plus les firmwares (ils se lancent et se suppriment depuis le catalogue).
 - **1.3.14** : catalogue : filtre Compatible only sans cadre.

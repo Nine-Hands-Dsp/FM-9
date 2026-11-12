@@ -91,11 +91,88 @@ struct FirmwareCatalog
             auto cached = parse (cacheFile().loadFileAsString(), &cd);
             if (! cached.empty() && cd >= bd) { date = cd; list = std::move (cached); }
         }
-        // listes ajoutees par l'utilisateur (copies gardees a jour par Refresh), fusionnees sans doublons
+        // firmwares installes depuis un lien (fiches creees par FM-9), puis listes ajoutees par l'utilisateur, sans doublons
+        if (myFile().existsAsFile()) merge (list, parse (myFile().loadFileAsString()));
         for (auto& url : userLists())
             if (auto f = userListCache (url); f.existsAsFile())
                 merge (list, parseAny (f.loadFileAsString(), url));
         return list;
+    }
+
+    // ---- firmwares installes depuis un lien : fiches gardees dans "My firmwares.json" (format du catalogue)
+    static juce::File myFile() { return FirmwareInstaller::folder().getChildFile ("My firmwares.json"); }
+    static void addMine (const CatalogEntry& e)
+    {
+        auto v = juce::JSON::parse (myFile().loadFileAsString());
+        juce::Array<juce::var> arr;
+        if (auto* a = v.getProperty ("firmwares", {}).getArray()) for (auto& x : *a) if (! x.getProperty ("name", {}).toString().equalsIgnoreCase (e.name)) arr.add (x);
+        auto* o = new juce::DynamicObject();
+        o->setProperty ("name", e.name); o->setProperty ("author", e.author); o->setProperty ("group", "Installed from a link");
+        o->setProperty ("desc", e.desc); o->setProperty ("repo", e.repo); o->setProperty ("page", e.page);
+        o->setProperty ("compatible", true); o->setProperty ("reason", ""); o->setProperty ("url", e.url); o->setProperty ("abi", e.url.isNotEmpty() ? "web" : "");
+        o->setProperty ("pkg", e.pkg); o->setProperty ("pkgVersion", e.pkgVersion); o->setProperty ("license", e.license); o->setProperty ("added", e.added);
+        arr.add (juce::var (o));
+        auto* root = new juce::DynamicObject(); root->setProperty ("generated", "mine"); root->setProperty ("firmwares", arr);
+        FirmwareInstaller::folder().createDirectory();
+        myFile().replaceWithText (juce::JSON::toString (juce::var (root)));
+    }
+
+    // installation depuis un lien (installeur web github.io, page github.com, owner/repo) :
+    // 1. firmware deja au catalogue (meme depot) : installe comme depuis sa fiche
+    // 2. sinon derniere Release GitHub (.fwsc, sinon .wasm) : installe et cree sa fiche (nom, auteur, description du depot, page)
+    // rend le nom a lancer, vide si echec
+    static juce::String installFromLink (const juce::String& link, juce::String& error, std::function<void (float)> progress = {})
+    {
+        juce::String owner, repo;
+        if (! FirmwareInstaller::parseRepo (link, owner, repo)) { error = "Not a GitHub link."; return {}; }
+        const auto full = owner + "/" + repo;
+        juce::String date;
+        auto all = load (date);
+        for (auto& e : all)
+            if (e.compatible && e.repo.equalsIgnoreCase (full) && (e.hardware() || e.web()))
+            {
+                if (! install (e, error, progress)) return {};
+                return e.loadName (FirmwareInstaller::installed());
+            }
+        // depot inconnu du catalogue : sa derniere Release
+        juce::MemoryBlock mb; juce::String err;
+        CatalogEntry e;
+        e.repo = full; e.author = owner; e.page = link.trim(); e.compatible = true;
+        e.added = juce::Time::getCurrentTime().formatted ("%Y-%m-%d");
+        if (download ("https://api.github.com/repos/" + full, mb, err))
+        {
+            const auto v = juce::JSON::parse (mb.toString());
+            e.desc = v.getProperty ("description", {}).toString();
+            if (auto* lic = v.getProperty ("license", {}).getDynamicObject()) e.license = lic->getProperty ("spdx_id").toString();
+            e.name = v.getProperty ("name", repo).toString();
+        }
+        if (e.name.isEmpty()) e.name = repo;
+        mb.reset();
+        if (download ("https://api.github.com/repos/" + full + "/releases/latest", mb, err))
+        {
+            const auto v = juce::JSON::parse (mb.toString());
+            e.pkgVersion = v.getProperty ("tag_name", {}).toString().trimCharactersAtStart ("vV");
+            if (auto* assets = v.getProperty ("assets", {}).getArray())
+                for (auto& a : *assets)
+                {
+                    const auto n = a.getProperty ("name", {}).toString().toLowerCase();
+                    const auto u = a.getProperty ("browser_download_url", {}).toString();
+                    if (n.endsWith (".fwsc") && ! n.startsWith ("fm-1") && ! n.contains ("stock") && ! n.contains ("original") && e.pkg.isEmpty()) e.pkg = u;
+                    else if (n.endsWith (".wasm") && e.url.isEmpty()) e.url = u;
+                }
+        }
+        if (e.pkg.isNotEmpty() || e.url.isNotEmpty())
+        {
+            if (! install (e, error, progress)) return {};
+            addMine (e);
+            return e.loadName (FirmwareInstaller::installed());
+        }
+        // pas de Release : recherche dans les fichiers du depot (branche gh-pages, puis par defaut)
+        const auto f = FirmwareInstaller::install (owner, repo, error);
+        if (f == juce::File()) return {};
+        e.name = f.getFileNameWithoutExtension();
+        addMine (e);
+        return e.name + (f.hasFileExtension ("fwsc") ? FirmwareInstaller::hardwareSuffix : juce::String());
     }
 
     // ---- listes de firmwares ajoutees (clic droit > Add > Add a firmware list) : un lien par ligne
@@ -325,6 +402,12 @@ public:
     std::function<void (const juce::String&, std::shared_ptr<std::unique_ptr<FirmwareHost>>, const juce::String&)> onLoaded;
     std::function<void (const juce::String&)> onDelete;          // suppression complete d'un firmware installe (nom du fichier)
     void refreshInstalled() { installed = FirmwareInstaller::installed(); repaint(); list.repaint(); }
+    void reloadEntries()
+    {
+        entries = FirmwareCatalog::load (date); installed = FirmwareInstaller::installed();
+        { const juce::ScopedLock sl (previewLock); previews.clear(); previewFailed.clear(); }
+        layoutList(); repaint();
+    }
     std::function<void()> onClose;
     std::function<void()> onInstallFile, onInstallLink;          // installation manuelle (fichier .fwsc / .wasm, lien GitHub ou Firmware Hub)
     NineHandsMenu::MenuLnf menuLnf;                              // menus au style de FM-9
@@ -755,9 +838,14 @@ private:
                     }
                     else
                     {
-                        // en attendant l'ecran : le nom en lettres d'afficheur
-                        g.setColour (kFaint); g.setFont (font (o.fMed, 9.0f));
-                        g.drawFittedText (e.compatible ? e.name : "Not compatible", sr.reduced (12.0f).toNearestInt(), juce::Justification::centred, 3);
+                        // en attendant l'ecran : le nom en lettres d'afficheur ; pas d'ecran possible : ecran noir
+                        bool failed;
+                        { const juce::ScopedLock sl (o.previewLock); failed = o.previewFailed.count (it.entry) > 0; }
+                        if (! failed || ! e.compatible)
+                        {
+                            g.setColour (kFaint); g.setFont (font (o.fMed, 9.0f));
+                            g.drawFittedText (e.compatible ? e.name : "Not compatible", sr.reduced (12.0f).toNearestInt(), juce::Justification::centred, 3);
+                        }
                     }
                 }
                 if (upd)
@@ -1098,6 +1186,7 @@ public:
         for (auto& it : items)
             if (it.entry >= 0)
                 if (auto img = juce::ImageFileFormat::loadFrom (previewFile (entries[(size_t) it.entry])); img.isValid()) previews[it.entry] = img;
+                else if (anyInstalled (entries[(size_t) it.entry])) previewFailed.insert (it.entry);      // installe sans ecran possible : noir
         repaint();
     }
 

@@ -388,6 +388,18 @@ int main (int argc, char** argv)
         juce::String d; const auto all = fm9::FirmwareCatalog::load (d);
         std::printf ("catalogue : %d firmwares\n", (int) all.size()); std::fflush (stdout); std::_Exit (0);
     }
+    if (args.contains ("--capture"))
+    {
+        FM9Editor::captureScreenFor (args[args.indexOf ("--capture") + 1]);
+        std::printf ("capture %s\n", fm9::FirmwareCatalogView::previewFile ([&] { fm9::CatalogEntry e; e.name = args[args.indexOf ("--capture") + 1]; return e; }()).existsAsFile() ? "ok" : "absente");
+        std::fflush (stdout); std::_Exit (0);
+    }
+    if (args.contains ("--linkfind"))
+    {
+        juce::String o, r, d; fm9::FirmwareInstaller::parseRepo (args[args.indexOf ("--linkfind") + 1], o, r);
+        for (auto& e : fm9::FirmwareCatalog::load (d)) if (e.repo.equalsIgnoreCase (o + "/" + r)) std::printf ("%s/%s -> fiche %s (%s)\n", o.toRawUTF8(), r.toRawUTF8(), e.name.toRawUTF8(), e.pkg.toRawUTF8());
+        std::fflush (stdout); std::_Exit (0);
+    }
     if (args.contains ("--hubkeys"))
     {
         for (auto l : { "https://thefirmwarehub.com/firmware/argo/", "https://play.thefirmwarehub.com/?fw=zp12n", "https://thefirmwarehub.com/fw/argo-1.8.3.fwsc", "Argo", "https://thefirmwarehub.com/" })

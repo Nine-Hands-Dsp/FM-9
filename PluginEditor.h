@@ -80,7 +80,7 @@ private:
     void showContextMenu (const juce::String& learnId = {}, int ctl = -1);   // ctl : commande physique (FM9Processor::ctlId)
     void midiMapAction (int r);
     void octStep (int dir);
-    void deleteFirmware (const juce::String& name);
+    uint32_t playedFwKeys() const;
     void syncShift() { proc.kbShift.store (12 * octave + kbTrans); }
     void openSaveDrum();
     void closeDrum (bool accept);
@@ -115,6 +115,7 @@ private:
     void recomposeFace();
     void applySkin (const juce::String& id, bool rebuild);
 public:
+    void deleteFirmware (const juce::String& name);       // confirmation puis suppression complete
     void setElementColour (int e, juce::Colour c);
     void openColourPanel (juce::Point<int> at, int element = 0);
     void setSnapshotColours (const juce::String& spec);
@@ -127,6 +128,7 @@ public:
     void openCatalog();
     void firmwareActivated (const juce::String& name);
     std::unique_ptr<fm9::FirmwareCatalogView> catalog;
+    std::unique_ptr<juce::Component> confirm;              // confirmation au style de FM-9 (suppression d'un firmware)
     juce::PopupMenu buildSkinMenu();
     juce::Image renderMenuPreview (const juce::PopupMenu& m, const juce::String& highlight, float scale, int* highlightY = nullptr);
     juce::PopupMenu buildMainMenuForPreview();

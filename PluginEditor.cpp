@@ -1093,7 +1093,7 @@ void FM9Editor::timerCallback()
     if (auto* fw = proc.firmware())
     {
         if (fw->fbSerial.load() != fwDrawnSerial) { fwDrawnSerial = fw->fbSerial.load(); fw->copyScreen (fwImage); askRepaint (toPx (L::bezel)); }
-        String ps; ps << (int64) fw->litButtons.load() << ',' << (int64) fw->litKeys.load() << ',' << (int64) fw->dimKeys.load() << ',' << heldFn << heldOct << fwHeldKey
+        String ps; ps << (int64) fw->litButtons.load() << ',' << (int64) fw->litKeys.load() << ',' << (int64) playedFwKeys() << ',' << (int64) fw->dimKeys.load() << ',' << heldFn << heldOct << fwHeldKey
                       << (int) proc.uiState.getProperty ("glow", 75);
         if (ps != drawnPanelSig) { drawnPanelSig = ps; repaint(); }
         return;
@@ -1261,7 +1261,7 @@ void FM9Editor::drawDynamic (Graphics& g)
 {
     if (auto* fw = proc.firmware())
     {
-        const uint32_t lb = fw->litButtons.load(), lk = fw->litKeys.load(), dk = fw->dimKeys.load();
+        const uint32_t lb = fw->litButtons.load(), lk = fw->litKeys.load() | playedFwKeys(), dk = fw->dimKeys.load();
         for (int i = 0; i < 16; ++i)
         {
             const int n = whiteOffs[i];
@@ -1702,6 +1702,64 @@ void FM9Editor::paint (Graphics& g)
 
 
 // --------------------------------------------------------------------------------------------- panneau de couleurs (a la volee)
+// --------------------------------------------------------------------------------------------- confirmation (style Octopus)
+class FM9Confirm : public Component
+{
+public:
+    FM9Confirm (Typeface::Ptr m, Typeface::Ptr b, String t, String d, String okText)
+        : med (m), bold (b), title (std::move (t)), detail (std::move (d)), okLabel (std::move (okText)) { setWantsKeyboardFocus (true); }
+
+    std::function<void (bool)> onResult;
+
+    void paint (Graphics& g) override
+    {
+        g.fillAll (Colours::black.withAlpha (0.55f));
+        const auto box = boxRect().toFloat();
+        g.setColour (Colours::black.withAlpha (0.35f)); g.fillRoundedRectangle (box.translated (4, 6).expanded (2), 14.0f);
+        g.setColour (Colour (0xff15181d)); g.fillRoundedRectangle (box, 12.0f);
+        g.setColour (Colour (0xff2a3036)); g.drawRoundedRectangle (box.reduced (0.5f), 12.0f, 1.0f);
+        auto r = box.reduced (26, 22);
+        g.setColour (Colours::white); g.setFont (Font (FontOptions (bold).withHeight (22.0f)));
+        g.drawText (title, r.removeFromTop (30), Justification::centredLeft, true);
+        g.setColour (Colour (0xffb9c0c8)); g.setFont (Font (FontOptions (med).withHeight (15.0f)));
+        g.drawFittedText (detail, r.removeFromTop (48).toNearestInt(), Justification::topLeft, 3, 1.0f);
+        auto paintBtn = [&] (Rectangle<int> b, const String& t, Colour fill, Colour text, bool hot)
+        {
+            g.setColour (hot ? fill.brighter (0.15f) : fill); g.fillRoundedRectangle (b.toFloat(), 8.0f);
+            g.setColour (text); g.setFont (Font (FontOptions (med).withHeight (16.0f)));
+            g.drawText (t, b, Justification::centred, false);
+        };
+        const auto mp = getMouseXYRelative();
+        paintBtn (cancelRect(), "Cancel", Colour (0xff232830), Colour (0xffdfe6ea), cancelRect().contains (mp));
+        paintBtn (okRect(), okLabel, Colour (0xffd9443c), Colours::white, okRect().contains (mp));
+    }
+    void mouseMove (const MouseEvent&) override { repaint(); }
+    void mouseUp (const MouseEvent& e) override
+    {
+        if (okRect().contains (e.getPosition())) finish (true);
+        else if (cancelRect().contains (e.getPosition()) || ! boxRect().contains (e.getPosition())) finish (false);
+    }
+    bool keyPressed (const KeyPress& k) override
+    {
+        if (k == KeyPress::escapeKey) { finish (false); return true; }
+        if (k == KeyPress::returnKey) { finish (true); return true; }
+        return false;
+    }
+
+private:
+    Rectangle<int> boxRect() const    { return getLocalBounds().withSizeKeepingCentre (jmin (480, getWidth() - 40), 196); }
+    Rectangle<int> okRect() const     { auto b = boxRect().reduced (26, 22); return b.removeFromBottom (40).removeFromRight (130); }
+    Rectangle<int> cancelRect() const { auto b = boxRect().reduced (26, 22); auto row = b.removeFromBottom (40); row.removeFromRight (142); return row.removeFromRight (120); }
+    void finish (bool ok)
+    {
+        auto cb = onResult;
+        setVisible (false);
+        MessageManager::callAsync ([cb, ok] { if (cb) cb (ok); });
+    }
+    Typeface::Ptr med, bold;
+    String title, detail, okLabel;
+};
+
 class FM9ColourPanel : public Component, private ChangeListener
 {
 public:
@@ -2345,18 +2403,38 @@ void FM9Editor::deleteFirmware (const String& name)
 {
     // confirmation, puis retour au synthe de FM-9 si c'est le firmware en cours, puis suppression de tout ce qui a ete installe
     const auto stem = name.endsWith (fm9::FirmwareInstaller::hardwareSuffix) ? name.dropLastCharacters (String (fm9::FirmwareInstaller::hardwareSuffix).length()) : name;
-    AlertWindow::showOkCancelBox (MessageBoxIconType::WarningIcon, "Delete " + stem,
-        "Delete " + stem + " from this computer?\nIts package, web build, saved patterns and settings and its preview are removed.",
-        "Delete", "Cancel", this,
-        ModalCallbackFunction::create ([self = Component::SafePointer<FM9Editor> (this), stem] (int ok)
+    // confirmation au style de FM-9, par-dessus tout (catalogue compris)
+    auto* c = new FM9Confirm (med, bold, "Delete " + stem + "?",
+                              "Its package, web build, saved patterns and settings and its preview are removed from this computer.",
+                              "Delete");
+    c->onResult = [self = Component::SafePointer<FM9Editor> (this), stem] (bool ok)
+    {
+        if (self == nullptr || ! ok) return;
+        const auto cur = self->proc.getFirmwareName();
+        if (cur == stem || cur == stem + fm9::FirmwareInstaller::hardwareSuffix) self->activateFirmware ({});
+        const int n = fm9::FirmwareInstaller::remove (stem);
+        // le firmware arrete peut encore ecrire sa sauvegarde en se fermant : second passage un peu plus tard
+        Timer::callAfterDelay (800, [stem] { fm9::FirmwareInstaller::remove (stem); });
+        if (self->catalog != nullptr) self->catalog->refreshInstalled();
+        self->popup ("Firmware deleted", stem + " (" + String (n) + " files)");
+    };
+    confirm.reset (c);
+    addAndMakeVisible (*c);
+    c->setBounds (getLocalBounds());
+    c->toFront (true);
+}
+
+uint32_t FM9Editor::playedFwKeys() const
+{
+    // notes recues du clavier maitre en mode firmware : la touche de meme nom s'eclaire (F3 a G5, ramenee par octaves)
+    uint32_t bits = 0;
+    for (int note = 0; note < 128; ++note)
+        if ((proc.keyBits[(size_t) (note >> 5)].load() >> (note & 31)) & 1u)
         {
-            if (self == nullptr || ok == 0) return;
-            const auto cur = self->proc.getFirmwareName();
-            if (cur == stem || cur == stem + fm9::FirmwareInstaller::hardwareSuffix) self->activateFirmware ({});
-            const int n = fm9::FirmwareInstaller::remove (stem);
-            // le firmware arrete peut encore ecrire sa sauvegarde en se fermant : second passage un peu plus tard
-            Timer::callAfterDelay (800, [stem] { fm9::FirmwareInstaller::remove (stem); });
-            if (self->catalog != nullptr) self->catalog->refreshInstalled();
-            self->popup ("Firmware deleted", stem + " (" + String (n) + " files)");
-        }));
+            int k = note - 53;
+            while (k < 0) k += 12;
+            while (k > 26) k -= 12;
+            bits |= 1u << k;
+        }
+    return bits;
 }

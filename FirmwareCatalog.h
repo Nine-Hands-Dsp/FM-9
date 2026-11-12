@@ -38,7 +38,7 @@ struct CatalogEntry
         if (! hardware() || ! inst.contains (fileName() + FirmwareInstaller::hardwareSuffix)) return false;
         const auto txt = FirmwareInstaller::folder().getChildFile (fileName() + ".txt").loadFileAsString();
         const auto line = txt.fromFirstOccurrenceOf ("package: ", false, false).upToFirstOccurrenceOf ("\n", false, false).trim();
-        return line.isEmpty() || line != pkg;
+        return line.startsWith ("http") && line != pkg;      // installe depuis le catalogue, autre adresse = autre version
     }
 
     juce::String loadName (const juce::StringArray& inst) const
@@ -292,7 +292,10 @@ private:
         list.repaint();
     }
 
-    juce::Rectangle<int> installRect (juce::Rectangle<int> row) const { return row.removeFromRight (140).withSizeKeepingCentre (128, 38); }
+    // a droite : la croix rouge Delete (sans cadre), puis le bouton Install / Load a sa gauche
+    juce::Rectangle<int> deleteRect (juce::Rectangle<int> row) const  { return row.removeFromRight (120).withSizeKeepingCentre (108, 38); }
+    juce::Rectangle<int> installRect (juce::Rectangle<int> row) const { row.removeFromRight (120); return row.removeFromRight (140).withSizeKeepingCentre (128, 38); }
+    bool anyInstalled (const CatalogEntry& e) const { return installed.contains (e.fileName()) || installed.contains (e.fileName() + FirmwareInstaller::hardwareSuffix); }
 
     struct List : juce::Component
     {
@@ -316,7 +319,34 @@ private:
                 auto inner = row.reduced (8, 6);
                 auto btn = o.installRect (row);
                 // statut : texte seul, vert compatible / rouge non compatible, et le type dessous
-                auto badge = inner.removeFromRight (320).removeFromLeft (172).toFloat();
+                auto badge = inner.removeFromRight (440).removeFromLeft (172).toFloat();
+                if (o.anyInstalled (e) && o.onDelete != nullptr)
+                {
+                    // poubelle rouge dessinee, sans cadre : supprime tout ce qui a ete installe pour ce firmware
+                    const auto dr = o.deleteRect (row).toFloat();
+                    const bool hot = dr.contains (getMouseXYRelative().toFloat());
+                    const juce::Colour red (hot ? 0xffff7a73 : 0xffff5a52);
+                    g.setColour (red);
+                    const float cx = dr.getX() + 10.0f, cy = dr.getCentreY();       // centre sur le mot Delete
+                    {
+                    juce::Graphics::ScopedSaveState ss (g);
+                    g.addTransform (juce::AffineTransform::scale (0.5f, 0.5f, cx, cy));     // icone a 50 %
+                    // couvercle et poignee
+                    g.fillRoundedRectangle (cx - 9.0f, cy - 9.5f, 18.0f, 2.6f, 1.2f);
+                    g.drawRoundedRectangle (cx - 3.5f, cy - 12.5f, 7.0f, 3.6f, 1.2f, 1.6f);
+                    // cuve legerement evasee, trois rainures
+                    juce::Path bin;
+                    bin.startNewSubPath (cx - 7.5f, cy - 5.5f); bin.lineTo (cx + 7.5f, cy - 5.5f);
+                    bin.lineTo (cx + 6.2f, cy + 10.0f); bin.quadraticTo (cx + 6.0f, cy + 11.5f, cx + 4.6f, cy + 11.5f);
+                    bin.lineTo (cx - 4.6f, cy + 11.5f); bin.quadraticTo (cx - 6.0f, cy + 11.5f, cx - 6.2f, cy + 10.0f);
+                    bin.closeSubPath();
+                    g.strokePath (bin, juce::PathStrokeType (1.8f, juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
+                    for (float dx : { -3.0f, 0.0f, 3.0f })
+                        g.drawLine (cx + dx, cy - 2.0f, cx + dx * 0.9f, cy + 8.0f, 1.5f);
+                    }
+                    g.setFont (font (o.fMed, 13.0f));
+                    g.drawText ("Delete", dr.withTrimmedLeft (20.0f), juce::Justification::centredLeft);
+                }
                 g.setFont (font (o.fMed, 13.5f));
                 g.setColour (e.compatible ? juce::Colour (0xff5be08a) : juce::Colour (0xffff5a52));
                 g.drawText (e.compatible ? "Compatible" : "Not compatible", badge.withHeight (28.0f).withY (badge.getCentreY() - (e.compatible ? 21.0f : 14.0f)).toNearestInt(), juce::Justification::centred);
@@ -403,6 +433,11 @@ private:
                 m.addItem (1, "Delete " + e.name + " (everything installed)");
                 m.showMenuAsync (juce::PopupMenu::Options().withMousePosition(),
                     [o = juce::Component::SafePointer<FirmwareCatalogView> (owner), stem = e.fileName()] (int r) { if (r == 1 && o != nullptr && o->onDelete) o->onDelete (stem); });
+                return;
+            }
+            if (owner->anyInstalled (e) && owner->onDelete != nullptr && owner->deleteRect (row).contains (ev.getPosition()))
+            {
+                owner->onDelete (e.fileName());
                 return;
             }
             if (! owner->installRect (row).contains (ev.getPosition()))

@@ -130,6 +130,7 @@ void FM9Processor::updateFirmwareLatency()
 
 void FM9Processor::activatePrepared (const juce::String& name, std::unique_ptr<fm9::FirmwareHost> next)
 {
+    for (auto& w : keyBits) w.store (0);                  // pas de touche restee allumee d'un moteur a l'autre
     if (next != nullptr) next->prepare (sr, blockSize);
     // echange sans verrou : le thread audio ne garde jamais l'ancien firmware apres cette attente
     auto* old = fwOwner.get();
@@ -650,6 +651,9 @@ void FM9Processor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
                 juce::MidiBuffer tmp; handleMidi (m, 0, tmp);       // MIDI Learn (volume...)
                 continue;
             }
+            if (m.isNoteOn()) setKey (m.getNoteNumber(), true);          // la touche jouee s'eclaire aussi en mode firmware
+            else if (m.isNoteOff()) setKey (m.getNoteNumber(), false);
+            else if (m.isAllNotesOff() || m.isAllSoundOff()) for (auto& w : keyBits) w.store (0);
             fw->handleMidi (m);
         }
         midi.clear();

@@ -371,6 +371,13 @@ int main (int argc, char** argv)
             const auto name = dest.getFileNameWithoutExtension() + fm9::FirmwareInstaller::hardwareSuffix;
             const bool ok = dest != juce::File() && p.activateFirmware (name, err);
             std::printf ("hwfw %s : %s (latence %d)\n", name.toRawUTF8(), ok ? "ok" : err.toRawUTF8(), p.getLatencySamples());
+            if (ok && args.contains ("--notes"))
+            {
+                juce::MidiBuffer m; juce::AudioBuffer<float> b2 (2, 512);
+                for (int n : { 60, 64, 67 }) m.addEvent (juce::MidiMessage::noteOn (1, n, (juce::uint8) 100), 0);
+                p.processBlock (b2, m);
+                std::printf ("keyBits %08x %08x\n", (unsigned) p.keyBits[1].load(), (unsigned) p.keyBits[2].load());
+            }
             if (auto* fw = p.firmware())
             {
                 juce::AudioBuffer<float> b2 (2, 512); float peak = 0;
@@ -417,6 +424,7 @@ int main (int argc, char** argv)
             if (args.contains ("--saveskin")) std::printf ("save %d\n", (int) fe->saveUserSkin (args[args.indexOf ("--saveskin") + 1]));
             if (args.contains ("--loadskin")) std::printf ("load %d\n", (int) fe->loadUserSkin (FM9Editor::skinFolder().getChildFile (args[args.indexOf ("--loadskin") + 1] + ".fm9skin")));
             if (args.contains ("--catalog")) fe->openCatalog();
+            if (args.contains ("--confirmdel")) fe->deleteFirmware (args[args.indexOf ("--confirmdel") + 1]);
             if (args.contains ("--loading") && fe->catalog != nullptr)
             {
                 const int k = args.indexOf ("--loading");

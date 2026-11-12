@@ -1931,18 +1931,23 @@
    "pkg": "https://raw.githubusercontent.com/RayDNoper/fm1-fomnium/main/firmware/omni-0.8.1.fwsc"
   },
   {
-   "name": "baud girl Custom Firmware Mod",
-   "author": "",
+   "name": "Baud Girl FM-1+VA",
+   "author": "Baud Girl",
    "group": "Independent & Original Engine Firmwares",
    "section": "Sound & groovebox",
-   "desc": "9–12 voices for FM presets with VA filter, and up to 8 voices for pure VA waveforms",
+   "desc": "Live-performance firmware: new interface (groups, ENTER everywhere), 9-12 voice FM with a VA filter, up to 8 voices of pure VA waveforms, upgraded sequencer",
    "repo": "",
-   "page": "",
-   "compatible": false,
-   "reason": "no public GitHub repository",
+   "page": "https://baudgirl.com/work/FM-1+VA/install",
+   "compatible": true,
+   "reason": "",
    "url": "",
    "abi": "",
-   "size": 0
+   "size": 859700,
+   "pkg": "https://baudgirl.com/fm1/firmware/FM-1+VA-102.fwsc",
+   "pkgVersion": "102",
+   "license": "Free download (not open source)",
+   "unverified": true,
+   "added": "2026-11-12"
   },
   {
    "name": "Groove OS",

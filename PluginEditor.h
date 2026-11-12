@@ -5,6 +5,7 @@
 #include "Layout.h"
 #include "NHKnob.h"
 #include "NineHandsMenu.h"
+#include "NineHandsWindow.h"
 namespace fm9 { class FirmwareCatalogView; }
 
 class FM9Editor : public juce::AudioProcessorEditor, private juce::Timer
@@ -141,6 +142,7 @@ public:
     juce::Image renderMenuPreview (const juce::PopupMenu& m, const juce::String& highlight, float scale, int* highlightY = nullptr, NineHandsMenu::MenuLnf* lnf = nullptr);
     juce::PopupMenu buildMainMenuForPreview();
     juce::PopupMenu buildContextMenu (const juce::String& learnId = {}, int ctl = -1);
+    juce::PopupMenu buildContextMenu (int ctl) { return buildContextMenu ({}, ctl); }   // outil de controle des menus
 private:
     int cacheW = 0, cacheH = 0;
     float cacheScale = 0.0f, forcedScale = 0.0f;
@@ -151,6 +153,7 @@ private:
     juce::Typeface::Ptr med, bold, light;
     std::unique_ptr<juce::Drawable> logo, fm9Logo;
     NineHandsMenu::MenuLnf menuLnf;
+    NineHandsWindow::HostLock hostLock;    // fenetre du DAW : jamais sous 60 %, jamais au-dela de 150 %
     std::unique_ptr<juce::FileChooser> chooser;
 
     nh::RotaryLayers::Layers knobLayers, encLayers;

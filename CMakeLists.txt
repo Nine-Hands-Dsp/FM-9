@@ -6,7 +6,7 @@ if(APPLE)
   set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "" FORCE)
 endif()
 
-project(FM9 VERSION 1.3.19)
+project(FM9 VERSION 1.4.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -45,7 +45,7 @@ juce_add_plugin(FM9
   FORMATS VST3
   VST3_CATEGORIES Instrument Synth
   PRODUCT_NAME "FM-9"
-  VERSION 1.3.19
+  VERSION 1.4.0
   DESCRIPTION "6-operator FM synthesizer in the spirit of the M-VAVE FM-1 (DX7 SysEx compatible)"
   IS_SYNTH TRUE
   NEEDS_MIDI_INPUT TRUE
@@ -62,6 +62,17 @@ target_sources(FM9 PRIVATE
   wasm3/m3_function.c wasm3/m3_info.c wasm3/m3_module.c wasm3/m3_parse.c wasm3/m3_snapshot.c wasm3/m3_validate.c wasm3/m3_xxh64.c
   msfa/dx7note.cc msfa/env.cc msfa/exp2.cc msfa/fm_core.cc msfa/fm_op_kernel.cc msfa/freqlut.cc
   msfa/lfo.cc msfa/pitchenv.cc msfa/porta.cpp msfa/sin.cc msfa/tuning.cc)
+
+# verrou de taille de la fenetre du DAW (jamais sous 60 %, jamais au-dela de 150 %)
+if(APPLE)
+  target_sources(FM9 PRIVATE WindowMinSize.mm)
+  target_link_libraries(FM9 PRIVATE "-framework Cocoa")
+else()
+  target_sources(FM9 PRIVATE WindowMinSize.cpp)
+endif()
+if(WIN32)
+  target_link_libraries(FM9 PRIVATE comctl32 user32)
+endif()
 target_include_directories(FM9 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/msfa)
 
 file(GLOB WASM3_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/wasm3/*.c")

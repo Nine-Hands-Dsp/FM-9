@@ -418,7 +418,7 @@ public:
     FirmwareCatalogView (juce::Typeface::Ptr reg, juce::Typeface::Ptr med, juce::Typeface::Ptr bold) : fReg (reg), fMed (med), fBold (bold)
     {
         entries = FirmwareCatalog::load (date);
-        menuLnf.reg = reg; menuLnf.med = med; menuLnf.bold = bold; menuLnf.textScale = 13.0f / 15.0f;
+        menuLnf.f = { reg, med, bold }; menuLnf.textScale = 13.0f / 15.0f;
         installed = FirmwareInstaller::installed();
         sortMode = juce::jlimit (0, 3, sortFile().loadFileAsString().trim().getIntValue());
         loadFavorites();

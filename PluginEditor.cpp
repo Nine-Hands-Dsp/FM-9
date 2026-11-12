@@ -46,7 +46,7 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
     med   = Typeface::createSystemTypefaceFor (BinaryData::PoppinsMedium_ttf, BinaryData::PoppinsMedium_ttfSize);
     bold  = Typeface::createSystemTypefaceFor (BinaryData::PoppinsBold_ttf, BinaryData::PoppinsBold_ttfSize);
     light = Typeface::createSystemTypefaceFor (BinaryData::PoppinsLight_ttf, BinaryData::PoppinsLight_ttfSize);
-    menuLnf.reg = light; menuLnf.med = med; menuLnf.bold = bold;
+    menuLnf.f = { light, med, bold };
     faceBase = ImageCache::getFromMemory (BinaryData::face_base_png, BinaryData::face_base_pngSize);
     faceMaps = ImageCache::getFromMemory (BinaryData::face_maps_png, BinaryData::face_maps_pngSize);
     if (! proc.uiState.hasProperty ("skin"))
@@ -139,11 +139,14 @@ FM9Editor::FM9Editor (FM9Processor& p) : AudioProcessorEditor (p), proc (p)
 
     setWantsKeyboardFocus (true);
     const int defH = sizeHeight (0);
-    setResizable (true, false);
-    setResizeLimits (roundToInt (defH * baseW / baseH), defH, roundToInt (sizeHeight (numSizes - 1) * 1.2f * baseW / baseH), roundToInt (sizeHeight (numSizes - 1) * 1.2f));
+    setResizable (true, true);                 // coin de redimensionnement, proportions fixes, jusqu'a 150 %
+    const int maxH = roundToInt (sizeHeight (2) * 1.5f);
+    setResizeLimits (roundToInt (defH * baseW / baseH), defH, roundToInt (maxH * baseW / baseH), maxH);
+    hostLock.setLimits (roundToInt (defH * baseW / baseH), defH, roundToInt (maxH * baseW / baseH), maxH);
     getConstrainer()->setFixedAspectRatio (baseW / baseH);
     setSize (roundToInt (defH * baseW / baseH), defH);
-    setScaledHeight (sizeHeight (WigaWindowSize::defaultIndex ("FM-9", numSizes)));
+    // taille choisie au menu pour ce projet, sinon celle de « Default size (new windows) »
+    setScaledHeight (sizeHeight (NineHandsWindow::openIndex ("FM-9", (int) proc.uiState.getProperty ("uiSize", -1), numSizes)));
     octave = (int) proc.uiState.getProperty ("octave", 0);
     kbTrans = (int) proc.uiState.getProperty ("transpose", 0);
     syncShift();
@@ -167,7 +170,7 @@ int FM9Editor::sizeHeight (int idx)
     return h[jlimit (0, numSizes - 1, idx)];
 }
 
-void FM9Editor::setScaledHeight (int h) { setSize (roundToInt ((float) h * baseW / baseH), h); }
+void FM9Editor::setScaledHeight (int h) { setSize (roundToInt ((float) h * baseW / baseH), h); hostLock.enforce(); }
 
 Rectangle<int> FM9Editor::toPx (Rectangle<float> r) const
 {
@@ -216,7 +219,7 @@ void FM9Editor::useSoftwareRenderer()
     }
    #endif
 }
-void FM9Editor::parentHierarchyChanged() { useSoftwareRenderer(); }
+void FM9Editor::parentHierarchyChanged() { useSoftwareRenderer(); hostLock.track (*this); }
 void FM9Editor::visibilityChanged() { useSoftwareRenderer(); if (isShowing()) repaint(); }
 void FM9Editor::askRepaint (Rectangle<int> r)
 {
@@ -1108,6 +1111,7 @@ void FM9Editor::timerCallback()
 {
     const double now = Time::getMillisecondCounterHiRes();
     if (getPeer() != lastPeer || now - lastRendererCheckMs > 1000.0) { lastRendererCheckMs = now; useSoftwareRenderer(); }
+    hostLock.track (*this);
     // commandes physiques pilotees en MIDI Learn (SELECT, PRESETS, ALGORITHM, KNOB1-4, OCT- / OCT+)
     for (int i = 0; i < FM9Processor::numCtl; ++i)
         if (const int st = proc.ctlSteps[(size_t) i].exchange (0); st != 0)
@@ -2051,29 +2055,28 @@ PopupMenu FM9Editor::buildMainMenuForPreview()
 // --------------------------------------------------------------------------------------------- menu clic droit
 PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
 {
+    using namespace NineHandsMenu;
     PopupMenu menu;
-    if (ctl >= 0)
+    menu.setLookAndFeel (&menuLnf);
+    const Colour accent (0xff4fc3f7);
+    if (ctl >= 0 || (learnId.isNotEmpty() && proc.apvts.getParameter (learnId) != nullptr))
     {
-        // la commande elle-meme (marche sur toutes les pages, comme le potard de la FM-1)
-        const auto cid = FM9Processor::ctlId (ctl);
-        const auto cname = FM9Processor::ctlName (ctl);
-        const auto src = proc.learnedSourceName (cid);
-        menu.addItem (4, "MIDI Learn: " + cname + (ctl >= 7 ? String() : String (" (all pages)")) + (src.isNotEmpty() ? "  (" + src + ")" : String()), true, proc.isLearning() && proc.getLearnTarget() == cid);
-        if (ctl >= FM9Processor::firstButton && proc.isLearning() && proc.getLearnTarget() == cid)
-            menu.addItem (6, "Waiting: press a button, pad or key of your keyboard", false);
-        menu.addItem (5, "Clear MIDI: " + cname, src.isNotEmpty());
-        if (learnId.isEmpty() && proc.isLearning()) menu.addItem (3, "Cancel MIDI learn");
-        if (learnId.isEmpty()) menu.addSeparator();
+        // menu d'une commande (tronc commun) : en-tete, MIDI Learn, Clear MIDI, Cancel MIDI learn
+        // (la commande elle-meme si on a clique dessus, sinon le parametre affiche sous elle)
+        const bool isCtl = ctl >= 0;
+        const String id   = isCtl ? FM9Processor::ctlId (ctl) : learnId;
+        const String name = isCtl ? FM9Processor::ctlName (ctl) : proc.apvts.getParameter (learnId)->getName (40);
+        String assign;
+        if (isCtl) assign = proc.learnedSourceName (id);
+        else if (const int cc = proc.learnedCcFor (id); cc >= 0) assign = "CC " + String (cc);
+        addHeader (menu, menuLnf.f, isCtl && ctl >= FM9Processor::firstButton ? icoSwitch : icoKnob, accent, name,
+                   "MIDI: " + (assign.isNotEmpty() ? assign : String ("not assigned")));
+        menu.addItem (isCtl ? 4 : 1, "MIDI Learn: " + name, true, proc.isLearning() && proc.getLearnTarget() == id);
+        menu.addItem (isCtl ? 5 : 2, "Clear MIDI: " + name, assign.isNotEmpty());
+        menu.addItem (3, "Cancel MIDI learn", proc.isLearning());
+        return menu;
     }
-    if (learnId.isNotEmpty() && proc.apvts.getParameter (learnId) != nullptr)
-    {
-        const String name = proc.apvts.getParameter (learnId)->getName (40);
-        const int cc = proc.learnedCcFor (learnId);
-        menu.addItem (1, "MIDI Learn: " + name + (cc >= 0 ? "  (CC " + String (cc) + ")" : String()), true, proc.isLearning() && proc.getLearnTarget() == learnId);
-        menu.addItem (2, "Clear MIDI: " + name, cc >= 0);
-        if (proc.isLearning()) menu.addItem (3, "Cancel MIDI learn");
-        menu.addSeparator();
-    }
+    addHeader (menu, menuLnf.f, icoPedal, accent, "FM-9", "FM synthesizer  v" + String (JucePlugin_VersionString));
 
     PopupMenu banks;
     for (int b = 0; b < FM9Processor::numBanks; ++b)
@@ -2093,9 +2096,11 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
     }
     menu.addSubMenu ("Load preset", banks);
     menu.addItem (330, "Save preset to...");
-    menu.addItem (331, "Load single voice (.syx)...");
-    menu.addItem (332, "Save voice as SysEx (.syx)...");
-    menu.addItem (333, "Rename voice...");
+    PopupMenu voice;
+    voice.addItem (331, "Load single voice (.syx)...");
+    voice.addItem (332, "Save voice as SysEx (.syx)...");
+    voice.addItem (333, "Rename voice...");
+    menu.addSubMenu ("Voice", voice);
     menu.addSeparator();
 
     PopupMenu firmware;
@@ -2143,28 +2148,6 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
         }
     }
     menu.addSubMenu ("Firmware", firmware);
-    menu.addSeparator();
-
-    PopupMenu sizes;
-    {
-        const char* names[numSizes] = { "60 %", "75 %", "100 %", "125 %" };
-        const int def = WigaWindowSize::defaultIndex ("FM-9", numSizes);
-        PopupMenu defSizes;
-        for (int i = 0; i < numSizes; ++i)
-        {
-            sizes.addItem (10 + i, String (names[i]) + (i == def ? "  (default)" : ""), true, std::abs (getHeight() - sizeHeight (i)) <= 2);
-            defSizes.addItem (20 + i, names[i], true, i == def);
-        }
-        sizes.addSeparator();
-        sizes.addSubMenu ("Default size (new windows)", defSizes);
-    }
-    menu.addSubMenu ("Plugin size", sizes);
-    PopupMenu glow;
-    const int gl = (int) proc.uiState.getProperty ("glow", 75);
-    for (int v : { 25, 50, 75, 100 }) glow.addItem (500 + v, String (v) + " %", true, gl == v);
-    menu.addSubMenu ("Glow", glow);
-    PopupMenu skinMenu = buildSkinMenu();
-    menu.addSubMenu ("Skin", skinMenu);
     PopupMenu fx;
     fx.addItem (470, "Reset effects order (FX + SEL to move)");
     fx.addItem (471, "Delay synced to tempo", true, getParam ("delaySync") > 0.5f);
@@ -2172,10 +2155,21 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
     for (int i = 0; i < fm9::delayDivNames().size(); ++i) div.addItem (480 + i, fm9::delayDivNames()[i], true, roundToInt (getParam ("delayDiv")) == i);
     fx.addSubMenu ("Delay division", div);
     menu.addSubMenu ("Effects", fx);
+    menu.addSeparator();
 
     PopupMenu midi;
+    midi.addSectionHeader ("MIDI Learn");
+    for (int i = 0; i < FM9Processor::numCtl; ++i)
+    {
+        const auto src = proc.learnedSourceName (FM9Processor::ctlId (i));
+        midi.addItem (4000 + i, "Learn: " + FM9Processor::ctlName (i) + "  (" + (src.isNotEmpty() ? src : String ("not assigned")) + ")",
+                      true, proc.isLearning() && proc.getLearnTarget() == FM9Processor::ctlId (i));
+    }
+    midi.addSeparator();
+    midi.addItem (3, "Cancel MIDI learn", proc.isLearning());
     midi.addItem (600, "Clear all MIDI assignments");
     midi.addSeparator();
+    midi.addSectionHeader ("FM-9");
     {
         // configurations de MIDI Learn enregistrees
         PopupMenu maps;
@@ -2203,9 +2197,9 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
     }
     midi.addItem (614, "FM-9 keys follow your keyboard's octave", true, proc.kbFollow.load());
     midi.addSeparator();
-    midi.addItem (601, "Right-click a knob to learn it (the knob itself or its parameter)", false);
-    midi.addItem (602, "Program Change 0-127 = presets 001-128", false);
     midi.addItem (603, "DX7 SysEx voice / bank dumps are accepted", false);
+    midi.addSeparator();
+    NineHandsWindow::addProgramChangeInfo (midi);
     menu.addSubMenu ("MIDI", midi);
     PopupMenu nksMenu;
     nksMenu.addItem (620, "Export NKS library (Komplete Kontrol / Maschine)");
@@ -2213,7 +2207,16 @@ PopupMenu FM9Editor::buildContextMenu (const String& learnId, int ctl)
     nksMenu.addItem (622, "Open NKS user folder");
     menu.addSubMenu ("NKS", nksMenu);
     menu.addSeparator();
-    menu.addItem (999, "FM-9 v" + String (JucePlugin_VersionString) + " - NINE HANDS | DSP", false);
+    PopupMenu skinMenu = buildSkinMenu();
+    menu.addSubMenu ("Skin", skinMenu);
+    {
+        // Plugin size : 60 / 75 / 100 % + 125 % (propre a la FM-9)
+        const char* names[numSizes] = { "60 %", "75 %", "100 %", "125 %" };
+        int heights[numSizes];
+        for (int i = 0; i < numSizes; ++i) heights[i] = sizeHeight (i);
+        menu.addSubMenu ("Plugin size", NineHandsWindow::sizeMenu ("FM-9", numSizes, names, heights, getHeight()));
+    }
+    menu.addSubMenu ("Glow intensity", NineHandsWindow::glowMenu (glowPercent()));
 
     return menu;
 }
@@ -2236,7 +2239,14 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
                                   | FileBrowserComponent::canSelectFiles;
                 ed.chooser->launchAsync (flags, [fn] (const FileChooser& fc) { if (fc.getResult() != File()) fn (fc.getResult()); });
             };
-            if (r == 4 && ctl >= 0) pr.startMidiLearn (FM9Processor::ctlId (ctl));
+            {
+                int inst = (int) pr.uiState.getProperty ("uiSize", -1);
+                const int sz = NineHandsWindow::handleSize (r, "FM-9", numSizes, inst);
+                if (sz >= 0) { pr.uiState.setProperty ("uiSize", inst, nullptr); ed.setScaledHeight (sizeHeight (sz)); return; }
+                if (const int pc = NineHandsWindow::handleGlow (r, "FM-9")) { ed.setGlowPercent (pc); return; }
+            }
+            if (r >= 4000 && r < 4000 + FM9Processor::numCtl) pr.startMidiLearn (FM9Processor::ctlId (r - 4000));
+            else if (r == 4 && ctl >= 0) pr.startMidiLearn (FM9Processor::ctlId (ctl));
             else if (r == 5 && ctl >= 0) pr.clearMidiLearn (FM9Processor::ctlId (ctl));
             else if (r >= 630 && r <= 633) ed.midiMapAction (r);
             else if (r >= 2400 && r < 2500)
@@ -2248,8 +2258,6 @@ void FM9Editor::showContextMenu (const String& learnId, int ctl)
             else if (r == 1) pr.startMidiLearn (learnId);
             else if (r == 2) pr.clearMidiLearn (learnId);
             else if (r == 3) pr.cancelMidiLearn();
-            else if (r >= 10 && r < 10 + numSizes) ed.setScaledHeight (sizeHeight (r - 10));
-            else if (r >= 20 && r < 20 + numSizes) { WigaWindowSize::setDefaultIndex ("FM-9", r - 20); ed.setScaledHeight (sizeHeight (r - 20)); }
             else if (r >= 300 && r < 304)
             {
                 const int b = r - 300;

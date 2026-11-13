@@ -1,6 +1,6 @@
 {
  "source": "https://github.com/aroum/fm1-custom-fw",
- "generated": "2026-11-12 22:38",
+ "generated": "2026-11-13 05:12",
  "firmwares": [
   {
    "name": "FM-1 original firmware",
@@ -419,13 +419,14 @@
    "url": "https://raw.githubusercontent.com/illuminus5/skiff/gh-pages/try/felucca.wasm",
    "abi": "web",
    "size": 1083178,
-   "pkg": "https://thefirmwarehub.com/fw/skiff-2.5.1.fwsc",
-   "pkgVersion": "2.5.1",
+   "pkg": "https://thefirmwarehub.com/fw/skiff-2.6.fwsc",
+   "pkgVersion": "2.6",
    "license": "GPL-3.0",
    "added": "2026-10-13",
    "clock": 52,
    "midiCh": 63,
-   "calibPkg": "https://thefirmwarehub.com/fw/skiff-2.5.1.fwsc"
+   "calibPkg": "https://thefirmwarehub.com/fw/skiff-2.6.fwsc",
+   "updated": "2026-11-13"
   },
   {
    "name": "Felucca 8 Patterns",
@@ -1549,13 +1550,14 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/jiant-V10.7.17.fwsc",
-   "pkgVersion": "V10.7.17",
+   "pkg": "https://thefirmwarehub.com/fw/jiant-V10.7.23.fwsc",
+   "pkgVersion": "V10.7.23",
    "license": "GPL-3.0",
    "added": "2026-10-10",
    "clock": 52,
    "midiCh": 15,
-   "calibPkg": "https://thefirmwarehub.com/fw/jiant-V10.7.17.fwsc"
+   "calibPkg": "https://thefirmwarehub.com/fw/jiant-V10.7.23.fwsc",
+   "updated": "2026-11-13"
   },
   {
    "name": "ORBIT",
@@ -3433,7 +3435,10 @@
    "pkg": "https://thefirmwarehub.com/fw/bigorna-2026.11.12.fwsc",
    "pkgVersion": "2026.11.12",
    "license": "GPL-3.0",
-   "added": "2026-11-02"
+   "added": "2026-11-02",
+   "clock": 65,
+   "midiCh": 32895,
+   "calibPkg": "https://thefirmwarehub.com/fw/bigorna-2026.11.12.fwsc"
   },
   {
    "name": "FMER",
@@ -3450,7 +3455,10 @@
    "size": 0,
    "pkg": "https://github.com/Nacsez/FMER/releases/download/build-736-r2/fmer736-compatible-r2.fwsc",
    "pkgVersion": "",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 77,
+   "midiCh": 65535,
+   "calibPkg": "https://github.com/Nacsez/FMER/releases/download/build-736-r2/fmer736-compatible-r2.fwsc"
   },
   {
    "name": "Ketch",
@@ -3516,7 +3524,10 @@
    "pkg": "https://thefirmwarehub.com/fw/midimon-0.5.fwsc",
    "pkgVersion": "0.5",
    "license": "MPL-2.0",
-   "added": "2026-10-25"
+   "added": "2026-10-25",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/midimon-0.5.fwsc"
   },
   {
    "name": "SEQ-4",
@@ -3533,7 +3544,10 @@
    "size": 0,
    "pkg": "https://github.com/devrvega/SEQ-4/releases/download/v0.1.0/seq4-0.1.0.fwsc",
    "pkgVersion": "0.1.0",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://github.com/devrvega/SEQ-4/releases/download/v0.1.0/seq4-0.1.0.fwsc"
   },
   {
    "name": "WitchBox",
@@ -3565,7 +3579,10 @@
    "pkg": "https://thefirmwarehub.com/fw/frasil-3.3.fwsc",
    "pkgVersion": "3.3",
    "license": "MPL-2.0",
-   "added": "2026-10-23"
+   "added": "2026-10-23",
+   "clock": 77,
+   "midiCh": 65534,
+   "calibPkg": "https://thefirmwarehub.com/fw/frasil-3.3.fwsc"
   },
   {
    "name": "Finton",
@@ -3580,7 +3597,10 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://raw.githubusercontent.com/justynroberts/fm1-finton/main/web/firmware/finton.fwsc"
+   "pkg": "https://raw.githubusercontent.com/justynroberts/fm1-finton/main/web/firmware/finton.fwsc",
+   "clock": 127,
+   "midiCh": 0,
+   "calibPkg": "https://raw.githubusercontent.com/justynroberts/fm1-finton/main/web/firmware/finton.fwsc"
   },
   {
    "name": "FN ACID",
@@ -3595,7 +3615,10 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://raw.githubusercontent.com/Electro-Dig/function-acid-fw/main/web/installer/function-acid.fwsc"
+   "pkg": "https://raw.githubusercontent.com/Electro-Dig/function-acid-fw/main/web/installer/function-acid.fwsc",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://raw.githubusercontent.com/Electro-Dig/function-acid-fw/main/web/installer/function-acid.fwsc"
   },
   {
    "name": "NIGHTFALL",
@@ -3610,7 +3633,10 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://raw.githubusercontent.com/SylarPu-X/nightfall-fm1/main/web/firmware/NIGHTFALL-FM1-999-GREEN2.fwsc"
+   "pkg": "https://raw.githubusercontent.com/SylarPu-X/nightfall-fm1/main/web/firmware/NIGHTFALL-FM1-999-GREEN2.fwsc",
+   "clock": 65,
+   "midiCh": 0,
+   "calibPkg": "https://raw.githubusercontent.com/SylarPu-X/nightfall-fm1/main/web/firmware/NIGHTFALL-FM1-999-GREEN2.fwsc"
   },
   {
    "name": "DriftSeq",
@@ -3653,7 +3679,10 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://raw.githubusercontent.com/cotrino/fm1-betis-mode/main/docs/FM1_BETIS_MODE.fwsc"
+   "pkg": "https://raw.githubusercontent.com/cotrino/fm1-betis-mode/main/docs/FM1_BETIS_MODE.fwsc",
+   "clock": 52,
+   "midiCh": 15,
+   "calibPkg": "https://raw.githubusercontent.com/cotrino/fm1-betis-mode/main/docs/FM1_BETIS_MODE.fwsc"
   },
   {
    "name": "COSMOS",
@@ -3686,7 +3715,10 @@
    "pkg": "https://thefirmwarehub.com/fw/mope1-0.4.1.fwsc",
    "pkgVersion": "0.4.1",
    "license": "GPL-3.0-only",
-   "added": "2026-10-27"
+   "added": "2026-10-27",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/mope1-0.4.1.fwsc"
   },
   {
    "name": "FIZZ",
@@ -3704,7 +3736,10 @@
    "pkg": "https://thefirmwarehub.com/fw/fizz-0.12.0-beta.15.fwsc",
    "pkgVersion": "0.12.0-beta.15",
    "license": "MPL-2.0",
-   "added": "2026-10-25"
+   "added": "2026-10-25",
+   "clock": 52,
+   "midiCh": 16511,
+   "calibPkg": "https://thefirmwarehub.com/fw/fizz-0.12.0-beta.15.fwsc"
   },
   {
    "name": "S1Vave",
@@ -3722,7 +3757,10 @@
    "pkg": "https://thefirmwarehub.com/fw/s1vave-1.12.3.fwsc",
    "pkgVersion": "1.12.3",
    "license": "GPL-3.0",
-   "added": "2026-10-26"
+   "added": "2026-10-26",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/s1vave-1.12.3.fwsc"
   },
   {
    "name": "GLIDER",
@@ -3739,7 +3777,10 @@
    "size": 0,
    "pkg": "https://github.com/ttreu/fm1-glider/releases/download/v0.5.0-beta/FM1-GLIDER.fwsc",
    "pkgVersion": "0.5.0",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 140,
+   "midiCh": 64464,
+   "calibPkg": "https://github.com/ttreu/fm1-glider/releases/download/v0.5.0-beta/FM1-GLIDER.fwsc"
   },
   {
    "name": "GLITCH",
@@ -3756,7 +3797,10 @@
    "size": 0,
    "pkg": "https://github.com/ttreu/fm1-glitch/releases/download/v0.3.0-beta/FM1-GLITCH.fwsc",
    "pkgVersion": "0.3.0",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 115,
+   "midiCh": 65535,
+   "calibPkg": "https://github.com/ttreu/fm1-glitch/releases/download/v0.3.0-beta/FM1-GLITCH.fwsc"
   },
   {
    "name": "ARPHONY",
@@ -3773,7 +3817,10 @@
    "size": 0,
    "pkg": "https://github.com/ttreu/fm1-arphony/releases/download/v0.4.0-beta/FM1-ARPHONY.fwsc",
    "pkgVersion": "0.4.0",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 140,
+   "midiCh": 65535,
+   "calibPkg": "https://github.com/ttreu/fm1-arphony/releases/download/v0.4.0-beta/FM1-ARPHONY.fwsc"
   },
   {
    "name": "CYMA-1",
@@ -3804,7 +3851,10 @@
    "size": 0,
    "pkg": "https://github.com/jaeggerr/moondaw-fm1/releases/download/v0.3/moondaw-0.3.fwsc",
    "pkgVersion": "0.3",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://github.com/jaeggerr/moondaw-fm1/releases/download/v0.3/moondaw-0.3.fwsc"
   },
   {
    "name": "FM1-TRAX",
@@ -3823,7 +3873,10 @@
    "pkg": "https://thefirmwarehub.com/fw/fm1trax-0.9.5.fwsc",
    "pkgVersion": "0.9.5",
    "license": "GPL-3.0",
-   "added": "2026-11-01"
+   "added": "2026-11-01",
+   "clock": 77,
+   "midiCh": 65504,
+   "calibPkg": "https://thefirmwarehub.com/fw/fm1trax-0.9.5.fwsc"
   },
   {
    "name": "ECHOFIELD",
@@ -3840,7 +3893,10 @@
    "size": 428145,
    "pkg": "https://thefirmwarehub.com/fw/echofield-0.2.11.fwsc",
    "added": "2026-11-09",
-   "pkgVersion": "0.2.11"
+   "pkgVersion": "0.2.11",
+   "clock": 77,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/echofield-0.2.11.fwsc"
   },
   {
    "name": "CHOPPAH",
@@ -3859,7 +3915,10 @@
    "pkg": "https://thefirmwarehub.com/fw/choppah-1.2.fwsc",
    "pkgVersion": "1.2",
    "license": "MPL-2.0",
-   "added": "2026-11-04"
+   "added": "2026-11-04",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/choppah-1.2.fwsc"
   },
   {
    "name": "Amenity",
@@ -3877,7 +3936,10 @@
    "pkg": "https://thefirmwarehub.com/fw/amenity-2.0.0.fwsc",
    "pkgVersion": "2.0.0",
    "license": "GPL-3.0 + SDK exception",
-   "added": "2026-11-01"
+   "added": "2026-11-01",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/amenity-2.0.0.fwsc"
   },
   {
    "name": "Miku-FM",
@@ -3955,7 +4017,10 @@
    "size": 0,
    "pkg": "https://github.com/matttallison/quadro-fm1/releases/download/1.8/quadro-1.8.fwsc",
    "pkgVersion": "1.8",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 102,
+   "midiCh": 65535,
+   "calibPkg": "https://github.com/matttallison/quadro-fm1/releases/download/1.8/quadro-1.8.fwsc"
   },
   {
    "name": "K-WASUB",
@@ -3973,7 +4038,10 @@
    "pkg": "https://thefirmwarehub.com/fw/kwasub-1.1.02.fwsc",
    "pkgVersion": "1.1.02",
    "license": "GPL-3.0",
-   "added": "2026-10-29"
+   "added": "2026-10-29",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/kwasub-1.1.02.fwsc"
   },
   {
    "name": "DX747",
@@ -3991,7 +4059,10 @@
    "pkg": "https://thefirmwarehub.com/fw/dx747-0.1.fwsc",
    "pkgVersion": "0.1",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
-   "added": "2026-11-06"
+   "added": "2026-11-06",
+   "clock": 52,
+   "midiCh": 255,
+   "calibPkg": "https://thefirmwarehub.com/fw/dx747-0.1.fwsc"
   },
   {
    "name": "RHYTHMER OS",
@@ -4022,7 +4093,10 @@
    "size": 0,
    "pkg": "https://github.com/keremimo/saadet/releases/download/v1.0.5/saadet-1.0.5.fwsc",
    "pkgVersion": "1.0.5",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 140,
+   "midiCh": 65535,
+   "calibPkg": "https://github.com/keremimo/saadet/releases/download/v1.0.5/saadet-1.0.5.fwsc"
   },
   {
    "name": "BAILE",
@@ -4038,7 +4112,10 @@
    "abi": "sim",
    "size": 357855,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://raw.githubusercontent.com/arrastao/baile-fm1/main/firmware/BAILE-0.7-FM1.fwsc"
+   "pkg": "https://raw.githubusercontent.com/arrastao/baile-fm1/main/firmware/BAILE-0.7-FM1.fwsc",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://raw.githubusercontent.com/arrastao/baile-fm1/main/firmware/BAILE-0.7-FM1.fwsc"
   },
   {
    "name": "BOTANICA",
@@ -4053,7 +4130,10 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://raw.githubusercontent.com/catacombius/NoteSorcery/main/docs/firmware/sloop-2.5.fwsc"
+   "pkg": "https://raw.githubusercontent.com/catacombius/NoteSorcery/main/docs/firmware/sloop-2.5.fwsc",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://raw.githubusercontent.com/catacombius/NoteSorcery/main/docs/firmware/sloop-2.5.fwsc"
   },
   {
    "name": "LILA",
@@ -4068,7 +4148,10 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://raw.githubusercontent.com/apiel/fm1-lila/main/dist/lila-1.3-beta.fwsc"
+   "pkg": "https://raw.githubusercontent.com/apiel/fm1-lila/main/dist/lila-1.3-beta.fwsc",
+   "clock": 115,
+   "midiCh": 65535,
+   "calibPkg": "https://raw.githubusercontent.com/apiel/fm1-lila/main/dist/lila-1.3-beta.fwsc"
   },
   {
    "name": "ReVo",
@@ -4083,7 +4166,10 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://raw.githubusercontent.com/gggguto/ReVo/main/site/install/ReVo-development.fwsc"
+   "pkg": "https://raw.githubusercontent.com/gggguto/ReVo/main/site/install/ReVo-development.fwsc",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://raw.githubusercontent.com/gggguto/ReVo/main/site/install/ReVo-development.fwsc"
   },
   {
    "name": "AISLING",
@@ -4098,10 +4184,14 @@
    "url": "https://raw.githubusercontent.com/stephencummins/fm1-aisling/gh-pages/emu/amb.wasm",
    "abi": "web",
    "size": 350593,
-   "pkg": "https://thefirmwarehub.com/fw/aisling-1.3.1.fwsc",
-   "pkgVersion": "1.3.1",
+   "pkg": "https://thefirmwarehub.com/fw/aisling-1.4.fwsc",
+   "pkgVersion": "1.4",
    "license": "GPL-3.0",
-   "added": "2026-11-03"
+   "added": "2026-11-03",
+   "updated": "2026-11-13",
+   "clock": 115,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/aisling-1.4.fwsc"
   },
   {
    "name": "ira",
@@ -4175,7 +4265,10 @@
    "pkg": "https://thefirmwarehub.com/fw/perf1-0.17.0.fwsc",
    "pkgVersion": "0.17.0",
    "license": "GPL-3.0",
-   "added": "2026-10-26"
+   "added": "2026-10-26",
+   "clock": 52,
+   "midiCh": 65534,
+   "calibPkg": "https://thefirmwarehub.com/fw/perf1-0.17.0.fwsc"
   },
   {
    "name": "ARCADE RAT",
@@ -4222,7 +4315,10 @@
    "size": 0,
    "pkg": "https://github.com/w0ts/optimist/releases/download/v0.3/optimist-0.3-drum-machines.fwsc",
    "pkgVersion": "0.3",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 77,
+   "midiCh": 65535,
+   "calibPkg": "https://github.com/w0ts/optimist/releases/download/v0.3/optimist-0.3-drum-machines.fwsc"
   },
   {
    "name": "Dinghy",
@@ -4240,7 +4336,10 @@
    "pkg": "https://thefirmwarehub.com/fw/dinghy-0.5.fwsc",
    "pkgVersion": "0.5",
    "license": "GPL-3.0",
-   "added": "2026-10-09"
+   "added": "2026-10-09",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/dinghy-0.5.fwsc"
   },
   {
    "name": "Modular-1",
@@ -4284,7 +4383,10 @@
    "abi": "web",
    "size": 562413,
    "verified": "exports (site), start-up checked by FM-9 at install",
-   "pkg": "https://raw.githubusercontent.com/rcell233/OpenIFW-fm1/main/firmware-bin/OpenIFW-FM1-0.4.7-rc9.fwsc"
+   "pkg": "https://raw.githubusercontent.com/rcell233/OpenIFW-fm1/main/firmware-bin/OpenIFW-FM1-0.4.7-rc9.fwsc",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://raw.githubusercontent.com/rcell233/OpenIFW-fm1/main/firmware-bin/OpenIFW-FM1-0.4.7-rc9.fwsc"
   },
   {
    "name": "Matryoshka",
@@ -4302,7 +4404,10 @@
    "pkg": "https://thefirmwarehub.com/fw/matryoshka-1.13.0.fwsc",
    "pkgVersion": "1.13.0",
    "license": "GPL-3.0",
-   "added": "2026-10-26"
+   "added": "2026-10-26",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/matryoshka-1.13.0.fwsc"
   },
   {
    "name": "FORGE ONE & Forge Phoenix",
@@ -4331,10 +4436,14 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/fm1dock-0.8.1.fwsc",
-   "pkgVersion": "0.8.1",
+   "pkg": "https://thefirmwarehub.com/fw/fm1dock-0.8.2.fwsc",
+   "pkgVersion": "0.8.2",
    "license": "GPL-3.0",
-   "added": "2026-11-01"
+   "added": "2026-11-01",
+   "updated": "2026-11-13",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/fm1dock-0.8.2.fwsc"
   },
   {
    "name": "FMLarynx",
@@ -4351,7 +4460,10 @@
    "size": 0,
    "pkg": "https://github.com/ejtb76/FMLarynx/releases/download/v0.1.1/fmlarynx-0.1.1.fwsc",
    "pkgVersion": "0.1.1",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://github.com/ejtb76/FMLarynx/releases/download/v0.1.1/fmlarynx-0.1.1.fwsc"
   },
   {
    "name": "EXTRATONE CORE",
@@ -4382,7 +4494,10 @@
    "size": 0,
    "pkg": "https://raw.githubusercontent.com/zvenson/dxsloop/main/docs/doom/firmware/fm1doom-0.5.fwsc",
    "pkgVersion": "0.5",
-   "license": "GPL-3.0"
+   "license": "GPL-3.0",
+   "clock": 52,
+   "midiCh": 19456,
+   "calibPkg": "https://raw.githubusercontent.com/zvenson/dxsloop/main/docs/doom/firmware/fm1doom-0.5.fwsc"
   },
   {
    "name": "FM-1 NES",
@@ -4442,7 +4557,10 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://raw.githubusercontent.com/ChanceTheMaker/gamedude-fm1-smk/main/web/firmware/fm1-template.fwsc"
+   "pkg": "https://raw.githubusercontent.com/ChanceTheMaker/gamedude-fm1-smk/main/web/firmware/fm1-template.fwsc",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://raw.githubusercontent.com/ChanceTheMaker/gamedude-fm1-smk/main/web/firmware/fm1-template.fwsc"
   },
   {
    "name": "Fart Machine One",
@@ -4460,7 +4578,10 @@
    "pkg": "https://thefirmwarehub.com/fw/fart-1.1.0.fwsc",
    "pkgVersion": "1.1.0",
    "license": "GPL-3.0",
-   "added": "2026-10-13"
+   "added": "2026-10-13",
+   "clock": 52,
+   "midiCh": 1,
+   "calibPkg": "https://thefirmwarehub.com/fw/fart-1.1.0.fwsc"
   },
   {
    "name": "Trumpagotchi",
@@ -4478,7 +4599,10 @@
    "pkg": "https://thefirmwarehub.com/fw/trumpagotchi-1.0.1.fwsc",
    "pkgVersion": "1.0.1",
    "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
-   "added": "2026-11-10"
+   "added": "2026-11-10",
+   "clock": 52,
+   "midiCh": 15,
+   "calibPkg": "https://thefirmwarehub.com/fw/trumpagotchi-1.0.1.fwsc"
   },
   {
    "name": "Trireme FM-1",
@@ -4512,7 +4636,10 @@
    "size": 248431,
    "pkg": "https://thefirmwarehub.com/fw/remotefm1-0.3.6.fwsc",
    "pkgVersion": "0.3.6",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "clock": 65,
+   "midiCh": 1,
+   "calibPkg": "https://thefirmwarehub.com/fw/remotefm1-0.3.6.fwsc"
   },
   {
    "name": "FMDj",
@@ -4530,7 +4657,10 @@
    "pkg": "https://thefirmwarehub.com/fw/fmdj-2026.10.22.fwsc",
    "pkgVersion": "2026.10.22",
    "license": "GPL-3.0",
-   "added": "2026-10-29"
+   "added": "2026-10-29",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/fmdj-2026.10.22.fwsc"
   },
   {
    "name": "Neverhood for FM-1",
@@ -4547,7 +4677,10 @@
    "size": 0,
    "pkg": "https://snpwball.github.io/fm1/neverhood/neverhood.fwsc",
    "pkgVersion": "",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 115,
+   "midiCh": 65535,
+   "calibPkg": "https://snpwball.github.io/fm1/neverhood/neverhood.fwsc"
   },
   {
    "name": "fm1-radio",
@@ -4579,7 +4712,10 @@
    "size": 0,
    "pkg": "https://github.com/acidsound/picovave/releases/download/12822759/picovave-fm1.fwsc",
    "pkgVersion": "",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://github.com/acidsound/picovave/releases/download/12822759/picovave-fm1.fwsc"
   },
   {
    "name": "Cat Piano",
@@ -4658,7 +4794,10 @@
    "pkg": "https://thefirmwarehub.com/fw/dungeontracker-1.5.fwsc",
    "pkgVersion": "1.5",
    "license": "GPL-3.0",
-   "added": "2026-10-29"
+   "added": "2026-10-29",
+   "clock": 52,
+   "midiCh": 10,
+   "calibPkg": "https://thefirmwarehub.com/fw/dungeontracker-1.5.fwsc"
   },
   {
    "name": "RetroDash",
@@ -4675,7 +4814,10 @@
    "size": 0,
    "pkg": "https://github.com/nasonliu/retrodash/releases/download/v0.2.0-beta/retrodash-0.2.0-beta.fwsc",
    "pkgVersion": "0.2.0",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://github.com/nasonliu/retrodash/releases/download/v0.2.0-beta/retrodash-0.2.0-beta.fwsc"
   },
   {
    "name": "FM-1 Midi-Mania",
@@ -4692,7 +4834,10 @@
    "size": 0,
    "pkg": "https://shan-sherif.github.io/fm-1-midi-mania/firmware/midi-mania-0.9.0.fwsc",
    "pkgVersion": "0.9.0",
-   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9"
+   "verified": "found by the FM-9 survey (releases / branches / install page), started in FM-9",
+   "clock": 52,
+   "midiCh": 15,
+   "calibPkg": "https://shan-sherif.github.io/fm-1-midi-mania/firmware/midi-mania-0.9.0.fwsc"
   },
   {
    "name": "Arctic Scream",
@@ -4712,7 +4857,10 @@
    "license": "GPL-3.0",
    "vendor": false,
    "added": "2026-10-26",
-   "updated": "2026-11-12"
+   "updated": "2026-11-12",
+   "clock": 115,
+   "midiCh": 65534,
+   "calibPkg": "https://thefirmwarehub.com/fw/arctic-2.0.fwsc"
   },
   {
    "name": "Arcturus S6",
@@ -4731,7 +4879,10 @@
    "pkgVersion": "1.7",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-02"
+   "added": "2026-11-02",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/arcturus-1.7.fwsc"
   },
   {
    "name": "B3 ORGAN",
@@ -4750,7 +4901,10 @@
    "pkgVersion": "0.3",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-05"
+   "added": "2026-11-05",
+   "clock": 152,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/b3organ-0.3.fwsc"
   },
   {
    "name": "BEETLE BLUE",
@@ -4769,7 +4923,10 @@
    "pkgVersion": "1.3.1",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-02"
+   "added": "2026-11-02",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/beetleblue-1.3.1.fwsc"
   },
   {
    "name": "Berlinan",
@@ -4788,7 +4945,10 @@
    "pkgVersion": "0.5.1",
    "license": "GPL-2.0-or-later",
    "vendor": false,
-   "added": "2026-10-27"
+   "added": "2026-10-27",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/berlinan-0.5.1.fwsc"
   },
   {
    "name": "Blop",
@@ -4807,7 +4967,10 @@
    "pkgVersion": "1.1.0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-02"
+   "added": "2026-11-02",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/blop-1.1.0.fwsc"
   },
   {
    "name": "bocjuhn",
@@ -4826,7 +4989,10 @@
    "pkgVersion": "1.0.0-rc10",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-03"
+   "added": "2026-11-03",
+   "clock": 52,
+   "midiCh": 32895,
+   "calibPkg": "https://thefirmwarehub.com/fw/bocjuhn-1.0.0-rc10.fwsc"
   },
   {
    "name": "Chipbox",
@@ -4845,7 +5011,10 @@
    "pkgVersion": "1.6.1-bluetoothbanter",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-20"
+   "added": "2026-10-20",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/chipbox-1.6.1-bluetoothbanter.fwsc"
   },
   {
    "name": "CLATTER Pocket",
@@ -4864,7 +5033,10 @@
    "pkgVersion": "1.0.0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-04"
+   "added": "2026-11-04",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/clatter-1.0.0.fwsc"
   },
   {
    "name": "DARK-1",
@@ -4883,7 +5055,10 @@
    "pkgVersion": "1.0.6",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-01"
+   "added": "2026-11-01",
+   "clock": 90,
+   "midiCh": 65534,
+   "calibPkg": "https://thefirmwarehub.com/fw/dark1-1.0.6.fwsc"
   },
   {
    "name": "Daurade",
@@ -4902,7 +5077,10 @@
    "pkgVersion": "1.0.1-01d6bd0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-29"
+   "added": "2026-10-29",
+   "clock": 102,
+   "midiCh": 7,
+   "calibPkg": "https://thefirmwarehub.com/fw/daurade-1.0.1-0bf2076.fwsc"
   },
   {
    "name": "Del Rio",
@@ -4921,7 +5099,10 @@
    "pkgVersion": "1.0",
    "license": "MPL-2.0",
    "vendor": false,
-   "added": "2026-10-24"
+   "added": "2026-10-24",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/delrio-1.0.fwsc"
   },
   {
    "name": "Demake",
@@ -4940,7 +5121,10 @@
    "pkgVersion": "0.4.24",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-03"
+   "added": "2026-11-03",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/demake-0.4.24.fwsc"
   },
   {
    "name": "DRIFT",
@@ -4959,7 +5143,10 @@
    "pkgVersion": "0.9.6",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-23"
+   "added": "2026-10-23",
+   "clock": 90,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/drift-0.9.6.fwsc"
   },
   {
    "name": "Flyfish",
@@ -4978,7 +5165,10 @@
    "pkgVersion": "1.1.1-fc4974e",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-20"
+   "added": "2026-10-20",
+   "clock": 90,
+   "midiCh": 15,
+   "calibPkg": "https://thefirmwarehub.com/fw/flyfish-1.1.1-9abe2e8.fwsc"
   },
   {
    "name": "GuitChordi",
@@ -4997,7 +5187,10 @@
    "pkgVersion": "0.1.0-beta.1",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-27"
+   "added": "2026-10-27",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/guitchordi-0.1.0-beta.1.fwsc"
   },
   {
    "name": "hawk-chua",
@@ -5012,11 +5205,15 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/hawkchua-2.1.3.fwsc",
-   "pkgVersion": "2.1.3",
+   "pkg": "https://thefirmwarehub.com/fw/hawkchua-2.1.5.fwsc",
+   "pkgVersion": "2.1.5",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-30"
+   "added": "2026-10-30",
+   "updated": "2026-11-13",
+   "clock": 77,
+   "midiCh": 65534,
+   "calibPkg": "https://thefirmwarehub.com/fw/hawkchua-2.1.5.fwsc"
   },
   {
    "name": "HERA",
@@ -5035,7 +5232,10 @@
    "pkgVersion": "1.1",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-23"
+   "added": "2026-10-23",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/hera-1.1.fwsc"
   },
   {
    "name": "J6",
@@ -5054,7 +5254,10 @@
    "pkgVersion": "1.4.0",
    "license": "MPL-2.0",
    "vendor": false,
-   "added": "2026-10-27"
+   "added": "2026-10-27",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/j6-1.4.0.fwsc"
   },
   {
    "name": "Jam Playground",
@@ -5073,7 +5276,10 @@
    "pkgVersion": "1.2.0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-30"
+   "added": "2026-10-30",
+   "clock": 115,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/jam-1.2.0.fwsc"
   },
   {
    "name": "Kitten Synths",
@@ -5092,7 +5298,10 @@
    "pkgVersion": "2.8-kitten.8",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-28"
+   "added": "2026-10-28",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/kitten-2.8-kitten.8.fwsc"
   },
   {
    "name": "Kitten Rack",
@@ -5111,7 +5320,10 @@
    "pkgVersion": "1.4.0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-02"
+   "added": "2026-11-02",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/kittenrack-1.4.0.fwsc"
   },
   {
    "name": "LUXR",
@@ -5130,7 +5342,10 @@
    "pkgVersion": "2026.10.25",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-29"
+   "added": "2026-10-29",
+   "clock": 90,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/luxr-2026.10.25.fwsc"
   },
   {
    "name": "Makohai",
@@ -5149,7 +5364,10 @@
    "pkgVersion": "1.4",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-25"
+   "added": "2026-10-25",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/makohai-1.4.fwsc"
   },
   {
    "name": "MODELAR",
@@ -5168,7 +5386,10 @@
    "pkgVersion": "0.3",
    "license": "MPL-2.0",
    "vendor": false,
-   "added": "2026-10-22"
+   "added": "2026-10-22",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/modelar-0.3.fwsc"
   },
   {
    "name": "MORPHEUS",
@@ -5187,7 +5408,10 @@
    "pkgVersion": "1.0.0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-19"
+   "added": "2026-10-19",
+   "clock": 152,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/morpheus-1.0.0.fwsc"
   },
   {
    "name": "NACHTFAHRT",
@@ -5206,7 +5430,10 @@
    "pkgVersion": "1.0.0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-29"
+   "added": "2026-10-29",
+   "clock": 102,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/nachtfahrt-1.0.0.fwsc"
   },
   {
    "name": "Nauclerus",
@@ -5225,7 +5452,10 @@
    "pkgVersion": "1.0.0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-28"
+   "added": "2026-10-28",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/nauclerus-1.0.0.fwsc"
   },
   {
    "name": "Penumbra",
@@ -5244,7 +5474,10 @@
    "pkgVersion": "1.3",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-30"
+   "added": "2026-10-30",
+   "clock": 77,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/penumbra-1.3.fwsc"
   },
   {
    "name": "PT/FM",
@@ -5263,7 +5496,10 @@
    "pkgVersion": "0.26",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-28"
+   "added": "2026-10-28",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/ptfm-0.26+91deae9e.fwsc"
   },
   {
    "name": "PULHRA",
@@ -5282,7 +5518,10 @@
    "pkgVersion": "1.5.1",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-01"
+   "added": "2026-11-01",
+   "clock": 52,
+   "midiCh": 15,
+   "calibPkg": "https://thefirmwarehub.com/fw/pulhra-1.5.1.fwsc"
   },
   {
    "name": "RUPTURE",
@@ -5301,7 +5540,10 @@
    "pkgVersion": "1.85.2",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-01"
+   "added": "2026-11-01",
+   "clock": 52,
+   "midiCh": 65534,
+   "calibPkg": "https://thefirmwarehub.com/fw/rupture-1.85.2.fwsc"
   },
   {
    "name": "Scintilla",
@@ -5316,11 +5558,15 @@
    "url": "",
    "abi": "",
    "size": 0,
-   "pkg": "https://thefirmwarehub.com/fw/scintilla-0.3.1.fwsc",
-   "pkgVersion": "0.3.1",
+   "pkg": "https://thefirmwarehub.com/fw/scintilla-0.3.2.fwsc",
+   "pkgVersion": "0.3.2",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-01"
+   "added": "2026-11-01",
+   "updated": "2026-11-13",
+   "clock": 65,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/scintilla-0.3.2.fwsc"
   },
   {
    "name": "FM-1 SID",
@@ -5339,7 +5585,10 @@
    "pkgVersion": "0.3",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-01"
+   "added": "2026-11-01",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/fm1sid-0.3.fwsc"
   },
   {
    "name": "SiDJ",
@@ -5358,7 +5607,10 @@
    "pkgVersion": "1.5.1",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-30"
+   "added": "2026-10-30",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/sidj-1.5.1.fwsc"
   },
   {
    "name": "Sill",
@@ -5377,7 +5629,10 @@
    "pkgVersion": "1.0.4-beeebd6",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-29"
+   "added": "2026-10-29",
+   "clock": 90,
+   "midiCh": 15,
+   "calibPkg": "https://thefirmwarehub.com/fw/sill-1.0.4-beeebd6.fwsc"
   },
   {
    "name": "Smileyface",
@@ -5396,7 +5651,10 @@
    "pkgVersion": "1.2.1-bleglee",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-30"
+   "added": "2026-10-30",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/smileyface-1.2.1-bleglee.fwsc"
   },
   {
    "name": "SPELLBOX",
@@ -5415,7 +5673,10 @@
    "pkgVersion": "0.3",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-29"
+   "added": "2026-10-29",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/spellbox-0.3.fwsc"
   },
   {
    "name": "TastyWaves",
@@ -5434,7 +5695,10 @@
    "pkgVersion": "1.0.1",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-26"
+   "added": "2026-10-26",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/tastywaves-1.0.1.fwsc"
   },
   {
    "name": "VESPER",
@@ -5453,7 +5717,10 @@
    "pkgVersion": "2.0.2",
    "license": "see the repository",
    "vendor": false,
-   "added": "2026-10-30"
+   "added": "2026-10-30",
+   "clock": 140,
+   "midiCh": 127,
+   "calibPkg": "https://thefirmwarehub.com/fw/vesper-2.0.2.fwsc"
   },
   {
    "name": "Wanderer",
@@ -5472,7 +5739,10 @@
    "pkgVersion": "1.4.0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-11-01"
+   "added": "2026-11-01",
+   "clock": 77,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/wanderer-1.4.0.fwsc"
   },
   {
    "name": "XMOD",
@@ -5491,7 +5761,10 @@
    "pkgVersion": "1.2.0",
    "license": "GPL-3.0",
    "vendor": false,
-   "added": "2026-10-30"
+   "added": "2026-10-30",
+   "clock": 52,
+   "midiCh": 1024,
+   "calibPkg": "https://thefirmwarehub.com/fw/xmod-1.2.0.fwsc"
   },
   {
    "name": "VIBE FM Link",
@@ -5545,7 +5818,10 @@
    "pkg": "https://thefirmwarehub.com/fw/atlatl-1.1.fwsc",
    "pkgVersion": "1.1",
    "license": "GPL-3.0",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "clock": 52,
+   "midiCh": 63,
+   "calibPkg": "https://thefirmwarehub.com/fw/atlatl-1.1.fwsc"
   },
   {
    "name": "COQUÍ",
@@ -5581,7 +5857,10 @@
    "pkg": "https://thefirmwarehub.com/fw/artihive-2.0.4.fwsc",
    "pkgVersion": "2.0.4",
    "license": "GPL-3.0",
-   "added": "2026-11-07"
+   "added": "2026-11-07",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/artihive-2.0.4.fwsc"
   },
   {
    "name": "CULTBOX",
@@ -5599,7 +5878,10 @@
    "pkg": "https://thefirmwarehub.com/fw/cultbox-1.2.fwsc",
    "pkgVersion": "1.2",
    "license": "GPL-3.0",
-   "added": "2026-11-07"
+   "added": "2026-11-07",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/cultbox-1.2.fwsc"
   },
   {
    "name": "Piterfly",
@@ -5617,7 +5899,10 @@
    "pkg": "https://thefirmwarehub.com/fw/piterfly-1.0.1.fwsc",
    "pkgVersion": "1.0.1",
    "license": "GPL-3.0",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/piterfly-1.0.1.fwsc"
   },
   {
    "name": "Sardine",
@@ -5635,7 +5920,10 @@
    "pkg": "https://thefirmwarehub.com/fw/sardine-1.0.6.fwsc",
    "pkgVersion": "1.0.6",
    "license": "GPL-3.0",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "clock": 90,
+   "midiCh": 8,
+   "calibPkg": "https://thefirmwarehub.com/fw/sardine-1.0.6.fwsc"
   },
   {
    "name": "ATEK303",
@@ -5653,7 +5941,10 @@
    "pkg": "https://thefirmwarehub.com/fw/atek303-1.2.fwsc",
    "pkgVersion": "1.2",
    "license": "GPL-3.0",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "clock": 90,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/atek303-1.2.fwsc"
   },
   {
    "name": "FM1 Audio Router",
@@ -5690,7 +5981,10 @@
    "pkg": "https://thefirmwarehub.com/fw/drumlab-0.1.4-insertbluetoothpunhere.fwsc",
    "pkgVersion": "0.1.4-insertbluetoothpunhere",
    "license": "GPL-3.0",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/drumlab-0.1.4-insertbluetoothpunhere.fwsc"
   },
   {
    "name": "M-Vance",
@@ -5705,10 +5999,14 @@
    "url": "",
    "abi": "",
    "size": 612234,
-   "pkg": "https://thefirmwarehub.com/fw/mvance-2.4.fwsc",
-   "pkgVersion": "2.4",
+   "pkg": "https://thefirmwarehub.com/fw/mvance-2.5.1.fwsc",
+   "pkgVersion": "2.5.1",
    "license": "GPL-3.0",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "updated": "2026-11-13",
+   "clock": 77,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/mvance-2.5.1.fwsc"
   },
   {
    "name": "Patchwerk",
@@ -5726,7 +6024,10 @@
    "pkg": "https://thefirmwarehub.com/fw/patchwerk-1.0.3.fwsc",
    "pkgVersion": "1.0.3",
    "license": "GPL-3.0",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/patchwerk-1.0.3.fwsc"
   },
   {
    "name": "Rhythmer",
@@ -5744,7 +6045,10 @@
    "pkg": "https://thefirmwarehub.com/fw/rhythmer-0.1.1-beta3.fwsc",
    "pkgVersion": "0.1.1-beta3",
    "license": "GPL-3.0",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "clock": 52,
+   "midiCh": 15,
+   "calibPkg": "https://thefirmwarehub.com/fw/rhythmer-0.1.1-beta3.fwsc"
   },
   {
    "name": "Ombak",
@@ -5762,7 +6066,10 @@
    "pkg": "https://thefirmwarehub.com/fw/ombak-1.2.fwsc",
    "pkgVersion": "1.2",
    "license": "GPL-3.0",
-   "added": "2026-11-09"
+   "added": "2026-11-09",
+   "clock": 140,
+   "midiCh": 15,
+   "calibPkg": "https://thefirmwarehub.com/fw/ombak-1.2.fwsc"
   },
   {
    "name": "XENOLITH",
@@ -5780,7 +6087,10 @@
    "pkg": "https://thefirmwarehub.com/fw/xenolith-1.0.fwsc",
    "pkgVersion": "1.0",
    "license": "GPL-3.0",
-   "added": "2026-11-10"
+   "added": "2026-11-10",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/xenolith-1.0.fwsc"
   },
   {
    "name": "Hungry Travis",
@@ -5798,7 +6108,10 @@
    "pkg": "https://thefirmwarehub.com/fw/hungrytravis-2026.11.10.fwsc",
    "pkgVersion": "2026.11.10",
    "license": "GPL-3.0",
-   "added": "2026-11-10"
+   "added": "2026-11-10",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/hungrytravis-2026.11.10.fwsc"
   },
   {
    "name": "FM-FAM",
@@ -5817,7 +6130,10 @@
    "pkgVersion": "0.3.1",
    "license": "MPL-2.0",
    "added": "2026-11-10",
-   "updated": "2026-11-12"
+   "updated": "2026-11-12",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/fmfam-0.3.1.fwsc"
   },
   {
    "name": "JAMTRACK",
@@ -5835,7 +6151,10 @@
    "pkg": "https://thefirmwarehub.com/fw/jamtrack-0.2.3.fwsc",
    "pkgVersion": "0.2.3",
    "license": "MIT",
-   "added": "2026-11-10"
+   "added": "2026-11-10",
+   "clock": 115,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/jamtrack-0.2.3.fwsc"
   },
   {
    "name": "Quartet",
@@ -5853,7 +6172,10 @@
    "pkg": "https://thefirmwarehub.com/fw/quartet-1.2.fwsc",
    "pkgVersion": "1.2",
    "license": "GPL-3.0",
-   "added": "2026-11-10"
+   "added": "2026-11-10",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/quartet-1.2.fwsc"
   },
   {
    "name": "keySTEP ONE",
@@ -5871,7 +6193,10 @@
    "pkg": "https://thefirmwarehub.com/fw/keystepone-0.5.42.fwsc",
    "pkgVersion": "0.5.42",
    "license": "MPL-2.0",
-   "added": "2026-11-10"
+   "added": "2026-11-10",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/keystepone-0.5.42.fwsc"
   },
   {
    "name": "RAMBEAVER",
@@ -5889,7 +6214,10 @@
    "pkg": "https://thefirmwarehub.com/fw/rambeaver-745-hub.fwsc",
    "pkgVersion": "745-hub",
    "license": "GPL-3.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 52,
+   "midiCh": 29068,
+   "calibPkg": "https://thefirmwarehub.com/fw/rambeaver-745-hub.fwsc"
   },
   {
    "name": "M-PYRE",
@@ -5907,7 +6235,10 @@
    "pkg": "https://thefirmwarehub.com/fw/mpyre-1.0.3.fwsc",
    "pkgVersion": "1.0.3",
    "license": "GPL-3.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 52,
+   "midiCh": 512,
+   "calibPkg": "https://thefirmwarehub.com/fw/mpyre-1.0.3.fwsc"
   },
   {
    "name": "ASS-ID",
@@ -5925,7 +6256,10 @@
    "pkg": "https://thefirmwarehub.com/fw/assid-1.0.fwsc",
    "pkgVersion": "1.0",
    "license": "GPL-3.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 165,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/assid-1.0.fwsc"
   },
   {
    "name": "sloop-DUB",
@@ -5943,7 +6277,10 @@
    "pkg": "https://thefirmwarehub.com/fw/sloopdub-1.3.fwsc",
    "pkgVersion": "1.3",
    "license": "GPL-3.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/sloopdub-1.3.fwsc"
   },
   {
    "name": "SATIE-1",
@@ -5961,7 +6298,10 @@
    "pkg": "https://thefirmwarehub.com/fw/satie1-0.1.3-beta.fwsc",
    "pkgVersion": "0.1.3-beta",
    "license": "GPL-3.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 52,
+   "midiCh": 65534,
+   "calibPkg": "https://thefirmwarehub.com/fw/satie1-0.1.3-beta.fwsc"
   },
   {
    "name": "Guru-600",
@@ -5979,7 +6319,10 @@
    "pkg": "https://thefirmwarehub.com/fw/guru600-1.0.2+d9c0fd52.fwsc",
    "pkgVersion": "1.0.2",
    "license": "GPL-3.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 127,
+   "midiCh": 15,
+   "calibPkg": "https://thefirmwarehub.com/fw/guru600-1.0.2+d9c0fd52.fwsc"
   },
   {
    "name": "PLAYA",
@@ -5997,7 +6340,10 @@
    "pkg": "https://thefirmwarehub.com/fw/playa-0.1.fwsc",
    "pkgVersion": "0.1",
    "license": "GPL-3.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 77,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/playa-0.1.fwsc"
   },
   {
    "name": "Kris Jangle",
@@ -6015,7 +6361,10 @@
    "pkg": "https://thefirmwarehub.com/fw/krisjangle-0.12.fwsc",
    "pkgVersion": "0.12",
    "license": "MPL-2.0",
-   "added": "2026-11-10"
+   "added": "2026-11-10",
+   "clock": 52,
+   "midiCh": 0,
+   "calibPkg": "https://thefirmwarehub.com/fw/krisjangle-0.12.fwsc"
   },
   {
    "name": "CORD",
@@ -6033,7 +6382,10 @@
    "pkg": "https://thefirmwarehub.com/fw/cord-1.0.3.fwsc",
    "pkgVersion": "1.0.3",
    "license": "GPL-3.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 115,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/cord-1.0.3.fwsc"
   },
   {
    "name": "Pocket Band",
@@ -6051,7 +6403,10 @@
    "pkg": "https://thefirmwarehub.com/fw/pocketband-0.4.fwsc",
    "pkgVersion": "0.4",
    "license": "GPL-3.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/pocketband-0.4.fwsc"
   },
   {
    "name": "Mighty Arp",
@@ -6069,7 +6424,10 @@
    "pkg": "https://thefirmwarehub.com/fw/mightyarp-1.4.fwsc",
    "pkgVersion": "1.4",
    "license": "MPL-2.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 65,
+   "midiCh": 16348,
+   "calibPkg": "https://thefirmwarehub.com/fw/mightyarp-1.4.fwsc"
   },
   {
    "name": "DUB-BOX",
@@ -6105,7 +6463,10 @@
    "pkg": "https://thefirmwarehub.com/fw/deepfield-1.6.fwsc",
    "pkgVersion": "1.6",
    "license": "MPL-2.0",
-   "added": "2026-11-11"
+   "added": "2026-11-11",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/deepfield-1.6.fwsc"
   },
   {
    "name": "SPLITMILK",
@@ -6123,7 +6484,10 @@
    "pkg": "https://thefirmwarehub.com/fw/splitmilk-1.0.fwsc",
    "pkgVersion": "1.0",
    "license": "GPL-3.0",
-   "added": "2026-11-12"
+   "added": "2026-11-12",
+   "clock": 52,
+   "midiCh": 65535,
+   "calibPkg": "https://thefirmwarehub.com/fw/splitmilk-1.0.fwsc"
   },
   {
    "name": "Argo",
@@ -6141,7 +6505,10 @@
    "pkg": "https://thefirmwarehub.com/fw/argo-1.8.3.fwsc",
    "pkgVersion": "1.8.3",
    "license": "GPL-3.0",
-   "added": "2026-11-12"
+   "added": "2026-11-12",
+   "clock": 52,
+   "midiCh": 15,
+   "calibPkg": "https://thefirmwarehub.com/fw/argo-1.8.3.fwsc"
   },
   {
    "name": "KRIECHSTROM",

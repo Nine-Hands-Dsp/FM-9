@@ -28,7 +28,7 @@ jobs:
   macos:
     permissions:
       contents: write
-    runs-on: macos-13         # Intel (files macos-15 / arm64 saturees chez GitHub) ; binaire universel quand meme
+    runs-on: macos-15-intel   # comme Octopus (macos-13 n est plus fourni par GitHub : jobs jamais pris) ; binaire universel quand meme
     steps:
       - uses: actions/checkout@v5
       - name: Rust (emulateur de la puce de la FM-1, universel)
